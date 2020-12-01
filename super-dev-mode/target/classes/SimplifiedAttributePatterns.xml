@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<matattributes>
+ <attribute attribName="activeDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="admissionSource">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="anatomicalLocationSite">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="authorDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="cause">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="category">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
+ <attribute attribName="code">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="birthDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="expiredDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="daysSupplied">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="dischargeDisposition">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="dosage">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="supply">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="facilityLocation">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ <!--  <mode mode="Codes" /> -->
+ </attribute>
+ <attribute attribName="frequency">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="identifier">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="incisionDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="lengthOfStay">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="locationPeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="medium">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
+ <attribute attribName="method">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="negationRationale">
+  <mode mode="Nullable" />
+ <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="prevalencePeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="priority">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" /> 
+ </attribute>
+ <attribute attribName="radiationDosage">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="radiationDuration">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="reason">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="recipient">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
+ <attribute attribName="receivedDatetime">
+ 	<mode mode="Comparison"/>
+ 	<mode mode="Computative"/>
+ 	<mode mode="Nullable"/>
+ </attribute> 
+ <attribute attribName="referenceRange">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="refills">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="relatedTo">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <!-- <mode mode="Codes" /> -->
+ </attribute>
+ <attribute attribName="relationship">
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="relevantDatetime">
+ 	<mode mode="Comparison" />
+ 	<mode mode="Computative" />
+ 	<mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="relevantPeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="result">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="resultDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="route">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="sender">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
+ <attribute attribName="setting">
+ 	<mode mode="Nullable" />
+ 	<mode mode="ValueSets" />
+ 	<mode mode="Codes" />
+ </attribute>
+  <attribute attribName="sentDatetime">
+ 	<mode mode="Comparison" />
+ 	<mode mode="Computative" />
+ 	<mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="severity">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="status">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="targetOutcome">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="type">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="rank">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="recorder">
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
+ </attribute>
+ <attribute attribName="participationPeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="statusDate">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>	
+</matattributes>

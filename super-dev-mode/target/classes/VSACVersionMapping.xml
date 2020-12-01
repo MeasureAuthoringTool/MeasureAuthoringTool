@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         " http://castor.codehaus.org/mapping.dtd ">
+<mapping>
+   <class name="mat.model.VSACVersionWrapper">
+		<map-to xml="VersionList" />
+		
+		<field name="versionList" type="mat.model.VSACVersion"
+		get-method="getVersionList" set-method="setVersionList"
+           collection="arraylist">
+      <bind-xml name="version">
+      	<class name="mat.model.VSACVersion">    
+		    <field name="name" type="java.lang.String">
+		      <bind-xml  node="text"/>
+		    </field>
+  		</class>
+      </bind-xml>
+    </field>
+	</class>
+</mapping>                         

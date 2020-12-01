@@ -86,6 +86,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static mat.client.util.FeatureFlagConstant.MAT_ON_FHIR;
+
 public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private static final String CONTINUE = "Continue";
@@ -822,6 +824,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateDetailsFromView();
 
         if (isValid(currentDetails, false)) {
+            setSearchingBusy(true);
             MatContext.get().getMeasureService().saveNewMeasure(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
                 @Override
@@ -909,9 +912,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> createNewMeasure());
+        if (Boolean.TRUE.equals(MatContext.get().getFeatureFlags().get(MAT_ON_FHIR)) ||
+                MatContext.get().getCurrentUserInfo().isFhirAccessible) {
+            // If fhir is on they can create FHIR or QDM.
+            detailDisplay.allowAllMeasureModelTypes();
+        } else {
+            // If fhir is off they can only create QDM.
+            detailDisplay.setMeasureModelType(ModelTypeHelper.QDM);
+        }
         panel.setContent(detailDisplay.asWidget());
     }
-
 
     private void displayCloneMeasureWidget() {
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
@@ -1004,7 +1014,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.getCellTablePanel().clear();
         String heading = "Measure Library";
 
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+        if (MatContext.get().getFeatureFlagStatus(MAT_ON_FHIR)) {
             heading = "MAT on FHIR - Measure Library";
         } else {
             heading = "MAT on QDM - Measure Library";
@@ -1488,7 +1498,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void advancedSearch(MeasureSearchModel measureSearchModel, boolean didUserSelectSearch) {
         setSearchingBusy(true);
-        measureSearchModel.setMatOnFhir(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
+        measureSearchModel.setMatOnFhir(MatContext.get().getFeatureFlagStatus(MAT_ON_FHIR));
         MatContext.get().getMeasureService().search(measureSearchModel,
                 new AsyncCallback<ManageMeasureSearchModel>() {
                     @Override
@@ -1710,7 +1720,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         StringBuilder errorMessage = new StringBuilder();
         errorMessage.append("Measure(s) ");
         errorExportList.forEach(r -> errorMessage.append(r.getName() + ","));
-        errorMessage.deleteCharAt(errorMessage.length()-1);
+        errorMessage.deleteCharAt(errorMessage.length() - 1);
         errorMessage.append(" could not be exported because they are not packaged.");
         return errorMessage;
     }
@@ -1972,7 +1982,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
      */
     private void searchRecentMeasures() {
         searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(false);
-        MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(), MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR),
+        MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(), MatContext.get().getFeatureFlagStatus(MAT_ON_FHIR),
                 new AsyncCallback<ManageMeasureSearchModel>() {
                     @Override
                     public void onFailure(Throwable caught) {

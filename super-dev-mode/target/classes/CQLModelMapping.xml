@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.cql.CQLModel">
+		<map-to xml="cqlLookUp" />
+		<field name="libraryName" type="java.lang.String">
+			<bind-xml name="library" node="element" />
+		</field>
+		<field name="versionUsed" type="java.lang.String">
+			<bind-xml name="version" node="element" />
+		</field>
+		<field name="libraryComment" type="java.lang.String">
+			<bind-xml name="libraryComment" node="element" />
+		</field>		
+		<field name="usingModel" type="java.lang.String">
+			<bind-xml name="usingModel" node="element" />
+		</field>
+		<field name="usingModelVersion" type="java.lang.String">
+			<bind-xml name="usingModelVersion" node="element" />
+		</field>
+
+		<field name="context" type="java.lang.String">
+			<bind-xml name="cqlContext" node="element" />
+		</field>
+
+		<field name="codeSystemList" type="mat.model.cql.CQLCodeSystem"
+			get-method="getCodeSystemList" set-method="setCodeSystemList"
+			collection="arraylist">
+			<bind-xml name="codeSystem" location="codeSystems">
+				<class name="mat.model.cql.CQLCodeSystem">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="codeSystem" type="java.lang.String">
+						<bind-xml name="codeSystem" node="attribute" />
+					</field>
+					<field name="codeSystemName" type="java.lang.String">
+						<bind-xml name="codeSystemName" node="attribute" />
+					</field>
+					<field name="codeSystemVersion" type="java.lang.String">
+						<bind-xml name="codeSystemVersion" node="attribute" />
+					</field>
+					<field name="versionUri" type="java.lang.String">
+						<bind-xml name="versionUri" node="attribute" />
+					</field>
+					<field name="valueSetOID" type="java.lang.String">
+						<bind-xml name="valueSetOID" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+		<field name="valueSetList" type="mat.model.cql.CQLQualityDataSetDTO"
+			get-method="getValueSetList" set-method="setValueSetList" collection="arraylist">
+			<bind-xml name="valueset" location="valuesets">
+				<class name="mat.model.cql.CQLQualityDataSetDTO">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="dataType" type="java.lang.String">
+						<bind-xml name="datatype" node="attribute" />
+					</field>
+					<field name="codeListName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+					<field name="suffix" type="java.lang.String">
+						<bind-xml name="suffix" node="attribute" />
+					</field>
+					<field name="originalCodeListName" type="java.lang.String">
+						<bind-xml name="originalName" node="attribute" />
+					</field>
+					<field name="oid" type="java.lang.String">
+						<bind-xml name="oid" node="attribute" />
+					</field>
+					<field name="version" type="java.lang.String">
+						<bind-xml name="version" node="attribute" />
+					</field>
+					<field name="program" type="java.lang.String">
+						<bind-xml name="program" node="attribute" />
+					</field>
+					<field name="release" type="java.lang.String">
+						<bind-xml name="release" node="attribute" />
+					</field>
+					<field name="codeSystemName" type="java.lang.String">
+						<bind-xml name="codeSystemName" node="attribute" />
+					</field>
+					<field name="taxonomy" type="java.lang.String">
+						<bind-xml name="taxonomy" node="attribute" />
+					</field>
+					<field name="uuid" type="java.lang.String">
+						<bind-xml name="uuid" node="attribute" />
+					</field>
+					<field name="suppDataElement" type="java.lang.Boolean">
+						<bind-xml name="suppDataElement" node="attribute" />
+					</field>
+					<field name="valueSetType" type="java.lang.String">
+						<bind-xml name="type" node="attribute" />
+					</field>
+					<field name="validatedWithVsac" type="java.lang.String">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+
+		<field name="codeList" type="mat.model.cql.CQLCode" get-method="getCodeList"
+			set-method="setCodeList" collection="arraylist">
+			<bind-xml name="code" location="codes">
+				<class name="mat.model.cql.CQLCode">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="codeName" type="java.lang.String">
+						<bind-xml name="codeName" node="attribute" />
+					</field>
+					<field name="codeIdentifier" type="java.lang.String">
+						<bind-xml name="codeIdentifier" node="attribute" />
+					</field>
+					<field name="codeSystemName" type="java.lang.String">
+						<bind-xml name="codeSystemName" node="attribute" />
+					</field>
+					<field name="codeSystemVersion" type="java.lang.String">
+						<bind-xml name="codeSystemVersion" node="attribute" />
+					</field>
+					<field name="codeSystemOID" type="java.lang.String">
+						<bind-xml name="codeSystemOID" node="attribute" />
+					</field>
+					<field name="displayName" type="java.lang.String">
+						<bind-xml name="displayName" node="attribute" />
+					</field>
+					<field name="codeOID" type="java.lang.String">
+						<bind-xml name="codeOID" node="attribute" />
+					</field>
+					<field name="suffix" type="java.lang.String">
+						<bind-xml name="suffix" node="attribute" />
+					</field>
+					<field name="readOnly" type="java.lang.Boolean">
+						<bind-xml name="readOnly" node="attribute" />
+					</field>
+					<field name="isCodeSystemVersionIncluded" type="java.lang.Boolean">
+						<bind-xml name="isCodeSystemVersionIncluded" node="attribute" />
+					</field>
+					<field name="codeSystemVersionUri" type="java.lang.String">
+						<bind-xml name="codeSystemVersionUri" node="attribute" />
+					</field>
+					<field name="validatedWithVsac" type="java.lang.String">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+		<field name="cqlParameterList" type="mat.model.cql.CQLParameter"
+			get-method="getCqlParameters" set-method="setCqlParameters"
+			collection="arraylist">
+			<bind-xml name="parameter" location="parameters">
+				<class name="mat.model.cql.CQLParameter">
+
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="parameterName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+
+					<field name="readOnly" type="java.lang.Boolean">
+						<bind-xml name="readOnly" node="attribute" />
+					</field>
+					
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
+					
+					<field name="parameterLogic" type="java.lang.String">
+						<bind-xml name="logic" node="element" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+
+		<field name="cqlDefinitions" type="mat.model.cql.CQLDefinition"
+			get-method="getDefinitionList" set-method="setDefinitionList"
+			collection="arraylist">
+			<bind-xml name="definition" location="definitions">
+				<class name="mat.model.cql.CQLDefinition">
+
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="definitionName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+
+					<field name="definitionLogic" type="java.lang.String">
+						<bind-xml name="logic" node="element" />
+					</field>
+
+					<field name="context" type="java.lang.String">
+						<bind-xml name="context" node="attribute" />
+					</field>
+
+					<field name="supplDataElement" type="java.lang.Boolean">
+						<bind-xml name="supplDataElement" node="attribute" />
+					</field>
+
+					<field name="popDefinition" type="java.lang.Boolean">
+						<bind-xml name="popDefinition" node="attribute" />
+					</field>
+					
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
+
+				</class>
+			</bind-xml>
+		</field>
+
+
+		<field name="cqlFunctions" type="mat.model.cql.CQLFunctions"
+			get-method="getCqlFunctions" set-method="setCqlFunctions"
+			collection="arraylist">
+			<bind-xml name="function" location="functions">
+				<class name="mat.model.cql.CQLFunctions">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="functionName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+					<field name="functionLogic" type="java.lang.String">
+						<bind-xml name="logic" node="element" />
+					</field>
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
+					<field name="context" type="java.lang.String">
+						<bind-xml name="context" node="attribute" />
+					</field>
+					<field name="argument" type="mat.model.cql.CQLFunctionArgument"
+						get-method="getArgumentList" set-method="setArgumentList"
+						collection="arraylist">
+						<bind-xml name="argument" location="arguments">
+							<class name="mat.model.cql.CQLFunctionArgument">
+								<field name="id" type="java.lang.String">
+									<bind-xml name="id" node="attribute" />
+								</field>
+								<field name="argumentName" type="java.lang.String">
+									<bind-xml name="argumentName" node="attribute" />
+								</field>
+								<field name="argumentType" type="java.lang.String">
+									<bind-xml name="type" node="attribute" />
+								</field>
+								<field name="qdmDataType" type="java.lang.String">
+									<bind-xml name="qdmDataType" node="attribute" />
+								</field>
+								<field name="attributeName" type="java.lang.String">
+									<bind-xml name="qdmDataTypeAttribute" node="attribute" />
+								</field>
+								<field name="otherType" type="java.lang.String">
+									<bind-xml name="otherType" node="attribute" />
+								</field>
+							</class>
+						</bind-xml>
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+		<field name="cqlIncludeLibrarys" type="mat.model.cql.CQLIncludeLibrary"
+			get-method="getCqlIncludeLibrarys" set-method="setCqlIncludeLibrarys"
+			collection="arraylist">
+			<bind-xml name="includeLibrary" location="includeLibrarys">
+				<class name="mat.model.cql.CQLIncludeLibrary">
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="aliasName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+
+					<field name="cqlLibraryId" type="java.lang.String">
+						<bind-xml name="cqlLibRefId" node="attribute" />
+					</field>
+
+					<field name="cqlLibraryName" type="java.lang.String">
+						<bind-xml name="cqlLibRefName" node="attribute" />
+					</field>
+
+					<field name="version" type="java.lang.String">
+						<bind-xml name="cqlVersion" node="attribute" />
+					</field>
+					
+					<field name="qdmVersion" type="java.lang.String">
+						<bind-xml name="qdmVersion" node="attribute" />
+					</field>
+					
+					<field name="isComponent" type="java.lang.String">
+						<bind-xml name="isComponent" node="attribute" />
+					</field>
+					
+					<field name="measureId" type="java.lang.String">
+						<bind-xml name="measureId" node="attribute" />
+					</field>			
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+</mapping>

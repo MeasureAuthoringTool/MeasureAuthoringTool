@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.cql.CQLDefinitionsWrapper">
+		<map-to xml="measure" />
+		<field name="cqldefinition" type="mat.model.cql.CQLDefinition"
+			get-method="getCqlDefinitions" set-method="setCqlDefinitions"
+			collection="arraylist">
+			<bind-xml name="cqldefinition" location="supplementalDataElements">
+				<class name="mat.model.cql.CQLDefinition">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="uuid" node="attribute" />
+					</field>
+					<field name="definitionName" type="java.lang.String">
+						<bind-xml name="displayName" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+</mapping>

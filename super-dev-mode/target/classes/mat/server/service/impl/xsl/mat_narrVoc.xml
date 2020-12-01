@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MATNarrVoc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <patternNarr>
+   <!-- age suffix no longer desired --><!--
+      <associatedTemplateId templateId="2.16.840.1.113883.3.560.1.25"/>
+      <titleSuffix> (age)</titleSuffix>
+   -->
+   </patternNarr>
+   <!-- act relationship temporal codes-->
+   <code code="DURING" displayName="during"/>
+   <code code="EBS" displayName="ends before start of"/>
+   <code code="EAE" displayName="ends after end of"/>
+   <code code="EAS" displayName="ends after start of"/>
+   <code code="SDU" displayName="starts during"/>
+   <code code="EDU" displayName="ends during"/>
+   <code code="SAS" displayName="starts after start of"/>
+   <code code="SAE" displayName="starts after end of"/>
+   <code code="SBS" displayName="starts before start of"/>
+   <code code="ECW" displayName="ends concurrent with"/>
+   <code code="SCW" displayName="starts concurrent with"/>
+   <code code="CONCURRENT" displayName="concurrent with"/>
+   <code code="SPRT" displayName="supported by"/>
+   <code code="REFR" displayName="contains"/>
+   <code code="OUTC" displayName="has outcome of"/>
+   <code code="CAUS" displayName="causes"/>
+   <code code="AUTH" displayName="is authorized by"/>
+   <code code="DRIV" displayName="is derived from"/>
+   <code code="GOAL" displayName="has goal of"/>   
+   <!-- act relationship subset  codes-->
+   <code code="MIN" displayName="MINIMUM"/>
+   <code code="MAX" displayName="MAXIMUM"/>
+   <code code="RECENT" displayName="MOST RECENT"/>
+   <code code="FIRST" displayName="FIRST"/>
+   <code code="SECOND" displayName="SECOND"/>
+   <code code="THIRD" displayName="THIRD"/>
+   <code code="FOURTH" displayName="FOURTH"/>
+   <code code="FIFTH" displayName="FIFTH"/>
+   <!-- UCUM -->
+   <code code="mo" displayName="month"/>
+   <code code="a" displayName="year"/>
+   <code code="d" displayName="day"/>
+   <code code="wk" displayName="week"/>
+   <code code="h" displayName="hour"/>
+   <code code="min" displayName="minute"/>
+   <code code="[qtr]" displayName="quarter"/>
+   <code code="s" displayName="second"/>
+</MATNarrVoc>

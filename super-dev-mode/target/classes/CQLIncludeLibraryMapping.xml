@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapping>
+	<class name="mat.model.cql.CQLIncludeLibraryWrapper">
+		<map-to xml="cqlLookUp" />
+		<field name="cqlIncludeLibrary" type="mat.model.cql.CQLIncludeLibrary" 
+		get-method="getCqlIncludeLibrary" set-method="setCqlIncludeLibrary"
+			collection="arraylist">
+			<bind-xml name="includeLibrary" location="includeLibrarys">
+				<class name="mat.model.cql.CQLIncludeLibrary">
+				    
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="aliasName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+
+					<field name="cqlLibraryId" type="java.lang.String">
+						<bind-xml name="cqlLibRefId" node="attribute" />
+					</field>
+					
+					<field name="cqlLibraryName" type="java.lang.String">
+						<bind-xml name="cqlLibRefName" node="attribute" />
+					</field>
+
+					<field name="version" type="java.lang.String">
+						<bind-xml name="cqlVersion" node="attribute" />
+					</field>
+					
+					<field name="qdmVersion" type="java.lang.String">
+						<bind-xml name="qdmVersion" node="attribute" />
+					</field>
+					
+					<field name="isComponent" type="java.lang.String">
+						<bind-xml name="isComponent" node="attribute" />
+					</field>
+					
+					<field name="measureId" type="java.lang.String">
+						<bind-xml name="measureId" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+</mapping>

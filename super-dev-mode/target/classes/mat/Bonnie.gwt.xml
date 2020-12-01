@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='bonnie'>
+    <!-- Inherit the core Web Toolkit stuff. -->
+    <inherits name='com.google.gwt.user.User'/>
+    <!-- Compiling gwt code only for ie7,ie8& firefox 3 & above. -->
+    <set-property name="user.agent" value="ie9,ie10,safari,gecko1_8"/>
+    <!-- Inherit the default GWT style sheet. You can change -->
+    <!-- the theme of your GWT application by uncommenting -->
+    <!-- any one of the following lines. -->
+    <!--  <inherits name='com.google.gwt.user.theme.clean.Clean'/> -->
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+    <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+    <!-- <inherits name="org.gwtbootstrap3.GwtBootstrap3Theme"/> -->
+    <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
+    <public path="resource">
+        <include name="css/*.*"/>
+        <!-- <include name="css/*.js" />
+        <include name="fonts/*.*" />
+        <include name="js/*.*" /> -->
+    </public>
+
+    <stylesheet src="css/mat-bootstrap-3.3.2.min.cache.css"/>
+
+    <!-- Other module inherits -->
+    <inherits name="com.google.gwt.logging.Logging"/>
+    <inherits name="com.google.gwt.xml.XML"/>
+    <inherits name="com.google.gwt.json.JSON"/>
+    <inherits name="org.gwtbootstrap3.extras.toggleswitch.ToggleSwitch"/>
+    <inherits name="org.gwtbootstrap3.extras.summernote.Summernote"/>
+    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT"/>
+    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT"/>
+    <!-- This is the third party jar,added for GWT client side logging. For
+        development, a default of `DEBUG` is recommended <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG"
+        /> -->
+    <!-- In gwt-log-3.0.2 or earlier releases only, use this instead <set-property
+        name="log_RemoteLogger" value="DISABLED" /> <set-property name="log_WindowLogger"
+        value="DISABLED" /> <set-property name="log_DivLogger" value="DISABLED" /> -->
+    <!-- Specify the app entry point class. -->
+    <entry-point class='mat.client.Bonnie'/>
+
+    <!-- Specify the paths for translatable code -->
+    <source path='client'/>
+    <source path='shared'/>
+    <source path='mat.shared.diagramObject'/>
+    <source path='model'/>
+    <source path='dto'/>
+    <source path='vsacmodel'/>
+    <!-- <add-linker name="xsiframe" /> -->
+</module>

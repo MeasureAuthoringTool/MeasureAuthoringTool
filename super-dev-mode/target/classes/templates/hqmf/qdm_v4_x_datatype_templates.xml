@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance">
+    
+    <acts>
+        <act a_id="OBS">observationCriteria</act>
+        <act a_id="SBADM">substanceAdministrationCriteria</act>
+        <act a_id="PROC">procedureCriteria</act>
+        <act a_id="ENC">encounterCriteria</act>
+        <act a_id="ACT">actCriteria</act>
+        <act a_id="SPLY">supplyCriteria</act>
+    </acts>
+    <!-- care goal -->
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">care goal</template>
+    
+    <!-- care experience -->
+    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Patient Satisfaction" addValueTag="true" addCodeTag="true">patient care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true">provider care experience</template>
+    
+    <!-- communication -->
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromPatient-ToProvider" addValueTag="false">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToPatient" addValueTag="false">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToProvider" addValueTag="false">communication: from provider to provider</template>
+
+    <!-- device -->
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Adverse Reaction" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, adverse event</template>
+    <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
+     <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="device-allergy">device, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.13" class="PROC" mood="EVN" status="COMPLETED" code="360030002" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Application of Device" addCodeTag="true" addValueTag="false" includeSubTemplate="device-allergy">device, applied</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Decreased Tolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.15" class="SPLY" mood="RQO" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy" typeOrder="true" includeOtherSubTemplate="order-dateTime">device, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.16" class="SPLY" mood="INT" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, recommended</template>
+    
+    <!-- diagnosis -->
+    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="status-active" addValueTag="true" addCodeTag="true">diagnosis, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true">diagnosis, family history</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="status-inactive">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="status-resolved">diagnosis, resolved</template>
+    
+    <!-- diagnostic study -->
+     <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse reaction" includeSubTemplate="diagnosticStudy-AdverseEvent">diagnostic study, adverse event</template>
+     <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="diagnosticStudy-Intolerance">diagnostic study, intolerance</template>
+    <!-- <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">diagnostic study, order</template> -->
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">diagnostic study, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, recommended</template>    
+    
+    <!-- encounter -->
+    <template oid="2.16.840.1.113883.10.20.28.3.26" class="ENC" mood="EVN" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true" >encounter, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">encounter, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, recommended</template>
+    
+    <!-- functional status -->
+    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" addValueSetInCode = "true" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">functional status, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.30" class="OBS" mood="EVN" status="COMPLETED" addValueSetInCode = "true" addValueTag="false" addCodeTag="true">functional status, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.31" class="OBS" mood="INT" status="ACTIVE" addValueSetInCode = "true" addValueTag="false" addCodeTag="true">functional status, recommended</template>
+    
+        
+    <!-- Individual Characteristic -->
+    <!-- patient characteristic -->
+    <template oid="2.16.840.1.113883.10.20.28.3.53" class="OBS" mood="EVN" status="COMPLETED" valueSetId ="valueSet" addValueTag="false" addCodeTag="true">patient characteristic</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.54" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="21112-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Birth Date" addValueTag="false" addCodeTag="true">patient characteristic birthdate</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.56" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="54133-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Ethnicity" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic ethnicity</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.57" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="419099009" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Dead">patient characteristic expired</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.58" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Payer" addValueTag="true" addCodeTag="true">patient characteristic payer</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Race" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic race</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.55" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="263495000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Gender" addValueTag="true" addCodeTag="true">patient characteristic sex</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.6" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">patient characteristic clinical trial participant</template>
+    
+    <!-- provider characteristic -->
+    <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="provider-char">provider characteristic</template>
+    
+    <!-- intervention -->
+    <template oid="2.16.840.1.113883.10.20.28.3.33" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-adverseEvent">intervention, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.34" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-intolerance">intervention, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">intervention, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" >intervention, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" >intervention, recommended</template>
+    
+    <!-- laboratory test -->
+    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" includeSubTemplate="laboratory-test">laboratory test, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="laboratory-test">laboratory test, intolerance</template>
+    <!-- <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">laboratory test, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" codeDisplayName="LDL-c LOINC Value Set" addValueSetInCode="true" >laboratory test, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set" addValueSetInCode="true">laboratory test, recommended</template>
+     -->
+     <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true"  addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">laboratory test, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true"  addValueSetInCode="true" >laboratory test, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true"  addValueSetInCode="true">laboratory test, recommended</template>
+    
+    <!-- medication -->
+    <template oid="2.16.840.1.113883.10.20.28.3.44" class="SBADM" mood="EVN" status="ACTIVE" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationActive">medication, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.45" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationAdministered">medication, administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.46" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="62014003" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="medicationAdverseEffects">medication, adverse effects</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.47" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="medicationAllergy">medication, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.48" class="SBADM" mood="RQO" status="ACTIVE" code="10183-2" codeSystem="2.16.840.1.113883.6.1" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationDischarge">medication, discharge</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.49" class="SPLY" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationDispensed">medication, dispensed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.50" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="medicationIntolerance">medication, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.51" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationOrder" typeOrder="true" includeOtherSubTemplate="order-dateTime">medication, order</template>
+    
+   <!-- physical exam -->
+    <template oid="2.16.840.1.113883.10.20.28.3.61" class="OBS" mood="RQO" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">physical exam, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.62" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.63" class="OBS" mood="INT" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, recommended</template>
+    
+    <!-- procedure -->
+     <template oid="2.16.840.1.113883.10.20.28.3.64" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.65" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">procedure, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, recommended</template>
+    
+    <!-- risk category -->
+    <template oid="2.16.840.1.113883.10.20.28.3.72" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" addValueSetInCode="true">risk category assessment</template>
+    
+    <!-- substance -->
+    <template oid="2.16.840.1.113883.10.20.28.3.73" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addValueTag="false" addCodeTag="true" includeSubTemplate="substance-participation">substance, administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.46.74" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="282100009" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction to Substance" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.75" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="419199007" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.76" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-order" typeOrder="true" includeOtherSubTemplate="order-dateTime">substance, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-participation">substance, recommended</template>
+    
+    <!-- symptom -->
+    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" includeSubTemplate="status-active">symptom, active</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.80" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, assessed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom"  addValueTag="true" addCodeTag="true" includeSubTemplate="status-inactive">symptom, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" includeSubTemplate="status-resolved">symptom, resolved</template>
+    
+    <!-- transfer -->
+    <template oid="2.16.840.1.113883.10.20.28.3.84" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="transfer">transfer from</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.85" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="transfer">transfer to</template>
+    
+    
+    <!--Family History -->
+	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">family history</template>
+
+	<!-- symptom -->
+	<template oid="2.16.840.1.113883.10.20.28.3.116" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom</template>
+
+	<!-- Immunization -->
+	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization">immunization, administered</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="ACTIVE" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true">immunization, order</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization-allergy">immunization, allergy</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization-intolerance">immunization, intolerance</template>
+    
+    <!-- Diagnosis new Datatype -->
+    
+    <template oid="2.16.840.1.113883.10.20.28.3.110" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addCodeTag="true" addValueTag="true">diagnosis</template>
+    
+    <!-- QDM 5.0 Datatypes -->
+    
+   <!-- Adverse Event DataType --> 
+    <template oid="2.16.840.1.113883.10.20.28.3.120" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" addExtensionInTemplate="true" includeSubTemplate="adverseEvent">adverse event</template>
+    
+    <!-- Allergy/Intolerance -->
+    <template oid="2.16.840.1.113883.10.20.28.3.119" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" valueType="CD" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" addExtensionInTemplate="true" includeSubTemplate="allergy-Intolerance">allergy/intolerance</template>
+    
+    <!--  Non Negative Assessment Datatypes -->
+    <template oid="2.16.840.1.113883.10.20.28.3.118" class="OBS" mood="INT" status="ACTIVE" addValueSetInCode="true" addCodeTag="true" addValueTag="false">assessment, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.117" class="OBS" mood="EVN" status="COMPLETED" addValueSetInCode="true" addCodeTag="true" addValueTag="false">assessment, performed</template>
+    
+    <!--  Negative Assessment Datatypes -->
+    <template oid="2.16.840.1.113883.10.20.28.3.118" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" addValueTag="false">assessment, not recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.117" class="OBS" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" addValueTag="false">assessment, not performed</template>
+    
+    <!-- Negative communication -->
+    <!-- Not Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromPatient-ToProvider" addValueTag="false">communication: from patient to provider, not done</template>
+    <!-- Not Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToPatient" addValueTag="false">communication: from provider to patient, not done</template>
+    <!-- Not Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToProvider" addValueTag="false">communication: from provider to provider, not done</template>
+    
+    <!-- Negative Device -->
+    <template oid="2.16.840.1.113883.10.20.28.3.13" class="PROC" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" code="360030002" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Application of Device" addCodeTag="true" addValueTag="false" includeSubTemplate="device-allergy">device, not applied</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.15" class="SPLY" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy" typeOrder="true" includeOtherSubTemplate="order-dateTime">device, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.16" class="SPLY" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, not recommended</template>
+    
+    
+    <!-- Negative Diagnostic -->
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">diagnostic study, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, not recommended</template>
+    
+    <!-- Negative Encounter -->
+    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">encounter, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, not recommended</template>
+    
+    <!-- Negative Immunization -->
+    <template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization">immunization, not administered</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true">immunization, not ordered</template>
+	
+	<!-- Negative Intervention-->
+    <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">intervention, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" >intervention, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" >intervention, not recommended</template>
+   
+    <!-- Negative Laboratory Test-->
+    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true"  addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">laboratory test, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true"  addValueSetInCode="true" >laboratory test, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true"  addValueSetInCode="true">laboratory test, not recommended</template>
+    
+    <!-- Negative Medication -->
+    <template oid="2.16.840.1.113883.10.20.28.3.45" class="SBADM" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" code="416118004" codeSystem="2.16.840.1.113883.6.96" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationAdministered">medication, not administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.48" class="SBADM" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" code="10183-2" codeSystem="2.16.840.1.113883.6.1" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationDischarge">medication, not discharged</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.49" class="SPLY" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationDispensed">medication, not dispensed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.51" class="SBADM" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationOrder" typeOrder="true" includeOtherSubTemplate="order-dateTime">medication, not ordered</template>
+    
+    <!-- Negative Physical Exam -->
+    <template oid="2.16.840.1.113883.10.20.28.3.61" class="OBS" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">physical exam, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.62" class="OBS" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.63" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, not recommended</template>
+    
+    <!-- Negative Procedure -->
+    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">procedure, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, not recommended</template>
+    
+    <!-- Negative Substance -->
+    <template oid="2.16.840.1.113883.10.20.28.3.73" class="SBADM" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addValueTag="false" addCodeTag="true" includeSubTemplate="substance-participation">substance, not administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-order" typeOrder="true" includeOtherSubTemplate="order-dateTime">substance, not ordered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-participation">substance, not recommended</template>
+    
+    
+    
+    
+    <!-- attributes: -->
+    
+    <!--new attributes not in qdm hqmf ig-->
+<!--    <template oid="" class="" mood="" type="">active datetime</template>
+    <template oid="" class="" mood="" type="">time</template>
+    <template oid="" class="" mood="" type="">signed datetime</template>
+    <template oid="" class="" mood="" type="">anatomical approach site</template>
+    <template oid="" class="" mood="" type="">anatomical location site</template>
+    <template oid="" class="" mood="" type="" inv="true">cause</template>
+    <template oid="" class="" mood="" type="">target outcome</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" type="CAUS" inv="true">cause</template>-->
+    
+    <!-- data flow attributes -->
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" code="395676008" codeSystem="2.16.840.1.113883.6.96" valueType="CD">health record field</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" code="419358007" codeSystem="2.16.840.1.113883.6.96" valueType="CD">recorder</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" code="260753009" codeSystem="2.16.840.1.113883.6.96" valueType="CD">source</AttrTemplate>
+    
+    <!-- status -->
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" >status active</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" >status inactive</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" >status resolved</AttrTemplate>
+    
+    <!-- facility -->
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location">facility location</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location arrival datetime</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location departure datetime</AttrTemplate>
+    
+    <!-- misc -->
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency" addExtensionInTemplate="true">frequency</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="34896006" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="incision" includeSubTemplate="incision-dateTime">incision datetime</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="PAT" codeSystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="103323008" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Provider Preference">provider preference</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.107" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="306751006" codeSystem="2.16.840.1.113883.6.96" target="value" insertAfterNode="statusCode" isRadiation="true">radiation duration</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.106" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="228815006" codeSystem="2.16.840.1.113883.6.96" target="value" isRadiation="true">radiation dosage</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true" code="263851003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Reaction" valueType="CD">reaction</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">reason</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</AttrTemplate>
+    <AttrTemplate class="OBS" mood="EVN" type="REFR" valueType="CD" code="REL" codeSystem="2.16.840.1.113883.5.107">related to</AttrTemplate>
+    <AttrTemplate class="OBS" mood="GOL" type="GOAL" valueType="CD" code="385676005" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Outcome of Action" isTargetOutcome = "true">target outcome</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Result" valueType="CD" addExtensionInTemplate="true">result</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="SEV" valueType="CD" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 ActCode" displayNameValue="Severity Observation">severity</AttrTemplate>
+    <AttrTemplate target="targetSiteCode" childTarget="item" insertBeforeNode="outboundRelationship">anatomical location site-value set</AttrTemplate>
+    <AttrTemplate target="targetSiteCode" flavorId="ANY.NONNULL" insertBeforeNode="outboundRelationship">anatomical location site-check if present</AttrTemplate>
+    <AttrTemplate target="priorityCode" childTarget="item" insertBeforeNode="value">ordinality-value set</AttrTemplate>
+    <AttrTemplate target="priorityCode" flavorId="ANY.NONNULL" insertBeforeNode="value">ordinality-check if present</AttrTemplate>
+    <AttrTemplate target="routeCode" addValueSet="true" insertBeforeNode="participation">route-value set</AttrTemplate>
+    <AttrTemplate target="routeCode" flavorId="ANY.NONNULL" insertBeforeNode="participation">route-check if present</AttrTemplate>
+    <AttrTemplate target="methodCode" childTarget="item"  insertAfterNode="statusCode">method-value set</AttrTemplate>
+    <AttrTemplate target="methodCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">method-check if present</AttrTemplate>
+    <AttrTemplate target="approachSiteCode" childTarget="item" insertAfterNode="statusCode">anatomical approach site-value set</AttrTemplate>
+    <AttrTemplate target="approachSiteCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">anatomical approach site-check if present</AttrTemplate>
+    <AttrTemplate target="doseQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">dose</AttrTemplate>
+    <AttrTemplate target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">length of stay</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.105" class="OBS" mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</AttrTemplate>
+    <AttrTemplate includeSubTemplate="relationShip">relationship</AttrTemplate>
+    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.101" type="SUBJ" class="OBS" mood="EVN" code="445518008" codeSystem="2.16.840.1.113883.6.96">onset age</AttrTemplate>
+    <AttrTemplate includeSubTemplate="reference-Low-Range" addTagInValueSet="low">reference range low</AttrTemplate>
+	<AttrTemplate includeSubTemplate="reference-High-Range" addTagInValueSet="high">reference range high</AttrTemplate>
+	<AttrTemplate class="ACT" mood="EVN" type="REFR" code="52534-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Principal Diagnosis" includeSubTemplate="diagnosis-template">principal diagnosis</AttrTemplate>
+	<AttrTemplate class="ACT" mood="EVN" type="REFR" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-template">diagnosis</AttrTemplate>
+ 
+    <subtemplates>
+    <diagnosis-template changeAttribute="id,value">
+        <outboundRelationship typeCode="SUBJ">
+             <observationCriteria classCode="OBS" moodCode="EVN">
+                 <templateId>
+                     <item root="2.16.840.1.113883.10.20.28.3.110"/>
+                 </templateId>
+                 <id root="{Attribute Root UUID}" extension="{Attribute Extension UUID}"/>
+                 <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                     <displayName value="Diagnosis"/>
+                 </code>
+                 <title value="Diagnosis"/>
+                 <statusCode code="COMPLETED"/>
+                 <value/>
+             </observationCriteria>
+       </outboundRelationship>
+    </diagnosis-template>
+	<communication-FromPatient-ToProvider>
+		<participation typeCode="AUT">
+			<role classCode="PAT"></role>
+		</participation>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication-FromPatient-ToProvider>
+
+	<communication-FromProvider-ToPatient>
+		<participation typeCode="IRCP">
+			<role classCode="PAT" />
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication-FromProvider-ToPatient>
+
+	<communication-FromProvider-ToProvider>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication-FromProvider-ToProvider>
+
+	<status-active changeAttribute="id,item">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.95" extension="2014-11-24"/>
+				</templateId>
+				<id root="$UUID" extension="statusactive" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Active" />
+				<value xsi:type="CD" code="55561003" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Active" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</status-active>
+
+	<status-inactive changeAttribute="id,item">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.96" extension="2014-11-24"/>
+				</templateId>
+				<id root="$UUID" extension="statusinactive" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Inactive" />
+				<value xsi:type="CD" code="73425007" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Inactive" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</status-inactive>
+
+	<status-resolved changeAttribute="id,item">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.97" extension="2014-11-24"/>
+				</templateId>
+				<id root="$UUID" extension="statusresolved" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Resolved" />
+				<value xsi:type="CD" code="413322009" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Resolved" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</status-resolved>
+
+	<transfer changeAttribute="code">
+		<participation typeCode="ORG">
+			<role classCode="LOCE">
+				<code xsi:type="CD" valueSet="$valueset"  />
+			</role>
+		</participation>
+	</transfer>
+	
+	<intervention-adverseEvent changeAttribute="code,displayName">
+	    <outboundRelationship typeCode="CAUS" inversionInd="true">
+			<procedureCriteria classCode="PROC" moodCode="EVN">
+				<code valueSet="$QDMElementValueSetOID" >
+				    <displayName value="$displaynamevalue"/>
+				</code>
+			</procedureCriteria>
+		</outboundRelationship>
+	</intervention-adverseEvent>
+	
+	<intervention-intolerance changeAttribute="code,displayName,id,item">
+		<outboundRelationship typeCode="CAUS" inversionInd="true">
+			<actCriteria classCode="ACT" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
+				</templateId>
+				<id root="$UUID" extension="$extensionUUID"/>
+				<code valueSet="{$QDMElementValueSetOID}" >
+				    <displayName value="$displaynamevalue"/>
+				</code>
+				<title value="Intervention, Performed"/>
+				<statusCode code="completed"/>
+			</actCriteria>
+		</outboundRelationship>
+    </intervention-intolerance>
+    
+	<medicationActive changeAttribute="code,displayName">
+		<participation typeCode="CSM">
+			<role classCode="MANU">
+				<playingMaterial classCode="MMAT" determinerCode="KIND">
+					<code valueSet="$valueSet" >
+					    <displayName value="$displaynamevalue"/>
+					</code>				    
+				</playingMaterial>
+			</role>
+		</participation>
+	</medicationActive>
+    
+	<medicationAdministered changeAttribute="code,displayName">
+		<participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$valueset" >
+		    <displayName value="$displaynamevalue"/>
+		</code>    	
+		</playingManufacturedMaterial>
+		</role>
+		</participation>
+	</medicationAdministered>
+	
+	<medicationAdverseEffects changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingEntity classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$QDMElementValueSetOID" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
+		</playingEntity>
+		</role>
+	</participation>
+	</medicationAdverseEffects>
+	
+	<medicationAllergy changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingEntity classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$valueSet" >
+		    <displayName value="$displaynamevalue"/>
+		</code>    
+		</playingEntity>
+		</role>
+		</participation>
+	</medicationAllergy>
+	
+	<medicationDischarge changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$valueSet" >
+		    <displayName value="$displaynamevalue"/>
+		</code>    
+		</playingManufacturedMaterial>
+		</role>
+		</participation>
+	</medicationDischarge>
+	
+	<medicationDispensed changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingMaterial classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$QDMElementValueSetOID" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
+		</playingMaterial>
+		</role>
+		</participation>
+	</medicationDispensed>
+	
+	<medicationIntolerance changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingMaterial classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$valueSet" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
+		</playingMaterial>
+		</role>
+		</participation>
+	</medicationIntolerance>
+	
+	<medicationOrder changeAttribute="code,displayName">
+	    <participation typeCode="CSM">
+		<role classCode="MANU">
+		<playingMaterial classCode="MMAT" determinerCode="KIND">
+		<code valueSet="$valueSet" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
+		</playingMaterial>
+		</role>
+		</participation>
+	</medicationOrder>
+	
+	<laboratory-test changeAttribute = "id,code,displayName,item">
+	<outboundRelationship typeCode="CAUS"
+		inversionInd="true">
+		<observationCriteria classCode="OBS" moodCode="EVN">
+			<templateId>
+				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
+			</templateId>
+			<id root="$UUID" extension="$extensionUUID"/>
+			<code valueSet="$QDMElementValueSetOID" >
+			    <displayName value="$displaynamevalue"/>
+			</code>
+			<title value="Laboratory Test, Performed" />
+			<statusCode code="completed" />
+		</observationCriteria>
+	</outboundRelationship>
+ </laboratory-test>
+
+ <substance-participation changeAttribute="code,displayName">
+ <participation typeCode="CSM">
+    <role classCode="ADMM">
+        <playingMaterial classCode="MAT" determinerCode="KIND">
+        <code valueSet="$QDMElementValueSetOID" >
+            <displayName value="$displaynamevalue"/>
+        </code>    
+    </playingMaterial>
+    </role>
+</participation>
+ </substance-participation>
+ <substance-order changeAttribute="code,displayName">
+ <participation typeCode="CSM">
+    <role classCode="ADMM">
+        <playingMaterial classCode="MAT" determinerCode="KIND">
+        <code valueSet="$QDMElementValueSetOID" >
+            <displayName value="$valueSetName"/>
+        </code>
+    </playingMaterial>
+    </role>
+</participation>
+ </substance-order>
+ <provider-char changeAttribute="code,displayName">
+ <participation>
+    <role classCode="ASSIGNED">
+        <playingDevice classCode="DEV" determinerCode="KIND">
+        <code valueSet="$QDMElementValueSetOID" >
+            <displayName value="$valueSetName"/>
+        </code>
+    </playingDevice>
+    </role>
+</participation>
+ </provider-char>
+
+ <facility-location changeAttribute="id,code">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+     <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92"/>
+        </templateId>
+        <id>
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+        <code/>
+    </role>
+</participation>
+ </facility-location>
+
+ <facility-location-old changeAttribute="id,code">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+        <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
+        </templateId>
+        <id>
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+        <code/>
+    </role>
+</participation>
+ </facility-location-old>
+ 
+ <facility-location-ArrDeparture changeAttribute="id">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+        <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92"/>
+        </templateId>
+        <id >
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+    </role>
+</participation>
+ </facility-location-ArrDeparture>
+ 
+ <facility-location-ArrDeparture-old changeAttribute="id">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+        <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
+        </templateId>
+        <id >
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+    </role>
+</participation>
+ </facility-location-ArrDeparture-old>
+
+ <procedure changeAttribute="id,code,displayName,title,item">
+ <outboundRelationship  typeCode="CAUS"
+	inversionInd="true">
+	<procedureCriteria classCode="PROC" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code valueSet="$QDMElementValueSetOID" >
+			<displayName value="$valueSetName" />
+		</code>
+		<title value="$valuseSetDatatype" />
+		<statusCode code="completed" />
+	</procedureCriteria>
+</outboundRelationship>
+ </procedure>
+ 
+<device-adverseEvent changeAttribute="code">
+<participation typeCode="PRD">
+	<role classCode="MANU">
+		<playingDevice classCode="DEV" determinerCode="KIND">
+			<code valueSet="$QDMElementValueSetOID"  />
+		</playingDevice>
+	</role>
+</participation>	
+</device-adverseEvent>
+ 
+<device-allergy changeAttribute="code">
+<participation typeCode="DEV">
+	<role classCode="MANU">
+		<playingDevice classCode="DEV" determinerCode="KIND">
+			<code valueSet="$QDMElementValueSetOID"  />
+		</playingDevice>
+	</role>
+</participation>	
+</device-allergy>
+
+<incision-dateTime changeAttribute="id">
+<outboundRelationship typeCode="REFR">
+   <procedureCriteria classCode="PROC" moodCode="EVN">
+      <templateId>
+         <item root="2.16.840.1.113883.10.20.28.3.89" extension="2014-11-24" />
+      </templateId>
+	  <id root="$UUID" extension="$extensionUUID" />
+	  <code code="34896006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+	     <displayName value="incision" />
+	  </code>
+      <statusCode code="completed" />
+   </procedureCriteria>
+</outboundRelationship>
+</incision-dateTime>
+
+<order-dateTime changeAttribute="id">
+<participation typeCode="AUT">          
+    <role classCode="ROL">
+       <id>
+          <item root="$UUID" extension="$extensionUUID"/>
+       </id>
+    </role>                            
+</participation>
+</order-dateTime>
+
+<diagnosticStudy-AdverseEvent changeAttribute="id,code,item">
+<outboundRelationship typeCode="CAUS">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code valueSet="$QDMElementValueSetOID" />
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</diagnosticStudy-AdverseEvent >
+
+<diagnosticStudy-Intolerance  changeAttribute="id,code,item"> 
+<outboundRelationship typeCode="CAUS" inversionInd="true">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24" />
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code valueSet="$QDMElementValueSetOID"  />
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</diagnosticStudy-Intolerance>
+
+<radiation-duration changeAttribute="id">
+<outboundRelationship typeCode="REFR">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.107" extension="2014-11-24" />
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code code="306751006" codeSystem="2.16.840.1.113883.6.96" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</radiation-duration>
+
+<radiation-dosage changeAttribute="id">
+<outboundRelationship typeCode="REFR">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.106" extension="2014-11-24" />
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code code="228815006" codeSystem="2.16.840.1.113883.6.96" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</radiation-dosage>
+
+<relationShip changeAttribute="item,code">
+        <participation typeCode="SBJ">
+            <role classCode="PRS">
+                <id>
+                    <item root="{Random UUID}" extension="{Random Extension}" />
+                </id>
+                <code/>
+            </role>
+        </participation>
+    </relationShip>
+    
+    <reference-Low-Range changeAttribute="id,value">
+        <outboundRelationship typeCode="REFV">
+            <observationCriteria classCode="OBS" moodCode="EVN">
+                <id root="{Attribute UUID}" extension="{Attribute UUID}" />
+                <code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
+                    codeSystemName="LOINC">
+                    <displayName value="Reference lab test reference range" />
+                </code>
+                <title value="Reference Range" />
+                <value xsi:type="IVL_PQ"/>
+            </observationCriteria>
+        </outboundRelationship>
+    </reference-Low-Range>
+    
+    <reference-High-Range changeAttribute="id,value">
+        <outboundRelationship typeCode="REFV">
+            <observationCriteria classCode="OBS" moodCode="EVN">
+                <id root="{Attribute UUID}" extension="{Attribute UUID}" />
+                <code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
+                    codeSystemName="LOINC">
+                    <displayName value="Reference lab test reference range" />
+                </code>
+                <title value="Reference Range" />
+                <value xsi:type="IVL_PQ"/>
+            </observationCriteria>
+        </outboundRelationship>
+    </reference-High-Range>
+    
+    <immunization changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingManufacturedMaterial>
+            </role>
+        </participation>
+    </immunization>
+    
+    
+    <immunization-allergy changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingEntity classCode="MMAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingEntity>
+            </role>
+        </participation>
+    </immunization-allergy>
+    
+    <immunization-intolerance changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingMaterial classCode="MMAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingMaterial>
+            </role>
+        </participation>
+    </immunization-intolerance>
+    
+   <adverseEvent changeAttribute="code,displayName">
+	<participation typeCode="CSM">
+		<role classCode="MANU">
+			<playingEntity classCode="MMAT" determinerCode="KIND">
+				<code valueSet="$QDMElementValueSetOID">
+					<displayName value="$valuesetName" />
+				</code>
+			</playingEntity>
+		</role>
+	</participation>
+ </adverseEvent>
+ 
+   <allergy-Intolerance changeAttribute="code,displayName">
+	<participation typeCode="CSM">
+		<role classCode="MANU">
+			<playingEntity classCode="MMAT" determinerCode="KIND">
+				<code valueSet="$QDMElementValueSetOID">
+					<displayName value="$valuesetName" />
+				</code>
+			</playingEntity>
+		</role>
+	</participation>
+ </allergy-Intolerance>
+
+
+    </subtemplates>
+     <attributeMappings>
+        <!-- static attribute mappings -->
+        <attributeMapping qdmAttribute="active datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="admission datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="anatomical approach site" dotNotation="approachSiteCode"/>
+        <attributeMapping qdmAttribute="anatomical location site" dotNotation="targetSiteCode"/>
+        <attributeMapping qdmAttribute="cause" dotNotation="causeOf.observation.value"/>
+        <attributeMapping qdmAttribute="cumulative medication duration" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="date" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="discharge datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="discharge status" dotNotation="dischargeDispositionCode"/>
+        <attributeMapping qdmAttribute="dose" dotNotation="doseQuantity"/>
+        <attributeMapping qdmAttribute="facility location" dotNotation="location.serviceProvider.code"/>
+        <attributeMapping qdmAttribute="facility location arrival datetime" dotNotation="location.serviceProvider.effectiveTime.low"/>
+        <attributeMapping qdmAttribute="facility location departure datetime" dotNotation="location.serviceProvider.effectiveTime.high"/>
+        <attributeMapping qdmAttribute="frequency" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="incision datetime" dotNotation="reference.procedure.effectiveTime.low"/>
+        <attributeMapping qdmAttribute="laterality" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="length of stay" dotNotation="lengthOfStayQuantity"/>
+        <attributeMapping qdmAttribute="method" dotNotation="methodCode"/>
+        <attributeMapping qdmAttribute="ordinality" dotNotation="priorityCode"/>
+        <attributeMapping qdmAttribute="patient preference" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="provider preference" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="reaction" dotNotation="manifestation.observation.value"/>
+        <attributeMapping qdmAttribute="reason" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="refills" dotNotation="repeatNumber"/>
+        <attributeMapping qdmAttribute="related to" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="removal datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="route" dotNotation="routeCode"/>
+        <attributeMapping qdmAttribute="severity" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="signed datetime" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="status" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="target outcome" dotNotation="goal.observation.value"/>
+        <attributeMapping qdmAttribute="time" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="radiation dosage" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="radiation duration" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="relationship" dotNotation="subject.personalRelationshipWith.code"/>
+        <attributeMapping qdmAttribute="onset age" dotNotation="subject.observation.value"/>
+        <attributeMapping qdmAttribute="onset datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="recorded datetime" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="abatement datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="reference range low" dotNotation="referenceRange.observation.value.low"/>
+        <attributeMapping qdmAttribute="reference range high" dotNotation="referenceRange.observation.value.high"/>
+        <attributeMapping qdmAttribute="diagnosis" dotNotation="reference.act.subject.observation.value"/>
+        <attributeMapping qdmAttribute="principal diagnosis" dotNotation="reference.act.subject.observation.value"/>
+
+        <!-- datatype dependent .notation mappings-->
+        <attributeMapping qdmAttribute="start datetime" datatypes="care goal" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient care experience" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="provider care experience" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="communication: from patient to provider" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="communication: from provider to patient" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="communication: from provider to provider" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, applied" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnosis, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnosis, family history" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnosis, inactive" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnosis, resolved" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnostic study, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnostic study, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnostic study, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnostic study, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="encounter, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="encounter, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="encounter, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="functional status, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="functional status, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic birthdate" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic ethnicity" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic expired" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic payer" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic race" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic sex" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="patient characteristic clinical trial participant" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="provider characteristic" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="intervention, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="intervention, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="intervention, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="intervention, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="laboratory test, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="laboratory test, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="laboratory test, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="laboratory test, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, administered" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, adverse effects" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, discharge" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, dispensed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="physical exam, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="physical exam, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="procedure, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="procedure, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="procedure, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="procedure, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="risk category assessment" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="substance, administered" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="substance, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="substance, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="substance, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="symptom, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="symptom, assessed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="symptom, inactive" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="symptom, resolved" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="transfer from" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="transfer to" dotNotation="effectiveTime.low"/>
+        
+        <attributeMapping qdmAttribute="start datetime" datatypes="device, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="diagnostic study, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="encounter, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="functional status, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="intervention, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="laboratory test, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="medication, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="physical exam, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="procedure, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="start datetime" datatypes="substance, order" dotNotation="author.time.low"/>
+       
+       
+        <attributeMapping qdmAttribute="stop datetime" datatypes="care goal" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient care experience" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="provider care experience" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="communication: from patient to provider" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="communication: from provider to patient" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="communication: from provider to provider" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, applied" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnosis, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnosis, family history" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnosis, inactive" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnosis, resolved" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="encounter, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="encounter, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="encounter, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="functional status, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="functional status, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic birthdate" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic ethnicity" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic expired" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic payer" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic race" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic sex" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="patient characteristic clinical trial participant" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="provider characteristic" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="intervention, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="intervention, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="intervention, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="intervention, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="laboratory test, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="laboratory test, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="laboratory test, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="laboratory test, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, administered" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, adverse effects" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, discharge" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, dispensed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="physical exam, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="physical exam, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="procedure, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="procedure, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="procedure, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="procedure, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="risk category assessment" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="substance, administered" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="substance, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="substance, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="substance, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="symptom, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="symptom, assessed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="symptom, inactive" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="symptom, resolved" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="transfer from" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="transfer to" dotNotation="effectiveTime.high"/>
+        
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="encounter, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="functional status, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="intervention, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="laboratory test, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="medication, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="physical exam, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="procedure, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="substance, order" dotNotation="author.time.high"/>
+        
+    
+        <attributeMapping qdmAttribute="result" datatypes="care goal" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient care experience" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="provider care experience" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="communication: from patient to provider" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="communication: from provider to patient" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="communication: from provider to provider" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, applied" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnosis, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnosis, family history" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnosis, inactive" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnosis, resolved" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnostic study, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnostic study, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnostic study, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnostic study, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="encounter, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="encounter, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="encounter, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="functional status, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="functional status, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic birthdate" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic ethnicity" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic expired" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic payer" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic race" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic sex" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="patient characteristic clinical trial participant" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="provider characteristic" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="intervention, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="intervention, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="intervention, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="result" datatypes="intervention, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="laboratory test, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="laboratory test, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="laboratory test, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="laboratory test, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, administered" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, adverse effects" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, discharge" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, dispensed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="physical exam, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="result" datatypes="physical exam, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="procedure, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="procedure, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="procedure, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="result" datatypes="procedure, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="risk category assessment" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="substance, administered" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="substance, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="substance, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="substance, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="symptom, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="symptom, assessed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="symptom, inactive" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="symptom, resolved" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="transfer from" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="transfer to" dotNotation="value"/>
+        
+        <attributeMapping qdmAttribute="result" datatypes="device, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="diagnostic study, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="encounter, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="functional status, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="intervention, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="laboratory test, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="medication, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="physical exam, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="procedure, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="substance, order" dotNotation="value"/>
+    </attributeMappings>
+    
+    <!-- TODO: Provide Aggregate codes - in base standard -->
+    <aggregates>
+        <aggregate simpleXMLCode="MAX" HQMFCode="MAX"/>
+        <aggregate simpleXMLCode="MIN" HQMFCode="MIN"/>
+        <aggregate simpleXMLCode="AVG" HQMFCode="AVERAGE"/>
+        <aggregate simpleXMLCode="SUM" HQMFCode="SUM"/>
+        <aggregate simpleXMLCode="COUNT" HQMFCode="COUNT"/>
+        <aggregate simpleXMLCode="MEDIAN" HQMFCode="MEDIAN"/>
+    </aggregates>
+</templates>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modedetails>
+ <mode modeName="Comparison">
+  <details detail="=" />
+  <details detail="&lt;" />
+  <details detail="&lt;=" />
+  <details detail="&gt;" />
+  <details detail="&gt;=" />
+  <details detail="!=" />
+  <details detail="~" />
+  <details detail="!~" />
+ </mode>
+ <mode modeName="Computative">
+  <details detail="+" />
+  <details detail="-" />
+  <details detail="div" />
+  <details detail="mod" />
+  <details detail="^" />
+  <details detail="*" />
+  <details detail="/" />
+ </mode>
+ <mode modeName="Nullable">
+  <details detail="is null" />
+  <details detail="is not null" />
+ </mode>
+ <mode modeName="Value Sets"></mode>
+ <mode modeName="Codes"></mode>
+</modedetails>

@@ -138,6 +138,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
         }
     }
 
+    public void allowAllMeasureModelTypes() {
+        fhirModel.setEnabled(true);
+        qdmModel.setEnabled(true);
+        fhirModel.setValue(true);
+    }
+
     @Override
     public HasValue<String> getMeasureVersion() {
         return null;

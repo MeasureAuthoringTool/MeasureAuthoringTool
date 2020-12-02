@@ -17,6 +17,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLLinterConfig;
+import mat.server.service.cql.MatXmlResponse;
 import mat.server.service.cql.ValidationRequest;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -140,6 +141,8 @@ public interface CQLService {
     String getCqlString(CQLModel cqlModel);
 
     String getDefaultCodeSystems();
+
+    SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, MatXmlResponse matResponse);
 
     SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql);
 

@@ -304,10 +304,11 @@ public class CQLIncludeLibraryView {
 
 		searchLibraryVP.add(new SpacerWidget());
 
+		SpacerWidget sw = new SpacerWidget();
 		sWidget.getSearchBox().setWidth("590px");
-		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), searchLibraryVP));
+		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), sw));
 		searchLibraryVP.add(sWidget.getSearchWidget());
-		searchLibraryVP.add(new SpacerWidget());
+		searchLibraryVP.add(sw);
 
 		searchWidgetFocusPanel.add(searchLibraryVP);
 

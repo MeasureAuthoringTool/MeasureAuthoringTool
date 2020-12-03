@@ -71,11 +71,19 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	private void buildStewardListComponent(VerticalPanel moreMeasureDetailsVP) {
 		stewardTableLabel = new FormLabel();
-		stewardTableLabel.setText("Measure Steward List");
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			stewardTableLabel.setText("Measure Steward List (*)");
+			stewardTableLabel.setTitle("Measure Steward List Required");
+			stewardListBox.setTitle("Measure Steward List Required");
+		} else {
+			stewardTableLabel.setText("Measure Steward List");
+			stewardTableLabel.setTitle("Measure Steward List");
+			stewardListBox.setTitle("Measure Steward List");
+		}
 		stewardTableLabel.setId("stewardTableLabel");
 		stewardTableLabel.setFor("stewardListBox");
 		stewardListBox.setId("stewardListBox");
-		stewardListBox.setTitle("Measure Steward List");
+
 		if (MatContext.get().isCurrentModelTypeFhir()) {
 			stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox));
 		}
@@ -103,7 +111,14 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	private void buildAuthorTableComponent(VerticalPanel moreMeasureDetailsVP) {
 		final FormLabel authorTableLabel = new FormLabel();
-		authorTableLabel.setText("Measure Developer List");
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			authorTableLabel.setText("Measure Developer List (*)");
+			authorTableLabel.setTitle("Measure Developer List Required.");
+		} else {
+			authorTableLabel.setText("Measure Developer List");
+			authorTableLabel.setTitle("Measure Developer List");
+		}
+
 		moreMeasureDetailsVP.add(authorTableLabel);
 		moreMeasureDetailsVP.add(authorSPanel);
 		mainPanel.add(moreMeasureDetailsVP);

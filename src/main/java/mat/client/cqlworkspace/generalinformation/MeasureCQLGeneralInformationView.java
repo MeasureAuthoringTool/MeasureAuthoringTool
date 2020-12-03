@@ -65,8 +65,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
 
         FormLabel libraryNameLabel = new FormLabel();
-        libraryNameLabel.setText("CQL Library Name");
-        libraryNameLabel.setTitle("CQL Library Name");
+        libraryNameLabel.setText("CQL Library Name (*)");
+        libraryNameLabel.setTitle("CQL Library Name Required");
         libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         libraryNameLabel.setWidth(PIXEL_150);
         libraryNameLabel.setId("libraryNameLabel_Label");
@@ -175,8 +175,10 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         commentsLabel.setId("commentsLabel");
         commentsLabel.setFor("commentsContent");
         commentsLabel.setText("Comments");
+        commentsLabel.setTitle("Comments");
         comments.getElement().setAttribute("maxlength", COMMENTS_MAX_LENGTH);
         comments.getElement().setAttribute("id", "commentsContent");
+        comments.setTitle("Comments");
         comments.setHeight("220px");
         comments.setWidth("250px");
         commentsGroup.add(commentsLabel);

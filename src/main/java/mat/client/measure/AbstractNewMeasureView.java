@@ -243,7 +243,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildMeasureNameLabel() {
         FormLabel measureNameLabel = new FormLabel();
         measureNameLabel.setText("Measure Name (*)");
-        measureNameLabel.setTitle("Measure Name");
+        measureNameLabel.setTitle("Measure Name Required");
         measureNameLabel.setFor("MeasureNameTextArea");
         measureNameLabel.setId("MeasureNameTextArea_Id");
         return measureNameLabel;
@@ -257,7 +257,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildModelTypeLabel() {
         FormLabel modelLabel = new FormLabel();
         modelLabel.setText("Model (*)");
-        modelLabel.setTitle("Model");
+        modelLabel.setTitle("Model Required");
         modelLabel.setFor("measureModel");
         modelLabel.setId("measureModel_Id");
         return modelLabel;
@@ -318,7 +318,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildCQLLibraryNameLabel() {
         FormLabel cqlLibraryNameLabel = new FormLabel();
         cqlLibraryNameLabel.setText("CQL Library Name (*)");
-        cqlLibraryNameLabel.setTitle("CQL Library Name");
+        cqlLibraryNameLabel.setTitle("CQL Library Name Required");
         cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
         cqlLibraryNameLabel.setId("CqlLibraryNameTextArea_Id");
         return cqlLibraryNameLabel;
@@ -365,7 +365,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildScoringLabel() {
         FormLabel scoringLabel = new FormLabel();
         scoringLabel.setText("Measure Scoring (*)");
-        scoringLabel.setTitle("Measure Scoring");
+        scoringLabel.setTitle("Measure Scoring Required");
         scoringLabel.setFor("MeasureScoringListBox");
         scoringLabel.setId("MeasureScoringListBox");
         return scoringLabel;
@@ -391,7 +391,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildPatientBasedLabel() {
         FormLabel patientBasedLabel = new FormLabel();
         patientBasedLabel.setText("Patient-based Measure (*)");
-        patientBasedLabel.setTitle("Patient-based Measure");
+        patientBasedLabel.setTitle("Patient-based Measure Required");
         patientBasedLabel.setFor("PatientBasedMeasureListBox");
         patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
         return patientBasedLabel;

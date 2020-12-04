@@ -101,7 +101,6 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(new SpacerWidget());
 		searchWidgetBootStrap.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(searchWidgetBootStrap.getSearchBox(),vp));
 
-		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
 

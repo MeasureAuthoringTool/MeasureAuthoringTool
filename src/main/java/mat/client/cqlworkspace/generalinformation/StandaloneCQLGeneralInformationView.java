@@ -193,8 +193,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
 
         FormLabel libraryNameLabel = new FormLabel();
-        libraryNameLabel.setText("CQL Library Name");
-        libraryNameLabel.setTitle("CQL Library Name");
+        libraryNameLabel.setText("CQL Library Name (*)");
+        libraryNameLabel.setTitle("CQL Library Name Required");
         libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         libraryNameLabel.setWidth(PIXEL_150);
         libraryNameLabel.setId("libraryNameLabel_Label");
@@ -267,7 +267,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         modelVersionGroup.add(modelVersionTextBox);
 
         FormLabel descriptionLabel = new FormLabel();
-        descriptionLabel.setText("CQL Library Description");
+        descriptionLabel.setText("CQL Library Description (*)");
+        descriptionLabel.setTitle("CQL Library Description Required");
         descriptionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         descriptionLabel.getElement().setId("descriptionLabel");
         descriptionLabel.setWidth("250px");
@@ -285,6 +286,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         commentsLabel.setId("commentsLabel");
         commentsLabel.setFor("commentsContent");
         commentsLabel.setText("Comments");
+        commentsLabel.setTitle("Comments");
         comments.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;");
         comments.getElement().setAttribute("maxlength", COMMENTS_MAX_LENGTH);
         comments.getElement().setAttribute("id", "commentsContent");
@@ -294,12 +296,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         commentsGroup.add(comments);
 
         FormLabel stewardLabel = new FormLabel();
-        stewardLabel.setText("Publisher");
+        stewardLabel.setText("Publisher (*)");
+        stewardLabel.setTitle("Publisher Required");
         stewardLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         stewardLabel.setWidth("250px");
         stewardLabel.setId("publisherLabel");
         stewardLabel.getElement().setAttribute("for", "publisherListBoxMVP");
-        stewardListBox.setTitle("Measure Publisher List");
+        stewardListBox.setTitle("Measure Publisher List Required");
         stewardListBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
         stewardListBox.getElement().setId("publisherListBoxMVP");
         stewardListBox.setEnabled(true);

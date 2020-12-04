@@ -1,30 +1,17 @@
 package mat.client.cql;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import mat.client.CqlLibraryPresenter;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.AbstractNewMeasureView;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.*;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.springframework.ui.Model;
+import org.gwtbootstrap3.client.ui.*;
 
 import java.util.logging.Logger;
 
@@ -61,9 +48,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         mainDetailViewVP.addStyleName("leftAligned");
 
         FormLabel nameLabel = new FormLabel();
-        nameLabel.setText(CQL_LIBRARY_NAME);
-        nameLabel.setTitle(CQL_LIBRARY_NAME);
-        nameLabel.setShowRequiredIndicator(true);
+        nameLabel.setText(CQL_LIBRARY_NAME + "(*)");
+        nameLabel.setTitle(CQL_LIBRARY_NAME + " Required.");
         nameLabel.setMarginTop(5);
         nameLabel.setId("cqlLibraryName_Label");
 

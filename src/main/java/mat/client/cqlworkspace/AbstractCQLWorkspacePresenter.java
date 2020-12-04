@@ -105,7 +105,6 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected static final String ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR = "Invalid Definition name. Duplicate name or use of restricted character(s).";
     protected static final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR = "Invalid Function and/or Argument name. Duplicate name or use of restricted character(s).";
     protected static final String SAVE_INCLUDE_LIBRARY_VALIATION_ERROR = "Alias name and CQL Library selection are required.";
-    protected static final String UMLS_INVALID_CODE_IDENTIFIER = "Invalid code identifier. Please copy the complete URL for the code directly from VSAC and try again.";
     protected static final String INVALID_QDM_VERSION_IN_INCLUDES = "The current QDM version and the QDM version of one or more of the included libraries are not the same. Please navigate to the Includes section to replace or remove the conflicting libraries.";
     protected static final String NO_LIBRARY_TO_REPLACE = "Please select a library to replace.";
     protected static final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied Value Set list with VSAC data.";
@@ -123,6 +122,9 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected static final String PANEL_COLLAPSE_COLLAPSE = "panel-collapse collapse";
     protected static final String INVALID_INPUT_DATA = "Invalid Input data.";
     protected static final String EMPTY_STRING = "";
+    protected static final String No_LIBRARIES_SELECTED = "Atleast one included library has to be selected";
+    protected static final String FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an upper case letter followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+    protected static final String QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 
     protected final Logger logger = Logger.getLogger("MAT");
     protected HelpBlock helpBlock = new HelpBlock();
@@ -379,7 +381,7 @@ public abstract class AbstractCQLWorkspacePresenter {
             } else {
                 searchValueSetInVsac(release, expansionProfile);
                 // 508 compliance for Value Sets
-                cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
+//                cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
             }
         }
     }
@@ -476,15 +478,8 @@ public abstract class AbstractCQLWorkspacePresenter {
             return;
         }
 
-        if ((url == null) || url.trim().isEmpty()) {
-            messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED());
-            return;
-        }
-
         if (validator.validateForCodeIdentifier(url)) {
             cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(false);
-            messagePanel.getErrorMessageAlert().createAlert(UMLS_INVALID_CODE_IDENTIFIER);
-
             return;
         } else {
             retrieveCodeReferences(url);
@@ -518,8 +513,10 @@ public abstract class AbstractCQLWorkspacePresenter {
                     cqlWorkspaceView.getCodesView().setValidateCodeObject(code);
                 } else {
                     String message = convertMessage(result.getFailureReason());
-                    messagePanel.getErrorMessageAlert().createAlert(message);
-                    messagePanel.getErrorMessageAlert().setVisible(true);
+                    if (!message.isEmpty()) {
+                        messagePanel.getErrorMessageAlert().createAlert(message);
+                        messagePanel.getErrorMessageAlert().setVisible(true);
+                    }
                 }
 
                 showSearchingBusy(false);
@@ -1954,7 +1951,7 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected void includesViewSaveClicked() {
         if (hasEditPermissions()) {
             addIncludeLibraryInCQLLookUp();
-            cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+//            cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
         }
     }
 
@@ -2123,14 +2120,11 @@ public abstract class AbstractCQLWorkspacePresenter {
             case VsacApiResult.UMLS_NOT_LOGGEDIN:
                 message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
                 break;
-            case VsacApiResult.OID_REQUIRED:
-                message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
-                break;
-            case VsacApiResult.CODE_URL_REQUIRED:
-                message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
-                break;
             case VsacApiResult.VSAC_REQUEST_TIMEOUT:
                 message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
+                break;
+            case VsacApiResult.INVALID_OID:
+                message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
                 break;
             case VsacApiResult.VSAC_UNAUTHORIZED_ERROR:
                 message = MessageDelegate.VSAC_UNAUTHORIZED_ERROR;
@@ -2138,9 +2132,20 @@ public abstract class AbstractCQLWorkspacePresenter {
                 MatContext.get().setUMLSLoggedIn(false);
                 break;
             default:
-                message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
+                message = "";
         }
         return message;
+    }
+
+    protected boolean isValidLibName(String libName) {
+        boolean isFhir = isFhir();
+        logger.log(Level.INFO, "isValidLibName " + libName + " isFhir= " + isFhir);
+        return (isFhir && validator.isValidFhirCqlName(libName)) ||
+                (!isFhir && validator.isValidQDMName(libName));
+    }
+
+    protected boolean isFhir() {
+        return MatContext.get().isCurrentModelTypeFhir();
     }
 
 }

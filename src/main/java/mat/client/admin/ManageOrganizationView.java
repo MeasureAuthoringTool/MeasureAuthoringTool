@@ -96,7 +96,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
 		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
-		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
+		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();

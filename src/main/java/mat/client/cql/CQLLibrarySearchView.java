@@ -42,6 +42,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SafeHtmlCell;
 
@@ -296,7 +297,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
         // CQL Library Name Column
         Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new SafeHtmlCell()) {
+                new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return getCQLLibraryNameColumnToolTip(object);

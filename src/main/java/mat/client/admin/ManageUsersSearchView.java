@@ -39,6 +39,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		caption.appendChild(cellTableCaption.getElement());
 		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		
-		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
+		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();

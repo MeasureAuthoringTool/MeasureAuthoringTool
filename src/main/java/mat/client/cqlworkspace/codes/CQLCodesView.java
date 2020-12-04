@@ -1080,4 +1080,7 @@ public class CQLCodesView {
 		this.inAppHelp = inAppHelp;
 	}
 
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 }

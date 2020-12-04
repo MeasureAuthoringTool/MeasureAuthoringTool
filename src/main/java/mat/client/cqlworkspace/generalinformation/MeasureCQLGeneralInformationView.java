@@ -14,13 +14,13 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 import mat.client.validator.ErrorHandler;
 import mat.shared.CQLModelValidator;
-import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MeasureCQLGeneralInformationView implements CQLGeneralInformationView {
@@ -42,12 +42,14 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
     protected static final String PIXEL_150 = "150px";
     protected static final String FONT_SIZE_90_MARGIN_LEFT_15PX = "font-size:90%;margin-left:15px;";
     protected static final String MARGIN_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
+    private static final String LIBRARY_NAME_REQUIRED = "A CQL Library name is required.";
 
     protected static final String COMMENTS_MAX_LENGTH = "2500";
     protected static final int CQL_LIBRARY_NAME_MAX_LENGTH = 500;
     protected TextArea comments = new TextArea();
     protected InAppHelp inAppHelp = new InAppHelp("");
     private ErrorHandler errorHandler = new ErrorHandler();
+    CQLModelValidator validator = new CQLModelValidator();
 
 
     public MeasureCQLGeneralInformationView() {
@@ -76,14 +78,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
-        if (MatContext.get().isCurrentMeasureModelFhir()) {
-            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
-                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
-        } else {
-            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
-                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
-        }
-
+        libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                (s) -> getFirst(validateGeneralInformationLibraryName())));
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
 
@@ -181,6 +177,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         comments.setTitle("Comments");
         comments.setHeight("220px");
         comments.setWidth("250px");
+        comments.addBlurHandler(errorHandler.buildBlurHandler(comments, commentsGroup,
+                (s) -> getFirst(validateGeneralInformationComment())));
         commentsGroup.add(commentsLabel);
         commentsGroup.add(comments);
         commentsGroup.setStylePrimaryName("floatLeft");
@@ -253,6 +251,7 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
     }
 
     public void resetAll() {
+        errorHandler.clearErrors();
         getLibraryNameTextBox().setText("");
         getLibraryVersionTextBox().setText("");
         getUsingModelTextBox().setText("");
@@ -309,12 +308,11 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
     }
 
     public boolean validateGeneralInformationSection(MessagePanel messagePanel, String libraryName, String commentBoxContent) {
-        CQLModelValidator validator = new CQLModelValidator();
+
         boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
 
         if (libraryName != null && libraryName.isEmpty()) {
             getLibraryNameGroup().setValidationState(ValidationState.ERROR);
-            messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
             return false;
         }
 
@@ -358,5 +356,33 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
 
     private String getFirst(List<String> list) {
         return list != null && list.size() > 0 ? list.get(0) : null;
+    }
+
+    private List<String> validateGeneralInformationLibraryName() {
+        List<String> errorMessages = new ArrayList<>();
+        String libraryName = getLibraryNameTextBox().getText();
+        boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+        if (libraryName != null && libraryName.isEmpty()) {
+            errorMessages.add(LIBRARY_NAME_REQUIRED);
+        } else if (libraryName != null && !isFhir && !validator.isValidQDMName(libraryName)) {
+            errorMessages.add(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
+        } else if (libraryName != null && isFhir && !validator.isValidFhirCqlName(libraryName)) {
+            errorMessages.add(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+        } else if (validator.isLibraryNameMoreThan500Characters(libraryName)) {
+            errorMessages.add(LIBRARY_LENGTH_ERROR);
+        } else if (!AbstractCQLWorkspacePresenter.isValidExpressionName(libraryName)) {
+            errorMessages.add(MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError());
+        }
+        return errorMessages;
+    }
+
+    private List<String> validateGeneralInformationComment() {
+        List<String> errorMessages = new ArrayList<>();
+        if (validator.isCommentMoreThan2500Characters(getCommentsTextBox().getText())) {
+            errorMessages.add(COMMENT_LENGTH_ERROR);
+        } else if (validator.doesCommentContainInvalidCharacters(getCommentsTextBox().getText())) {
+            MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS();
+        }
+        return errorMessages;
     }
 }

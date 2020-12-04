@@ -8,7 +8,6 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -16,7 +15,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -36,6 +34,7 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SkipListBuilder;
@@ -44,6 +43,7 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.client.validator.ErrorHandler;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.CQLModelValidator;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -72,6 +72,8 @@ public class CQLIncludeLibraryView {
 	private static final String CQL_LIBRARY_VIEWER = "CQL Library Viewer";
 	private static final String TWO_HUNDRED_AND_SIXTY_PIXELS = "260px";
 	private static final String INCLUDE_LIBRARY_SUMMARY = "includeLibrarySummary";
+    protected static final String FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an upper case letter followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+    protected static final String QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 
 	private String selectedObject;
 
@@ -111,7 +113,11 @@ public class CQLIncludeLibraryView {
 	
 	private InAppHelp inAppHelp = new InAppHelp("");
 
-	private ErrorHandler errorHandler = new ErrorHandler();
+	private ErrorHandler includesSaveButtonErrorHandler = new ErrorHandler();
+	private SpacerWidget errorSpaceWidgetAfterSearchResult = new SpacerWidget();
+    private SpacerWidget errorSpacerWidgetAfterSearchBox = new SpacerWidget();
+    protected CQLModelValidator validator = new CQLModelValidator();
+    private ErrorHandler includesSearchButtonErrorHandler = new ErrorHandler();
 	
 	public static interface Observer {
 		void onCheckBoxClicked(CQLLibraryDataSetObject result);
@@ -163,7 +169,7 @@ public class CQLIncludeLibraryView {
 		verticalPanel.add(buildAliasLabelVP());
 		verticalPanel.add(ownerTextboxPanel);
 		verticalPanel.add(searchCellTablePanel);
-		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(errorSpaceWidgetAfterSearchResult);
 		verticalPanel.add(buildViewCQLPanel());
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.setWidth("700px");
@@ -215,9 +221,25 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtBox.setName(ALIAS_NAME);
 		aliasNameTxtBox.setTitle("Enter Library Alias Required");
-		aliasNameTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(aliasNameTxtBox));
+        aliasNameTxtBox.addBlurHandler(includesSaveButtonErrorHandler.buildBlurHandler(aliasNameTxtBox, s -> validateLibraryAliasName(s)));
 		return aliasLabel;
 	}
+
+    private String validateLibraryAliasName(String aliasName) {
+	    String errorMessage = null;
+	    if (aliasName != null && aliasName.isEmpty()) {
+	        errorMessage = ErrorHandler.REQUIRED;
+        } else if (!isValidLibName(aliasName)) {
+            errorMessage = MatContext.get().isCurrentModelTypeFhir() ? FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR : QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR;
+        }
+        return errorMessage;
+    }
+
+    private boolean isValidLibName(String libName) {
+        boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+        return (isFhir && validator.isValidFhirCqlName(libName)) ||
+                (!isFhir && validator.isValidQDMName(libName));
+    }
 
 	private PanelBody buildViewCQLBody() {
 		PanelBody viewCQLBody = new PanelBody();
@@ -304,11 +326,11 @@ public class CQLIncludeLibraryView {
 
 		searchLibraryVP.add(new SpacerWidget());
 
-		SpacerWidget sw = new SpacerWidget();
+
 		sWidget.getSearchBox().setWidth("590px");
-		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), sw));
+		sWidget.getSearchBox().addBlurHandler(includesSearchButtonErrorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), errorSpacerWidgetAfterSearchBox));
 		searchLibraryVP.add(sWidget.getSearchWidget());
-		searchLibraryVP.add(sw);
+		searchLibraryVP.add(errorSpacerWidgetAfterSearchBox);
 
 		searchWidgetFocusPanel.add(searchLibraryVP);
 
@@ -319,7 +341,7 @@ public class CQLIncludeLibraryView {
 		buttonPanel.clear();
 		buttonPanel.add(includesButtonBar);
 		buttonPanel.getElement().setAttribute(STYLE, "margin-left:300px;");
-		
+
 		createIncludesButtonBar();
 	}
 
@@ -630,6 +652,8 @@ public class CQLIncludeLibraryView {
 
 	public void resetToDefault(){
 		cellTablePanel.clear();
+		includesSearchButtonErrorHandler.clearErrors();
+		includesSaveButtonErrorHandler.clearErrors();
 		resetAceEditor();
 	}
 
@@ -785,4 +809,19 @@ public class CQLIncludeLibraryView {
 		this.inAppHelp = inAppHelp;
 	}
 
+    public ErrorHandler getIncludesSaveButtonErrorHandler() {
+        return includesSaveButtonErrorHandler;
+    }
+
+    public SpacerWidget getErrorSpaceWidgetAfterSearchResult() {
+        return errorSpaceWidgetAfterSearchResult;
+    }
+
+    public SpacerWidget getErrorSpacerWidgetAfterSearchBox() {
+        return errorSpacerWidgetAfterSearchBox;
+    }
+
+    public ErrorHandler getIncludesSearchButtonErrorHandler() {
+        return includesSearchButtonErrorHandler;
+    }
 }

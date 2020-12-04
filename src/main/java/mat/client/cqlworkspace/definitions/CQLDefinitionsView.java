@@ -236,12 +236,13 @@ public class CQLDefinitionsView {
 		return addNewButtonBar;
 	}
 
-	public void resetDefineFormGroup(){
+	public void resetDefineFormGroup() {
 		getDefineCommentGroup().setValidationState(ValidationState.NONE);
 		getDefineNameGroup().setValidationState(ValidationState.NONE);
 	}
 	
 	public void resetAll() {
+	    errorHandler.clearErrors();
 		editorPanel= new CQLEditorPanel(DEFINITION, "CQL Expression Editor", false);
 		getDefineNameTxtArea().setText("");
 		getDefineAceEditor().setText("");

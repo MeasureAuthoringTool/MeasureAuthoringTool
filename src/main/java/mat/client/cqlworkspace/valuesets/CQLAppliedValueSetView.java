@@ -795,7 +795,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     }
 
     public void resetVSACValueSetWidget() {
-
+        errorHandler.clearErrors();
         if (CQLAppliedValueSetUtility.checkForEnable()) {
             oidInput.setTitle(ENTER_OID);
             nameInput.setTitle(ENTER_NAME);
@@ -1143,4 +1143,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         this.inAppHelp = inAppHelp;
     }
 
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 }

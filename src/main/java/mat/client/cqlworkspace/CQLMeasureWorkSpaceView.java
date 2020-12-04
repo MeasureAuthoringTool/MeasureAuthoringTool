@@ -18,6 +18,7 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -42,6 +43,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
     private MeasureCQLGeneralInformationView generalInformationView;
     private HelpBlock helpBlock = new HelpBlock();
     MessagePanel messagePanel;
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public CQLMeasureWorkSpaceView() {
         generalInformationView = new MeasureCQLGeneralInformationView();

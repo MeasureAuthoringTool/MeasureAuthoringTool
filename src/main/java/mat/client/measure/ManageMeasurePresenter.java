@@ -2091,40 +2091,27 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
-        shareDisplay.privateCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        shareDisplay.privateCheckbox().addValueChangeHandler(event -> MatContext.get().getMeasureService().updatePrivateColumnInMeasure(currentShareDetails.getMeasureId(),
+                event.getValue(), new AsyncCallback<Void>() {
 
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                MatContext.get().getMeasureService().updatePrivateColumnInMeasure(currentShareDetails.getMeasureId(),
-                        event.getValue(), new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                    }
 
-                            @Override
-                            public void onFailure(Throwable caught) {
-                            }
+                    @Override
+                    public void onSuccess(Void result) {
+                    }
+                }));
 
-                            @Override
-                            public void onSuccess(Void result) {
-                            }
-                        });
+        shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(event -> {
+            if (shareDisplay.getErrorHandler().validate().isEmpty()) {
+                displayShare(shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue(), currentShareDetails.getMeasureId());
             }
         });
 
-        shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (shareDisplay.getErrorHandler().validate().isEmpty()) {
-                    displayShare(shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue(), currentShareDetails.getMeasureId());
-                }
-            }
-        });
-
-        shareDisplay.getSearchWidgetFocusPanel().addKeyDownHandler(new KeyDownHandler() {
-
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    shareDisplay.getSearchWidgetBootStrap().getGo().click();
-                }
+        shareDisplay.getSearchWidgetFocusPanel().addKeyDownHandler(event -> {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                shareDisplay.getSearchWidgetBootStrap().getGo().click();
             }
         });
     }

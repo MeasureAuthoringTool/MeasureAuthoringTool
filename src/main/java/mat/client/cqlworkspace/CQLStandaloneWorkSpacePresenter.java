@@ -1572,7 +1572,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         cqlWorkspaceView.getCodesView().getSelectAllButton().addClickHandler(event -> selectAllCodes());
         cqlWorkspaceView.getCodesView().getPasteButton().addClickHandler(event -> pasteCodesClicked(event));
         cqlWorkspaceView.getCodesView().getClearButton().addClickHandler(event -> codesViewClearButtonClicked());
-        cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(event -> codesViewRetrieveFromVSACButtonClicked());
+        cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(event -> {
+            if (cqlWorkspaceView.getCodesView().getErrorHandler().validate().isEmpty())
+                codesViewRetrieveFromVSACButtonClicked();
+        });
         cqlWorkspaceView.getCodesView().getApplyButton().addClickHandler(event -> codesViewSaveButtonClicked());
         cqlWorkspaceView.getCodesView().getCancelCodeButton().addClickHandler(event -> codesViewCancelButtonClicked());
         cqlWorkspaceView.getCodesView().setDelegator(new Delegator() {

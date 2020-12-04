@@ -174,6 +174,7 @@ public class CQLParametersView {
 	}
 
 	public void resetAll() {
+	    errorHandler.clearErrors();
 		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", false);
 		getParameterAceEditor().setText("");
 		getParameterNameTxtArea().setText("");

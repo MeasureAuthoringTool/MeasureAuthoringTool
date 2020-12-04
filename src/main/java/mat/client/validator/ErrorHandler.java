@@ -126,6 +126,10 @@ public class ErrorHandler {
         });
     }
 
+    public void clearErrors(Element validatedElement) {
+        clearErrors(validatedElement, validatedElement);
+    }
+
     public void clearErrors(Element validatedElement, Widget widgetToAddErrorsAfter) {
         clearErrors(validatedElement, widgetToAddErrorsAfter.getElement());
     }

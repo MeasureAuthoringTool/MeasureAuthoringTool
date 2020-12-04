@@ -37,6 +37,7 @@ import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
+import mat.shared.cql.CqlCommonValidations;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -255,12 +256,17 @@ public class CQLCodesView {
 		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
 		sWidget.getGo().setTitle("Retrieve Code");
-		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), searchWidgetFormGroup));
+		sWidget.getSearchBox().addBlurHandler(errorHandler.buildBlurHandler(sWidget.getSearchBox(), searchWidgetFormGroup,
+                (s) -> getFirst(CqlCommonValidations.validateCqlCodeUrl(sWidget.getSearchBox().getText()))));
 		searchWidgetFormGroup.add(buildFormLabel("Code URL", "codeURLInput_TextBox"));
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 		return searchWidgetFormGroup;
 	}
+
+    private String getFirst(List<String> list) {
+        return list != null && list.size() > 0 ? list.get(0) : null;
+    }
 
 	private VerticalPanel buildCodeDescriptorVP() {
 		codeDescriptorInput.setTitle(CODE_DESCRIPTOR);
@@ -395,6 +401,7 @@ public class CQLCodesView {
 	}
 
 	public void resetVSACCodeWidget() {
+	    errorHandler.clearErrors();
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			sWidget.getSearchBox().setTitle("Enter the Code URL");
 		}

@@ -6022,6 +6022,10 @@ x:-o-prefocus, .qtip .qtip-tip {
   margin-left: 0px !important;
 }
 
+#okta-sign-in .no-float {
+  float: none !important;
+}
+
 #okta-sign-in .number-challenge-view {
   display: none;
   text-align: center;

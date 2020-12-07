@@ -6016,7 +6016,7 @@ x:-o-prefocus, .qtip .qtip-tip {
 
 #okta-sign-in .factor-verify-magiclink .email-request-button {
   width: 100%;
-  margin-left: 0px;
+  margin-left: 0px !important;
 }
 
 #okta-sign-in .number-challenge-view {
@@ -6175,7 +6175,7 @@ x:-o-prefocus, .qtip .qtip-tip {
 #okta-sign-in .call-request-button,
 #okta-sign-in .email-request-button {
   text-align: center;
-  margin-left: 0px;
+  margin-left: 0px !important;
   width: 130px;
   display: block;
   overflow: hidden;

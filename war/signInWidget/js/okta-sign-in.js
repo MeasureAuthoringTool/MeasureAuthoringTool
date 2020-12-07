@@ -51805,6 +51805,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       this.add(Okta.createButton({
         attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
         className: formAndButtonDetails.buttonClassName + ' button',
+        style: 'margin-left: 0px',
         title: formAndButtonDetails.formSubmit,
         click: function click() {
           form.clearErrors();

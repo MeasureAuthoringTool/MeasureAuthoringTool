@@ -6018,6 +6018,10 @@ x:-o-prefocus, .qtip .qtip-tip {
   width: 100%;
 }
 
+#okta-sign-in .no-left-margin {
+  margin-left: 0px;
+}
+
 #okta-sign-in .number-challenge-view {
   display: none;
   text-align: center;

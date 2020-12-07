@@ -6019,7 +6019,7 @@ x:-o-prefocus, .qtip .qtip-tip {
 }
 
 #okta-sign-in .no-left-margin {
-  margin-left: 0px;
+  margin-left: 0px !important;
 }
 
 #okta-sign-in .number-challenge-view {

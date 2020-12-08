@@ -51842,7 +51842,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       }
 
       try {
-        sendEmailBtn.focus();
+        window.setTimeout(function () {
+          document.querySelector('.email-request-button').focus();
+        }, 300);
       } catch (e) {
         console.log(e);
       }

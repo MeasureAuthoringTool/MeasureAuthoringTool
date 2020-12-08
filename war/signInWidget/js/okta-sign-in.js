@@ -51794,6 +51794,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       this.listenTo(this.model, 'error', function () {
         this.clearErrors();
       });
+      this.addInput({
+        label: Okta.loc('mfa.challenge.enterCode.placeholder', 'login'),
+        'label-top': true,
+        className: 'o-form-fieldset o-form-label-top auth-passcode',
+        name: 'answer',
+        input: TextBox,
+        type: 'tel'
+      });
       this.add(Okta.createButton({
         attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
         className: 'button ' + formAndButtonDetails.buttonClassName + ' no-left-margin no-float',
@@ -51803,7 +51811,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           this.disable();
           form.clearWarnings();
           this.options.title = formAndButtonDetails.formSubmitted;
-          this.render();
+          this.render().focus();
           // To send an OTP to the device, make the same request but use
           // an empty passCode
           this.model.set('answer', '');
@@ -51821,14 +51829,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           }, this));
         }
       }));
-      this.addInput({
-        label: Okta.loc('mfa.challenge.enterCode.placeholder', 'login'),
-        'label-top': true,
-        className: 'o-form-fieldset o-form-label-top auth-passcode',
-        name: 'answer',
-        input: TextBox,
-        type: 'tel'
-      });
 
       if (this.options.appState.get('allowRememberDevice')) {
         this.addInput({

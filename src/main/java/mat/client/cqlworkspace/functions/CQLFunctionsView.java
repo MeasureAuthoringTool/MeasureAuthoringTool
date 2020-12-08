@@ -448,12 +448,12 @@ public class CQLFunctionsView {
     private SafeHtml getDataTypeColumnToolTip(String columnText, StringBuilder title, boolean hasImage) {
         if (hasImage) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
+                    + "<head> </head> <body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
                     + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         } else {
-            String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"-1\" title='" + title + "'>"
+            String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         }
@@ -491,7 +491,7 @@ public class CQLFunctionsView {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
                             + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
@@ -535,7 +535,7 @@ public class CQLFunctionsView {
 
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
                             + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");

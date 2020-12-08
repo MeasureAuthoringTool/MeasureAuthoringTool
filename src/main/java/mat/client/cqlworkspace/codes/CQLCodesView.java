@@ -938,7 +938,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+						+ title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete"+ SPAN_END +"</button>");
 				return sb.toSafeHtml();
 			}
 		};

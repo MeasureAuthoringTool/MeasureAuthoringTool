@@ -183,7 +183,7 @@ public class CQLAppliedValueSetUtility {
                                                StringBuilder title, boolean hasImage, boolean isUserDefined) {
         if (hasImage && !isUserDefined) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
+                    + "<head> </head> <body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
                     + "title = \"Value set is updated from VSAC.\"/>"
                     + "<span title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
@@ -191,7 +191,7 @@ public class CQLAppliedValueSetUtility {
                     .toSafeHtml();
         } else if (hasImage && isUserDefined) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
+                    + "<head> </head> <body><img src =\"images/userDefinedWarning.png\""
                     + "alt=\"Warning : Value set is not available in VSAC.\""
                     + " title=\"Value set is not available in VSAC.\"/>"
                     + "<span title='" + title + "'>"
@@ -200,7 +200,7 @@ public class CQLAppliedValueSetUtility {
                     .toSafeHtml();
         } else {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><span title='"
+                    + "<head> </head> <body><span title='"
                     + title + "'>" + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();

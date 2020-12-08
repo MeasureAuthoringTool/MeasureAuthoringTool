@@ -127,13 +127,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 			}
 		};
 		
-		nameColumn.setFieldUpdater(new FieldUpdater<Result, SafeHtml>() {
-			@Override
-			public void update(int index, Result object, SafeHtml value) {
-				MatContext.get().clearDVIMessages();
-				SelectionEvent.fire(ManageUsersSearchView.this, object);
-			}
-		});
+		nameColumn.setFieldUpdater((index, object, value) -> {
+            MatContext.get().clearDVIMessages();
+            SelectionEvent.fire(ManageUsersSearchView.this, object);
+        });
 		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 		
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {

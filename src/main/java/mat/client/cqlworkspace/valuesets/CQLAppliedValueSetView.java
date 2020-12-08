@@ -640,7 +640,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
                             + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
@@ -682,7 +682,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-trash fa-lg";
 
                 sb.appendHtmlConstant("<button type=\"button\" title='"
-                        + title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+                        + title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
                 return sb.toSafeHtml();
             }
 

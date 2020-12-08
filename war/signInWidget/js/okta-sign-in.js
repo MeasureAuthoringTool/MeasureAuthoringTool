@@ -51806,12 +51806,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
         attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
         className: 'button ' + formAndButtonDetails.buttonClassName + ' no-left-margin no-float',
         title: formAndButtonDetails.formSubmit,
+        initialize: function initialize() {
+          this.render().focus();
+        },
         click: function click() {
           form.clearErrors();
           this.disable();
           form.clearWarnings();
           this.options.title = formAndButtonDetails.formSubmitted;
-          this.render().focus();
           // To send an OTP to the device, make the same request but use
           // an empty passCode
           this.model.set('answer', '');

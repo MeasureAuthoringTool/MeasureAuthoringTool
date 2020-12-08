@@ -151,7 +151,8 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 	
 	private FormLabel buildCompositeScoringLabel() {
 		FormLabel scoringLabel = new FormLabel();
-		scoringLabel.setText("Composite Scoring Method (*)");
+		scoringLabel.setText("Composite Scoring Method");
+        scoringLabel.setShowRequiredIndicator(true);
 		scoringLabel.setTitle("Composite Scoring Method");
 		scoringLabel.setFor("CompositeScoringMethodListBox");
 		scoringLabel.setId("CompositeScoringMethodListBox");

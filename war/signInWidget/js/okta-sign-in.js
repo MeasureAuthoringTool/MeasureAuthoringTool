@@ -51842,9 +51842,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       }
 
       try {
-        window.setTimeout(function () {
-          document.querySelector('.email-request-button').focus();
-        }, 300);
+        window.ready(function () {
+          return document.querySelector('.email-request-button').focus();
+        });
       } catch (e) {
         console.log(e);
       }

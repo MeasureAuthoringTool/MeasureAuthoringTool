@@ -799,7 +799,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				String iconCss = isEditable ? "fa fa-pencil fa-lg" : "fa fa-newspaper-o fa-lg";
 				String iconColor = isEditable ? "darkgoldenrod" : "black";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + iconColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">" + editOrView + "</button>");
+						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + iconColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">" + editOrView + "</span></button>");
 			
 				return sb.toSafeHtml();
 			}

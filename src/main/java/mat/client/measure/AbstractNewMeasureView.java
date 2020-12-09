@@ -232,7 +232,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildMeasureNameLabel() {
         FormLabel measureNameLabel = new FormLabel();
-        measureNameLabel.setText("Measure Name (*)");
+        measureNameLabel.setText("Measure Name");
+        measureNameLabel.setShowRequiredIndicator(true);
         measureNameLabel.setTitle("Measure Name Required");
         measureNameLabel.setFor("MeasureNameTextArea");
         measureNameLabel.setId("MeasureNameTextArea_Id");
@@ -246,7 +247,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
      */
     protected FormLabel buildModelTypeLabel() {
         FormLabel modelLabel = new FormLabel();
-        modelLabel.setText("Model (*)");
+        modelLabel.setText("Model");
+        modelLabel.setShowRequiredIndicator(true);
         modelLabel.setTitle("Model Required");
         modelLabel.setFor("measureModel");
         modelLabel.setId("measureModel_Id");
@@ -321,7 +323,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildCQLLibraryNameLabel() {
         FormLabel cqlLibraryNameLabel = new FormLabel();
-        cqlLibraryNameLabel.setText("CQL Library Name (*)");
+        cqlLibraryNameLabel.setText("CQL Library Name");
+        cqlLibraryNameLabel.setShowRequiredIndicator(true);
         cqlLibraryNameLabel.setTitle("CQL Library Name Required");
         cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
         cqlLibraryNameLabel.setId("CqlLibraryNameTextArea_Id");
@@ -360,7 +363,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildShortNameLabel() {
         FormLabel shortNameLabel = new FormLabel();
-        shortNameLabel.setText("eCQM Abbreviated Title (*)");
+        shortNameLabel.setText("eCQM Abbreviated Title");
+        shortNameLabel.setShowRequiredIndicator(true);
         shortNameLabel.setTitle("eCQM Abbreviated Title");
         shortNameLabel.setFor("ShortNameTextBox");
         shortNameLabel.setId("ShortNameTextBox_Id");
@@ -378,7 +382,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildScoringLabel() {
         FormLabel scoringLabel = new FormLabel();
-        scoringLabel.setText("Measure Scoring (*)");
+        scoringLabel.setText("Measure Scoring");
+        scoringLabel.setShowRequiredIndicator(true);
         scoringLabel.setTitle("Measure Scoring Required");
         scoringLabel.setFor("MeasureScoringListBox");
         scoringLabel.setId("MeasureScoringListBox");
@@ -404,7 +409,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildPatientBasedLabel() {
         FormLabel patientBasedLabel = new FormLabel();
-        patientBasedLabel.setText("Patient-based Measure (*)");
+        patientBasedLabel.setText("Patient-based Measure");
+        patientBasedLabel.setShowRequiredIndicator(true);
         patientBasedLabel.setTitle("Patient-based Measure Required");
         patientBasedLabel.setFor("PatientBasedMeasureListBox");
         patientBasedLabel.setId("PatientBasedMeasureListBox_Id");

@@ -193,7 +193,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
 
         FormLabel libraryNameLabel = new FormLabel();
-        libraryNameLabel.setText("CQL Library Name (*)");
+        libraryNameLabel.setText("CQL Library Name");
+        libraryNameLabel.setShowRequiredIndicator(true);
         libraryNameLabel.setTitle("CQL Library Name Required");
         libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         libraryNameLabel.setWidth(PIXEL_150);
@@ -267,7 +268,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         modelVersionGroup.add(modelVersionTextBox);
 
         FormLabel descriptionLabel = new FormLabel();
-        descriptionLabel.setText("CQL Library Description (*)");
+        descriptionLabel.setText("CQL Library Description");
+        descriptionLabel.setShowRequiredIndicator(true);
         descriptionLabel.setTitle("CQL Library Description Required");
         descriptionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         descriptionLabel.getElement().setId("descriptionLabel");
@@ -297,7 +299,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         commentsGroup.add(comments);
 
         FormLabel stewardLabel = new FormLabel();
-        stewardLabel.setText("Publisher (*)");
+        stewardLabel.setText("Publisher");
+        stewardLabel.setShowRequiredIndicator(true);
         stewardLabel.setTitle("Publisher Required");
         stewardLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         stewardLabel.setWidth("250px");

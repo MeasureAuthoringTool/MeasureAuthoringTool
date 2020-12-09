@@ -152,7 +152,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		if (!object.isUsed()) {
 			title = "Delete";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+					+ title + "' class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
 		} else {
 			title = "Organization in use.";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"

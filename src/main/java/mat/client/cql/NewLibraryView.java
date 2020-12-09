@@ -53,7 +53,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         mainDetailViewVP.addStyleName("leftAligned");
 
         FormLabel nameLabel = new FormLabel();
-        nameLabel.setText(CQL_LIBRARY_NAME + "(*)");
+        nameLabel.setText(CQL_LIBRARY_NAME);
+        nameLabel.setShowRequiredIndicator(true);
         nameLabel.setTitle(CQL_LIBRARY_NAME + " Required.");
         nameLabel.setMarginTop(5);
         nameLabel.setId("cqlLibraryName_Label");

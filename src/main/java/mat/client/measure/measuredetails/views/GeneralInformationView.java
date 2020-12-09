@@ -145,7 +145,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
         measurementPeriodPanel.setSize("505px", "100px");
         FormLabel measurePeriodFromInputLabel = new FormLabel();
-        measurePeriodFromInputLabel.setText("Measurement Period (*)");
+        measurePeriodFromInputLabel.setText("Measurement Period");
+        measurePeriodFromInputLabel.setShowRequiredIndicator(true);
         measurePeriodFromInputLabel.setTitle("Measurement Period Required.");
         measurePeriodFromInputLabel.getElement().setId("measurementPeriodHeader_Label");
         measurementPeriodPanel.add(measurePeriodFromInputLabel);
@@ -559,7 +560,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     private FormLabel buildPatientBasedLabel() {
         FormLabel patientBasedLabel = new FormLabel();
-        patientBasedLabel.setText("Patient-based Measure (*)");
+        patientBasedLabel.setText("Patient-based Measure");
+        patientBasedLabel.setShowRequiredIndicator(true);
         patientBasedLabel.setTitle("Patient-based Measure Required");
         patientBasedLabel.setId("patientBasedLabel");
         patientBasedLabel.setFor("patientBasedMeasure_listbox");
@@ -585,7 +587,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         populationBasisPanel.getElement().addClassName("generalInformationPanel");
 
         FormLabel populationBasisLabel = new FormLabel();
-        populationBasisLabel.setText("Population Basis (*)");
+        populationBasisLabel.setText("Population Basis");
+        populationBasisLabel.setShowRequiredIndicator(true);
         populationBasisLabel.setTitle("Population Basis Required.");
         populationBasisLabel.setId("populationBasisLabel");
         populationBasisLabel.setFor("populationBasisInput_ListBoxMVP");
@@ -616,7 +619,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     private FormLabel buildMeasureScoringLabel() {
         FormLabel measureScoringLabel = new FormLabel();
-        measureScoringLabel.setText("Measure Scoring (*)");
+        measureScoringLabel.setText("Measure Scoring");
+        measureScoringLabel.setShowRequiredIndicator(true);
         measureScoringLabel.setTitle("Measure Scoring Required");
         measureScoringLabel.setId("measureScoringLabel");
         measureScoringLabel.setFor("measScoringInput_ListBoxMVP");
@@ -648,7 +652,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     private FormLabel buildAbbreviationLabel() {
         FormLabel abbrInputLabel = new FormLabel();
-        abbrInputLabel.setText("eCQM Abbreviated Title (*)");
+        abbrInputLabel.setText("eCQM Abbreviated Title");
+        abbrInputLabel.setShowRequiredIndicator(true);
         abbrInputLabel.setTitle("eCQM Abbreviated Title Required");
         abbrInputLabel.setId("eCQMAbbrTitleLabel");
         abbrInputLabel.setFor("abbrInput");
@@ -657,7 +662,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     private FormLabel buildMeasureNameLabel() {
         FormLabel measureNameLabel = new FormLabel();
-        measureNameLabel.setText("Measure Name  (*)");
+        measureNameLabel.setText("Measure Name");
+        measureNameLabel.setShowRequiredIndicator(true);
         measureNameLabel.setTitle("Measure Name Required.");
         measureNameLabel.setId("measureNameLabel");
         measureNameLabel.setFor("measureNameInput");

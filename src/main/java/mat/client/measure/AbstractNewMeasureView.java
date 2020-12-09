@@ -300,7 +300,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void buildMeasureNameTextArea() {
         measureNameTextBox.setId("MeasureNameTextArea");
-        measureNameTextBox.setTitle("Enter Measure Name Required.");
         measureNameTextBox.setWidth("400px");
         measureNameTextBox.setHeight("50px");
         measureNameTextBox.setMaxLength(500);
@@ -333,7 +332,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     private void buildCQLLibraryTextArea() {
         cqlLibraryNameTextBox.setId("CqlLibraryNameTextArea");
-        cqlLibraryNameTextBox.setTitle("Enter CQL Library Name Required.");
         cqlLibraryNameTextBox.setWidth("400px");
         cqlLibraryNameTextBox.setHeight("50px");
         cqlLibraryNameTextBox.setMaxLength(500);
@@ -373,7 +371,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void buildShortNameTextBox() {
         eCQMAbbreviatedTitleTextBox.setId("ShortNameTextBox");
-        eCQMAbbreviatedTitleTextBox.setTitle("Enter eCQM Abbreviated Title Required");
         eCQMAbbreviatedTitleTextBox.setWidth("18em");
         eCQMAbbreviatedTitleTextBox.setMaxLength(32);
         eCQMAbbreviatedTitleTextBox.addBlurHandler(errorHandler.buildBlurHandler(eCQMAbbreviatedTitleTextBox,
@@ -392,7 +389,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void buildMeasureScoringInput() {
         measureScoringListBox.getElement().setId("measScoringInput_ListBoxMVP");
-        measureScoringListBox.setTitle("Measure Scoring Required.");
         measureScoringListBox.setStyleName("form-control");
         measureScoringListBox.setVisibleItemCount(1);
         measureScoringListBox.setWidth("18em");
@@ -419,7 +415,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void buildPatientBasedInput() {
         patientBasedListBox.getElement().setId("patientBasedMeasure_listbox");
-        patientBasedListBox.setTitle("Patient Based Indicator Required.");
         patientBasedListBox.setStyleName("form-control");
         patientBasedListBox.setVisibleItemCount(1);
         patientBasedListBox.setWidth("18em");

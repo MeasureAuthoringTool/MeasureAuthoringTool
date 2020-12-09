@@ -63,6 +63,7 @@ public class ErrorHandler {
             null;
 
     private final Map<Element, ValidationInfo> validations;
+    private Random random = new Random();
 
     public ErrorHandler() {
         validations = new HashMap<>();
@@ -143,6 +144,8 @@ public class ErrorHandler {
         while (isErrorMessage(elementToAddErrorsAfter.getNextSiblingElement())) {
             elementToAddErrorsAfter.getNextSiblingElement().removeFromParent();
         }
+        validatedElement.removeAttribute("aria-invalid");
+        validatedElement.removeAttribute("aria-describedBy");
     }
 
     public void handleErrors(Element validatedElement, Element elementToAddErrorsAfter, List<String> errors) {
@@ -150,9 +153,12 @@ public class ErrorHandler {
         if (errors != null && errors.size() > 0) {
             logger.info("errors=" + errors);
             validatedElement.getStyle().setBorderColor("red");
+            String errorMsgId = "valErr-" + random.nextInt(1000000);
             Element html = new HTML(
-                    "<i class=\"fa fa-exclamation-circle\"></i> <b>" + errors.get(0) + "</b>"
+                    "<i class=\"fa fa-exclamation-circle\"></i> <b id=\"" + errorMsgId + "\">" + errors.get(0) + "</b>"
             ).getElement();
+            validatedElement.setAttribute("aria-invalid","true");
+            validatedElement.setAttribute("aria-describedBy",errorMsgId);
             html.addClassName(ERROR_CLASS);
             html.getStyle().setColor("red");
             elementToAddErrorsAfter.getParentElement().appendChild(html);

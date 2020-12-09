@@ -3,6 +3,7 @@ package mat.client.cqlworkspace.generalinformation;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.TextArea;
@@ -54,4 +55,6 @@ public interface CQLGeneralInformationView {
     FormGroup getCommentsGroup();
 
     InAppHelp getInAppHelp();
+
+    ErrorHandler getErrorHandler();
 }

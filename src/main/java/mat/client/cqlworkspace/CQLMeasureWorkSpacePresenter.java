@@ -211,11 +211,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     private void saveCQLGeneralInformation() {
         if (hasEditPermissions()) {
             cqlWorkspaceView.resetMessageDisplay();
-            String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
-            String comments = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
-            boolean isvalid = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().validateGeneralInformationSection(messagePanel, libraryName, comments);
-            if (isvalid) {
-                saveCQLGeneralInformationAsync(libraryName, comments);
+            if (cqlWorkspaceView.getCqlGeneralInformationView().getErrorHandler().validate().isEmpty()) {
+                String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
+                String comments = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
+                boolean isvalid = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().validateGeneralInformationSection(messagePanel, libraryName, comments);
+                if (isvalid) {
+                    saveCQLGeneralInformationAsync(libraryName, comments);
+                }
             }
         }
     }

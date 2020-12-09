@@ -6,6 +6,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 
@@ -53,4 +54,6 @@ public interface DetailDisplay extends BaseDisplay {
 	EditConfirmationDialogBox getConfirmationDialogBox();
 
 	WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
+
+	ErrorHandler getErrorHandler();
 }

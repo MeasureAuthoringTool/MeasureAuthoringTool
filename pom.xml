@@ -11,7 +11,7 @@
     </parent>
     <groupId>CMAT</groupId>
     <artifactId>MeasureAuthoringTool</artifactId>
-    <version>6.02</version>
+    <version>6.03</version>
     <packaging>war</packaging>
 
     <properties>

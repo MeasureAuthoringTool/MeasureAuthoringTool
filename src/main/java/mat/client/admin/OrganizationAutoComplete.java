@@ -34,19 +34,15 @@ public class OrganizationAutoComplete extends Composite implements HasValue<Stri
 		sBox = new SuggestBox(myOracle);
 		initWidget(sBox);
 
-		sBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
-
-			@Override
-			public void onSelection(SelectionEvent<Suggestion> event) {
-				Suggestion suggestion = event.getSelectedItem();
-				String value = suggestion.getDisplayString();
-				for (NameValuePair nvp : myOracle.getOrganizationValues()) {
-					if (nvp.getValue().equals(value)) {
-						OrganizationAutoComplete.this.value = nvp.getName();
-					}
-				}
-			}
-		});
+		sBox.addSelectionHandler(event -> {
+            Suggestion suggestion = event.getSelectedItem();
+            String value = suggestion.getDisplayString();
+            for (NameValuePair nvp : myOracle.getOrganizationValues()) {
+                if (nvp.getValue().equals(value)) {
+                    OrganizationAutoComplete.this.value = nvp.getName();
+                }
+            }
+        });
 	}
 
 	/**

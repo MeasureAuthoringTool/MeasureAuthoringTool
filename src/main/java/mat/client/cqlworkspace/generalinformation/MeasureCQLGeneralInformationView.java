@@ -67,7 +67,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
 
         FormLabel libraryNameLabel = new FormLabel();
-        libraryNameLabel.setText("CQL Library Name (*)");
+        libraryNameLabel.setText("CQL Library Name");
+        libraryNameLabel.setShowRequiredIndicator(true);
         libraryNameLabel.setTitle("CQL Library Name Required");
         libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         libraryNameLabel.setWidth(PIXEL_150);

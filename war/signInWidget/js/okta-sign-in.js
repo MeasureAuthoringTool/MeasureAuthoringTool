@@ -51802,8 +51802,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
         input: TextBox,
         type: 'tel'
       });
-      var sendEmailBtn = this.add(Okta.createButton({
-        attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
+      this.add(Okta.createButton({
+        attributes: { 'data-se': formAndButtonDetails.buttonDataSe, 'title': formAndButtonDetails.formSubmit },
         className: 'button ' + formAndButtonDetails.buttonClassName + ' no-left-margin no-float',
         title: formAndButtonDetails.formSubmit,
         click: function click() {
@@ -51842,9 +51842,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       }
 
       try {
-        window.ready(function () {
+        window.setTimeout(function () {
           return document.querySelector('.email-request-button').focus();
-        });
+        }, 300);
       } catch (e) {
         console.log(e);
       }

@@ -51803,7 +51803,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
         type: 'tel'
       });
       this.add(Okta.createButton({
-        attributes: { 'data-se': formAndButtonDetails.buttonDataSe, 'title': formAndButtonDetails.formSubmit },
+        attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
         className: 'button ' + formAndButtonDetails.buttonClassName + ' no-left-margin no-float',
         title: formAndButtonDetails.formSubmit,
         click: function click() {

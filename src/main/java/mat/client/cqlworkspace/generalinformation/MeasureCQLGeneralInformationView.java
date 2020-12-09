@@ -385,4 +385,9 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         }
         return errorMessages;
     }
+
+    @Override
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 }

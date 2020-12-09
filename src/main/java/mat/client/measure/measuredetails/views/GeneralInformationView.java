@@ -182,11 +182,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
                 measurePeriodFromInput.getDateBox(),
                 fromPanel,
                 (s) -> {
-                    try {
-                        com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");
-                        dateFormat.parseStrict(generalInformationModel.getMeasureFromPeriod());
-                    } catch (Exception e) {
-                        return "Not MM/DD/YYYY format.";
+                    if (MatContext.get().isCurrentModelTypeFhir() || !calendarYear.getValue()) {
+                        try {
+                            com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");
+                            dateFormat.parseStrict(generalInformationModel.getMeasureFromPeriod());
+                        } catch (Exception e) {
+                            return "Not MM/DD/YYYY format.";
+                        }
                     }
                     return null;
                 }));
@@ -207,18 +209,20 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
                 measurePeriodToInput.getDateBox(),
                 toPanel,
                 (s) -> {
-                    try {
-                        com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");
-                        Date toDate = dateFormat.parseStrict(generalInformationModel.getMeasureToPeriod());
-                        if (generalInformationModel.getMeasureFromPeriod() != null) {
-                            Date fromDate = dateFormat.parseStrict(generalInformationModel.getMeasureFromPeriod());
-                            if (fromDate.after(toDate)) {
-                                return "To date must be after From date.";
+                    if (MatContext.get().isCurrentModelTypeFhir() || !calendarYear.getValue()) {
+                        try {
+                            com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");
+                            Date toDate = dateFormat.parseStrict(generalInformationModel.getMeasureToPeriod());
+                            if (generalInformationModel.getMeasureFromPeriod() != null) {
+                                Date fromDate = dateFormat.parseStrict(generalInformationModel.getMeasureFromPeriod());
+                                if (fromDate.after(toDate)) {
+                                    return "To date must be after From date.";
+                                }
                             }
-                        }
 
-                    } catch (Exception e) {
-                        return "Not MM/DD/YYYY format.";
+                        } catch (Exception e) {
+                            return "Not MM/DD/YYYY format.";
+                        }
                     }
                     return null;
                 }));
@@ -475,7 +479,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         experimentalCheckbox.getElement().setAttribute("id", "experimentalCB");
         experimentalCheckbox.setValue(generalInformationModel.isExperimental());
         experimentalCheckbox.setTitle(experimentalLabel.getTitle());
-        experimentalCheckbox.getElement().setAttribute("aria-label","Experimental Checkbox");
+        experimentalCheckbox.getElement().setAttribute("aria-label", "Experimental Checkbox");
 
         panel.add(experimentalLabel);
         panel.add(experimentalCheckbox);
@@ -520,7 +524,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput,
                     (s) -> getFirst(CommonMeasureValidator.validateFhirMeasureName(s))));
         }
-        measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput,(s) -> getFirst(CommonMeasureValidator.validateMeasureName(s))));
+        measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput, (s) -> getFirst(CommonMeasureValidator.validateMeasureName(s))));
         measureNamePanel.add(measureNameLabel);
         measureNamePanel.add(measureNameInput);
         return measureNamePanel;
@@ -537,7 +541,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         abbrInput.setWidth(TEXT_BOX_WIDTH);
         abbrInput.setMaxLength(ECQM_ABBR_MAX_LENGTH);
         abbrInput.addBlurHandler(errorHandler.buildBlurHandler(abbrInput,
-                s-> getFirst(CommonMeasureValidator.validateECQMAbbreviation(s))));
+                s -> getFirst(CommonMeasureValidator.validateECQMAbbreviation(s))));
 
         abbreviationPanel.add(abbrInput);
         return abbreviationPanel;

@@ -319,18 +319,21 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     private void saveCQLGeneralInfo() {
         if (hasEditPermissions()) {
             resetMessagesAndSetPageDirty(false);
+
             StandaloneCQLGeneralInformationView generalInfoView = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
-            String libraryName = generalInfoView.getLibraryNameTextBox().getText().trim();
-            String commentContent = generalInfoView.getCommentsTextBox().getText().trim();
-            String description = generalInfoView.getDescriptionTextArea().getText().trim();
-            String stewardId = generalInfoView.getStewardListBox().getSelectedValue();
-            if (stewardId.equals("--Select--")) {
-                stewardId = null;
-            }
-            boolean isExperimental = generalInfoView.getExperimentalCheckbox().getValue();
-            boolean isValid = generalInfoView.validateGeneralInformationSection(messagePanel, libraryName, commentContent, description, stewardId, isExperimental);
-            if (isValid) {
-                saveCQLGeneralInformation(libraryName, commentContent, description, stewardId, isExperimental);
+            if (generalInfoView.getErrorHandler().validate().isEmpty()) {
+                String libraryName = generalInfoView.getLibraryNameTextBox().getText().trim();
+                String commentContent = generalInfoView.getCommentsTextBox().getText().trim();
+                String description = generalInfoView.getDescriptionTextArea().getText().trim();
+                String stewardId = generalInfoView.getStewardListBox().getSelectedValue();
+                if (stewardId.equals("--Select--")) {
+                    stewardId = null;
+                }
+                boolean isExperimental = generalInfoView.getExperimentalCheckbox().getValue();
+                boolean isValid = generalInfoView.validateGeneralInformationSection(messagePanel, libraryName, commentContent, description, stewardId, isExperimental);
+                if (isValid) {
+                    saveCQLGeneralInformation(libraryName, commentContent, description, stewardId, isExperimental);
+                }
             }
         }
     }

@@ -9,10 +9,13 @@ import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.AbstractNewMeasureView;
 import mat.client.shared.*;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static mat.model.clause.ModelTypeHelper.FHIR;
@@ -33,6 +36,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     private RadioButton qdmModel = new RadioButton("measureModel", "QDM");
     FormLabel modelLabel = new FormLabel();
     private FormGroup libraryModelGroup = new FormGroup();
+    private ErrorHandler errorHandler = new ErrorHandler();
+
 
     SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 
@@ -97,7 +102,20 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.add(nameField);
         horizontalPanel.add(new HTML(AbstractNewMeasureView.CAUTION_LIBRARY_NAME_MSG_STR));
+        nameField.addBlurHandler(errorHandler.buildBlurHandler(nameField, (s) -> {
+            String result = null;
+            if (fhirModel.getValue()) {
+                result = getFirst(CommonMeasureValidator.validateFhirLibraryName(s));
+            } else {
+                result = getFirst(CommonMeasureValidator.validateQDMName(s));
+            }
+            return result;
+        }));
         return horizontalPanel;
+    }
+
+    protected String getFirst(List<String> list) {
+        return list == null || list.isEmpty() ? null : list.get(0);
     }
 
     /**
@@ -220,5 +238,9 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
         return createNewConfirmationDialogBox;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
     }
 }

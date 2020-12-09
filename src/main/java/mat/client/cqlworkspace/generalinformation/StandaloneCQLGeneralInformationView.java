@@ -280,6 +280,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         descriptionTextArea.setHeight("220px");
         descriptionGroup.add(descriptionLabel);
         descriptionGroup.add(descriptionTextArea);
+        descriptionTextArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(descriptionTextArea,descriptionGroup));
 
         FormLabel commentsLabel = new FormLabel();
         commentsLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
@@ -308,6 +309,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         stewardListBox.setEnabled(true);
         stewardGroup.add(stewardLabel);
         stewardGroup.add(stewardListBox);
+        stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox,stewardGroup));
 
         FormLabel experimentalLabel = new FormLabel();
         experimentalLabel.setText("Experimental");
@@ -321,7 +323,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         experimentalGroup.add(experimentalCheckbox);
         experimentalGroup.add(experimentalLabel);
 
-        heading.getElement().setTabIndex(0);
+        heading.getElement().setTabIndex(-1);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 
@@ -676,5 +678,9 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
     private String getFirst(List<String> list) {
         return list != null && list.size() > 0 ? list.get(0) : null;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
     }
 }

@@ -821,30 +821,32 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             return;
         }
 
-        updateDetailsFromView();
+        if (detailDisplay.getErrorHandler() != null && detailDisplay.getErrorHandler().validate().isEmpty()) {
+            updateDetailsFromView();
 
-        if (isValid(currentDetails, false)) {
-            setSearchingBusy(true);
-            MatContext.get().getMeasureService().saveNewMeasure(currentDetails, new AsyncCallback<SaveMeasureResult>() {
+            if (isValid(currentDetails, false)) {
+                setSearchingBusy(true);
+                MatContext.get().getMeasureService().saveNewMeasure(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    Mat.hideLoadingMessage();
-                    detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                }
-
-                @Override
-                public void onSuccess(SaveMeasureResult result) {
-                    Mat.hideLoadingMessage();
-                    if (result.isSuccess()) {
-                        displaySuccessAndRedirectToMeasure(result.getId());
-                    } else {
-                        detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Mat.hideLoadingMessage();
+                        detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     }
-                }
-            });
-        } else {
-            setSearchingBusy(false);
+
+                    @Override
+                    public void onSuccess(SaveMeasureResult result) {
+                        Mat.hideLoadingMessage();
+                        if (result.isSuccess()) {
+                            displaySuccessAndRedirectToMeasure(result.getId());
+                        } else {
+                            detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
+                        }
+                    }
+                });
+            } else {
+                setSearchingBusy(false);
+            }
         }
     }
 

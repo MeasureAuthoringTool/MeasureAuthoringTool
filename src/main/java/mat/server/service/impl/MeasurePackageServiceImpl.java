@@ -220,17 +220,18 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         String cqlString = CQLUtilityClass.getCqlString(model, "").getLeft();
         CQLFormatter formatter = new CQLFormatter();
         cqlString = formatter.format(cqlString);
+        String formattedXml = measureXML.getMeasureXMLAsString();
 
         if (!model.isFhir()) {
             // Right now this uses model 1.4.6 so it won't work with fhir.
             // Once we upgrade to 1.5.0_SNAPSHOT it should work.
             ReverseEngineerListener listener = new ReverseEngineerListener(cqlString, model);
             CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
-            cqlString = CQLUtilityClass.getXMLFromCQLModel(reversedEngineeredCQLModel);
+            formattedXml = CQLUtilityClass.getXMLFromCQLModel(reversedEngineeredCQLModel);
         }
 
         XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-        processor.replaceNode(cqlString, "cqlLookUp", "measure");
+        processor.replaceNode(formattedXml, "cqlLookUp", "measure");
         String updatedMeasureXMLString = processor.transform(processor.getOriginalDoc());
         return updatedMeasureXMLString;
     }
@@ -240,7 +241,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         String measureId = measure.getId();
         String releaseVersion = measure.getReleaseVersion();
         export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
-        export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
 
         if (measure.isFhirMeasure()) {
             measureExportDAO.save(export);
@@ -263,12 +263,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                 libExport.setElmXml(pkg.getMeasureLibElmXml());
                 libraryExportDao.save(libExport);
             }
+            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
         } else {
+            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
             export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
             export.setElmXml(MeasureArtifactGenerator.getELMArtifact(measureId));
             export.setMeasureJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
         }
-
         measureExportDAO.save(export);
     }
 

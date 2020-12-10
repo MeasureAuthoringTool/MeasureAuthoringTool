@@ -58,6 +58,7 @@ public class FhirCqlParserService implements FhirCqlParser {
         String eightHourTicket = getTicket();
         MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
         cqlXmlReq.setCql(cql);
+        cqlXmlReq.getValidationRequest().setValidateReturnType(true);
         cqlXmlReq.setSourceModel(sourceModel);
         HttpHeaders headers = new HttpHeaders();
         headers.add(UMLS_TOKEN, eightHourTicket);

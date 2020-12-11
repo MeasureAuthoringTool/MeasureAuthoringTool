@@ -420,7 +420,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void buildPatientBasedInput() {
         patientBasedListBox.getElement().setId("patientBasedMeasure_listbox");
-        patientBasedListBox.setTitle("Patient Based Indicator Required.");
+        patientBasedListBox.setTitle("Patient Based Measure required");
         patientBasedListBox.setStyleName("form-control");
         patientBasedListBox.setVisibleItemCount(1);
         patientBasedListBox.setWidth("18em");

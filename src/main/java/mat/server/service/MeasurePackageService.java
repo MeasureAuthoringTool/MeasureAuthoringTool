@@ -3,6 +3,7 @@ package mat.server.service;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.dto.fhirconversion.FhirValidationResult;
 import mat.model.DataType;
 import mat.model.QualityDataSet;
 import mat.model.clause.ComponentMeasure;
@@ -241,7 +242,7 @@ public interface MeasurePackageService {
 
     void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList);
 
-    void createPackageArtifacts(Measure measure, MeasureExport export);
+    List<FhirValidationResult> createPackageArtifacts(Measure measure, MeasureExport export);
 
     ValidateMeasureResult validateExportsForCompositeMeasures(String key) throws Exception;
 }

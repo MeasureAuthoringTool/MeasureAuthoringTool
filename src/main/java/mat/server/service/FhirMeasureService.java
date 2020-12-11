@@ -4,6 +4,7 @@ import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.shared.MatException;
+import mat.dto.fhirconversion.PushValidationResult;
 
 public interface FhirMeasureService {
     FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure,
@@ -13,5 +14,5 @@ public interface FhirMeasureService {
 
     FhirMeasurePackageResult packageMeasure(String measureId);
 
-    String push(String measureId);
+    PushValidationResult push(String measureId);
 }

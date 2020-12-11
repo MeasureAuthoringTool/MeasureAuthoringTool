@@ -87,6 +87,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();
         warningMessageAlert.clearAlert();
+        errorHandler.clearErrors();
     }
 
     @Override

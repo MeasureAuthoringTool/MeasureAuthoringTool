@@ -9,6 +9,7 @@ import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.PushValidationResult;
 import mat.server.logging.LogFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
@@ -53,12 +54,12 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     }
 
     @Override
-    public String push(String measureId) {
+    public PushValidationResult push(String measureId) {
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", measureId);
         return rest(fhirServicesUrl + FHIR_PUSH_MEASURE_PARAMS,
                 HttpMethod.POST,
-                String.class,
+                PushValidationResult.class,
                 uriVariables);
     }
 

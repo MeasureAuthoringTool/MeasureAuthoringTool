@@ -1,5 +1,7 @@
 package mat.server.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.FhirMeasurePackageResult;
@@ -24,6 +26,8 @@ import mat.dao.clause.MeasureShareDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.PackagerDAO;
 import mat.dao.clause.ShareLevelDAO;
+import mat.dto.fhirconversion.FhirValidationResult;
+import mat.dto.fhirconversion.PushValidationResult;
 import mat.model.DataType;
 import mat.model.QualityDataSet;
 import mat.model.User;
@@ -55,6 +59,7 @@ import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,14 +242,19 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     }
 
     @Override
-    public void createPackageArtifacts(Measure measure, MeasureExport export) {
+    public List<FhirValidationResult> createPackageArtifacts(Measure measure, MeasureExport export) {
         String measureId = measure.getId();
         String releaseVersion = measure.getReleaseVersion();
         export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
 
         if (measure.isFhirMeasure()) {
             measureExportDAO.save(export);
-            fhirMeasureService.push(measureId);
+            PushValidationResult errorResult = fhirMeasureService.push(measureId);
+            if (errorResult != null && !errorResult.isValid()) {
+                logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
+                return errorResult.getFhirValidationResults();
+            }
+
             FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
             export.setCql(pkg.getMeasureLibCql());
             export.setElmXml(pkg.getMeasureLibElmXml()); //elm xml
@@ -271,6 +281,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             export.setMeasureJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
         }
         measureExportDAO.save(export);
+        return null;
     }
 
     @Override
@@ -545,12 +556,21 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     public ValidateMeasureResult createExports(final String key, final List<ValueSet> ValueSetsList, boolean shouldCreateArtifacts) throws Exception {
         final MeasureExport export = generateExport(key, ValueSetsList);
         final ValidateMeasureResult result = new ValidateMeasureResult();
+        result.setValidationMessages(new ArrayList<>());
         result.setValid(true);
-        createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
+
+        List<FhirValidationResult> errorList = createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
+        if (CollectionUtils.isNotEmpty(errorList)) {
+            result.setValid(false);
+            errorList.stream()
+                    .filter(e -> e.getErrorDescription() != null && !e.getErrorDescription().isEmpty())
+                    .limit(5)
+                    .forEach(el-> result.getValidationMessages().add(el.getErrorDescription()));
+        }
         return result;
     }
 
-    private void createAndSaveExportsAndArtifacts(MeasureExport export, boolean shouldCreateArtifacts) {
+    private List<FhirValidationResult> createAndSaveExportsAndArtifacts(MeasureExport export, boolean shouldCreateArtifacts) {
         final Measure measure = export.getMeasure();
         measure.setReleaseVersion(getCurrentReleaseVersion());
         measure.setExportedDate(new Date());
@@ -561,8 +581,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             measureLibraryService.exportDraftCQLLibraryForMeasure(measure);
         }
         if (shouldCreateArtifacts) {
-            createPackageArtifacts(measure, export);
+            return createPackageArtifacts(measure, export);
         }
+        return null;
     }
 
 

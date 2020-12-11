@@ -2,6 +2,7 @@ package mat.server.service;
 
 import mat.client.measure.FhirMeasurePackageResult;
 import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.PushValidationResult;
 import mat.server.service.cql.HumanReadableArtifacts;
 
 public interface FhirMeasureRemoteCall {
@@ -25,7 +26,7 @@ public interface FhirMeasureRemoteCall {
 
     FhirMeasurePackageResult packageMeasure(String measureId);
 
-    String push(String measureId);
+    PushValidationResult push(String measureId);
 
     HumanReadableArtifacts getHumanReadableArtifacts(String measureId);
 }

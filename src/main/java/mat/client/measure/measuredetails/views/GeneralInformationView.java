@@ -570,7 +570,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     protected void buildPatientBasedInput() {
         patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
-        patientBasedInput.setTitle("Patient Based Indicator Required.");
+        patientBasedInput.setTitle("Patient Based Measure required");
         patientBasedInput.setStyleName("form-control");
         patientBasedInput.setVisibleItemCount(1);
         patientBasedInput.setWidth("18em");

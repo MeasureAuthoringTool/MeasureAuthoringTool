@@ -19,7 +19,7 @@ if (isValid) then (yes)
          :Show harp support page;
          end;
        endif
-    else (didNotFindHarpId) then (no)
+    else (didNotFindHarpId)
        :Show Link accounts page;
        stop
     endif

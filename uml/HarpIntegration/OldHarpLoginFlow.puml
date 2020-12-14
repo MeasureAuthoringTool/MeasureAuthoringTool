@@ -1,0 +1,34 @@
+@startuml
+start
+:validateToken(String accessToken);
+if (isValid) then (yes)
+  :getUserInfo(String accessToken);
+  if (isSuccess) then (yes)
+    :checkForAssociatedHarpId(String harpId);
+    if (foundHarpId) then (yes)
+       :initSession(String accessToken,String harpId,...);
+       if (success) then (yes)
+          :Continue loading MAT;
+          stop;
+       elseif (accountLocked)
+          :Show locked message;
+          :Show harp support page;
+          end;
+       else (harpIdNotFound)
+         :Show harp id not found;
+         :Show harp support page;
+         end;
+       endif
+    else (didNotFindHarpId) then (no)
+       :Show Link accounts page;
+       stop
+    endif
+  else (failure)
+    :Logout;
+    end;
+  endif
+else (no)
+    :Logout
+    end;
+end;
+@enduml

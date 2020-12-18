@@ -38144,9 +38144,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
     getTemplateData: function getTemplateData() {
 
       var oktaSettings = this.settings;
-      var oktaTermsConditionsUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaTermsConditionsEndPoint');
-      var harpSignUpUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaRedirectEndPoint') + '?' + oktaSettings.get('oktaRedirectParamName') + '=' + oktaSettings.get('harpSignUpAppName');
-      var harpRecorveryUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaRedirectEndPoint') + '?' + oktaSettings.get('oktaRedirectParamName') + '=' + oktaSettings.get('harpRecoveryAppName');
+      var oktaTermsConditionsUrl = oktaSettings.get('oktaTermsConditionsEndPoint');
+      var harpSignUpUrl = oktaSettings.get('harpSignUpUrl');
+      var harpRecorveryUrl = oktaSettings.get('harpRecoveryUrl');
       var helpLinkUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaHelpEndPoint');
 
       var oktaTermsConditionsLinkContent = oktaSettings.get('oktaTermsConditionsLinkContent');
@@ -51839,14 +51839,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           name: 'rememberDevice',
           type: 'checkbox'
         });
-      }
-
-      try {
-        window.setTimeout(function () {
-          return document.querySelector('.email-request-button').focus();
-        }, 300);
-      } catch (e) {
-        console.log(e);
       }
     }
 

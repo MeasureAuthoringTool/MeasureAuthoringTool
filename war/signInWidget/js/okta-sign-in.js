@@ -51840,8 +51840,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           type: 'checkbox'
         });
       }
-    }
 
+      try {
+        window.setTimeout(function () {
+          document.querySelector('.email-request-button').focus();
+        }, 300);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));

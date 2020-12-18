@@ -18,11 +18,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.dto.UserAuditLogDTO;
+import mat.shared.SafeHtmlCell;
 
 import java.util.Date;
 import java.util.List;
@@ -99,14 +99,14 @@ public class ManageUserHistoryView implements
 		Label searchHeader = new Label("Log Entry");
 		searchHeader.getElement().setId("historyCellTableCaption_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement()
 				.cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(searchHeader.getElement());
 
 		Column<UserAuditLogDTO, SafeHtml> userAction = new Column<UserAuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(UserAuditLogDTO object) {
 				return CellTableUtility
@@ -118,7 +118,7 @@ public class ManageUserHistoryView implements
 						+ "</span>"));
 
 		Column<UserAuditLogDTO, SafeHtml> userActivity = new Column<UserAuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(UserAuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object
@@ -130,7 +130,7 @@ public class ManageUserHistoryView implements
 						+ "User Activity" + "</span>"));
 
 		Column<UserAuditLogDTO, SafeHtml> lastModifiedBy = new Column<UserAuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(UserAuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object.getUserEmail());
@@ -141,7 +141,7 @@ public class ManageUserHistoryView implements
 						+ "Last Modified By" + "</span>"));
 
 		Column<UserAuditLogDTO, SafeHtml> lastModifiedDate = new Column<UserAuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(UserAuditLogDTO object) {
 				return CellTableUtility
@@ -153,7 +153,7 @@ public class ManageUserHistoryView implements
 						+ "Last Modified Date" + "</span>"));
 
 		Column<UserAuditLogDTO, SafeHtml> additionalInfo = new Column<UserAuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(UserAuditLogDTO object) {
 				if (object.getAdditionalInfo() != null) {
@@ -185,7 +185,7 @@ public class ManageUserHistoryView implements
 			cellTable = new CellTable<UserAuditLogDTO>();
 			ListDataProvider<UserAuditLogDTO> listDataProvider = new ListDataProvider<UserAuditLogDTO>();
 			cellTable
-					.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+					.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			cellTable.setRowData(results);
 			cellTable.setRowCount(results.size(), true);
 			cellTable.setPageSize(PAGE_SIZE);

@@ -14,8 +14,10 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.MeasureSteward;
 import mat.shared.CQLModelValidator;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -60,6 +62,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
     private String stewardId;
     private String stewardValue;
 
+    private ErrorHandler errorHandler = new ErrorHandler();
+
 
     public StandaloneCQLGeneralInformationView() {
     }
@@ -81,7 +85,6 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
             buildForFhir();
         } else {
             buildForQDM();
-            ;
         }
     }
 
@@ -102,6 +105,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
+        if (MatContext.get().isCurrentCQLLibraryModelTypeFhir()) {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        } else {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
+        }
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
@@ -117,6 +127,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryVersionTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         libraryVersionTextBox.getElement().setId("libraryVersionValue_TextBox");
         libraryVersionTextBox.setReadOnly(true);
+        libraryVersionTextBox.setEnabled(false);
 
         libraryVersionGroup.add(libraryVersionLabel);
         libraryVersionGroup.add(libraryVersionTextBox);
@@ -132,6 +143,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         usingModelTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         usingModelTextBox.getElement().setId("usingModelValue_TextBox");
         usingModelTextBox.setReadOnly(true);
+        usingModelTextBox.setEnabled(false);
 
         usingModelGroup.add(usingModeLabel);
         usingModelGroup.add(usingModelTextBox);
@@ -147,11 +159,10 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
         modelVersionTextBox.getElement().setId("modelVersionValue_TextBox");
         modelVersionTextBox.setReadOnly(true);
+        modelVersionTextBox.setEnabled(false);
 
         modelVersionGroup.add(modelVersionLabel);
         modelVersionGroup.add(modelVersionTextBox);
-
-        heading.getElement().setTabIndex(0);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 
@@ -183,7 +194,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
         FormLabel libraryNameLabel = new FormLabel();
         libraryNameLabel.setText("CQL Library Name");
-        libraryNameLabel.setTitle("CQL Library Name");
+        libraryNameLabel.setShowRequiredIndicator(true);
+        libraryNameLabel.setTitle("CQL Library Name Required");
         libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         libraryNameLabel.setWidth(PIXEL_150);
         libraryNameLabel.setId("libraryNameLabel_Label");
@@ -193,6 +205,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
+        if (MatContext.get().isCurrentCQLLibraryModelTypeFhir()) {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        } else {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
+        }
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
@@ -250,6 +269,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
         FormLabel descriptionLabel = new FormLabel();
         descriptionLabel.setText("CQL Library Description");
+        descriptionLabel.setShowRequiredIndicator(true);
+        descriptionLabel.setTitle("CQL Library Description Required");
         descriptionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         descriptionLabel.getElement().setId("descriptionLabel");
         descriptionLabel.setWidth("250px");
@@ -261,12 +282,14 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         descriptionTextArea.setHeight("220px");
         descriptionGroup.add(descriptionLabel);
         descriptionGroup.add(descriptionTextArea);
+        descriptionTextArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(descriptionTextArea,descriptionGroup));
 
         FormLabel commentsLabel = new FormLabel();
         commentsLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         commentsLabel.setId("commentsLabel");
         commentsLabel.setFor("commentsContent");
         commentsLabel.setText("Comments");
+        commentsLabel.setTitle("Comments");
         comments.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;");
         comments.getElement().setAttribute("maxlength", COMMENTS_MAX_LENGTH);
         comments.getElement().setAttribute("id", "commentsContent");
@@ -277,16 +300,19 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
         FormLabel stewardLabel = new FormLabel();
         stewardLabel.setText("Publisher");
+        stewardLabel.setShowRequiredIndicator(true);
+        stewardLabel.setTitle("Publisher Required");
         stewardLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         stewardLabel.setWidth("250px");
         stewardLabel.setId("publisherLabel");
         stewardLabel.getElement().setAttribute("for", "publisherListBoxMVP");
-        stewardListBox.setTitle("Measure Publisher List");
+        stewardListBox.setTitle("Measure Publisher List Required");
         stewardListBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
         stewardListBox.getElement().setId("publisherListBoxMVP");
         stewardListBox.setEnabled(true);
         stewardGroup.add(stewardLabel);
         stewardGroup.add(stewardListBox);
+        stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox,stewardGroup));
 
         FormLabel experimentalLabel = new FormLabel();
         experimentalLabel.setText("Experimental");
@@ -296,10 +322,11 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         experimentalLabel.getElement().setAttribute("for", "experimentalCheckbox");
         experimentalCheckbox.getElement().setAttribute(STYLE, "margin-left:15px;width:50px;height:32px;");
         experimentalCheckbox.getElement().setId("experimentalCheckbox");
+        experimentalCheckbox.getElement().setAttribute("aria-label","Experimental Checkbox");
         experimentalGroup.add(experimentalCheckbox);
         experimentalGroup.add(experimentalLabel);
 
-        heading.getElement().setTabIndex(0);
+        heading.getElement().setTabIndex(-1);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 
@@ -650,5 +677,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
     public void setStewardValue(String stewardValue) {
         this.stewardValue = stewardValue;
+    }
+
+    private String getFirst(List<String> list) {
+        return list != null && list.size() > 0 ? list.get(0) : null;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
     }
 }

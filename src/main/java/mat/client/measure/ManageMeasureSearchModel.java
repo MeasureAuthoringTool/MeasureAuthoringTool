@@ -118,51 +118,17 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isMeasureEditOrViewable = result.isMeasureEditOrViewable();
         }
 
-
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Result result = (Result) o;
-            return isHistorical() == result.isHistorical() &&
-                    isSharable() == result.isSharable() &&
-                    isEditable() == result.isEditable() &&
-                    isClonable() == result.isClonable() &&
-                    isExportable() == result.isExportable() &&
-                    isFhirConvertible() == result.isFhirConvertible() &&
-                    isMeasureLocked() == result.isMeasureLocked() &&
-                    isTransferable() == result.isTransferable() &&
-                    isDraft() == result.isDraft() &&
-                    isDeleted() == result.isDeleted() &&
-                    geteMeasureId() == result.geteMeasureId() &&
-                    isMeasureFamily() == result.isMeasureFamily() &&
-                    isDraftable() == result.isDraftable() &&
-                    isVersionable() == result.isVersionable() &&
-                    isValidatable() == result.isValidatable() &&
-                    getClickCount() == result.getClickCount() &&
-                    Objects.equals(getId(), result.getId()) &&
-                    Objects.equals(getName(), result.getName()) &&
-                    Objects.equals(getMeasureModel(), result.getMeasureModel()) &&
-                    Objects.equals(getStatus(), result.getStatus()) &&
-                    Objects.equals(getScoringType(), result.getScoringType()) &&
-                    Objects.equals(getShortName(), result.getShortName()) &&
-                    Objects.equals(getLockedUserInfo(), result.getLockedUserInfo()) &&
-                    Objects.equals(getVersion(), result.getVersion()) &&
-                    Objects.equals(getFinalizedDate(), result.getFinalizedDate()) &&
-                    Objects.equals(getMeasureSetId(), result.getMeasureSetId()) &&
-                    Objects.equals(ownerfirstName, result.ownerfirstName) &&
-                    Objects.equals(getOwnerLastName(), result.getOwnerLastName()) &&
-                    Objects.equals(getOwnerEmailAddress(), result.getOwnerEmailAddress()) &&
-                    Objects.equals(getHqmfReleaseVersion(), result.getHqmfReleaseVersion()) &&
-                    Objects.equals(isPatientBased, result.isPatientBased) &&
-                    Objects.equals(getQdmVersion(), result.getQdmVersion()) &&
-                    Objects.equals(getIsComposite(), result.getIsComposite()) &&
-                    Objects.equals(getCqlLibraryName(), result.getCqlLibraryName());
+            return Objects.equals(id, result.id);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getId(), getName(), getMeasureModel(), getStatus(), getScoringType(), isHistorical(), isSharable(), isEditable(), isClonable(), isExportable(), isFhirConvertible(), getShortName(), isMeasureLocked(), getLockedUserInfo(), isTransferable(), getVersion(), getFinalizedDate(), isDraft(), getMeasureSetId(), isDeleted(), ownerfirstName, getOwnerLastName(), getOwnerEmailAddress(), geteMeasureId(), isMeasureFamily(), getHqmfReleaseVersion(), isDraftable(), isVersionable(), isPatientBased, getQdmVersion(), getIsComposite(), getCqlLibraryName(), isValidatable(), getClickCount());
+            return Objects.hash(id);
         }
 
         /**

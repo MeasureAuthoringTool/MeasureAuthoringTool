@@ -183,24 +183,24 @@ public class CQLAppliedValueSetUtility {
                                                StringBuilder title, boolean hasImage, boolean isUserDefined) {
         if (hasImage && !isUserDefined) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
+                    + "<head> </head> <body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
                     + "title = \"Value set is updated from VSAC.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<span title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
         } else if (hasImage && isUserDefined) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
+                    + "<head> </head> <body><img src =\"images/userDefinedWarning.png\""
                     + "alt=\"Warning : Value set is not available in VSAC.\""
                     + " title=\"Value set is not available in VSAC.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<span title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
         } else {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><span tabIndex = \"0\" title='"
+                    + "<head> </head> <body><span title='"
                     + title + "'>" + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
@@ -232,7 +232,7 @@ public class CQLAppliedValueSetUtility {
                                       CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
                                       HasCell<CQLQualityDataSetDTO, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {

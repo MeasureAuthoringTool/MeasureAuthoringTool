@@ -41,7 +41,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
         gridToolbar.getElement().setAttribute("id", "MostRecentActivityCellTable_gridToolbar");
 
         searchPanel.setStyleName("cellTablePanel");
-        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
         ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
         ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList = new ArrayList<Result>();
         selectedMeasureList.addAll(measureSearchModel.getData());
@@ -64,7 +64,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
         Label measureSearchHeader = new Label("Recent Activity");
         measureSearchHeader.getElement().setId("measureSearchHeader_Label");
         measureSearchHeader.setStyleName("recentSearchHeader");
-        measureSearchHeader.getElement().setTabIndex(0);
 
         searchPanel.add(measureSearchHeader);
         searchPanel.add(gridToolbar);
@@ -84,7 +83,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
             Label searchHeader = new Label("Recent Activity");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
             HTML desc = new HTML("<p> No Recent Activity</p>");
             searchPanel.add(searchHeader);
             searchPanel.add(new SpacerWidget());

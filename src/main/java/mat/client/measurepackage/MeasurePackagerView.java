@@ -2,7 +2,6 @@ package mat.client.measurepackage;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -47,6 +46,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -787,7 +787,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Column<MeasurePackageDetail, SafeHtml> getEditOrViewColumn(boolean isEditable) {
-		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell(); 
+		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell();
 		Column<MeasurePackageDetail, SafeHtml> editColumn = new Column<MeasurePackageDetail, SafeHtml>(editButtonCell) {
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
@@ -799,7 +799,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				String iconCss = isEditable ? "fa fa-pencil fa-lg" : "fa fa-newspaper-o fa-lg";
 				String iconColor = isEditable ? "darkgoldenrod" : "black";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + iconColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">" + editOrView + "</button>");
+						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + iconColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">" + editOrView + "</span></button>");
 			
 				return sb.toSafeHtml();
 			}
@@ -829,7 +829,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 			PanelBody measureGroupingTablePanelBody = new PanelBody();
 			CellTable<MeasurePackageDetail> table = new CellTable<>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<>();
 			List<MeasurePackageDetail> measureGroupingList = new ArrayList<>();
 			measureGroupingList.addAll(packages);

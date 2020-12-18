@@ -21,13 +21,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -101,7 +95,7 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 	/** The main panel. */
 	private FlowPanel  mainPanel = new FlowPanel();
 	
-	private FocusPanel focusPanel = new FocusPanel(mainPanel);
+	private SimplePanel focusPanel = new SimplePanel(mainPanel);
 	
 	/** The cell tree. */
 	private CellTree cellTree;
@@ -165,8 +159,6 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 			treePanel.setHeight("100%");
 		}
 		mainPanel.add(treePanel);
-		focusPanel.addKeyDownHandler(this);
-		focusPanel.addFocusHandler(this);
 	}
 	
 	/**

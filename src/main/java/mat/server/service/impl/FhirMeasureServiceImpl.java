@@ -12,6 +12,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dto.fhirconversion.ConversionOutcome;
 import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.PushValidationResult;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
@@ -121,7 +122,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     @Override
-    public String push(String measureId) {
+    public PushValidationResult push(String measureId) {
         return fhirMeasureRemote.push(measureId);
     }
 

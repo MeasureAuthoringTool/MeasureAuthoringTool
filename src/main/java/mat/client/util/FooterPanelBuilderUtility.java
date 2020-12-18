@@ -35,8 +35,8 @@ public class FooterPanelBuilderUtility {
 		System.out.println("CMS img:"+logoCMS.toString());
 		System.out.println("HHS:"+logoHHS.toString());
                 
-        logoCMS.getElement().setAttribute("tabIndex", "0"); 
-		logoHHS.getElement().setAttribute("tabIndex", "0"); 
+        logoCMS.getElement().setAttribute("tabIndex", "-1");
+		logoHHS.getElement().setAttribute("tabIndex", "-1");
 		
         html = html.replaceAll("\\{img_cms_logo\\}", logoCMS.toString());
 		html = html.replaceAll("\\{img_hhs_logo\\}", logoHHS.toString());
@@ -44,7 +44,7 @@ public class FooterPanelBuilderUtility {
 		
 		HTML logoHTMLDiv = new HTML(html, true);
 
-		logoHTMLDiv.getElement().setAttribute("tabIndex", "0"); 
+		logoHTMLDiv.getElement().setAttribute("tabIndex", "-1");
 		return logoHTMLDiv;
 	}
 	
@@ -98,19 +98,19 @@ public class FooterPanelBuilderUtility {
 	private static String logosHTML =
 			"<div class=\"cms-address-bar\"> "+
 					"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
-					"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" tabindex=\"-1\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
+					"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" tabindex=\"0\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
 					"<h4 style=\"font-size:0;\">CMS.gov</h4>" +
 					"{img_cms_logo}" +
 					"</a> "+
 					"</div> " +
-					"<div id=\"footer-address-text\" tabindex=\"0\"> " +
+					"<div id=\"footer-address-text\"> " +
 					"A federal government website managed by the Centers for Medicare " +
 					"&amp; Medicaid Services <br> 7500 Security Boulevard, " +
 					"Baltimore, MD 21244" +
 					"</div> "+
 					"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
 					"<div id=\"footer_hhs_logo\"> " +
-					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" tabindex=\"-1\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
+					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" tabindex=\"0\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
 					"<h4 style=\"font-size:0;\">hhs.gov</h4>" +
 					"{img_hhs_logo} " +
 					"</a> "+
@@ -125,7 +125,7 @@ public class FooterPanelBuilderUtility {
 			 "<div class=\"custom-footer-nav\"> "+
 						"<div> "+
 						"<div class=\"content\"> "+
-						"<h2 tabindex=\"0\">Helpful Links</h2> "+
+						"<h2 tabindex=\"-1\">Helpful Links</h2> "+
 						"<ul style=\"list-style: none;\"> "+
 						"<li style=\"display: inline-block;*display: inline;\"> "+
 						"<a title=\"Accessibility Policy\" target=\"_blank\" href=\"{accessibility-policy}\"> "+

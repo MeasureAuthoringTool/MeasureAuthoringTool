@@ -10,11 +10,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -22,8 +18,7 @@ import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSafeHTMLCell;
-import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -73,7 +68,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 	}
 	
 	void buildCellTable() {
-		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		ListDataProvider<Result> sortProvider = new ListDataProvider<>();
 		ArrayList<Result> selectedMeasureList = new ArrayList<>();
 		selectedMeasureList.addAll(originalManageCompositeMeasureDetailModel.getAppliedComponentMeasures());
@@ -102,9 +97,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
-			Column<Result, SafeHtml> measureName =
-					new Column<Result, SafeHtml>(new
-							ClickableSafeHtmlCell()) {
+			Column<Result, SafeHtml> measureName = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -117,9 +110,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
 			
-			Column<Result, SafeHtml> alias =
-					new Column<Result, SafeHtml>(new
-							ClickableSafeHtmlCell()) {
+			Column<Result, SafeHtml> alias = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(Result object) { 
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -132,9 +123,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 			table.addColumn(alias, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Alias Column'>" + "Alias" + "</span>"));
 			
-			Column<Result, SafeHtml> version =
-					new Column<Result, SafeHtml>(
-							new MatSafeHTMLCell()) {
+			Column<Result, SafeHtml> version =new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();

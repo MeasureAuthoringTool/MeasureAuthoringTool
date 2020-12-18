@@ -49,7 +49,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     /**

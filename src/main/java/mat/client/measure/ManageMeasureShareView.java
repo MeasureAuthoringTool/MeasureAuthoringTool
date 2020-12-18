@@ -32,6 +32,7 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -59,6 +60,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
 
 	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public ManageMeasureShareView() {
 		content.setStylePrimaryName("contentPanel");
@@ -76,7 +78,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		privateCheck.getElement().setId("privateMeasure_CheckBox");
 		privateCheck.setTitle("Click to mark measure as private");
 		privateCheck.addValueChangeHandler(event -> {
-			if(privateCheck.isChecked()) {
+			if(privateCheck.getValue()) {
 				privateCheck.setTitle("Click to mark measure public");
 			} else {
 				privateCheck.setTitle("Click to mark measure private");
@@ -97,7 +99,8 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(searchWidgetFocusPanel);		
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		
+		searchWidgetBootStrap.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(searchWidgetBootStrap.getSearchBox(),vp));
+
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
 
@@ -108,11 +111,15 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(buttonBar);
 	}
 
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
 	private CellTable<MeasureShareDTO> addColumnToTable(final CellTable<MeasureShareDTO> cellTable) {
 		Label searchHeader = new Label("Select users with whom you wish to share modify access.");
 		searchHeader.getElement().setId("measureShareTableHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(searchHeader.getElement());

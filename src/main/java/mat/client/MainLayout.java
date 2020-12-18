@@ -70,6 +70,10 @@ public abstract class MainLayout {
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
     private FormPanel logoutForm = new FormPanel("logout");
 
+    {
+        logoutForm.getElement().setAttribute("tab-index", "-1");
+    }
+
     /**
      * hide spinner and
      * reset the loading queue.
@@ -79,7 +83,14 @@ public abstract class MainLayout {
         if (MatContext.get().getLoadingQueue().size() == 0) {
             hideProgressSpinner();
         }
+        setFocusToSkipToMainContent();
     }
+
+    private static native void setFocusToSkipToMainContent() /*-{
+        $doc.getElementById("menu").focus();
+    }-*/;
+
+
 
     protected static FocusableWidget getSkipList() {
         return skipListHolder;
@@ -159,7 +170,6 @@ public abstract class MainLayout {
         content.setStylePrimaryName("mainContentPanel");
         setId(content, "content");
         Mat.removeInputBoxFromFocusPanel(content.getElement());
-
         return content;
     }
 
@@ -170,7 +180,6 @@ public abstract class MainLayout {
      * @return Panel
      */
     private Panel buildFooterPanel() {
-
         final FlowPanel footerMainPanel = new FlowPanel();
         footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
         footerMainPanel.setStylePrimaryName("footer");
@@ -234,7 +243,7 @@ public abstract class MainLayout {
         ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
 
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>");
+        sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"-1\">Profile</span>");
         ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
 
         return ab;
@@ -251,7 +260,7 @@ public abstract class MainLayout {
         ListItem li = new ListItem();
         li.setText("Signed in as");
         li.setTitle("Signed in as");
-        li.getElement().setTabIndex(0);
+        li.getElement().setTabIndex(-1);
         li.setStyleName("profileText", true);
         return li;
     }
@@ -262,12 +271,12 @@ public abstract class MainLayout {
         signedInAsName.setTitle(name);
         signedInAsName.setStyleName("labelStyling", true);
         signedInAsName.setStyleName("profileText", true);
-        signedInAsName.getElement().setTabIndex(0);
+        signedInAsName.getElement().setTabIndex(-1);
         String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
         signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
         signedInAsOrg.setTitle(orgRole);
         signedInAsOrg.setStyleName("profileText", true);
-        signedInAsOrg.getElement().setTabIndex(0);
+        signedInAsOrg.getElement().setTabIndex(-1);
     }
 
     private void setAccessibilityForLinks() {

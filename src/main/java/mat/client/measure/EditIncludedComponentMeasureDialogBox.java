@@ -183,7 +183,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		PanelHeader searchHeader = new PanelHeader();
 		searchHeader.getElement().setId("searchHeader_Label_IncludeSection");
 		searchHeader.setStyleName("measureGroupingTableHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 
 		HTML searchHeaderText = new HTML("<strong>Available Measures</strong>");
 		searchHeader.add(searchHeaderText);
@@ -196,7 +196,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		
 		if (tempMeasures.size() > 0) {
 			table = new CellTable<ManageMeasureSearchModel.Result>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			listDataProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
@@ -206,7 +206,7 @@ public class EditIncludedComponentMeasureDialogBox {
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			selectionModel = new SingleSelectionModel<ManageMeasureSearchModel.Result>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			table.setSelectionModel(selectionModel);
 			table = addColumnToTable(table, sortHandler);
 			listDataProvider.addDataDisplay(table);
@@ -367,7 +367,7 @@ public class EditIncludedComponentMeasureDialogBox {
 	private HasCell<ManageMeasureSearchModel.Result, Boolean> getCheckBoxCell(final boolean isUsed) {
 		HasCell<ManageMeasureSearchModel.Result, Boolean> hasCell = new HasCell<ManageMeasureSearchModel.Result, Boolean>() {
 
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true, isUsed);
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 
 			@Override
 			public Cell<Boolean> getCell() {

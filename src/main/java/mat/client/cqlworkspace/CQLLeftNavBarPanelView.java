@@ -1,5 +1,6 @@
 package mat.client.cqlworkspace;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -137,26 +138,26 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelComponent");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label componentsLabel = new Label("Components");
-		
+
 		Map<String, String> aliases = new HashMap<String,String>();
 		aliases.clear();
 		for(ComponentMeasureTabObject obj : componentObjectsList) {
 			aliases.put(obj.getComponentId(), obj.getAlias());
 		}
-		
+
 		buildSearchAliasBox();
-		
+
 		componentNameListBox.clear();
 		componentNameListBox.setWidth("180px");
 		componentNameListBox.setVisibleItemCount(10);
 		componentNameListBox.getElement().setAttribute("id", "componentsListBox");
-		
+
 		rightVerticalPanel.add(searchAliasTextBox);
 		rightVerticalPanel.add(componentNameListBox);
-		
+
 		addSuggestHandler(searchAliasTextBox, componentNameListBox);
 		addListBoxHandler(componentNameListBox, searchAliasTextBox);
-		
+
 		rightVerticalPanel.setCellHorizontalAlignment(componentsLabel, HasHorizontalAlignment.ALIGN_LEFT);
 		componentHP.add(rightVerticalPanel);
 		componentCollapseBody.add(componentHP);
@@ -164,7 +165,7 @@ public class CQLLeftNavBarPanelView {
 		collapse.add(componentCollapseBody);
 		return collapse;
 	}
-	
+
 	private ClickHandler createClickHandler(SuggestBox suggestBox) {
 		return new ClickHandler() {
 			@Override
@@ -183,7 +184,7 @@ public class CQLLeftNavBarPanelView {
 			badge.setText("" + size);
 		}
 	}
-	
+
 	private void buildComponentsTab() {
 		this.anchor.setIcon(IconType.PENCIL);
 		this.anchor.setTitle("Component");
@@ -201,18 +202,18 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		
+
 		anchor.addClickHandler(event -> {
 			this.anchor.setDataToggle(Toggle.COLLAPSE);
 			this.anchor.setHref("#collapseComponent");
 		});
-		
+
 		anchor.add(componentLabel);
 		anchor.add(badge);
 		anchor.setDataParent("#navGroup");
 		this.anchor.add(collapse);
 	}
-	
+
 
 	public VerticalPanel buildMeasureLibCQLView(){
 		collapse = buildComponentCollapsablePanel();
@@ -240,7 +241,7 @@ public class CQLLeftNavBarPanelView {
 		functionLibrary = new AnchorListItem();
 		cqlLibraryEditorTab = new AnchorListItem();
 
-		
+
 		buildGeneralInfoTab();
 		buildComponentsTab();
 		buildIncludesTab();
@@ -250,7 +251,7 @@ public class CQLLeftNavBarPanelView {
 		buildDefinitionsTab();
 		buildFunctionsTab();
 		buildCQLLibraryEditorTab();
-		
+
 		navPills.add(generalInformation);
 		navPills.add(anchor);
 		navPills.add(includesLibrary);
@@ -263,7 +264,7 @@ public class CQLLeftNavBarPanelView {
 
 		rightHandNavPanel.add(navPills);
 	}
-	
+
 	private void buildGeneralInfoTab() {
 		generalInformation.setIcon(IconType.INFO);
 		generalInformation.setText("General Information");
@@ -271,8 +272,8 @@ public class CQLLeftNavBarPanelView {
 		generalInformation.setActive(true);
 		generalInformation.setId("generatalInformation_Anchor");
 	}
-	
-	
+
+
 	private void buildIncludesTab() {
 		includesLibrary.setIcon(IconType.PENCIL);
 		includesLibrary.setTitle("Includes");
@@ -284,12 +285,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		
+
 		includesAnchor.addClickHandler(event -> {
 			includesLibrary.setDataToggle(Toggle.COLLAPSE);
 			includesLibrary.setHref("#collapseIncludes");
 		});
-		
+
 		includesLabel.setStyleName("transparentLabel");
 		includesLabel.setId("includesLabel_Label");
 		includesAnchor.add(includesLabel);
@@ -301,7 +302,7 @@ public class CQLLeftNavBarPanelView {
 		includesLibrary.setId("includesLibrary_Anchor");
 		includesLibrary.add(includesCollapse);
 	}
-	
+
 	private void buildValueSetsTab() {
 		appliedQDM.setIcon(IconType.PENCIL);
 		appliedQDM.setTitle("Value Sets");
@@ -322,7 +323,7 @@ public class CQLLeftNavBarPanelView {
 		valueSetAnchor.add(valueSetBadge);
 		valueSetAnchor.setDataParent("#navGroup");
 	}
-	
+
 	private void buildCodesTab() {
 		codesLibrary.setIcon(IconType.PENCIL);
 		codesLibrary.setTitle("Codes");
@@ -343,7 +344,7 @@ public class CQLLeftNavBarPanelView {
 		codesAnchor.add(codesBadge);
 		codesAnchor.setDataParent("#navGroup");
 	}
-	
+
 	private void buildParameterTab() {
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -355,13 +356,13 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		
-		
+
+
 		paramAnchor.addClickHandler(event -> {
 			parameterLibrary.setDataToggle(Toggle.COLLAPSE);
 			parameterLibrary.setHref("#collapseParameter");
 		});
-		
+
 		paramLabel.setStyleName("transparentLabel");
 		paramLabel.setId("paramLabel_Label");
 		paramAnchor.add(paramLabel);
@@ -372,7 +373,7 @@ public class CQLLeftNavBarPanelView {
 		parameterLibrary.setId("parameterLibrary_Anchor");
 		parameterLibrary.add(paramCollapse);
 	}
-	
+
 	private void buildDefinitionsTab() {
 		definitionLibrary.setIcon(IconType.PENCIL);
 		definitionLibrary.setTitle("Define");
@@ -385,12 +386,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		
+
 		defineAnchor.addClickHandler(event -> {
 			definitionLibrary.setDataToggle(Toggle.COLLAPSE);
 			definitionLibrary.setHref("#collapseDefine");
 		});
-				
+
 		defineLabel.setStyleName("transparentLabel");
 		defineLabel.setId("defineLabel_Label");
 		defineAnchor.add(defineLabel);
@@ -402,7 +403,7 @@ public class CQLLeftNavBarPanelView {
 		definitionLibrary.add(defineCollapse);
 
 	}
-	
+
 	private void buildFunctionsTab() {
 		functionLibrary.setIcon(IconType.PENCIL);
 		functionLibrary.setId("functionLibrary_Anchor");
@@ -416,12 +417,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		
+
 		funcAnchor.addClickHandler(event -> {
 			functionLibrary.setDataToggle(Toggle.COLLAPSE);
 			functionLibrary.setHref("#collapseFunction");
 		});
-		
+
 		functionLibLabel.setStyleName("transparentLabel");
 		functionLibLabel.setId("functionLibLabel_label");
 		funcAnchor.add(functionLibLabel);
@@ -432,15 +433,15 @@ public class CQLLeftNavBarPanelView {
 		funcAnchor.setDataParent("#navGroup");
 		functionLibrary.add(functionCollapse);
 	}
-	
+
 	private void buildCQLLibraryEditorTab() {
 		cqlLibraryEditorTab.setIcon(IconType.BOOK);
 		cqlLibraryEditorTab.setText("CQL Library Editor");
 		cqlLibraryEditorTab.setTitle("CQL Library Editor");
 		cqlLibraryEditorTab.setId(CQL_LIBRARY_EDITOR_ANCHOR);
 	}
-	
-	
+
+
 
 	private PanelCollapse createIncludesCollapsablePanel() {
 		includesCollapse.setId("collapseIncludes");
@@ -489,7 +490,7 @@ public class CQLLeftNavBarPanelView {
 		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
 		searchSuggestIncludeTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestIncludeTextBox));
 	}
-	
+
 	private void buildSearchSuggestParamBox() {
 		searchSuggestParamTextBox = new SuggestBox(getSuggestOracle(parameterNameMap.values()));
 		searchSuggestParamTextBox.setWidth("180px");
@@ -513,7 +514,7 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label paramLibraryLabel = new Label("Parameter Library");
 		buildSearchSuggestParamBox();
-		
+
 		parameterNameListBox.clear();
 		parameterNameListBox.setWidth("180px");
 		parameterNameListBox.setVisibleItemCount(10);
@@ -581,7 +582,7 @@ public class CQLLeftNavBarPanelView {
 		for(ComponentMeasureTabObject obj : componentObjectsList) {
 			aliases.put(obj.getComponentId(), obj.getAlias());
 		}
-		
+
 		searchAliasTextBox = new SuggestBox(getSuggestOracle(aliases.values()));
 		searchAliasTextBox.setWidth("180px");
 		searchAliasTextBox.setText("Search");
@@ -589,7 +590,7 @@ public class CQLLeftNavBarPanelView {
 		searchAliasTextBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
 		searchAliasTextBox.getValueBox().addClickHandler(createClickHandler(searchAliasTextBox));
 	}
-	
+
 	private void buildSearchSuggestDefineBox() {
 		searchSuggestDefineTextBox = new SuggestBox(getSuggestOracle(defineNameMap.values()));
 		searchSuggestDefineTextBox.setWidth("180px");
@@ -598,7 +599,7 @@ public class CQLLeftNavBarPanelView {
 		searchSuggestDefineTextBox.getElement().setId("searchSuggestDefineTextBox");
 		searchSuggestDefineTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestDefineTextBox));
 	}
-	
+
 	private void buildSearchSuggestFuncBox() {
 		searchSuggestFuncTextBox = new SuggestBox(getSuggestOracle(funcNameMap.values()));
 		searchSuggestFuncTextBox.setWidth("180px");
@@ -644,13 +645,13 @@ public class CQLLeftNavBarPanelView {
 		funcCollapsePanel.add(funcCollapseBody);
 		return funcCollapsePanel;
 
-	}	
-	
-	
+	}
+
+
 	private SuggestOracle getSuggestOracle(Collection<String> values) {
 		return new CQLSuggestOracle(values);
 	}
-	
+
 
 	public void clearAndAddAliasNamesToListBox() {
 		if (includesNameListbox != null) {
@@ -682,7 +683,7 @@ public class CQLLeftNavBarPanelView {
 		});
 		return viewAliasList;
 	}
-	
+
 	public void clearAndAddDefinitionNamesToListBox() {
 		if (defineNameListBox != null) {
 			defineNameListBox.clear();
@@ -772,7 +773,7 @@ public class CQLLeftNavBarPanelView {
 		});
 		return viewParamList;
 	}
-	
+
 
 	private void addSuggestHandler(final SuggestBox suggestBox, final ListBox listBox) {
 		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
@@ -790,7 +791,7 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 	}
-	
+
 
 	private void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox) {
 		listBox.addChangeHandler(new ChangeHandler() {
@@ -804,7 +805,7 @@ public class CQLLeftNavBarPanelView {
 		});
 
 	}
-	
+
 
 	public void updateValueSetMap(List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		if (getAppliedQdmTableList().size() < 10) {
@@ -814,8 +815,8 @@ public class CQLLeftNavBarPanelView {
 		}
 
 	}
-	
-	
+
+
 
 	public void setCodeBadgeValue(List<CQLCode> appliedCodeTableList) {
 		if (appliedCodeTableList.size() < 10) {
@@ -825,8 +826,8 @@ public class CQLLeftNavBarPanelView {
 		}
 
 	}
-	
-	
+
+
 
 	public void updateParamMap() {
 		getParameterMap().clear();
@@ -891,14 +892,14 @@ public class CQLLeftNavBarPanelView {
 		}
 		updateSuggestIncludeOracle();
 	}
-	
+
 	public void updateSuggestParamOracle() {
 		if (searchSuggestParamTextBox != null) {
 			CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestParamTextBox.getSuggestOracle();
 			suggestOracle.setData(parameterNameMap.values());
 		}
 	}
-	
+
 
 	public void updateSuggestDefineOracle() {
 		if (searchSuggestDefineTextBox != null) {
@@ -914,7 +915,7 @@ public class CQLLeftNavBarPanelView {
 			suggestOracle.setData(funcNameMap.values());
 		}
 	}
-	
+
 	public void updateSuggestIncludeOracle() {
 		CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestIncludeTextBox.getSuggestOracle();
 		suggestOracle.setData(includeLibraryNameMap.values());
@@ -959,7 +960,7 @@ public class CQLLeftNavBarPanelView {
 	public void setFunctionMap(HashMap<String, CQLFunctions> functionMap) {
 		this.functionMap = functionMap;
 	}
-	
+
 	public AnchorListItem getComponentsTab() {
 		return anchor;
 	}
@@ -1250,7 +1251,7 @@ public class CQLLeftNavBarPanelView {
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
 	}
-	
+
 	public void setIsDoubleClick(Boolean isDoubleClick) {
 		this.isDoubleClick = isDoubleClick;
 	}
@@ -1266,7 +1267,7 @@ public class CQLLeftNavBarPanelView {
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-	
+
 	public String getOwnerName(CQLLibraryDataSetObject cqlLibrary) {
 		StringBuilder owner = new StringBuilder();
 		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
@@ -1296,7 +1297,7 @@ public class CQLLeftNavBarPanelView {
 	public void setCurrentSelectedFunctionArgumentName(String currentSelectedFunctionArgumentName) {
 		this.currentSelectedFunctionArgumentName = currentSelectedFunctionArgumentName;
 	}
-	
+
 	public String getCurrentSelectedIncLibraryObjId() {
 		return currentSelectedIncLibraryObjId;
 	}
@@ -1320,7 +1321,7 @@ public class CQLLeftNavBarPanelView {
 	public List<QDSAttributes> getAvailableQDSAttributeList(){
 		return availableQDSAttributeList;
 	}
-	
+
 	public void clearShotcutKeyList(){
 		MatContext.get().getParameters().clear();
 		MatContext.get().getDefinitions().clear();
@@ -1332,9 +1333,9 @@ public class CQLLeftNavBarPanelView {
 		MatContext.get().getIncludedParamNames().clear();
 		MatContext.get().getIncludedDefNames().clear();
 		MatContext.get().getIncludedFuncNames().clear();
-		
+
 	}
-	
+
 	public void buildInfoPanel(Widget sourceWidget) {
 
 		PopupPanel panel = new PopupPanel();
@@ -1408,7 +1409,7 @@ public class CQLLeftNavBarPanelView {
 	public void setCurrentSelectedValueSetObjId(String currentSelectedValueSetObjId) {
 		this.currentSelectedValueSetObjId = currentSelectedValueSetObjId;
 	}
-	
+
 	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandAloneCQLLibrary){
 		boolean isValid = true;
 		if(!isStandAloneCQLLibrary && !MatContext.get().isDraftMeasure()) {
@@ -1436,7 +1437,7 @@ public class CQLLeftNavBarPanelView {
 		}
 		return isValid;
 	}
-	
+
 	public ListBox getComponentsListBox() {
 		return componentNameListBox;
 	}
@@ -1471,15 +1472,15 @@ public class CQLLeftNavBarPanelView {
 				optionElement.setTitle(title);
 			}
 		}
-		
+
 		setBadgeNumber(componentObjectsList.size(), badge);
 		updateComponentSearchBox();
 	}
-	
+
 	public void updateComponentSearchBox() {
 		buildSearchAliasBox();
 	}
-	
+
 	private void sortComponentsList(List<ComponentMeasureTabObject> objectList) {
 		Collections.sort(objectList, new Comparator<ComponentMeasureTabObject>() {
 			@Override
@@ -1488,7 +1489,7 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 	}
-	
+
 	public void reset() {
 		getRightHandNavPanel().clear();
 		getViewIncludeLibrarys().clear();
@@ -1501,7 +1502,7 @@ public class CQLLeftNavBarPanelView {
 		getDefineCollapse().clear();
 		getFunctionCollapse().clear();
 	}
-	
+
 	public void resetSelectedObjects() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);

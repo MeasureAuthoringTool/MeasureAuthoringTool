@@ -18,6 +18,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -104,13 +105,14 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	 * @return the cell table
 	 */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
+		cellTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
 		Label cellTableCaption = new Label("Manage Users");
 		cellTableCaption.getElement().setId("manageUserCellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
-		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
@@ -125,13 +127,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 			}
 		};
 		
-		nameColumn.setFieldUpdater(new FieldUpdater<Result, SafeHtml>() {
-			@Override
-			public void update(int index, Result object, SafeHtml value) {
-				MatContext.get().clearDVIMessages();
-				SelectionEvent.fire(ManageUsersSearchView.this, object);
-			}
-		});
+		nameColumn.setFieldUpdater((index, object, value) -> {
+            MatContext.get().clearDVIMessages();
+            SelectionEvent.fire(ManageUsersSearchView.this, object);
+        });
 		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 		
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {

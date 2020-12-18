@@ -79,7 +79,6 @@ public class CQLViewPopulationsDisplay {
         CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 
         xmlTreeView.buildView(cellTree); // Page Layout
-        cellTree.setTabIndex(0);
         xmlTreeView.openMainNode();
         mainPanel.add(xmlTreeView.asWidget());
         mainPanel.add(new SpacerWidget());

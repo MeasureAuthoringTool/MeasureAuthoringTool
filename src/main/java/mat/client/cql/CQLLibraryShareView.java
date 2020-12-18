@@ -32,6 +32,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 
@@ -63,6 +64,8 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
 	/** The search widget focus panel. */
 	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
+
+	private ErrorHandler errorHandler = new ErrorHandler();
 	
 	/**
 	 * Instantiates a new manage measure share view.
@@ -96,6 +99,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		searchWidgetFocusPanel.setWidth("300px");
 		mainPanel.add(searchWidgetFocusPanel);				
 		mainPanel.add(new SpacerWidget());
+		searchWidgetBootStrap.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(searchWidgetBootStrap.getSearchBox(),vp));
 				
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
@@ -107,6 +111,11 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		mainPanel.add(buttonBar);
 		
 	}
+
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
 	/** Adds the column to table.
 	 * @param cellTable the cell table
 	 * @return the cell table */
@@ -189,7 +198,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		Label cellTableHeader = new Label("Select users with whom you wish to share modify access.");
 		cellTableHeader.getElement().setId("CQLLibraryShareTableHeader_Label");
 		cellTableHeader.setStyleName("recentSearchHeader");
-		cellTableHeader.getElement().setAttribute("tabIndex", "0");
+		cellTableHeader.getElement().setAttribute("tabIndex", "-1");
 		
 		if ((data != null)
 				&& (data.size() > 0)) {

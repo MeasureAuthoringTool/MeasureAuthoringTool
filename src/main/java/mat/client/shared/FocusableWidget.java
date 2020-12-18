@@ -7,12 +7,13 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Class FocusableWidget.
  */
-public class FocusableWidget extends FocusPanel implements KeyPressHandler {
+public class FocusableWidget extends SimplePanel implements KeyPressHandler {
 	
 	/** The img. */
 	private Widget img;
@@ -27,7 +28,6 @@ public class FocusableWidget extends FocusPanel implements KeyPressHandler {
 	{
 		this.img = widget;
 		this.setWidget(img);
-		this.addKeyPressHandler(this);
 	}
 
 	

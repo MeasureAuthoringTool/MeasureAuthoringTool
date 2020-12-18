@@ -18,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Name;
 import mat.vsacmodel.MatConcept;
@@ -138,7 +139,7 @@ public abstract class XLSGenerator {
 				+ "be available from the code owner.";
 		HSSFSheet wkst = wkbk.createSheet("Disclaimer");
 		HSSFRow row = wkst.createRow(0);
-		row.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue(
+		row.createCell(0, CellType.STRING).setCellValue(
 				disclaimerText);
 		wkst.setColumnWidth(0, (75 * 256));
 		HSSFCell cell = row.getCell(0);
@@ -278,25 +279,25 @@ public abstract class XLSGenerator {
 	protected final HSSFRow createXLSRow(final HSSFSheet wkst, final String[] values, final int rownum,
 			final HSSFCellStyle style) {
 		HSSFRow row = wkst.createRow(rownum);
-		row.createCell(measuredeveloper, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(measuredeveloper, CellType.STRING)
 		.setCellValue(values[measuredeveloper]);
-		row.createCell(oid, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(oid, CellType.STRING)
 		.setCellValue(values[oid]);
-		row.createCell(version, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(version, CellType.STRING)
 		.setCellValue(values[version]);
-		row.createCell(expansionIdentifier, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(expansionIdentifier, CellType.STRING)
 		.setCellValue(values[expansionIdentifier]);
-		row.createCell(revisionDate, HSSFCell.CELL_TYPE_STRING).setCellValue(
+		row.createCell(revisionDate, CellType.STRING).setCellValue(
 				values[revisionDate]);
-		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(standardconcept, CellType.STRING)
 		.setCellValue(values[standardconcept]);
-		row.createCell(standardtaxonomy, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(standardtaxonomy, CellType.STRING)
 		.setCellValue(values[standardtaxonomy]);
-		row.createCell(standardtaxonomyversion, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(standardtaxonomyversion, CellType.STRING)
 		.setCellValue(values[standardtaxonomyversion]);
-		row.createCell(code, HSSFCell.CELL_TYPE_STRING).setCellValue(
+		row.createCell(code, CellType.STRING).setCellValue(
 				values[code]);
-		row.createCell(codedescription, HSSFCell.CELL_TYPE_STRING)
+		row.createCell(codedescription, CellType.STRING)
 		.setCellValue(values[codedescription]);
 		if (style != null) {
 			row.getCell(measuredeveloper).setCellStyle(style);

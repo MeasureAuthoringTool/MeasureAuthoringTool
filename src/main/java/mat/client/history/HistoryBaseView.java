@@ -20,7 +20,6 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
@@ -28,6 +27,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.CellTableUtility;
 import mat.dto.AuditLogDTO;
+import mat.shared.SafeHtmlCell;
 
 import java.util.Date;
 import java.util.List;
@@ -157,13 +157,13 @@ public abstract class HistoryBaseView {
 		Label searchHeader = new Label("Log Entry");
 		searchHeader.getElement().setId("historyCellTableCaption_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(searchHeader.getElement());
 		
 		Column<AuditLogDTO, SafeHtml> userAction = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object.getActivityType());
@@ -174,7 +174,7 @@ public abstract class HistoryBaseView {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> lastModifiedBy = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object.getUserId());
@@ -185,7 +185,7 @@ public abstract class HistoryBaseView {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> lastModifiedDate = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(convertDateToString(object.getEventTs()));
@@ -196,7 +196,7 @@ public abstract class HistoryBaseView {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> additionalInfo = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				if(object.getAdditionlInfo()!=null){
@@ -224,7 +224,7 @@ public abstract class HistoryBaseView {
 		if((results!=null) && (results.size() > 0)){
 			cellTable = new CellTable<AuditLogDTO>();
 			ListDataProvider<AuditLogDTO> listDataProvider = new ListDataProvider<AuditLogDTO>();
-			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			cellTable.setRowData(results);
 			cellTable.setRowCount(results.size(), true);
 			cellTable.setPageSize(PAGE_SIZE);

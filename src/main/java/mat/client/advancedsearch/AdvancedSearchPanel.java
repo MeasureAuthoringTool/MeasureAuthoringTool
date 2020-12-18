@@ -238,13 +238,13 @@ public class AdvancedSearchPanel {
         final FormLabel scoreLabel = new FormLabel();
         scoreLabel.setText(MEASURE_SCORING);
         scoreLabel.setTitle(MEASURE_SCORING);
-        scoreLabel.getElement().setTabIndex(0);
+        scoreLabel.getElement().setTabIndex(-1);
         scoreheader.add(scoreLabel);
         final FormLabel helpText = new FormLabel();
         helpText.setText(CHECK_ALL_THAT_APPLY);
         helpText.setTitle(CHECK_ALL_THAT_APPLY);
         helpText.setStylePrimaryName("helpText");
-        helpText.getElement().setTabIndex(0);
+        helpText.getElement().setTabIndex(-1);
         helpText.getElement().setAttribute(STYLE, "font-size: 10px;");
         scoreheader.add(helpText);
         final HorizontalPanel scoreRow1 = new HorizontalPanel();

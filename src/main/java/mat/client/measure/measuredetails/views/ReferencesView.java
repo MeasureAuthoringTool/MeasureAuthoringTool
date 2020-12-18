@@ -5,29 +5,19 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.measure.ReferenceTextAndType;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.ReferencesObserver;
-import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessagePanel;
-import mat.client.shared.SpacerWidget;
+import mat.client.shared.*;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
@@ -62,7 +52,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         measureSearchHeader.getElement().setAttribute("tabIndex", "0");
         TableCaptionElement caption = elem.createCaption();
         caption.appendChild(measureSearchHeader.getElement());
-        Column<ReferenceTextAndType, SafeHtml> descriptionColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> descriptionColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 String origRefText = ref.getReferenceText();
@@ -73,7 +63,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
 
 
-        Column<ReferenceTextAndType, SafeHtml> referenceTypeColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> referenceTypeColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(ref.getReferenceType().getDisplayName()));
@@ -81,39 +71,40 @@ public class ReferencesView implements MeasureDetailViewInterface {
         };
         referencesTable.addColumn(referenceTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Reference Type\">" + "Reference Type" + "</span>"));
 
-        Column<ReferenceTextAndType, SafeHtml> editColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+
+        Column<ReferenceTextAndType, String> editColumn = new Column<ReferenceTextAndType, String>(new MatButtonCell(isReadOnly ? "View" : "Edit",
+                "btn btn-link",
+                isReadOnly ? "fa fa-binoculars fa-lg" : "fa fa-pencil fa-lg",
+                isReadOnly ? "View" : "Edit")) {
             @Override
-            public SafeHtml getValue(ReferenceTextAndType ref) {
-                return getEditColumnToolTip();
+            public String getValue(ReferenceTextAndType ref) {
+                return "";
             }
         };
 
-        editColumn.setFieldUpdater(new FieldUpdater<ReferenceTextAndType, SafeHtml>() {
-            @Override
-            public void update(int index, ReferenceTextAndType ref, SafeHtml value) {
-                if (isEditorDirty(ref)) {
-                    displayDirtyCheck();
-                    messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index));
-                    messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
-                    messagePanel.getWarningConfirmationYesButton().setFocus(true);
-                } else {
-                    observer.handleEditClicked(index);
-                }
+        editColumn.setFieldUpdater((index, ref, value) -> {
+            if (isEditorDirty(ref)) {
+                displayDirtyCheck();
+                messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index));
+                messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
+                messagePanel.getWarningConfirmationYesButton().setFocus(true);
+            } else {
+                observer.handleEditClicked(index);
             }
         });
 
         String columnText = isReadOnly ? "View" : "Edit";
         referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + columnText + "</span>"));
 
-        Column<ReferenceTextAndType, SafeHtml> deleteColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, String> deleteColumn = new Column<ReferenceTextAndType, String>(new MatButtonCell("Delete", "btn btn-link", "fa fa-trash fa-lg", "Delete")) {
             @Override
-            public SafeHtml getValue(ReferenceTextAndType ref) {
-                return getDeleteColumnToolTip();
+            public String getValue(ReferenceTextAndType ref) {
+                return "";
             }
         };
-        deleteColumn.setFieldUpdater(new FieldUpdater<ReferenceTextAndType, SafeHtml>() {
+        deleteColumn.setFieldUpdater(new FieldUpdater<ReferenceTextAndType, String>() {
             @Override
-            public void update(int index, ReferenceTextAndType ref, SafeHtml value) {
+            public void update(int index, ReferenceTextAndType ref, String value) {
                 if (!isReadOnly) {
                     displayDeleteConfirmationDialog(index, ref.getReferenceText());
                 }
@@ -141,28 +132,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
     private void handleYesButtonClicked(int index) {
         observer.handleEditClicked(index);
         hideDirtyCheck();
-    }
-
-    private SafeHtml getEditColumnToolTip() {
-        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        String title = isReadOnly ? "View" : "Edit";
-        String cssColor = isReadOnly ? "black" : "darkgoldenrod";
-        String cssClass = "btn btn-link";
-        String iconCss = isReadOnly ? "fa fa-binoculars fa-lg" : "fa fa-pencil fa-lg";
-        sb.appendHtmlConstant("<button type=\"button\" title='"
-                + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + cssColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-        return sb.toSafeHtml();
-    }
-
-    private SafeHtml getDeleteColumnToolTip() {
-        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        String title = "Delete";
-        String cssClass = "btn btn-link";
-        String iconCss = "fa fa-trash fa-lg";
-        String disabledMarkup = isReadOnly ? "disabled " : "";
-        sb.appendHtmlConstant("<button type=\"button\" title='"
-                + title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\"" + disabledMarkup + "\"> <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\")>Delete</button>");
-        return sb.toSafeHtml();
     }
 
 
@@ -335,7 +304,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
     @Override
     public Widget getFirstElement() {
-        return null;
+        return measureDetailsTextEditor.getTextEditor();
     }
 
     public ReferencesModel getOriginalModel() {

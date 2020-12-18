@@ -58,6 +58,7 @@ public class FhirCqlParserService implements FhirCqlParser {
         String eightHourTicket = getTicket();
         MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
         cqlXmlReq.setCql(cql);
+        cqlXmlReq.getValidationRequest().setValidateReturnType(true);
         cqlXmlReq.setSourceModel(sourceModel);
         HttpHeaders headers = new HttpHeaders();
         headers.add(UMLS_TOKEN, eightHourTicket);
@@ -105,10 +106,11 @@ public class FhirCqlParserService implements FhirCqlParser {
     }
 
     @Override
-    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, List<LibraryErrors> libraryErrors) {
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, MatXmlResponse fhirResponse) {
         CqlValidationResultBuilder resultBuilder = new CqlValidationResultBuilder();
         resultBuilder.cqlModel(cqlModel);
-        resultBuilder.libraryErrors(libraryErrors);
+        resultBuilder.cqlObject(fhirResponse.getCqlObject());
+        resultBuilder.libraryErrors(fhirResponse.getErrors());
         return resultBuilder.buildFromLibraryErrors();
     }
 
@@ -124,7 +126,7 @@ public class FhirCqlParserService implements FhirCqlParser {
     @Override
     public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
         MatXmlResponse fhirResponse = parse(cqlString, cqlModel);
-        return parseFhirCqlLibraryForErrors(cqlModel, fhirResponse.getErrors());
+        return parseFhirCqlLibraryForErrors(cqlModel, fhirResponse);
     }
 
     @Override

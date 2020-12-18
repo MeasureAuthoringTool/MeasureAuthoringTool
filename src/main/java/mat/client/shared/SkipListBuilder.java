@@ -17,10 +17,9 @@ public class SkipListBuilder {
 	 * @return the widget
 	 */
 	public static Widget buildSkipList(String skipstr){
-		 HTML skipListHtml = new HTML("<ul class='skiplist'><li class='skip'><a id='menu' href='#"+skipstr+"'>Skip to Main Content</a></li></ul>");
+		 HTML skipListHtml = new HTML("<ul class='skiplist'><li class='skip'><a id='menu' href='#' onclick='setFocusToFirstFocusable(\"" + skipstr + "\")'>Skip to Main Content</a></li></ul>");
 		 return skipListHtml;
 	}
-	
 	
 	/**
 	 * Builds the embedded link.
@@ -30,7 +29,7 @@ public class SkipListBuilder {
 	 * @return the widget
 	 */
 	public static Widget buildEmbeddedLink(String linkName){
-		HTML embeddedLink = new HTML("<a class='invisible' name='"+linkName+"'>"+linkName+"</a>");
+		HTML embeddedLink = new HTML("<span class='invisible' name='"+linkName+"'>"+linkName+"</span>");
 		return embeddedLink;
 	}
 	
@@ -55,7 +54,7 @@ public class SkipListBuilder {
 	 */
 	public static Widget buildEmbeddedLinkHolder(String name){
 		SimplePanel embeddedLinkHolder = new SimplePanel();
-		HTML embeddedLink = new HTML("<a class='invisible' name='"+name+"'></a>");
+		HTML embeddedLink = new HTML("<span class='invisible' name='"+name+"'></span>");
 		embeddedLinkHolder.add(embeddedLink);
 		return embeddedLinkHolder;
 	}
@@ -68,7 +67,7 @@ public class SkipListBuilder {
 	 * @return the string
 	 */
 	public static String buildEmbeddedString(String linkName){
-		String embeddedString = "<a class='invisible' name='"+linkName+"'></a>";
+		String embeddedString = "<span class='invisible' name='"+linkName+"'></span>";
 		return embeddedString;
 	}
 	

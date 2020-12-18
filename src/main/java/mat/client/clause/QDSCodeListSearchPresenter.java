@@ -617,15 +617,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			return;
 		}
-		
-		// OID validation.
-		if ((oid == null) || oid.trim().isEmpty()) {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-					.getUMLS_OID_REQUIRED());
-			return;
-		}
-		
+
 		// Version and EffectiveDate validation
 		if ((searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
 				&& ((version == null) || version.trim().isEmpty()))

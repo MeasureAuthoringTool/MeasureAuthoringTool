@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -59,6 +60,7 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.dto.AuditLogDTO;
 import mat.dto.SearchHistoryDTO;
 import mat.model.clause.ModelTypeHelper;
@@ -368,6 +370,8 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         EditConfirmationDialogBox getCreateNewConfirmationDialogBox();
 
         WarningConfirmationMessageAlert getWarningConfirmationAlert();
+
+        ErrorHandler getErrorHandler();
     }
 
 
@@ -447,6 +451,8 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         FocusPanel getSearchWidgetFocusPanel();
 
         void resetMessageDisplay();
+
+        ErrorHandler getErrorHandler();
     }
 
     /**
@@ -832,7 +838,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClick(ClickEvent event) {
-                displayShareWidget();
+                if (shareDisplay.getErrorHandler().validate().isEmpty()) {
+                    displayShareWidget();
+                }
             }
         });
 
@@ -1245,60 +1253,70 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle(CONTINUE);
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText(CONTINUE);
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+        if (detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().isVisible()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+                }
+            }.schedule(600);
+        }
     }
 
     private void createCQLLibrary() {
-        CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
-        detailDisplay.getNameField().setText(detailDisplay.getNameField().getText().trim());
-        libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
-        libraryDataSetObject.setLibraryModelType(detailDisplay.getLibraryModelType());
+        if (detailDisplay.getErrorHandler().validate().isEmpty()) {
+            CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
+            detailDisplay.getNameField().setText(detailDisplay.getNameField().getText().trim());
+            libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
+            libraryDataSetObject.setLibraryModelType(detailDisplay.getLibraryModelType());
 
-        if (isLibraryNameValid(libraryDataSetObject.isFhir())) {
-            MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                }
+            if (isLibraryNameValid(libraryDataSetObject.isFhir())) {
+                MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                    }
 
-                @Override
-                public void onSuccess(SaveCQLLibraryResult result) {
-                    resultToFireEvent = result;
-                    if (result.isSuccess()) {
-                        setIsPageDirty(false);
+                    @Override
+                    public void onSuccess(SaveCQLLibraryResult result) {
+                        resultToFireEvent = result;
+                        if (result.isSuccess()) {
+                            setIsPageDirty(false);
 
-                        CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
-                                .withCqlLibraryId(result.getId())
-                                .withCqlLibraryVersion(result.getVersionStr())
-                                .withLibraryName(result.getCqlLibraryName())
-                                .withEditable(result.isEditable())
-                                .withLocked(false)
-                                .withLockedUserId(null)
-                                .withLockedUserEmail("")
-                                .withLockedUserName("")
-                                .withDraft(true) //true because the library is being saved so it is a draft
-                                .withLibraryType(result.getLibraryModelType())
-                                .build();
+                            CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
+                                    .withCqlLibraryId(result.getId())
+                                    .withCqlLibraryVersion(result.getVersionStr())
+                                    .withLibraryName(result.getCqlLibraryName())
+                                    .withEditable(result.isEditable())
+                                    .withLocked(false)
+                                    .withLockedUserId(null)
+                                    .withLockedUserEmail("")
+                                    .withLockedUserName("")
+                                    .withDraft(true) //true because the library is being saved so it is a draft
+                                    .withLibraryType(result.getLibraryModelType())
+                                    .build();
 
-                        fireCQLLibrarySelectedEvent(event);
-                        fireCqlLibraryEditEvent();
-                        showDialogBox(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
-                    } else {
-                        if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
-                            detailDisplay.getErrorMessage().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
-                        } else if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
-                            detailDisplay.getErrorMessage().createAlert(MessageDelegate.LIBRARY_NAME_IS_CQL_KEYWORD_ERROR);
+                            fireCQLLibrarySelectedEvent(event);
+                            fireCqlLibraryEditEvent();
+                            showDialogBox(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
                         } else {
-                            boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
-                            if (isFhir) {
-                                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
+                            if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+                                detailDisplay.getErrorMessage().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+                            } else if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
+                                detailDisplay.getErrorMessage().createAlert(MessageDelegate.LIBRARY_NAME_IS_CQL_KEYWORD_ERROR);
                             } else {
-                                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
-                            }
+                                boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+                                if (isFhir) {
+                                    detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
+                                } else {
+                                    detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+                                }
 
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -1633,7 +1651,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     @Override

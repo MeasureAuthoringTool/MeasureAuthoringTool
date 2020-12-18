@@ -6,37 +6,35 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
+        <version>2.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>CMAT</groupId>
     <artifactId>MeasureAuthoringTool</artifactId>
-    <version>6.02</version>
+    <version>6.03</version>
     <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>com.google.gwt.dev.DevMode</start-class>
-        <gwtVersion>2.8.2</gwtVersion>
+        <gwtVersion>2.9.0</gwtVersion>
         <googleGin>2.1.2</googleGin>
         <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
-        <elemental.version>1.0.0-RC1</elemental.version>
+        <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
         <cqframework.version>1.4.6</cqframework.version>
-        <axis.version>1.7.7</axis.version>
+        <axis.version>1.7.9</axis.version>
         <castor.version>1.4.1</castor.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <jupiter.version>5.5.2</jupiter.version>
-        <mockito.version>3.2.0</mockito.version>
-        <powermock.version>2.0.4</powermock.version>
-        <jacoco.version>0.8.5</jacoco.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <jupiter.version>5.7.0</jupiter.version>
+        <mockito.version>3.6.28</mockito.version>
+        <powermock.version>2.0.9</powermock.version>
+        <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
 
-        <!-- JDK version -->
-        <!-- Only GWT HEAD supports sourceLevel 10 & 11. The latest released GWT supports only 1.8 sourceLevel -->
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
@@ -49,7 +47,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
             <id>icm</id>
@@ -175,7 +173,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
+            <version>3.11</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -240,7 +238,7 @@
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jtidy</groupId>
@@ -250,17 +248,17 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>2.4.9</version>
+            <version>2.4.21</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
@@ -311,12 +309,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.20</version>
+            <version>8.0.22</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.28</version>
+            <version>2.3.30</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
@@ -336,7 +334,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.11.3</version>
+            <version>1.13.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
@@ -346,18 +344,18 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.10-java7</version>
+            <version>1.4.14-jdk7</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>8.0</version>
+            <version>8.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>3.6.1</version>
+            <version>4.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
@@ -372,12 +370,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.3.0</version>
+            <version>2.8.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>28.2-jre</version>
+            <version>30.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -395,9 +393,8 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -415,7 +412,7 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd</artifactId>
-            <version>5.0.0</version>
+            <version>6.29.0</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>
@@ -427,7 +424,7 @@
         <dependency>
             <groupId>biz.paluch.logging</groupId>
             <artifactId>logstash-gelf</artifactId>
-            <version>1.12.0</version>
+            <version>1.14.1</version>
         </dependency>
 
         <!-- Java 11 compatibility -->
@@ -477,9 +474,16 @@
             <!-- this is needed or IntelliJ gives junit.jar or junit-platform-launcher:1.3.2 not found errors -->
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.5.2</version>
+            <version>1.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>1.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -549,7 +553,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
+            <version>1.18.16</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -594,12 +598,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.3.1</version>
                 <configuration>
                     <packagingExcludes>WEB-INF/**/*.java,WEB-INF/**/*.pdf,WEB-INF/**/*.docx</packagingExcludes>
                     <webResources>
@@ -647,14 +651,11 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <argLine>
                         --illegal-access=permit
@@ -724,48 +725,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.8.1</version>
                 <configuration>
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <!-- Activate for faster local compilation by
-                1. setting env variable export ENVIRONMENT=DEV
-                2. or by explicitly activating the profile in your intellij
-            -->
-            <id>gwt-profile-compile-dev</id>
-            <activation>
-                <property>
-                    <name>env.ENVIRONMENT</name>
-                    <value>DEV</value>
-                </property>
-            </activation>
-            <properties>
-                <gwt.draftCompile>true</gwt.draftCompile>
-                <gwt.localWorkers>10</gwt.localWorkers>
-                <!-- Enable for detailed compilation traces. It doesn't affect compilation time. -->
-<!--                <gwt.logLevel>TRACE</gwt.logLevel>-->
-                <gwt.optimize>0</gwt.optimize>
-                <gwt.style>DETAILED</gwt.style>
-            </properties>
-            <dependencies>
-                <!-- Override dependencies to that you can locally run GWT code server with Jetty -->
-                <dependency>
-                    <groupId>com.google.gwt</groupId>
-                    <artifactId>gwt-dev</artifactId>
-                    <version>${gwtVersion}</version>
-                    <scope>compile</scope>
-                    <exclusions>
-                        <!-- Should be empty to be merged correctly -->
-                    </exclusions>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

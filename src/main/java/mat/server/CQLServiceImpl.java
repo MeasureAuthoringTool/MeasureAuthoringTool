@@ -273,7 +273,7 @@ public class CQLServiceImpl implements CQLService {
             // Validation.
             SaveUpdateCQLResult parsedResult;
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
-                parsedResult = parseFhirCQLForErrors(newModel, fhirResponse.getErrors());
+                parsedResult = parseFhirCQLForErrors(newModel, fhirResponse);
             } else {
                 parsedResult = parseCQLLibraryForErrors(newModel);
             }
@@ -513,8 +513,12 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter parameterWithOriginalContent,
-                                                       CQLParameter parameterWithEdits, List<CQLParameter> parameterList, boolean isFormatable, String modelType) {
+    public SaveUpdateCQLResult saveAndModifyParameters(String xml,
+                                                       CQLParameter parameterWithOriginalContent,
+                                                       CQLParameter parameterWithEdits,
+                                                       List<CQLParameter> parameterList,
+                                                       boolean isFormatable,
+                                                       String modelType) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         result.setXml(xml); // if any failure, it will use this xml, which is the original
 
@@ -574,8 +578,12 @@ public class CQLServiceImpl implements CQLService {
 
             // do some processing if the are no errors in the CQL
             if (result.getCqlErrors().isEmpty()) {
-                if (isFormatable) {
+                if (isFormatable && !ModelTypeHelper.isFhir(modelType)) {
                     parameterWithEdits.setLogic(formatParameter(parameterWithEdits));
+                } else {
+                    //Currently can't format parameters in QDM formatter. Eventually we will when we switch over to
+                    // cq1-to-elm 1.5.1
+                    parameterWithEdits.setLogic(parameterWithEdits.getLogic().trim());
                 }
             }
 
@@ -1423,16 +1431,17 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
+    public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, MatXmlResponse matResponse) {
+        return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, matResponse);
+    }
+
+    @Override
     public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql) {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql);
     }
 
     public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql, ValidationRequest req) {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql, req);
-    }
-
-    private SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, List<LibraryErrors> libraryErrors) {
-        return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, libraryErrors);
     }
 
     private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result,
@@ -1625,7 +1634,8 @@ public class CQLServiceImpl implements CQLService {
         // if there are no errors in the cql library, get the used cql artifacts
         if (CollectionUtils.isEmpty(cqlResult.getCqlErrors())) {
             if (cqlModel.isFhir()) {
-                cqlResult.getCqlObject().getCqlDefinitionObjectList().forEach(d -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(d.getName(),
+                List<CQLExpressionObject> cqlExpressionObj = cqlResult.getCqlObject().getCqlDefinitionObjectList();
+                cqlExpressionObj.forEach(d -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(d.getName(),
                         d.getReturnType()));
                 // This is wrong because functions can be overloaded in FHIR. Eventually we need to fix this.
                 cqlResult.getCqlObject().getCqlFunctionObjectList().forEach(f -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(f.getName(),

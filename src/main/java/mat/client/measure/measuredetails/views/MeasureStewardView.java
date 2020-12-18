@@ -25,6 +25,7 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -52,6 +53,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	protected ScrollPanel authorSPanel = new ScrollPanel();
 	protected ScrollPanel stewardSPanel = new ScrollPanel();
 	private FormLabel stewardTableLabel;
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public MeasureStewardView(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
 		this.originalModel = measureStewardDeveloperModel; 
@@ -69,12 +71,23 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	private void buildStewardListComponent(VerticalPanel moreMeasureDetailsVP) {
 		stewardTableLabel = new FormLabel();
-		stewardTableLabel.setText("Measure Steward List");
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			stewardTableLabel.setText("Measure Steward List");
+            stewardTableLabel.setShowRequiredIndicator(true);
+			stewardTableLabel.setTitle("Measure Steward List Required");
+			stewardListBox.setTitle("Measure Steward List Required");
+		} else {
+			stewardTableLabel.setText("Measure Steward List");
+			stewardTableLabel.setTitle("Measure Steward List");
+			stewardListBox.setTitle("Measure Steward List");
+		}
 		stewardTableLabel.setId("stewardTableLabel");
 		stewardTableLabel.setFor("stewardListBox");
 		stewardListBox.setId("stewardListBox");
-		stewardListBox.setTitle("Measure Steward List");
 
+		if (MatContext.get().isCurrentModelTypeFhir()) {
+			stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox));
+		}
 		moreMeasureDetailsVP.add(stewardTableLabel);
 		stewardSPanel.add(stewardListBox);
 		moreMeasureDetailsVP.add(stewardSPanel);
@@ -99,7 +112,15 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	private void buildAuthorTableComponent(VerticalPanel moreMeasureDetailsVP) {
 		final FormLabel authorTableLabel = new FormLabel();
-		authorTableLabel.setText("Measure Developer List");
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			authorTableLabel.setText("Measure Developer List");
+			authorTableLabel.setShowRequiredIndicator(true);
+			authorTableLabel.setTitle("Measure Developer List Required.");
+		} else {
+			authorTableLabel.setText("Measure Developer List");
+			authorTableLabel.setTitle("Measure Developer List");
+		}
+
 		moreMeasureDetailsVP.add(authorTableLabel);
 		moreMeasureDetailsVP.add(authorSPanel);
 		mainPanel.add(moreMeasureDetailsVP);
@@ -111,7 +132,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		authorSPanel.setWidth("625px");
 		authorSPanel.setHeight("400px");
 		authorCellTable = new CellTable<>();
-		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		final ListDataProvider<Author> sortProvider = new ListDataProvider<>();
 		authorCellTable.setRowData(currentAuthorsList);
 		if(!authorsSelectedList.isEmpty()){
@@ -144,6 +165,9 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		vp.add(authorCellTable);
 		vp.setWidth("100%");
 		authorSPanel.setWidget(vp);
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			errorHandler.buildRequiredBlurHandler(authorCellTable,authorSPanel);
+		}
 	}
 
 	private void addAuthorColumnToTable(boolean editable) {
@@ -151,12 +175,11 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
 		measureSearchHeader.setStyleName("invisibleTableCaption");
 		final com.google.gwt.dom.client.TableElement elem = authorCellTable.getElement().cast();
-		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		final TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
 		authorSelectionModel = new MultiSelectionModel<>();
 		authorCellTable.setSelectionModel(authorSelectionModel);
-		final MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
+		final MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
 		final Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(chbxCell) {
 			@Override
 			public Boolean getValue(Author object) {
@@ -334,9 +357,17 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		this.authorsSelectedList = authorsSelectedList;
 	}
 
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
 	@Override
 	public Widget getFirstElement() {
 		return stewardListBox.asWidget();
 	}
 
+	@Override
+	public List<String> preSave() {
+		return errorHandler.validate();
+	}
 }

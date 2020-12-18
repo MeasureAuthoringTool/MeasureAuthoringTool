@@ -186,7 +186,7 @@ public class TransferOwnershipView {
     	   Label searchHeader = new Label("Active MAT User List");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.setStyleName("recentSearchHeader");
-			searchHeader.getElement().setAttribute("tabIndex", "0");
+			searchHeader.getElement().setAttribute("tabIndex", "-1");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
@@ -243,7 +243,7 @@ public class TransferOwnershipView {
 	public void buildCellTable(TransferOwnerShipModel results) {
 		cellTablePanel.clear();
 		table = new CellTable<TransferOwnerShipModel.Result>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		ListDataProvider<TransferOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferOwnerShipModel.Result>();
 		selectedUserList = new ArrayList<TransferOwnerShipModel.Result>();
 		selectedUserList.addAll(results.getData());

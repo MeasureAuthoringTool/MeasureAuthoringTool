@@ -10,27 +10,30 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 public class CQLLibraryResultTable {
-
+    private static final int MOUSE_CLICK_DELAY = 300;
     private Observer observer;
     private static final long DELAY_TIME = 300;
     private CQLLibraryDataSetObject lastRowCLicked;
-
+    private Timer singleClickTimer;
 
     public CellTable<CQLLibraryDataSetObject> addColumnToTable(CQLibraryGridToolbar gridToolbar, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
         selectionModel.addSelectionChangeHandler(event -> {
@@ -39,19 +42,29 @@ public class CQLLibraryResultTable {
         });
         addToolbarHandlers(gridToolbar, selectionModel, fireEvent);
 
-        CheckboxCell selectedCell = new CheckboxCell(true, false);
-        Column<CQLLibraryDataSetObject, Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell) {
-            @Override
-            public Boolean getValue(CQLLibraryDataSetObject object) {
-                return selectionModel.isSelected(object);
-            }
-        };
-        table.addColumn(selectedCol);
+        MatCheckBoxCell selectedCell = new MatCheckBoxCell(false, true);
+        final Column<CQLLibraryDataSetObject, Boolean> selectColumn = new
+                Column<CQLLibraryDataSetObject, Boolean>(selectedCell) {
+                    @Override
+                    public Boolean getValue(CQLLibraryDataSetObject object) {
+                        boolean value = selectionModel.isSelected(object);
+                        selectedCell.setTitle("Select " + (value ? "checked" : "unchecked") + " " +
+                                (object.isEditable() ? "editable" : "read-only") + " row " +
+                                object.getCqlName() + (object.isDraft() ? "Draft" : "Version") + " " +
+                                getVersionReadableText(object));
+                        return selectionModel.isSelected(object);
+                    }
+                };
+
+        selectColumn.setFieldUpdater((index, object, value) -> {
+            selectionModel.setSelected(object, value);
+        });
+        table.addColumn(selectColumn);
         table.setColumnWidth(0, "45px");
 
         // CQL Library Name Column
         Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new ClickableSafeHtmlCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return getCQLLibraryNameColumnToolTip(object);
@@ -61,8 +74,8 @@ public class CQLLibraryResultTable {
                 SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
         // Model Version Column
-        Column<CQLLibraryDataSetObject, SafeHtml> modelVersion = new Column<CQLLibraryDataSetObject, SafeHtml> (
-                new ClickableSafeHtmlCell()) {
+        Column<CQLLibraryDataSetObject, SafeHtml> modelVersion = new Column<CQLLibraryDataSetObject, SafeHtml>(
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(getModelVersion(object));
@@ -71,8 +84,8 @@ public class CQLLibraryResultTable {
         table.addColumn(modelVersion, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model Version" + "</span>"));
 
         // Version Column
-        Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml> (
-                new ClickableSafeHtmlCell()) {
+        Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml>(
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(object.getVersion());
@@ -82,7 +95,7 @@ public class CQLLibraryResultTable {
 
         //Library Model Type
         Column<CQLLibraryDataSetObject, SafeHtml> model = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new ClickableSafeHtmlCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getLibraryModelType()));
@@ -95,24 +108,29 @@ public class CQLLibraryResultTable {
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();
             CQLLibraryDataSetObject obj = event.getValue();
-            event.getNativeEvent().preventDefault();
-
             if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
-                long duration = System.currentTimeMillis() - lastClickTime.get();
-                if (isDoubleClick(obj,duration)) {
+                obj.setClickCount(obj.getClickCount() + 1);
+                if (obj.getClickCount() == 1) {
+                    if (selectionModel.isSelected(obj)) {
+                        selectionModel.setSelected(obj, false);
+                    } else {
+                        selectionModel.getSelectedSet().forEach(o -> selectionModel.setSelected(o, false));
+                        selectionModel.setSelected(obj, true);
+                    }
+                    singleClickTimer = new Timer() {
+                        @Override
+                        public void run() {
+                            obj.setClickCount(0);
+                        }
+                    };
+                    singleClickTimer.schedule(MOUSE_CLICK_DELAY);
+                } else if (obj.getClickCount() == 2) {
+                    singleClickTimer.cancel();
+                    obj.setClickCount(0);
                     SelectionEvent.fire(fireEvent, obj);
                 } else {
-                    if (obj.isSelected()) {
-                        setSelected(selectionModel,obj,false);
-                    } else {
-                        if (lastRowCLicked != null && lastRowCLicked.isSelected()) {
-                            setSelected(selectionModel,lastRowCLicked,false);
-                        }
-                        setSelected(selectionModel,obj,true);
-                    }
+                    event.setCanceled(true);
                 }
-                lastRowCLicked = obj;
-                lastClickTime.set(System.currentTimeMillis());
             }
         });
 
@@ -120,12 +138,23 @@ public class CQLLibraryResultTable {
         return table;
     }
 
-    private void setSelected (SelectionModel model, CQLLibraryDataSetObject obj, boolean isSelected) {
-        obj.setSelected(isSelected);
-        model.setSelected(obj,isSelected);
+    public String getVersionReadableText(CQLLibraryDataSetObject object) {
+        if (object.getVersion() == null) {
+            return "";
+        } else {
+            return object.getVersion().
+                    replace("Version ", "").
+                    replace("Draft ", "").
+                    replace("v","");
+        }
     }
 
-    private boolean isDoubleClick(CQLLibraryDataSetObject obj,long clickDuration) {
+    private void setSelected(SelectionModel model, CQLLibraryDataSetObject obj, boolean isSelected) {
+        obj.setSelected(isSelected);
+        model.setSelected(obj, isSelected);
+    }
+
+    private boolean isDoubleClick(CQLLibraryDataSetObject obj, long clickDuration) {
         return lastRowCLicked != null &&
                 lastRowCLicked.getId() != null &&
                 lastRowCLicked.getId().equals(obj.getId()) && //same row clicked twice.
@@ -133,7 +162,7 @@ public class CQLLibraryResultTable {
     }
 
     @VisibleForTesting
-    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, SingleSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
         gridToolbar.getVersionButton().addClickHandler(event -> {
             onDraftOrVersion(selectionModel);
         });
@@ -160,28 +189,28 @@ public class CQLLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onConvert(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void onConvert(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         selectionModel.getSelectedSet().stream()
                 .filter(cqlLib -> cqlLib.isFhirConvertible())
                 .forEach(observer::onConvertClicked);
     }
 
     @VisibleForTesting
-    void onDelete(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void onDelete(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         selectionModel.getSelectedSet().stream()
                 .filter(cqlLib -> cqlLib.isDeletable())
                 .forEach(observer::onDeleteClicked);
     }
 
     @VisibleForTesting
-    void onShare(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void onShare(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         selectionModel.getSelectedSet().stream()
                 .filter(cqlLib -> cqlLib.isSharable())
                 .forEach(observer::onShareClicked);
     }
 
     @VisibleForTesting
-    void onEditOrViewClicked(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+    void onEditOrViewClicked(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
             if (!object.isEditable()) {
                 SelectionEvent.fire(fireEvent, object);
@@ -192,12 +221,12 @@ public class CQLLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onHistory(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void onHistory(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         selectionModel.getSelectedSet().forEach(observer::onHistoryClicked);
     }
 
     @VisibleForTesting
-    void onDraftOrVersion(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void onDraftOrVersion(SingleSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         selectionModel.getSelectedSet().stream()
                 .filter(cqlLib -> cqlLib.isDraftable() || cqlLib.isVersionable())
                 .forEach(observer::onDraftOrVersionClick);
@@ -208,18 +237,18 @@ public class CQLLibraryResultTable {
         String cssClass = "customCascadeButton";
         String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfLibrary(object) : "";
         if (object.isFamily()) {
-            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
-            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' disabled></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");
         } else {
-            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
-            sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
-                    + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+            sb.appendHtmlConstant("<button id='div1' disabled title=\"" + object.getCqlName()
+                    + "\" class=\" " + cssClass + "\"></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");
         }

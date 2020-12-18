@@ -1,31 +1,21 @@
 package mat.client.cql;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import mat.client.CqlLibraryPresenter;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.AbstractNewMeasureView;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.*;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.springframework.ui.Model;
+import org.gwtbootstrap3.client.ui.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static mat.model.clause.ModelTypeHelper.FHIR;
@@ -46,6 +36,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     private RadioButton qdmModel = new RadioButton("measureModel", "QDM");
     FormLabel modelLabel = new FormLabel();
     private FormGroup libraryModelGroup = new FormGroup();
+    private ErrorHandler errorHandler = new ErrorHandler();
+
 
     SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 
@@ -62,8 +54,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
         FormLabel nameLabel = new FormLabel();
         nameLabel.setText(CQL_LIBRARY_NAME);
-        nameLabel.setTitle(CQL_LIBRARY_NAME);
         nameLabel.setShowRequiredIndicator(true);
+        nameLabel.setTitle(CQL_LIBRARY_NAME + " Required.");
         nameLabel.setMarginTop(5);
         nameLabel.setId("cqlLibraryName_Label");
 
@@ -111,7 +103,20 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.add(nameField);
         horizontalPanel.add(new HTML(AbstractNewMeasureView.CAUTION_LIBRARY_NAME_MSG_STR));
+        nameField.addBlurHandler(errorHandler.buildBlurHandler(nameField, (s) -> {
+            String result = null;
+            if (fhirModel.getValue()) {
+                result = getFirst(CommonMeasureValidator.validateFhirLibraryName(s));
+            } else {
+                result = getFirst(CommonMeasureValidator.validateQDMName(s));
+            }
+            return result;
+        }));
         return horizontalPanel;
+    }
+
+    protected String getFirst(List<String> list) {
+        return list == null || list.isEmpty() ? null : list.get(0);
     }
 
     /**
@@ -234,5 +239,9 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
         return createNewConfirmationDialogBox;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
     }
 }

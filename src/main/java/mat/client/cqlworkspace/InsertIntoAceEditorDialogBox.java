@@ -17,6 +17,7 @@ import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLIncludeLibrary;
@@ -69,6 +70,7 @@ public class InsertIntoAceEditorDialogBox {
     private static InAppHelp inAppHelp;
     private static Modal dialogModal;
     private static ClickHandler handler;
+    private static ErrorHandler errorHandler = new ErrorHandler();
 
     public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter, String modelType) {
         dialogModal = new Modal();
@@ -106,12 +108,14 @@ public class InsertIntoAceEditorDialogBox {
         availableItemToInsert.setWidth("350px");
         availableItemToInsert.getElement().setId("availableItemToInsert_ListBox");
         addAvailableItems(availableItemToInsert, availableInsertItemList);
+        availableItemToInsert.addBlurHandler(errorHandler.buildRequiredBlurHandler(availableItemToInsert));
 
         final ListBoxMVP listAllItemNames = new ListBoxMVP();
         listAllItemNames.setWidth("350px");
         listAllItemNames.clear();
         listAllItemNames.setEnabled(false);
         listAllItemNames.getElement().setId("listAllItemNames_ListBox");
+        listAllItemNames.addBlurHandler(errorHandler.buildRequiredBlurHandler(listAllItemNames));
 
         final ListBoxMVP availableDatatypes = new ListBoxMVP();
         availableDatatypes.clear();
@@ -119,7 +123,8 @@ public class InsertIntoAceEditorDialogBox {
         availableDatatypes.setEnabled(false);
         availableDatatypes.getElement().setId("availableDatatypes_ListBox");
 
-        final ListBoxMVP allQDMDatatypes = new ListBoxMVP();
+        final ListBoxMVP allQDMDatatypes = new
+                ListBoxMVP();
         allQDMDatatypes.clear();
         allQDMDatatypes.setWidth("350px");
         allQDMDatatypes.setEnabled(true);

@@ -2,7 +2,6 @@ package mat.server.service.impl;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryExportDAO;
@@ -117,13 +116,13 @@ public class ZipPackager {
             String emeasureXMLPath = "";
             String emeasureHumanReadablePath = "";
             if (releaseVersion.contains(".")) {
-                releaseVersion = releaseVersion.replace(".", "_");
+                releaseVersion = releaseVersion.replace(".", "-");
             }
             log.debug("Release version zip " + releaseVersion);
-            parentPath = fnu.getParentPath(seqNum + "_" + emeasureName + "_" + releaseVersion);
-            emeasureXSLPath = parentPath + File.separator + "xslt" + File.separator + "eMeasure.xsl";
-            emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + releaseVersion);
-            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion);
+            parentPath = replaceUnderscores(fnu.getParentPath(seqNum + "-" + emeasureName + "-" + releaseVersion));
+            emeasureXSLPath = replaceUnderscores(parentPath + File.separator + "xslt" + File.separator + "eMeasure.xsl");
+            emeasureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + releaseVersion));
+            emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion));
 
             filesMap.put(emeasureXSLPath, emeasureXSLBarr);
             filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
@@ -168,13 +167,13 @@ public class ZipPackager {
             String emeasureHumanReadablePath = "";
             String eReleaseVersion = releaseVersion;
             if (eReleaseVersion.contains(".")) {
-                eReleaseVersion = releaseVersion.replace(".", "_");
+                eReleaseVersion = releaseVersion.replace(".", "-");
             }
             log.debug("Release version zip " + eReleaseVersion);
-            parentPath = fnu.getParentPath(emeasureName + eReleaseVersion);
-            emeasureXSLPath = parentPath + File.separator + "xslt" + File.separator + "eCQM.xsl";
-            emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + releaseVersion);
-            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + releaseVersion);
+            parentPath = replaceUnderscores(fnu.getParentPath(emeasureName + eReleaseVersion));
+            emeasureXSLPath = replaceUnderscores(parentPath + File.separator + "xslt" + File.separator + "eCQM.xsl");
+            emeasureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + releaseVersion));
+            emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + releaseVersion));
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ZipOutputStream zip = new ZipOutputStream(baos);
@@ -217,10 +216,10 @@ public class ZipPackager {
             }
 
             if (!measure.isFhirMeasure()) {
-                String measureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion);
+                String measureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion));
                 addBytesToZip(measureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 
-                String measureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
+                String measureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion));
                 addBytesToZip(measureXMLPath, emeasureXMLStr.getBytes(), zip);
 
                 if (isV5OrGreater(measureReleaseVersion)) {
@@ -238,7 +237,7 @@ public class ZipPackager {
                         convertToXmlBundle(measureJsonBundle).getBytes(),
                         zip);
 
-                addBytesToZip( parentPath + File.separator + "human-readable.html",
+                addBytesToZip(parentPath + File.separator + "human-readable.html",
                         emeasureHTMLStr.getBytes(),
                         zip);
 
@@ -286,11 +285,11 @@ public class ZipPackager {
             isCQLMeasure = MatContext.get().isCQLMeasure(currentReleaseVersion);
 
             if (currentReleaseVersion.contains(".")) {
-                currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+                currentReleaseVersion = currentReleaseVersion.replace(".", "-");
             }
             if (!ModelTypeHelper.isFhir(measureExport.getMeasure().getMeasureModel())) {
-                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
-                emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
+                emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "-" + currentReleaseVersion));
+                emeasureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "-" + currentReleaseVersion));
                 filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 
                 if (isCQLMeasure) {
@@ -298,9 +297,9 @@ public class ZipPackager {
                 }
             } else {
                 String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
-                String emeasureJsonBundlePath = parentPath + File.separator + "measure-json-bundle.json";
-                String emeasureXmlBundlePath = parentPath + File.separator + "measure-xml-bundle.xml";
-                emeasureHumanReadablePath = parentPath + File.separator + "human-readable.html";
+                String emeasureJsonBundlePath = replaceUnderscores(parentPath + File.separator + "measure-json-bundle.json");
+                String emeasureXmlBundlePath = replaceUnderscores(parentPath + File.separator + "measure-xml-bundle.xml");
+                emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + "human-readable.html");
 
                 filesMap.put(emeasureJsonBundlePath, measureJsonBundle.getBytes());
                 filesMap.put(emeasureXmlBundlePath, convertToXmlBundle(measureJsonBundle).getBytes());
@@ -326,46 +325,46 @@ public class ZipPackager {
 
         if (cqlExportResult.includedCQLExports.size() > 0) {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql");
             filesMap.put(filePath, cqlExportResult.export.getBytes());
 
             for (ExportResult includedResult : cqlExportResult.getIncludedCQLExports()) {
-                filePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "cql";
+                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "cql");
                 filesMap.put(filePath, includedResult.export.getBytes());
             }
         } else {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql");
             filesMap.put(filePath, cqlExportResult.export.getBytes());
         }
 
         if (elmExportResult.includedCQLExports.size() > 0) {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml");
             filesMap.put(filePath, elmExportResult.export.getBytes());
 
             for (ExportResult includedResult : elmExportResult.getIncludedCQLExports()) {
-                filePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "xml";
+                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "xml");
                 filesMap.put(filePath, includedResult.export.getBytes());
             }
         } else {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml");
             filesMap.put(filePath, elmExportResult.export.getBytes());
         }
 
         if (jsonExportResult.includedCQLExports.size() > 0) {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json");
             filesMap.put(filePath, jsonExportResult.export.getBytes());
 
             for (ExportResult includedResult : jsonExportResult.getIncludedCQLExports()) {
-                filePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "json";
+                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "json");
                 filesMap.put(filePath, includedResult.export.getBytes());
             }
         } else {
             String filePath = "";
-            filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json";
+            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json");
             filesMap.put(filePath, jsonExportResult.export.getBytes());
         }
     }
@@ -379,7 +378,7 @@ public class ZipPackager {
             ZipOutputStream zip = new ZipOutputStream(baos);
 
             String parentPath = "";
-            parentPath = export.measureName + "_" + extension;
+            parentPath = export.measureName + "-" + extension;
 
             addFileToZip(measure, export, parentPath, extension, zip);
 
@@ -403,12 +402,12 @@ public class ZipPackager {
                               ZipOutputStream zip) throws Exception {
 
         String cqlFilePath = "";
-        cqlFilePath = measure.isFhirMeasure() ? parentPath + File.separator + LIBRARY + "-" + export.getCqlLibraryName() + "." + extension
-                : parentPath + File.separator + export.getCqlLibraryName() + "." + extension;
+        cqlFilePath = replaceUnderscores(measure.isFhirMeasure() ? parentPath + File.separator + LIBRARY + "-" + export.getCqlLibraryName() + "." + extension
+                : parentPath + File.separator + export.getCqlLibraryName() + "." + extension);
         addBytesToZip(cqlFilePath, export.export.getBytes(), zip);
 
         for (ExportResult includedResult : export.getIncludedCQLExports()) {
-            cqlFilePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + extension;
+            cqlFilePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + extension);
             addBytesToZip(cqlFilePath, includedResult.export.getBytes(), zip);
         }
     }
@@ -452,5 +451,7 @@ public class ZipPackager {
         return id.substring(startIndex);
     }
 
-
+    private String replaceUnderscores(String s) {
+        return s.replace('_', '-');
+    }
 }

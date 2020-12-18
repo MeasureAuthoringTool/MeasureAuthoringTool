@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
+import mat.client.MainLayout;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -237,11 +238,13 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
 					}
 
+					MainLayout.showLoadingMessage();
 					MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), 
 							populationsObject.toXML(populationsObject), new AsyncCallback<SaveUpdateCQLResult>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
+							MainLayout.hideLoadingMessage();
 							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 									MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
@@ -250,6 +253,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
+							MainLayout.hideLoadingMessage();
 							panel.clear();
 							buildPopulationWorkspace(result.getXml(), false);
 
@@ -272,12 +276,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
-				
+
+				MainLayout.showLoadingMessage();
 				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), "strata", 
 						strataDataModel.toXML(strataDataModel.getStratificationObjectList()), new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
+						MainLayout.hideLoadingMessage();
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 								MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
@@ -287,6 +293,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
+						MainLayout.hideLoadingMessage();
 						panel.clear();
 						buildPopulationWorkspace(result.getXml(), false);
 						stratificationsEvent(null);

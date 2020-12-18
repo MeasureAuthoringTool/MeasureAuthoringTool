@@ -115,7 +115,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     private void getDataBaseInfomation(boolean goToComposite, boolean displaySuccessMessage) {
@@ -449,17 +448,20 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
     @Override
     public void handleSaveButtonClick() {
         if (!isReadOnly) {
-            measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
-            List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
-            if (validationErrors == null || validationErrors.isEmpty()) {
-                ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
-                if (confirmationDialog != null) {
-                    showSaveConfirmationDialog(confirmationDialog);
+            List<String> preErrors = measureDetailsView.getComponentDetailView().preSave();
+            if (preErrors == null || preErrors.size() == 0) {
+                measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
+                List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
+                if (validationErrors == null || validationErrors.isEmpty()) {
+                    ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
+                    if (confirmationDialog != null) {
+                        showSaveConfirmationDialog(confirmationDialog);
+                    } else {
+                        saveMeasureDetails();
+                    }
                 } else {
-                    saveMeasureDetails();
+                    measureDetailsView.displayErrorMessage(validationErrors);
                 }
-            } else {
-                measureDetailsView.displayErrorMessage(validationErrors);
             }
         }
     }
@@ -483,6 +485,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
         ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
         ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
+        Mat.showLoadingMessage();
         if (measureDetailsModel.isComposite()) {
             MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
         } else {
@@ -535,11 +538,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
         return new AsyncCallback<SaveMeasureResult>() {
             @Override
             public void onFailure(Throwable caught) {
+                Mat.hideLoadingMessage();
                 measureDetailsView.displayErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
 
             @Override
             public void onSuccess(SaveMeasureResult result) {
+                Mat.hideLoadingMessage();
                 MatDetailItem activeMenuItem = navigationPanel.getActiveMenuItem();
                 scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
                 isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();

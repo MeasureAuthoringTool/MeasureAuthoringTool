@@ -1,10 +1,6 @@
 package mat.client.cqlworkspace.codes;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -21,13 +17,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.CustomPager;
@@ -37,28 +28,20 @@ import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.CustomQuantityTextBox;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SearchWidgetBootStrap;
-import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
+import mat.client.shared.*;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
+import mat.shared.cql.CqlCommonValidations;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import java.util.ArrayList;
@@ -143,7 +126,7 @@ public class CQLCodesView {
 	HTML heading = new HTML();
 
 	private InAppHelp inAppHelp = new InAppHelp("");
-
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public CQLCodesView() {
 		heading.addStyleName("leftAligned");
@@ -273,11 +256,17 @@ public class CQLCodesView {
 		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
 		sWidget.getGo().setTitle("Retrieve Code");
+		sWidget.getSearchBox().addBlurHandler(errorHandler.buildBlurHandler(sWidget.getSearchBox(), searchWidgetFormGroup,
+                (s) -> getFirst(CqlCommonValidations.validateCqlCodeUrl(sWidget.getSearchBox().getText()))));
 		searchWidgetFormGroup.add(buildFormLabel("Code URL", "codeURLInput_TextBox"));
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 		return searchWidgetFormGroup;
 	}
+
+    private String getFirst(List<String> list) {
+        return list != null && list.size() > 0 ? list.get(0) : null;
+    }
 
 	private VerticalPanel buildCodeDescriptorVP() {
 		codeDescriptorInput.setTitle(CODE_DESCRIPTOR);
@@ -412,7 +401,8 @@ public class CQLCodesView {
 	}
 
 	public void resetVSACCodeWidget() {
-		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+	    errorHandler.clearErrors();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			sWidget.getSearchBox().setTitle("Enter the Code URL");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
@@ -571,7 +561,7 @@ public class CQLCodesView {
 		PanelHeader codesElementsHeader = new PanelHeader();
 		codesElementsHeader.getElement().setId("searchHeader_Label");
 		codesElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
-		codesElementsHeader.getElement().setAttribute("tabIndex", "0");
+		codesElementsHeader.getElement().setAttribute("tabIndex", "-1");
 
 		HTML searchHeaderText = new HTML("<strong>Applied Codes</strong>");
 		codesElementsHeader.add(searchHeaderText);
@@ -587,7 +577,7 @@ public class CQLCodesView {
 			codesSelectedList = new ArrayList<>();
 			table = new CellTable<>();
 			setEditable(checkForEditPermission);
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			listDataProvider = new ListDataProvider<>();
 
 			table.setPageSize(TABLE_ROW_COUNT);
@@ -635,7 +625,7 @@ public class CQLCodesView {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			Label appliedCodesLabel = new Label("Applied Codes");
 			appliedCodesLabel.getElement().setId("searchHeader_Label");
-			appliedCodesLabel.getElement().setAttribute("tabIndex", "0");
+			appliedCodesLabel.getElement().setAttribute("tabIndex", "-1");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			appliedCodesLabel.setVisible(false);
@@ -786,7 +776,7 @@ public class CQLCodesView {
 			@Override
 			protected <X> void render(Context context, CQLCode object, SafeHtmlBuilder sb, HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
 				if(object != null) {
 					cell.render(context, hasCell.getValue(object), sb);
 				}
@@ -903,10 +893,10 @@ public class CQLCodesView {
 				String iconCss = "fa fa-pencil fa-lg";
 				if(isEditable){
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod; margin-left: -15px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+							+ title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod; margin-left: -15px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 				} else {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+							+ title + "' class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
 				}
 
 				return sb.toSafeHtml();
@@ -948,7 +938,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");						
+						+ title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete"+ SPAN_END +"</button>");
 				return sb.toSafeHtml();
 			}
 		};
@@ -1090,4 +1080,7 @@ public class CQLCodesView {
 		this.inAppHelp = inAppHelp;
 	}
 
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 }

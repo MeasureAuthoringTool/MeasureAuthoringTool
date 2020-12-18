@@ -48,7 +48,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         Label gridPanelHeader = new Label(gridCaption);
         gridPanelHeader.getElement().setId("cqlLibrarySearchHeader_Label");
         gridPanelHeader.setStyleName("recentSearchHeader");
-        gridPanelHeader.getElement().setTabIndex(0);
+        gridPanelHeader.getElement().setTabIndex(-1);
 
         searchPanel.add(gridPanelHeader);
 
@@ -57,7 +57,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         gridToolbar.getElement().setAttribute("id", "recentActivitySummary_gridToolbar");
 
         cellTable.setWidth("100%");
-        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
         ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<>();
         cellTable.setPageSize(2);
         cellTable.redraw();
@@ -111,7 +111,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
             Label searchHeader = new Label("Recent Activity");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML("<p> No Recent Activity</p>");
             searchPanel.add(searchHeader);
             searchPanel.add(new SpacerWidget());

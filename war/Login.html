@@ -31,7 +31,7 @@
     <link href="css/OpenSans.css" type="text/css" rel="stylesheet"/>
     <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
 
-    <link href="signInWidget/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <link href="signInWidget/css/okta-sign-in.css" type="text/css" rel="stylesheet"/>
     <link href="signInWidget/css/otka-theme.css" type="text/css" rel="stylesheet"/>
     <style>
         noscript {
@@ -135,6 +135,10 @@
             position: absolute;
             width: 1px;
         }
+
+        input[type="checkbox"]:focus + label:before {
+            border: 2px solid #0000FF !important;
+        }
     </style>
 </head>
 ​
@@ -155,9 +159,9 @@
         <div class="row">
             <div class="col-md-10 footer-content">
                 <div>
-                    <a title="CMS home page" tabindex="-1" href="http://www.cms.gov/" target="_blank">
+                    <a title="CMS home page" tabindex="0" href="http://www.cms.gov/" target="_blank">
                         <h4 class="screen-reader">CMS.gov</h4>
-                        <img class="mat-logo" alt="CMS.gov Measure Authoring Tool" tabIndex="0" src="./images/MAT-logo_white.svg">
+                        <img class="mat-logo" alt="CMS.gov Measure Authoring Tool" src="./images/MAT-logo_white.svg">
                     </a>
                 </div>
                 <div>
@@ -222,7 +226,7 @@
             </div>
             <div class="col-md-2 hhs-logo-wrapper">
                 <h4 class="screen-reader">hhs.gov</h4>
-                <a href="https://www.hhs.gov" tabIndex="-1" title="Health and Human Services home page" target="_blank">
+                <a href="https://www.hhs.gov" tabIndex="0" title="Health and Human Services home page" target="_blank">
                     <img class="hss-logo" alt="U.S. Department of Health &amp; Human Services logo"
                          src="./images/HHS-logo_white.svg">
                 </a>

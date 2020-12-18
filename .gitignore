@@ -1,5 +1,12 @@
 /test-classes/
 *.class
+*.iml
+
+# GWT Files in case they were optimized Remove this to check in legit changes #
+src/main/java/mat/Mat.gwt.xml
+src/main/java/mat/Bonnie.gwt.xml
+src/main/java/mat/HarpSupport.gwt.xml
+
 
 # Package Files #
 *.war

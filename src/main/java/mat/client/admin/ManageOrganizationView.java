@@ -17,23 +17,11 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SearchWidgetBootStrap;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.*;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
@@ -107,7 +95,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
-		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -164,11 +152,11 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		if (!object.isUsed()) {
 			title = "Delete";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+					+ title + "' class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
 		} else {
 			title = "Organization in use.";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\""+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
+					+ title + "' class=\"" + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\""+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
 		}
 		return sb.toSafeHtml();
 	}

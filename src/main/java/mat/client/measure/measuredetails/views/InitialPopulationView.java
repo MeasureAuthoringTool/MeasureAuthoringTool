@@ -108,6 +108,6 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return null;
+		return measureDetailsTextEditor.getTextEditor();
 	}
 }

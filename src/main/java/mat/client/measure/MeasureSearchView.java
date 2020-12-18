@@ -37,7 +37,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasureLibraryGridToolbar;
 import mat.client.shared.MeasureLibraryResultTable;
@@ -45,6 +44,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.shared.MeasureSearchModel;
+import mat.shared.SafeHtmlCell;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -130,11 +130,12 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
     }
 
     public void buildCellTable(ManageMeasureSearchModel results, final int filter, MeasureSearchModel model) {
+        selectedRowsLabel.setText("0 Items Selected");
         cellTablePanel.clear();
         cellTablePanel.setStyleName("cellTablePanel");
         if ((results.getData() != null) && (results.getData().size() > 0)) {
             table = new CellTable<>(PAGE_SIZE, (Resources) GWT.create(CellTableResource.class));
-            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
             selectedList = new ArrayList<>();
             selectedMeasureList = new ArrayList<>();
             selectedMeasureList.addAll(results.getData());
@@ -227,7 +228,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
                 Label measureSearchHeader = new Label(getMeasureListLabel());
                 measureSearchHeader.getElement().setId("measureSearchHeader_Label");
                 measureSearchHeader.setStyleName("recentSearchHeader");
-                measureSearchHeader.getElement().setTabIndex(0);
+                measureSearchHeader.getElement().setTabIndex(-1);
 
                 cellTablePanel.add(measureSearchHeader);
                 cellTablePanel.add(gridToolbar);
@@ -242,7 +243,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             Label measureSearchHeader = new Label(getMeasureListLabel());
             measureSearchHeader.getElement().setId("measureSearchHeader_Label");
             measureSearchHeader.setStyleName("recentSearchHeader");
-            measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+            measureSearchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
             cellTablePanel.add(measureSearchHeader);
             cellTablePanel.add(new SpacerWidget());
@@ -273,12 +274,12 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             Label searchHeader = new Label("Select Measures to Transfer Ownership.");
             searchHeader.getElement().setId("measureTransferOwnerShipCellTableCaption_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());
             Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<
-                    ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+                    ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
                 @Override
                 public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                     return CellTableUtility.getColumnToolTip(object.getName(), object.getName());
@@ -301,7 +302,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title=\"Measure Name\">"
                     + "Measure Name" + "</span>"));
             Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
-                    ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+                    ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
                 @Override
                 public SafeHtml getValue(ManageMeasureSearchModel.Result manageMeasureSearchModelResult) {
                     return CellTableUtility.getColumnToolTip(manageMeasureSearchModelResult.getOwnerFirstName()
@@ -325,7 +326,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             });
             table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner\">" + "Owner" + "</span>"));
             Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<
-                    ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+                    ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
                 @Override
                 public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                     return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress(), object.getOwnerEmailAddress());
@@ -348,7 +349,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner E-mail Address\">"
                     + "Owner E-mail Address" + "</span>"));
             Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result,
-                    SafeHtml>(new MatSafeHTMLCell()) {
+                    SafeHtml>(new SafeHtmlCell()) {
                 @Override
                 public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                     return CellTableUtility.getColumnToolTip("" + object.geteMeasureId(), "" + object.geteMeasureId());

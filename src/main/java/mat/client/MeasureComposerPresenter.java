@@ -89,7 +89,6 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     @SuppressWarnings("unchecked")

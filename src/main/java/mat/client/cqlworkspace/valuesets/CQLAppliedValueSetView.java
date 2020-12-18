@@ -1,10 +1,6 @@
 package mat.client.cqlworkspace.valuesets;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -24,54 +20,33 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.CustomPager;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
-import mat.client.shared.CustomQuantityTextBox;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
+import mat.client.shared.*;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 import mat.vsacmodel.MatConcept;
 import mat.vsacmodel.MatConceptList;
 import mat.vsacmodel.ValueSet;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.constants.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -145,6 +120,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     HTML heading = new HTML();
     private CodesValuesetsButtonToolBar copyPasteClearButtonToolBar = new CodesValuesetsButtonToolBar("valueset");
     private InAppHelp inAppHelp = new InAppHelp("");
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public CQLAppliedValueSetView() {
 
@@ -163,7 +139,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         verticalPanel.getElement().setId("vPanel_VerticalPanel");
 
         heading.addStyleName("leftAligned");
-        heading.getElement().setTabIndex(0);
+        heading.getElement().setTabIndex(-1);
 
         verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
         verticalPanel.add(new SpacerWidget());
@@ -277,6 +253,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         searchWidgetFormGroup.add(oidLabel);
         oidInput.setWidth("595px");
         oidInput.setTitle(ENTER_OID);
+        oidInput.addBlurHandler(errorHandler.buildRequiredBlurHandler(oidInput));
         searchWidgetFormGroup.add(oidInput);
         searchWidgetFormGroup.add(new SpacerWidget());
 
@@ -381,7 +358,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         PanelHeader qdmElementsHeader = new PanelHeader();
         qdmElementsHeader.getElement().setId("searchHeader_Label");
         qdmElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
-        qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
+        qdmElementsHeader.getElement().setAttribute("tabIndex", "-1");
 
         HTML searchHeaderText = new HTML("<strong>Applied Value Sets</strong>");
         qdmElementsHeader.add(searchHeaderText);
@@ -391,7 +368,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
             table = new CellTable<>();
             allValueSetsList = appliedValueSetList;
             setEditable(isEditable);
-            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
             listDataProvider = new ListDataProvider<>();
             qdmSelectedList = new ArrayList<>();
             table.setPageSize(TABLE_ROW_COUNT);
@@ -452,7 +429,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         if (table.getColumnCount() != TABLE_ROW_COUNT) {
             Label searchHeader = new Label("Value Sets");
             searchHeader.getElement().setId("searchHeader_Label");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             searchHeader.setVisible(false);
@@ -617,7 +594,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                                       CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
                                       HasCell<CQLQualityDataSetDTO, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {
@@ -648,14 +625,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
             @Override
             public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
-
-                return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLQualityDataSetDTO object,
-                                       SafeHtml value) {
-                        if ((object != null)) {
-                            observer.onModifyClicked(object);
-                        }
+                return (index, object, value) -> {
+                    if ((object != null)) {
+                        observer.onModifyClicked(object);
                     }
                 };
             }
@@ -668,10 +640,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+                            + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
                 }
 
                 return sb.toSafeHtml();
@@ -694,15 +666,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
             @Override
             public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
-
-                return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLQualityDataSetDTO object,
-                                       SafeHtml value) {
-                        if (object != null) {
-                            lastSelectedObject = object;
-                            observer.onDeleteClicked(object, index);
-                        }
+                return (index, object, value) -> {
+                    if (object != null) {
+                        lastSelectedObject = object;
+                        observer.onDeleteClicked(object, index);
                     }
                 };
             }
@@ -715,7 +682,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-trash fa-lg";
 
                 sb.appendHtmlConstant("<button type=\"button\" title='"
-                        + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+                        + title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
                 return sb.toSafeHtml();
             }
 
@@ -828,7 +795,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     }
 
     public void resetVSACValueSetWidget() {
-
+        errorHandler.clearErrors();
         if (CQLAppliedValueSetUtility.checkForEnable()) {
             oidInput.setTitle(ENTER_OID);
             nameInput.setTitle(ENTER_NAME);
@@ -1176,4 +1143,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         this.inAppHelp = inAppHelp;
     }
 
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 }

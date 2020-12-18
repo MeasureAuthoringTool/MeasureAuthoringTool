@@ -33,8 +33,6 @@ public class ContentWithHeadingWidget extends Composite{
 	
 	/** The heading. */
 	HTML heading = new HTML();
-	/** The header holder. */
-	FocusableWidget headingHolder = new FocusableWidget(heading);
 	
 	FocusPanel sPanel = new FocusPanel();
 	/** The Flow panel. */
@@ -62,6 +60,7 @@ public class ContentWithHeadingWidget extends Composite{
 		footer.addStyleName("returnLink");
 		
 		sPanel.getElement().setId("sPanel_SimplePanel");
+		sPanel.setTabIndex(-1);
 		sPanel.add(vPanel);
 		sPanel.setFocus(true);
 		initWidget(sPanel);

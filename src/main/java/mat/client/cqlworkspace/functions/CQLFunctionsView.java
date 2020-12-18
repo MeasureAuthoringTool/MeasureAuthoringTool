@@ -34,8 +34,8 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.cql.CQLFunctionArgument;
-import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -89,6 +89,7 @@ public class CQLFunctionsView {
     private InAppHelp inAppHelp = new InAppHelp("");
     private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
     private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
+    private ErrorHandler errorHandler = new ErrorHandler();
 
 
     public CQLFunctionsView() {
@@ -186,6 +187,8 @@ public class CQLFunctionsView {
         returnTypeTextBox.setId("returnTypeTextArea_Id");
         returnTypeTextBox.setTitle("Return Type of CQL Expression");
         returnTypeTextBox.setReadOnly(true);
+        returnTypeTextBox.setEnabled(false);
+        returnTypeTextBox.setTabIndex(-1);
         returnTypeTextBox.setSize("550px", "32px");
 
         HorizontalPanel returnTypeHP = new HorizontalPanel();
@@ -235,6 +238,7 @@ public class CQLFunctionsView {
         funcNameTxtArea.getElement().setId("FunctionNameField");
         funcNameTxtArea.setName("FunctionName");
         funcNameTxtArea.setTitle("Enter Function Name Required");
+        funcNameTxtArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(funcNameTxtArea));
 
         HorizontalPanel funcNameHPanel = new HorizontalPanel();
         funcNameHPanel.add(functionNameLabel);
@@ -314,7 +318,7 @@ public class CQLFunctionsView {
                     "Added Arguments List");
             tableHeader.getElement().setId("tableHeader_Label");
             tableHeader.setStyleName("CqlWorkSpaceTableHeader");
-            tableHeader.getElement().setAttribute("tabIndex", "0");
+            tableHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML("<p> No Arguments Added.</p>");
             cellTablePanel.add(tableHeader);
             cellTablePanel.add(new SpacerWidget());
@@ -340,7 +344,7 @@ public class CQLFunctionsView {
                     "Added Arguments List");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("measureGroupingTableHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());
@@ -424,7 +428,7 @@ public class CQLFunctionsView {
             protected <X> void render(Context context, CQLFunctionArgument object, SafeHtmlBuilder sb,
                                       HasCell<CQLFunctionArgument, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {
@@ -444,12 +448,12 @@ public class CQLFunctionsView {
     private SafeHtml getDataTypeColumnToolTip(String columnText, StringBuilder title, boolean hasImage) {
         if (hasImage) {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
-                    + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<head> </head> <body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
+                    + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         } else {
-            String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"0\" title='" + title + "'>"
+            String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         }
@@ -459,7 +463,7 @@ public class CQLFunctionsView {
 
         HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+            SafeHtmlCell modifyButonCell = new SafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -487,10 +491,10 @@ public class CQLFunctionsView {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+                            + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
                 }
 
                 return sb.toSafeHtml();
@@ -504,7 +508,7 @@ public class CQLFunctionsView {
 
         HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+            SafeHtmlCell deleteButonCell = new SafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -531,7 +535,7 @@ public class CQLFunctionsView {
 
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</span></button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
                             + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");

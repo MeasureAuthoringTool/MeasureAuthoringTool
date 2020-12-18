@@ -1,38 +1,29 @@
 package mat.client.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.VerticalFlowPanel;
-import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.*;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
+import mat.shared.CQLModelValidator;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import java.util.List;
 
 public class AbstractNewMeasureView implements DetailDisplay {
+    private static final String LIBRARY_NAME_REQUIRED = "A CQL Library name is required.";
+    public static final String LIBRARY_LENGTH_ERROR = "CQL Library Name cannot exceed 500 characters.";
+
     protected SimplePanel mainPanel = new SimplePanel();
     protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
     protected TextArea measureNameTextBox = new TextArea();
@@ -57,6 +48,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected HTML cautionMsgPlaceHolder = new HTML();
     protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
     EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -95,6 +87,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();
         warningMessageAlert.clearAlert();
+        errorHandler.clearErrors();
     }
 
     @Override
@@ -134,6 +127,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
             fhirModel.setValue(false);
             fhirModel.setEnabled(false);
         }
+    }
+
+    public void allowAllMeasureModelTypes() {
+        fhirModel.setEnabled(true);
+        qdmModel.setEnabled(true);
+        fhirModel.setValue(true);
     }
 
     @Override
@@ -235,9 +234,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildMeasureNameLabel() {
         FormLabel measureNameLabel = new FormLabel();
         measureNameLabel.setText("Measure Name");
-        measureNameLabel.setTitle("Measure Name");
-        measureNameLabel.setFor("MeasureNameTextArea");
         measureNameLabel.setShowRequiredIndicator(true);
+        measureNameLabel.setTitle("Measure Name Required");
+        measureNameLabel.setFor("MeasureNameTextArea");
         measureNameLabel.setId("MeasureNameTextArea_Id");
         return measureNameLabel;
     }
@@ -250,9 +249,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildModelTypeLabel() {
         FormLabel modelLabel = new FormLabel();
         modelLabel.setText("Model");
-        modelLabel.setTitle("Model");
-        modelLabel.setFor("measureModel");
         modelLabel.setShowRequiredIndicator(true);
+        modelLabel.setTitle("Model Required");
+        modelLabel.setFor("measureModel");
         modelLabel.setId("measureModel_Id");
         return modelLabel;
     }
@@ -306,14 +305,29 @@ public class AbstractNewMeasureView implements DetailDisplay {
         measureNameTextBox.setWidth("400px");
         measureNameTextBox.setHeight("50px");
         measureNameTextBox.setMaxLength(500);
+        measureNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(measureNameTextBox,
+                (s) -> {
+                    String result = null;
+                    if (fhirModel.getValue()) {
+                        result = getFirst(CommonMeasureValidator.validateFhirMeasureName(s));
+                    }
+                    if (result == null) {
+                        result = getFirst(CommonMeasureValidator.validateMeasureName(s));
+                    }
+                    return result;
+                }));
+    }
+
+    protected String getFirst(List<String> list) {
+        return list == null || list.isEmpty() ? null : list.get(0);
     }
 
     protected FormLabel buildCQLLibraryNameLabel() {
         FormLabel cqlLibraryNameLabel = new FormLabel();
         cqlLibraryNameLabel.setText("CQL Library Name");
-        cqlLibraryNameLabel.setTitle("CQL Library Name");
-        cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
         cqlLibraryNameLabel.setShowRequiredIndicator(true);
+        cqlLibraryNameLabel.setTitle("CQL Library Name Required");
+        cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
         cqlLibraryNameLabel.setId("CqlLibraryNameTextArea_Id");
         return cqlLibraryNameLabel;
     }
@@ -324,6 +338,16 @@ public class AbstractNewMeasureView implements DetailDisplay {
         cqlLibraryNameTextBox.setWidth("400px");
         cqlLibraryNameTextBox.setHeight("50px");
         cqlLibraryNameTextBox.setMaxLength(500);
+        cqlLibraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(cqlLibraryNameTextBox,
+                (s) -> {
+                    String result = null;
+                    if (fhirModel.getValue()) {
+                        result = getFirst(CommonMeasureValidator.validateFhirLibraryName(s));
+                    } else {
+                        result = getFirst(CommonMeasureValidator.validateQDMName(s));
+                    }
+                    return result;
+                }));
     }
 
     protected HorizontalPanel buildCQLLibraryNamePanel() {
@@ -341,9 +365,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildShortNameLabel() {
         FormLabel shortNameLabel = new FormLabel();
         shortNameLabel.setText("eCQM Abbreviated Title");
+        shortNameLabel.setShowRequiredIndicator(true);
         shortNameLabel.setTitle("eCQM Abbreviated Title");
         shortNameLabel.setFor("ShortNameTextBox");
-        shortNameLabel.setShowRequiredIndicator(true);
         shortNameLabel.setId("ShortNameTextBox_Id");
         return shortNameLabel;
     }
@@ -353,14 +377,16 @@ public class AbstractNewMeasureView implements DetailDisplay {
         eCQMAbbreviatedTitleTextBox.setTitle("Enter eCQM Abbreviated Title Required");
         eCQMAbbreviatedTitleTextBox.setWidth("18em");
         eCQMAbbreviatedTitleTextBox.setMaxLength(32);
+        eCQMAbbreviatedTitleTextBox.addBlurHandler(errorHandler.buildBlurHandler(eCQMAbbreviatedTitleTextBox,
+                s -> getFirst(CommonMeasureValidator.validateECQMAbbreviation(s))));
     }
 
     protected FormLabel buildScoringLabel() {
         FormLabel scoringLabel = new FormLabel();
         scoringLabel.setText("Measure Scoring");
-        scoringLabel.setTitle("Measure Scoring");
-        scoringLabel.setFor("MeasureScoringListBox");
         scoringLabel.setShowRequiredIndicator(true);
+        scoringLabel.setTitle("Measure Scoring Required");
+        scoringLabel.setFor("MeasureScoringListBox");
         scoringLabel.setId("MeasureScoringListBox");
         return scoringLabel;
     }
@@ -371,6 +397,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         measureScoringListBox.setStyleName("form-control");
         measureScoringListBox.setVisibleItemCount(1);
         measureScoringListBox.setWidth("18em");
+        measureScoringListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(measureScoringListBox));
     }
 
     protected HorizontalPanel buildScoringPanel() {
@@ -384,16 +411,16 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormLabel buildPatientBasedLabel() {
         FormLabel patientBasedLabel = new FormLabel();
         patientBasedLabel.setText("Patient-based Measure");
-        patientBasedLabel.setTitle("Patient-based Measure");
-        patientBasedLabel.setFor("PatientBasedMeasureListBox");
         patientBasedLabel.setShowRequiredIndicator(true);
+        patientBasedLabel.setTitle("Patient-based Measure Required");
+        patientBasedLabel.setFor("PatientBasedMeasureListBox");
         patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
         return patientBasedLabel;
     }
 
     protected void buildPatientBasedInput() {
         patientBasedListBox.getElement().setId("patientBasedMeasure_listbox");
-        patientBasedListBox.setTitle("Patient Based Indicator Required.");
+        patientBasedListBox.setTitle("Patient Based Measure required");
         patientBasedListBox.setStyleName("form-control");
         patientBasedListBox.setVisibleItemCount(1);
         patientBasedListBox.setWidth("18em");
@@ -419,5 +446,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
         formFieldSet.add(patientBasedFormGrp);
         formFieldSet.add(buttonFormGroup);
         return formFieldSet;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
     }
 }

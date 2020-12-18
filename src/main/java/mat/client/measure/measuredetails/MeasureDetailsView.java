@@ -1,14 +1,8 @@
 package mat.client.measure.measuredetails;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
@@ -16,14 +10,8 @@ import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.MeasureDetailsViewFactory;
 import mat.client.measure.measuredetails.views.ReferencesView;
-import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatDetailItem;
+import mat.client.shared.*;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.MessagePanel;
-import mat.client.shared.SpacerWidget;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import org.gwtbootstrap3.client.ui.Button;
@@ -76,7 +64,7 @@ public class MeasureDetailsView {
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
-		headingHTML.getElement().setTabIndex(0);
+		headingHTML.getElement().setTabIndex(-1);
 		headingPanel.add(headingHTML);
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);
@@ -175,20 +163,7 @@ public class MeasureDetailsView {
 	public void setFocusOnFirstElement() {
 		if(componentDetailView.getFirstElement() != null) {
 			componentDetailView.getFirstElement().getElement().focus();
-		} else {
-			headingHTML.getElement().focus();
 		}
-	}
-	
-	private void handleRichTextTabOut(KeyUpEvent keyUpEvent) {
-		if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getShiftKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
-            keyUpEvent.getNativeEvent().preventDefault();
-            DOM.getElementById("measureDetailsView_HeadingContent").focus();
-        }
-        else if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
-            keyUpEvent.getNativeEvent().preventDefault();
-            saveButton.setFocus(true);
-        }
 	}
 	
 	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {

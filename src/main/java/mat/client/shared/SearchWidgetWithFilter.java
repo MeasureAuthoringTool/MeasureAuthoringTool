@@ -152,7 +152,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		searchHeader.getElement().setAttribute("aria-label", "Search This panel allows you to filter your " + viewPluralString + " via search so you can find the exact " + viewString + " you want");
 		searchHeader.getElement().setId("searchHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		return searchHeader;
 	}
 

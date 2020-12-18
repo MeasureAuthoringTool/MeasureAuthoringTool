@@ -108,7 +108,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   @Override
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
 	  
-	  sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\" tabindex=\"0\" class=\" "+cssClass+"\">");
+	  sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\"  class=\" "+cssClass+"\">");
 	  if(cssClass.equalsIgnoreCase("btn btn-link")){
 		 sb.appendHtmlConstant("<i class=\" "+iconClass+"\"></i>");
 		 sb.appendHtmlConstant("<span style=\"font-size:0;\">"+invisibleButtonText+"</span>");

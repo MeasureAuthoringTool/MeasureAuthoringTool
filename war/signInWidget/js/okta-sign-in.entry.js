@@ -40883,7 +40883,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      }));
+      }),'.o-form-fieldset',{prepend: true});
     }
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),

@@ -124,7 +124,9 @@ public class FhirCqlParserServiceTest {
         List<LibraryErrors> libraryErrors = Arrays.asList(le, ie1, ie2);
 
 
-        SaveUpdateCQLResult result = fhirCqlParserService.parseFhirCqlLibraryForErrors(sourceModel, libraryErrors);
+        MatXmlResponse resp = new MatXmlResponse();
+        resp.setErrors(libraryErrors);
+        SaveUpdateCQLResult result = fhirCqlParserService.parseFhirCqlLibraryForErrors(sourceModel, resp);
         assertNotNull(result);
         assertNotNull(result.getCqlModel());
         assertEquals(sourceModel, result.getCqlModel());

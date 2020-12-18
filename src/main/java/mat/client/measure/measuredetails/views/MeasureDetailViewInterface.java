@@ -6,6 +6,8 @@ import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserv
 import mat.client.shared.ConfirmationDialogBox;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
+import java.util.List;
+
 public interface MeasureDetailViewInterface {
 	Widget getFirstElement();
 	Widget getWidget();
@@ -18,6 +20,9 @@ public interface MeasureDetailViewInterface {
 	MeasureDetailsComponentModel getMeasureDetailsComponentModel();
 	void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model);
 	TextArea getTextEditor();
+	default List<String> preSave() {
+		return null;
+	}
 
 	void setObserver(MeasureDetailsComponentObserver observer);
 	MeasureDetailsComponentObserver getObserver();

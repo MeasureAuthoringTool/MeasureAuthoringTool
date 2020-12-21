@@ -19,6 +19,7 @@
       margin-bottom: 15px;
     }
   }
+  
 
   a.button {
     float: right;
@@ -50,6 +51,14 @@
       width: 100%;
     }
   }
+}
+
+.no-left-margin {
+  margin-left: 0px !important;
+}
+
+.no-float {
+  float: none !important;
 }
 
 // Duo

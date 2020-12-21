@@ -26858,16 +26858,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           }
         };
       }
-
-      props.termsconditions = {
-        type: 'boolean',
-        validate: function validate(value) {
-          if (!value) {
-            return "Please accept the Terms and Conditions";
-          }
-        }
-      };
-
       return props;
     },
 
@@ -29553,16 +29543,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
     template: '\
     <ul>\
     <li>\
+     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
+    </li>\
+    <li>\
     {{harpSignUpHeaderContent}}\
       <a href="{{harpSignUpUrl}}" class="mft-links" target="_blank">\
        {{harpSignUpLinkContent}}\
       </a>\
     </li>\
     <li>\
-     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
-    </li>\
-    <li>\
-      <a href="{{harpRecorveryUrl}}" class="mft-links" target="_blank">\
+      <a href="{{harpRecorveryUrl}}" class=""mft-links" target="_blank">\
        {{harpRecoveryContent}}\
       </a>\
     </li>\
@@ -40790,7 +40780,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
       });
       this.add(Okta.createButton({
         attributes: { 'data-se': formAndButtonDetails.buttonDataSe },
-        className: 'button ' + formAndButtonDetails.buttonClassName,
+        className: 'button ' + formAndButtonDetails.buttonClassName + ' no-left-margin no-float',
         title: formAndButtonDetails.formSubmit,
         click: function click() {
           form.clearErrors();
@@ -40814,7 +40804,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      }));
+      }), '.o-form-fieldset', { prepend: true });
+
       if (this.options.appState.get('allowRememberDevice')) {
         this.addInput({
           label: false,
@@ -40825,8 +40816,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           type: 'checkbox'
         });
       }
-    }
 
+      try {
+        window.setTimeout(function () {
+          document.querySelector('.email-request-button').focus();
+        }, 300);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -40883,7 +40881,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      }),'.o-form-fieldset',{prepend: true});
+      }));
     }
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),

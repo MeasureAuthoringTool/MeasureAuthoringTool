@@ -55,20 +55,12 @@
         top.location = self.location;
     }
 
-    function searchAll(elem,selector) {
-        if( navigator.userAgent.indexOf("MSIE") != -1 ) {
-            return elem.getElementsByTagName(selector);
-        }else{
-            return elem.querySelectorAll(selector);
-        }
-    }
-
     function setFocusToFirstFocusable() {
-        const tabs = searchAll(document,'.gwt-TabPanelBottom > *');
+        let tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
         if (tabs) {
             for (let i = 0; i < tabs.length; i++) {
                 if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
-                    const focusArray = searchAll(tabs[i], 'button, a, input, select, textarea');
+                    let focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
                     for (let j = 0; j < focusArray.length; j++) {
                         if (!(focusArray[j].readonly || focusArray[j].disabled) &&
                             focusArray[j].ariaHidden !== 'true' &&

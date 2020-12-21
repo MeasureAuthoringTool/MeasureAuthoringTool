@@ -33345,7 +33345,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           }
         };
       }
-      return props;
+
+        props.termsconditions = {
+            type: 'boolean',
+            validate: function validate(value) {
+                if (!value) {
+                    return "Please accept the Terms and Conditions";
+                }
+            }
+        };
+
+        return props;
     },
 
     getUsernameAndRemember: function getUsernameAndRemember(cookieUsername) {

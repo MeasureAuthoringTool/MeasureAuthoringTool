@@ -421,7 +421,7 @@ public class ZipPackager {
 
         Bundle result = new Bundle();
         result.getMeta().addProfile("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/measure-bundle-cqfm");
-        result.setType(Bundle.BundleType.COLLECTION);
+        result.setType(Bundle.BundleType.TRANSACTION);
         result.addEntry().setResource(measure).getRequest()
                 .setUrl("Measure/" + getFhirId(measure))
                 .setMethod(Bundle.HTTPVerb.PUT);

@@ -185,14 +185,17 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getSuccessMessageDisplay().clearAlert();
         currentModel = getValues();
         if(isValid(currentModel)) {
+        	Mat.showLoadingMessage();
             MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<SaveMyAccountResult>() {
                 @Override
                 public void onFailure(Throwable caught) {
+                	Mat.hideLoadingMessage();
                     Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 }
 
                 @Override
                 public void onSuccess(SaveMyAccountResult result) {
+					Mat.hideLoadingMessage();
                     if (result.isSuccess()) {
                         display.getErrorMessageDisplay().clearAlert();
                         display.getSuccessMessageDisplay().createAlert(MatContext.get()

@@ -102,7 +102,7 @@ public class HarpUserVerificationPresenter {
         } else {
             display.getPassword().setEnabled(false);
 
-            MatContext.get().getLoginService().verifyHarpUser(display.getSecurityQuestion(), display.getSecurityAnswer(), display.getLoginId().getValue(), MatContext.get().getHarpUserInfo(),
+            MatContext.get().getLoginService().verifyHarpUser(display.getSecurityQuestion(), display.getSecurityAnswer(), display.getLoginId().getValue(), MatContext.get().getAccessToken(),
                     new AsyncCallback<Boolean>() {
 
                         @Override

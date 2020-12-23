@@ -2,6 +2,7 @@ package mat.client.login.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import mat.client.shared.MatException;
 
 import java.util.Map;
 
@@ -18,5 +19,7 @@ public interface HarpService extends RemoteService {
 
     boolean validateToken(String token);
 
-    Map<String, String> getUserInfo(String accessToken);
+    void validateUserAndInitSession(String accessToken) throws MatException;
+
+    Map<String, String> generateUserInfoFromAccessToken(String accessToken) throws MatException;
 }

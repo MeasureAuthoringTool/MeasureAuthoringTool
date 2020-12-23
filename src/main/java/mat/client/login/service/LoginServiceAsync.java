@@ -15,7 +15,7 @@ public interface LoginServiceAsync extends AsynchronousService {
 
     void switchRole(String role, AsyncCallback<Void> callback);
 
-    void switchUser(Map<String, String> harpUserInfo, String newUserId, AsyncCallback<Void> callback);
+    void switchUser(String accessToken, String newUserId, AsyncCallback<Void> callback);
 
     /**
      * Gets the footer ur ls.
@@ -59,6 +59,6 @@ public interface LoginServiceAsync extends AsynchronousService {
 
     void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);
 
-    void verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo, AsyncCallback<Boolean> booleanAsyncCallback);
+    void verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, String accessToken, AsyncCallback<Boolean> booleanAsyncCallback);
 
 }

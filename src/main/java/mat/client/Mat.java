@@ -186,7 +186,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private void switchUser(String newUserId) {
         logger.log(Level.INFO, "Switching to user: " + newUserId);
         showLoadingMessage();
-        MatContext.get().getLoginService().switchUser(harpUserInfo, newUserId, new AsyncCallback<Void>() {
+        MatContext.get().getLoginService().switchUser(MatContext.get().getAccessToken(), newUserId, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 logger.log(Level.SEVERE, "LoginService::.switchUser -> onFailure: " + caught.getMessage(), caught);
@@ -381,7 +381,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 @Override
                 public void onSuccess(Boolean aBoolean) {
                     logger.log(Level.INFO, "HarpService::validateToken -> onSuccess");
-                    getUserInfo(accessToken);
+                    validateUserAndInitSession(accessToken);
                 }
             });
         } else {
@@ -398,36 +398,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         return localStorage == null ? null : localStorage.getItem(OKTA_TOKEN_STORAGE);
     }
 
-    private void linkHarpMatAccounts() {
-        logger.log(Level.INFO, "linkHarpMatAccounts - enter");
-        // Check if user is already linked with a MAT Account
-        MatContext.get().getLoginService().checkForAssociatedHarpId(harpUserInfo.get(HarpConstants.HARP_ID), new AsyncCallback<Boolean>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                String msg = "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage();
-                logger.log(Level.SEVERE, msg, caught);
-                MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_HARP_LINK", msg, 0);
-                logger.log(Level.INFO, "Fire HarpSupportEvent");
-                MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
-            }
-
-            @Override
-            public void onSuccess(Boolean result) {
-                logger.log(Level.INFO, "LoginService::checkForAssociatedHarpId -> onSuccess " + result);
-                if (result) {
-                    // Update the User name from HARP and proceed to MAT home page.
-                    MatContext.get().initSession(harpUserInfo, harpUserSessionSetupCallback);
-                } else {
-                    // Display form panel to fetch userId and password
-                    logger.log(Level.INFO, "Fire HarpUserVerificationEvent");
-                    MatContext.get().getEventBus().fireEvent(new HarpUserVerificationEvent());
-                }
-            }
-        });
-        logger.log(Level.INFO, "linkHarpMatAccounts - exit");
-    }
-
     private void parseOktaToken(String oktaToken) {
         JSONValue tokens = JSONParser.parseStrict(oktaToken);
         String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
@@ -440,24 +410,42 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 tokens.isObject().get("idToken").isObject().get("claims").isObject().get("preferred_username").isString().stringValue());
     }
 
-    private void getUserInfo(String accessToken) {
-        MatContext.get().getHarpService().getUserInfo(accessToken, new AsyncCallback<Map<String, String>>() {
+    private void validateUserAndInitSession(String accessToken) {
+        MatContext.get().getHarpService().validateUserAndInitSession(accessToken, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable throwable) {
-                logger.log(Level.SEVERE, "HarpService::getUserInfo -> onFailure", throwable);
-                // Invalid token
-                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+                if (throwable.getMessage().contains("INVALID_ACCESS_TOKEN")) {
+                    String msg = "Error in validateToken. Error message: Invalid token";
+                    MatContext.get().recordTransactionEvent(null, null, "INVALID_ACCESS_TOKEN", msg, 0);
+                    logger.log(Level.SEVERE, "HarpService::validateToken -> onFailure: Invalid token");
+                    MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+                } else if (throwable.getMessage().contains("CHECK_ASSOCIATED_HARP_ID")) {
+                    String msg = "Error in checkForAssociatedHarpId. Error message: Unable to verify if user has associated Harp Id";
+                    MatContext.get().recordTransactionEvent(null, null, "CHECK_ASSOCIATED_HARP_ID", msg, 0);
+                    logger.log(Level.SEVERE, "Fire HarpSupportEvent");
+                    MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+                } else if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
+                    String msg = "HARP User does not have access to the MAT, redirecting to access support page";
+                    logger.log(Level.SEVERE, msg);
+                    MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
+                    MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+                } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
+                    String msg = "Harp ID not found";
+                    logger.log(Level.SEVERE, msg);
+                    MatContext.get().recordTransactionEvent(null, null, "MAT_HARP_ID_NOT_FOUND", msg, 0);
+                    MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+                } else if (throwable.getMessage().contains("NO_ASSOCIATED_HARP_ID")) {
+                    String msg = "INFO in checkForAssociatedHarpId. Message : Associated harp id is not found";
+                    MatContext.get().recordTransactionEvent(null, null, "NO_ASSOCIATED_HARP_ID", msg, 0);
+                    logger.log(Level.INFO, "HarpService::checkForAssociatedHarpId -> onFailure: No Associated harp id");
+                    MatContext.get().getEventBus().fireEvent(new HarpUserVerificationEvent());
+                }
             }
 
             @Override
-            public void onSuccess(Map<String, String> userInfo) {
-                logger.log(Level.INFO, "HarpService::getUserInfo -> onSuccess");
-
-                // Retrieve user details from Okta's userinfo endpoint.
-                harpUserInfo.putAll(userInfo);
-                MatContext.get().setHarpUserInfo(harpUserInfo);
-
-                linkHarpMatAccounts();
+            public void onSuccess(Void unused) {
+                logger.log(Level.INFO, "HarpService::getUserInfo -> onSuccess" );
+                initPage();
             }
         });
     }

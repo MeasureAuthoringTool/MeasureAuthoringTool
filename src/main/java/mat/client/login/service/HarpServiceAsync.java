@@ -16,5 +16,7 @@ public interface HarpServiceAsync extends AsynchronousService {
 
     void validateToken(String token, AsyncCallback<Boolean> async);
 
-    void getUserInfo(String accessToken, AsyncCallback<Map<String, String>> async);
+    void validateUserAndInitSession(String accessToken, AsyncCallback<Void> async);
+
+    void generateUserInfoFromAccessToken(String accessToken, AsyncCallback<Map<String, String>> async);
 }

@@ -1154,6 +1154,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void getShareDetails(String userName, String id, int startIndex) {
         searchDisplay.resetMessageDisplay();
         shareDisplay.resetMessageDisplay();
+        setSearchingBusy(true);
         MatContext.get().getMeasureService().getUsersForShare(userName, id, startIndex, Integer.MAX_VALUE,
                 new AsyncCallback<ManageMeasureShareModel>() {
                     @Override
@@ -1162,6 +1163,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                 .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                         MatContext.get().recordTransactionEvent(null, null, null,
                                 UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                        setSearchingBusy(false);
                     }
 
                     @Override
@@ -1173,6 +1175,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         if (result.getData() == null || result.getData().isEmpty()) {
                             shareDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
                         }
+                        setSearchingBusy(false);
                     }
                 });
     }
@@ -1749,20 +1752,24 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void onNewMeasureButtonClick() {
+        toggleLoadingMessage(true);
         searchDisplay.resetMessageDisplay();
         measureDeletion = false;
         isMeasureDeleted = false;
         isMeasureVersioned = false;
         displayNewMeasureWidget();
+        toggleLoadingMessage(false);
     }
 
     private void onNewCompositeMeasureButtonClick() {
+        toggleLoadingMessage(true);
         searchDisplay.resetMessageDisplay();
         measureDeletion = false;
         isMeasureDeleted = false;
         isMeasureVersioned = false;
         currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
         displayNewCompositeMeasureWidget();
+        toggleLoadingMessage(false);
     }
 
     private void addMeasureLibrarySearchHandlers(final SearchDisplay searchDisplay) {
@@ -1962,6 +1969,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void searchHistory(String measureId, int startIndex, int pageSize) {
         List<String> filterList = new ArrayList<>();
+        setSearchingBusy(true);
         MatContext.get().getAuditService().executeMeasureLogSearch(measureId, startIndex, pageSize, filterList,
                 new AsyncCallback<SearchHistoryDTO>() {
                     @Override
@@ -1970,11 +1978,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                 .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                         MatContext.get().recordTransactionEvent(null, null, null,
                                 UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                        setSearchingBusy(false);
                     }
 
                     @Override
                     public void onSuccess(SearchHistoryDTO data) {
                         historyDisplay.buildCellTable(data.getLogs());
+                        setSearchingBusy(false);
                     }
                 });
     }

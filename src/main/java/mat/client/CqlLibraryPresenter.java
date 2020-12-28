@@ -1360,6 +1360,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
      * Method is invoked When Option to Create Library Version of Draft is selected from CreateNewItemWidget.
      */
     private void displayVersionWidget() {
+        Mat.showLoadingMessage();
         versionDisplay.getErrorMessages().clearAlert();
         cqlLibraryView.resetMessageDisplay();
         panel.getButtonPanel().clear();
@@ -1367,6 +1368,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         panel.setContent(versionDisplay.asWidget());
         Mat.focusSkipLists(CQL_LIBRARY);
         versionDisplay.clearRadioButtonSelection();
+        Mat.hideLoadingMessage();
     }
 
     private void displayShare() {
@@ -1414,7 +1416,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     private void displayHistoryWidget(String cqlLibraryId, int startIndex, int pageSize) {
         List<String> filterList = new ArrayList<String>();
-
+        showSearchingBusy(true);
         MatContext.get().getAuditService().executeSearch(cqlLibraryId, startIndex, pageSize, filterList,
                 new AsyncCallback<SearchHistoryDTO>() {
                     @Override
@@ -1423,11 +1425,13 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                                 .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                         MatContext.get().recordTransactionEvent(null, null, null,
                                 "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+                        showSearchingBusy(false);
                     }
 
                     @Override
                     public void onSuccess(SearchHistoryDTO data) {
                         historyDisplay.buildCellTable(data.getLogs());
+                        showSearchingBusy(false);
                     }
                 });
     }
@@ -1481,6 +1485,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
      * This method is called when New Library Option is selected from CreateNewItemWidget.
      */
     private void displayNewCQLLibraryWidget() {
+        Mat.showLoadingMessage();
         setIsPageDirty(false);
         boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
@@ -1492,9 +1497,11 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 false);
         updateSaveButtonHandler(event -> createCQLLibrary());
         Mat.focusSkipLists(CQL_LIBRARY);
+        Mat.hideLoadingMessage();
     }
 
     private void displayDraftCQLLibraryWidget(CQLLibraryDataSetObject selectedLibrary) {
+        Mat.showLoadingMessage();
         setIsPageDirty(false);
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
         warningConfirmationMessageAlert.clearAlert();
@@ -1505,6 +1512,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         detailDisplay.setLibraryModelType(selectedLibrary.getLibraryModelType(), true);
         updateSaveButtonHandler(event -> draftCQLLibrary(selectedLibrary));
         Mat.focusSkipLists(CQL_LIBRARY);
+        Mat.hideLoadingMessage();
     }
 
     /**

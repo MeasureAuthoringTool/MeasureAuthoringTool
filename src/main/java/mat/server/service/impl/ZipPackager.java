@@ -435,7 +435,10 @@ public class ZipPackager {
                 .setMethod(Bundle.HTTPVerb.PUT);
 
         libBundle.getEntry().forEach(e ->
-                result.addEntry().setResource(e.getResource()).setRequest(e.getRequest()));
+                result.addEntry().setResource(e.getResource()).
+                        getRequest().setMethod(Bundle.HTTPVerb.PUT).
+                        setUrl("Library/" + e.getResource().getId()));
+        //Setup the request to match the newly set ID.
 
         return jsonParser.encodeResourceToString(result);
     }

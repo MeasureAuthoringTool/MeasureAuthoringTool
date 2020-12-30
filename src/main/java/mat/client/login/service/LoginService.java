@@ -47,13 +47,6 @@ public interface LoginService extends RemoteService {
      */
     boolean isValidPassword(String userId, String password);
 
-    /**
-     * Retrieves MAT user details for provided HARP ID.
-     *
-     * @param harpUserInfo User's info
-     * @return
-     */
-
     Boolean checkForAssociatedHarpId(String harpId) throws MatException;
 
 

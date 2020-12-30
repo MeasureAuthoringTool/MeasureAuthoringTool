@@ -20,29 +20,34 @@ public class PopulationServiceImpl extends SpringRemoteServiceServlet implements
     @Override
     public SaveUpdateCQLResult savePopulations(String measureId, String nodeName, String nodeToReplace) {
 
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
 
-        String parentNode = createParentNode(nodeName);
+            String parentNode = createParentNode(nodeName);
 
-        String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);
-        newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-        // Set the updated XML to the model
-        model.setXml(newXml);
-        // Persist the Modified XML
-        measurePackageService.saveMeasureXml(model);
+            String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);
+            newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+            // Set the updated XML to the model
+            model.setXml(newXml);
+            // Persist the Modified XML
+            measurePackageService.saveMeasureXml(model);
 
-        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+            SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 
-        if (StringUtils.isNotBlank(model.getXml())) {
-            result.setXml(model.getXml());
-            result.setSetId(measureId);
-            result.setSuccess(true);
-        } else {
-            result.setSuccess(false);
+            if (StringUtils.isNotBlank(model.getXml())) {
+                result.setXml(model.getXml());
+                result.setSetId(measureId);
+                result.setSuccess(true);
+            } else {
+                result.setSuccess(false);
+            }
+
+            return result;
+        } catch (RuntimeException re) {
+            log("PopulationServiceImpl::savePopulations" + re.getMessage(), re);
+            throw re;
         }
-
-        return result;
     }
 
     private String createParentNode(String populationTyp) {

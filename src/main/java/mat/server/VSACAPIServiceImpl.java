@@ -32,8 +32,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 * **/
 	@Override
 	public final void inValidateVsacUser() {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		this.vsacapi.inValidateVsacUser(sessionId);
+	    try {
+            String sessionId = getThreadLocalRequest().getSession().getId();
+            this.vsacapi.inValidateVsacUser(sessionId);
+        } catch (Exception e) {
+	        log("VSACAPIServiceImpl::inValidateVsacUser " + e.getMessage(), e);
+	        throw e;
+        }
 	}
 	
 	/**

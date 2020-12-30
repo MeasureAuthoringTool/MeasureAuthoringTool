@@ -470,10 +470,6 @@ public class MatContext implements IsSerializable {
         return currentUserInfo == null ? null : currentUserInfo.userEmail;
     }
 
-    public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {
-        getLoginService().initSession(harpUserInfo, callback);
-    }
-
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
         getCodeListService().getListBoxData(listBoxCallback);
     }

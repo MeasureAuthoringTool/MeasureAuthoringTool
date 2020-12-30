@@ -664,11 +664,16 @@ public class ManageCodeListServiceImpl implements CodeListService {
     public final SaveUpdateCodeListResult updateQDStoMeasure(
             MatValueSetTransferObject ValueSetTransferObject) {
         SaveUpdateCodeListResult result = null;
-        ValueSetTransferObject.scrubForMarkUp();
-        if (ValueSetTransferObject.getValueSet() != null) {
-            result = updateVSACValueSetInElementLookUp(ValueSetTransferObject);
-        } else if (ValueSetTransferObject.getCodeListSearchDTO() != null) {
-            result = updateUserDefineQDMInElementLookUp(ValueSetTransferObject);
+        try {
+            ValueSetTransferObject.scrubForMarkUp();
+            if (ValueSetTransferObject.getValueSet() != null) {
+                result = updateVSACValueSetInElementLookUp(ValueSetTransferObject);
+            } else if (ValueSetTransferObject.getCodeListSearchDTO() != null) {
+                result = updateUserDefineQDMInElementLookUp(ValueSetTransferObject);
+            }
+        } catch (RuntimeException re) {
+            log.error("ManageCodeListServiceImpl::updateQDStoMeasure " + re.getMessage(), re);
+            throw re;
         }
         return result;
     }
@@ -1018,6 +1023,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
             Arrays.stream(response.getBody()).forEach(v -> result.put(v.getOid(),v));
             log.debug("Exiting getCodesSystemMappings " + result);
         } catch (RestClientResponseException e) {
+            log.error("ManageCodeListServiceImpl::getOidToVsacCodeSystemMap " + e.getMessage(), e);
             throw new MatRuntimeException(e);
         }
         return result;

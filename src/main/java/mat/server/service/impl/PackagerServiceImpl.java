@@ -385,22 +385,27 @@ public class PackagerServiceImpl implements PackagerService {
      */
     @Override
     public void delete(MeasurePackageDetail detail) {
-        MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-        XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-        Node groupNode = null;
         try {
-            groupNode = processor.findNode(processor.getOriginalDoc(),
-                    XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
-        } catch (XPathExpressionException e) {
-            logger.debug("Xpath Expression is incorrect" + e);
+            MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+            XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+            Node groupNode = null;
+            try {
+                groupNode = processor.findNode(processor.getOriginalDoc(),
+                        XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
+            } catch (XPathExpressionException e) {
+                logger.debug("Xpath Expression is incorrect" + e);
+            }
+            if (groupNode != null) {
+                Node measureGroupingNode = groupNode.getParentNode();
+                measureGroupingNode.removeChild(groupNode);
+            }
+            String xml = processor.transform(processor.getOriginalDoc());
+            measureXML.setMeasureXMLAsByteArray(xml);
+            measureXMLDAO.save(measureXML);
+        } catch (RuntimeException re) {
+            logger.error("PackagerServiceImpl::delete " + re.getMessage(), re);
+            throw re;
         }
-        if (groupNode != null) {
-            Node measureGroupingNode = groupNode.getParentNode();
-            measureGroupingNode.removeChild(groupNode);
-        }
-        String xml = processor.transform(processor.getOriginalDoc());
-        measureXML.setMeasureXMLAsByteArray(xml);
-        measureXMLDAO.save(measureXML);
     }
 
     /**
@@ -820,55 +825,59 @@ public class PackagerServiceImpl implements PackagerService {
                 messages.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
             }
         }
-
-        if (messages.size() == 0) {
-            result.setSuccess(true);
-            MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-            XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-            Node groupNode = null;
-            Node measureGroupingNode = null;
-            try {
-                // fetches the Group node from Measure_XML with the sequence
-                // number from MeasurePackageDetail
-                groupNode = processor.findNode(processor.getOriginalDoc(),
-                        XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
-                // fetches the MeasureGrouping node from the Measure_xml
-                measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
-                        XmlProcessor.XPATH_MEASURE_GROUPING); // get the
-                // MEASUREGROUPING
-                // node
-            } catch (XPathExpressionException e) {
-                logger.debug("Xpath Expression is incorrect" + e);
+        try {
+            if (messages.size() == 0) {
+                result.setSuccess(true);
+                MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+                XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+                Node groupNode = null;
+                Node measureGroupingNode = null;
+                try {
+                    // fetches the Group node from Measure_XML with the sequence
+                    // number from MeasurePackageDetail
+                    groupNode = processor.findNode(processor.getOriginalDoc(),
+                            XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
+                    // fetches the MeasureGrouping node from the Measure_xml
+                    measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
+                            XmlProcessor.XPATH_MEASURE_GROUPING); // get the
+                    // MEASUREGROUPING
+                    // node
+                } catch (XPathExpressionException e) {
+                    logger.debug("Xpath Expression is incorrect" + e);
+                }
+                if ((null != groupNode) && groupNode.hasChildNodes()) { // if Same
+                    // sequence
+                    // , remove
+                    // and
+                    // update.
+                    logger.debug("Removing Group with seq number" + detail.getSequence());
+                    measureGroupingNode.removeChild(groupNode);
+                }
+                // Converts MeasurePackageDetail to measureGroupingXml through
+                // castor.
+                String measureGroupingXml = createGroupingXml(detail);
+                XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
+                // get the converted XML's first child and appends it the Measure
+                // Grouping.
+                Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0)
+                        .getFirstChild();
+                measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
+                logger.debug("new Group appended");
+                String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
+                measureXML.setMeasureXMLAsByteArray(xml);
+                measureXMLDAO.save(measureXML);
+            } else {
+                for (String message : messages) {
+                    logger.debug("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
+                            + LoggedInUserUtil.getLoggedInLoginId() + " And failure Message is :" + message);
+                }
+                result.setSuccess(false);
+                result.setMessages(messages);
+                result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
             }
-            if ((null != groupNode) && groupNode.hasChildNodes()) { // if Same
-                // sequence
-                // , remove
-                // and
-                // update.
-                logger.debug("Removing Group with seq number" + detail.getSequence());
-                measureGroupingNode.removeChild(groupNode);
-            }
-            // Converts MeasurePackageDetail to measureGroupingXml through
-            // castor.
-            String measureGroupingXml = createGroupingXml(detail);
-            XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
-            // get the converted XML's first child and appends it the Measure
-            // Grouping.
-            Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0)
-                    .getFirstChild();
-            measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
-            logger.debug("new Group appended");
-            String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
-            measureXML.setMeasureXMLAsByteArray(xml);
-            measureXMLDAO.save(measureXML);
-        } else {
-            for (String message : messages) {
-                logger.debug("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
-                        + LoggedInUserUtil.getLoggedInLoginId() + " And failure Message is :" + message);
-            }
-            result.setSuccess(false);
-            result.setMessages(messages);
-            result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
+        } catch (RuntimeException re) {
+            logger.error("PackagerServiceImpl::save " + re.getMessage(), re);
+            throw re;
         }
         long time2 = System.currentTimeMillis();
         logger.debug("Time for grouping validation:" + (time2 - time1));
@@ -880,30 +889,35 @@ public class PackagerServiceImpl implements PackagerService {
         Measure measure = measureDAO.find(detail.getMeasureId());
         MeasureXML measureXML = measureXMLDAO.findForMeasure(measure.getId());
 
-        if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
-            String updatedMeasureXML = saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
+        try {
+            if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+                String updatedMeasureXML = saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
 
-            if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-                compositeMeasurePackageValidator.getResult().getMessages().clear();
-                try {
-                    compositeMeasurePackageValidator.validateAllSupplementalDataElementsWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedMeasureXML), updatedMeasureXML);
-                } catch (XPathExpressionException e) {
-                    e.printStackTrace();
-                }
+                if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+                    compositeMeasurePackageValidator.getResult().getMessages().clear();
+                    try {
+                        compositeMeasurePackageValidator.validateAllSupplementalDataElementsWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedMeasureXML), updatedMeasureXML);
+                    } catch (XPathExpressionException e) {
+                        e.printStackTrace();
+                    }
 
-                if (compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
-                    measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
-                    measureXMLDAO.save(measureXML);
+                    if (compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+                        measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
+                        measureXMLDAO.save(measureXML);
+                    } else {
+                        throw new SaveSupplementalDataElementException(CompositeMeasurePackageValidator.SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR);
+                    }
                 } else {
-                    throw new SaveSupplementalDataElementException(CompositeMeasurePackageValidator.SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR);
+                    measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
                 }
-            } else {
-                measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
-            }
 
-            measureXMLDAO.save(measureXML);
-        } else {
-            saveQDMData(measureXML, detail.getSuppDataElements());
+                measureXMLDAO.save(measureXML);
+            } else {
+                saveQDMData(measureXML, detail.getSuppDataElements());
+            }
+        } catch (RuntimeException re) {
+            logger.error("PackagerServiceImpl::saveQDMData " + re.getMessage(), re);
+            throw re;
         }
     }
 
@@ -996,39 +1010,43 @@ public class PackagerServiceImpl implements PackagerService {
      */
     @Override
     public void saveRiskAdjVariables(MeasurePackageDetail detail) throws SaveRiskAdjustmentVariableException {
-        ArrayList<RiskAdjustmentDTO> allRiskAdjVars = (ArrayList<RiskAdjustmentDTO>) detail.getRiskAdjVars();
-        MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-        Measure measure = measureDAO.find(measureXML.getMeasureId());
-        XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-        if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
-            String updatedXML = saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
+        try {
+            ArrayList<RiskAdjustmentDTO> allRiskAdjVars = (ArrayList<RiskAdjustmentDTO>) detail.getRiskAdjVars();
+            MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+            Measure measure = measureDAO.find(measureXML.getMeasureId());
+            XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+            if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
+                String updatedXML = saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
 
-            if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-                try {
-                    compositeMeasurePackageValidator.getResult().getMessages().clear();
-                    compositeMeasurePackageValidator.validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedXML), updatedXML);
-                } catch (XPathExpressionException e) {
-                    e.printStackTrace();
-                }
+                if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+                    try {
+                        compositeMeasurePackageValidator.getResult().getMessages().clear();
+                        compositeMeasurePackageValidator.validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedXML), updatedXML);
+                    } catch (XPathExpressionException e) {
+                        e.printStackTrace();
+                    }
 
-                if (compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+                    if (compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+                        measureXML.setMeasureXMLAsByteArray(updatedXML);
+                        measureXMLDAO.save(measureXML);
+                    } else {
+                        throw new SaveRiskAdjustmentVariableException(CompositeMeasurePackageValidator.RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
+                    }
+                } else {
                     measureXML.setMeasureXMLAsByteArray(updatedXML);
                     measureXMLDAO.save(measureXML);
-                } else {
-                    throw new SaveRiskAdjustmentVariableException(CompositeMeasurePackageValidator.RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
                 }
+
+
             } else {
-                measureXML.setMeasureXMLAsByteArray(updatedXML);
+                saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
+                measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
                 measureXMLDAO.save(measureXML);
             }
-
-
-        } else {
-            saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
-            measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-            measureXMLDAO.save(measureXML);
+        } catch (RuntimeException re) {
+            logger.error("PackagerServiceImpl::saveRiskAdjVariables " + re.getMessage(), re);
+            throw re;
         }
-
     }
 
     /**

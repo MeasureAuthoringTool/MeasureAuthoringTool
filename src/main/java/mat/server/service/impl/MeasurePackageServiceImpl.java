@@ -406,35 +406,38 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public void transferMeasureOwnerShipToUser(final List<String> list, final String toEmail) {
-        final User userTo = userDAO.findByEmail(toEmail);
+        try {
+            final User userTo = userDAO.findByEmail(toEmail);
 
-        for (int i = 0; i < list.size(); i++) {
-            final Measure measure = measureDAO.find(list.get(i));
-            final List<Measure> ms = new ArrayList<>();
-            ms.add(measure);
-            //Get All Family Measures for each Measure
-            final List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
-            for (int j = 0; j < allMeasures.size(); j++) {
+            for (int i = 0; i < list.size(); i++) {
+                final Measure measure = measureDAO.find(list.get(i));
+                final List<Measure> ms = new ArrayList<>();
+                ms.add(measure);
+                //Get All Family Measures for each Measure
+                final List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
+                for (int j = 0; j < allMeasures.size(); j++) {
 
-                String additionalInfo = "Measure Owner transferred from "
-                        + allMeasures.get(j).getOwner().getFullName() + " to " + userTo.getFullName();
+                    String additionalInfo = "Measure Owner transferred from "
+                            + allMeasures.get(j).getOwner().getFullName() + " to " + userTo.getFullName();
 
-                transferAssociatedCQLLibraryOnwnerShipToUser(allMeasures.get(j).getId(), userTo, allMeasures.get(j).getOwner().getFullName());
-                allMeasures.get(j).setOwner(userTo);
-                measureDAO.saveMeasure(allMeasures.get(j));
-                measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
-                additionalInfo = "";
+                    transferAssociatedCQLLibraryOnwnerShipToUser(allMeasures.get(j).getId(), userTo, allMeasures.get(j).getOwner().getFullName());
+                    allMeasures.get(j).setOwner(userTo);
+                    measureDAO.saveMeasure(allMeasures.get(j));
+                    measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
+                    additionalInfo = "";
 
 
+                }
+                final List<MeasureShare> measureShareInfo = measureDAO.getMeasureShareForMeasure(list.get(i));
+                for (int k = 0; k < measureShareInfo.size(); k++) {
+                    measureShareInfo.get(k).setOwner(userTo);
+                    measureShareDAO.save(measureShareInfo.get(k));
+                }
             }
-            final List<MeasureShare> measureShareInfo = measureDAO.getMeasureShareForMeasure(list.get(i));
-            for (int k = 0; k < measureShareInfo.size(); k++) {
-                measureShareInfo.get(k).setOwner(userTo);
-                measureShareDAO.save(measureShareInfo.get(k));
-            }
-
+        } catch (RuntimeException re) {
+            logger.error("MeasurePackageServiceImpl::transferMeasureOwnerShipToUser " + re.getMessage(), re);
+            throw re;
         }
-
     }
 
     private void transferAssociatedCQLLibraryOnwnerShipToUser(String measureId, User toUser, String fromUserFullName) {
@@ -462,9 +465,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public void updatePrivateColumnInMeasure(final String measureId, final boolean isPrivate) {
-        measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
-        measureAuditLogDAO.recordMeasureEvent(getById(measureId), isPrivate
-                ? "Measure Private " : "Measure Public", "");
+        try {
+            measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
+            measureAuditLogDAO.recordMeasureEvent(getById(measureId), isPrivate
+                    ? "Measure Private " : "Measure Public", "");
+        } catch (RuntimeException re) {
+            logger.error("MeasurePackageServiceImpl::updatePrivateColumnInMeasure " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override
@@ -476,80 +484,90 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         boolean firstRemove = true;
         boolean recordShareEvent = false;
         boolean recordRevokeShareEvent = false;
-        for (int i = 0; i < model.getNumberOfRows(); i++) {
-            final MeasureShareDTO dto = model.get(i);
-            if ((dto.getShareLevel() != null) && !"".equals(dto.getShareLevel())) {
-                final User user = userDAO.find(dto.getUserId());
-                final ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
-                measureShare = null;
-                for (final MeasureShare ms : user.getMeasureShares()) {
-                    if (ms.getMeasure().getId().equals(model.getMeasureId())) {
-                        measureShare = ms;
-                        break;
+        try {
+            for (int i = 0; i < model.getNumberOfRows(); i++) {
+                final MeasureShareDTO dto = model.get(i);
+                if ((dto.getShareLevel() != null) && !"".equals(dto.getShareLevel())) {
+                    final User user = userDAO.find(dto.getUserId());
+                    final ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
+                    measureShare = null;
+                    for (final MeasureShare ms : user.getMeasureShares()) {
+                        if (ms.getMeasure().getId().equals(model.getMeasureId())) {
+                            measureShare = ms;
+                            break;
+                        }
+                    }
+
+                    if ((measureShare == null) && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+                        recordShareEvent = true;
+                        measureShare = new MeasureShare();
+                        measureShare.setMeasure(measureDAO.find(model.getMeasureId()));
+                        measureShare.setShareUser(user);
+                        final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+                        measureShare.setOwner(currentUser);
+                        user.getMeasureShares().add(measureShare);
+                        currentUser.getOwnedMeasureShares().add(measureShare);
+                        logger.debug("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
+                                + " at level " + sLevel.getDescription());
+                        if (!first) { //first time, don't add the comma.
+                            auditLogAdditionlInfo.append(", ");
+                        }
+                        first = false;
+                        auditLogAdditionlInfo.append(user.getFullName());
+
+                        measureShare.setShareLevel(sLevel);
+                        measureShareDAO.save(measureShare);
+                    } else if (measureShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+                        recordRevokeShareEvent = true;
+                        measureShareDAO.delete(measureShare.getId());
+                        logger.debug("Removing Sharing " + measureShare.getMeasure().getId()
+                                + " with " + user.getId()
+                                + " at level " + sLevel.getDescription());
+                        if (!firstRemove) { //first time, don't add the comma.
+                            auditLogForModifyRemove.append(", ");
+                        }
+                        firstRemove = false;
+                        auditLogForModifyRemove.append(user.getFullName());
                     }
                 }
+            }
 
-                if ((measureShare == null) && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
-                    recordShareEvent = true;
-                    measureShare = new MeasureShare();
-                    measureShare.setMeasure(measureDAO.find(model.getMeasureId()));
-                    measureShare.setShareUser(user);
-                    final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-                    measureShare.setOwner(currentUser);
-                    user.getMeasureShares().add(measureShare);
-                    currentUser.getOwnedMeasureShares().add(measureShare);
-                    logger.debug("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
-                            + " at level " + sLevel.getDescription());
-                    if (!first) { //first time, don't add the comma.
-                        auditLogAdditionlInfo.append(", ");
-                    }
-                    first = false;
-                    auditLogAdditionlInfo.append(user.getFullName());
-
-                    measureShare.setShareLevel(sLevel);
-                    measureShareDAO.save(measureShare);
-                } else if (measureShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
-                    recordRevokeShareEvent = true;
-                    measureShareDAO.delete(measureShare.getId());
-                    logger.debug("Removing Sharing " + measureShare.getMeasure().getId()
-                            + " with " + user.getId()
-                            + " at level " + sLevel.getDescription());
-                    if (!firstRemove) { //first time, don't add the comma.
-                        auditLogForModifyRemove.append(", ");
-                    }
-                    firstRemove = false;
-                    auditLogForModifyRemove.append(user.getFullName());
+            if (recordShareEvent || recordRevokeShareEvent) {
+                if (recordShareEvent && recordRevokeShareEvent) {
+                    auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
+                } else if (recordRevokeShareEvent) {
+                    auditLogAdditionlInfo = new StringBuilder(auditLogForModifyRemove);
+                }
+                if (measureShare != null && measureShare.getMeasure() != null) {
+                    measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
+                            "Measure Shared", auditLogAdditionlInfo.toString());
                 }
             }
-        }
-
-        if (recordShareEvent || recordRevokeShareEvent) {
-            if (recordShareEvent && recordRevokeShareEvent) {
-                auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
-            } else if (recordRevokeShareEvent) {
-                auditLogAdditionlInfo = new StringBuilder(auditLogForModifyRemove);
-            }
-            if (measureShare != null && measureShare.getMeasure() != null) {
-                measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
-                        "Measure Shared", auditLogAdditionlInfo.toString());
-            }
+        } catch (Exception e) {
+            logger.error("MeasurePackageServiceImpl::updateUsersShare " + e.getMessage(), e);
+            throw e;
         }
     }
 
     @Override
     public ValidateMeasureResult validateExportsForCompositeMeasures(final String measureId) throws Exception {
-        final MeasureExport export = generateExport(measureId, null);
-        final ValidateMeasureResult result = new ValidateMeasureResult();
-        result.setValid(true);
+        try {
+            final MeasureExport export = generateExport(measureId, null);
+            final ValidateMeasureResult result = new ValidateMeasureResult();
+            result.setValid(true);
 
-        if (BooleanUtils.isTrue(export.getMeasure().getIsCompositeMeasure())) {
-            final CompositeMeasurePackageValidationResult validationResult = compositeMeasurePackageValidator.validate(export.getSimpleXML());
-            result.setValid(validationResult.getMessages().isEmpty());
-            result.setMessages(validationResult.getMessages());
-            result.setValidationMessages(validationResult.getMessages());
+            if (BooleanUtils.isTrue(export.getMeasure().getIsCompositeMeasure())) {
+                final CompositeMeasurePackageValidationResult validationResult = compositeMeasurePackageValidator.validate(export.getSimpleXML());
+                result.setValid(validationResult.getMessages().isEmpty());
+                result.setMessages(validationResult.getMessages());
+                result.setValidationMessages(validationResult.getMessages());
+            }
+
+            return result;
+        } catch (RuntimeException re) {
+            logger.error("MeasurePackageServiceImpl::validateExportsForCompositeMeasures " + re.getMessage(), re);
+            throw re;
         }
-
-        return result;
     }
 
     @Override

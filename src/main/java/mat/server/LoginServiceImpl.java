@@ -45,16 +45,6 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     private HarpService harpService;
 
     @Override
-    public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
-        logger.debug("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
-        HttpSession session = getThreadLocalRequest().getSession();
-        if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
-            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
-        }
-        return loginCredentialService.initSession(harpUserInfo, session.getId());
-    }
-
-    @Override
     public Boolean checkForAssociatedHarpId(String harpId) throws MatException {
         try {
             return userDAO.findAssociatedHarpId(harpId);

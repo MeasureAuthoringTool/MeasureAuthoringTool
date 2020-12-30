@@ -28,6 +28,7 @@ public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implemen
     @Override
     @Cacheable("featureFlags")
     public Map<String, Boolean> findFeatureFlags() {
+        logger.debug("FeatureFlagServiceImpl::findFeatureFlags-start");
         final List<FeatureFlag> dataTypeList = find();
         List<FeatureFlag> featureFlags = CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.emptyList();
         logger.debug("FeatureFlagServiceImpl::findFeatureFlags Successfully retrieved feature flags");

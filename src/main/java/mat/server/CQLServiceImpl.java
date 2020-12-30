@@ -1932,14 +1932,18 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public CQLQualityDataModelWrapper getCQLValusets(String measureId,
                                                      CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        String xmlString = model.getXml();
-        SaveUpdateCQLResult cqlDataResult = getCQLData(measureId, true, xmlString);
-        List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-                .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
-        cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-
-        return cqlQualityDataModelWrapper;
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            String xmlString = model.getXml();
+            SaveUpdateCQLResult cqlDataResult = getCQLData(measureId, true, xmlString);
+            List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
+                    .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
+            cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
+            return cqlQualityDataModelWrapper;
+        } catch (RuntimeException re) {
+            logger.error("getCQLValusets " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override

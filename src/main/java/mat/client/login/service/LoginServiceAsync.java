@@ -46,15 +46,6 @@ public interface LoginServiceAsync extends AsynchronousService {
     void isValidPassword(String userId, String password,
                          AsyncCallback<Boolean> callback);
 
-    /**
-     * initializes session with MAT user details for provided HARP ID.
-     *
-     * @param harpUserInfo User info
-     * @return
-     * @Param callback
-     */
-    void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback);
-
     void checkForAssociatedHarpId(String harpId, AsyncCallback<Boolean> async);
 
     void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);

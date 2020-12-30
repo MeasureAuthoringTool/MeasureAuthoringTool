@@ -53,7 +53,6 @@ public interface LoginService extends RemoteService {
      * @param harpUserInfo User's info
      * @return
      */
-    LoginModel initSession(Map<String, String> harpUserInfo) throws MatException;
 
     Boolean checkForAssociatedHarpId(String harpId) throws MatException;
 

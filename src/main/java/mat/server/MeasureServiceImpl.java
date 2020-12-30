@@ -495,10 +495,15 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Override
     public MeasureDetailsModel getMeasureDetailsAndLogRecentMeasure(String measureId, String userId) {
-        ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(measureId, userId);
-        MeasureDetailModelMapper measureDetailModelMapper = new ManageMeasureDetailModelMapper(manageMeasureDetailModel);
-        MeasureDetailsModel measureDetailsModel = measureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure(measureId));
-        return measureDetailsModel;
+        try {
+            ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(measureId, userId);
+            MeasureDetailModelMapper measureDetailModelMapper = new ManageMeasureDetailModelMapper(manageMeasureDetailModel);
+            MeasureDetailsModel measureDetailsModel = measureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure(measureId));
+            return measureDetailsModel;
+        } catch (RuntimeException re) {
+            log("MeasureServiceImpl::getMeasureDetailsAndLogRecentMeasure " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     private ManageMeasureDetailModel getManageMeasureDetailModel(String currentMeasureId, String loggedinUserId) {

@@ -53,7 +53,6 @@ public interface LoginServiceAsync extends AsynchronousService {
      * @return
      * @Param callback
      */
-    void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback);
 
     void checkForAssociatedHarpId(String harpId, AsyncCallback<Boolean> async);
 

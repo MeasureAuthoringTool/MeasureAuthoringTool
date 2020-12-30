@@ -189,29 +189,33 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         SaveCQLLibraryResult searchModel = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<>();
 
-        User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-        List<CQLLibraryShareDTO> list = cqlLibraryDAO.search(model, Integer.MAX_VALUE, user);
+        try {
+            User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+            List<CQLLibraryShareDTO> list = cqlLibraryDAO.search(model, Integer.MAX_VALUE, user);
 
-        searchModel.setResultsTotal(list.size());
+            searchModel.setResultsTotal(list.size());
 
-        if (model.getPageSize() <= list.size()) {
-            list = list.subList(model.getStartIndex() - 1, model.getPageSize());
-        } else if (model.getPageSize() > list.size()) {
-            list = list.subList(model.getStartIndex() - 1, list.size());
-        }
-
-        for (CQLLibraryShareDTO dto : list) {
-            User userForShare = user;
-            if (LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-                userForShare = userDAO.find(dto.getOwnerUserId());
+            if (model.getPageSize() <= list.size()) {
+                list = list.subList(model.getStartIndex() - 1, model.getPageSize());
+            } else if (model.getPageSize() > list.size()) {
+                list = list.subList(model.getStartIndex() - 1, list.size());
             }
-            CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(userForShare, dto);
-            allLibraries.add(object);
+
+            for (CQLLibraryShareDTO dto : list) {
+                User userForShare = user;
+                if (LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+                    userForShare = userDAO.find(dto.getOwnerUserId());
+                }
+                CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(userForShare, dto);
+                allLibraries.add(object);
+            }
+
+            updateCQLLibraryFamily(allLibraries);
+            searchModel.setCqlLibraryDataSetObjects(allLibraries);
+        } catch (RuntimeException re) {
+            log.error("CQLLibraryService::search " + re.getMessage(), re);
+            throw re;
         }
-
-        updateCQLLibraryFamily(allLibraries);
-        searchModel.setCqlLibraryDataSetObjects(allLibraries);
-
         return searchModel;
     }
 
@@ -319,10 +323,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId) {
-        CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlLibraryId);
-        CQLLibraryDataSetObject cqlLibraryDataSetObject = extractCQLLibraryDataObject(cqlLibrary);
-        cqlLibraryDataSetObject.setCqlText(getCQLLibraryData(cqlLibrary));
-        return cqlLibraryDataSetObject;
+        try {
+            CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlLibraryId);
+            CQLLibraryDataSetObject cqlLibraryDataSetObject = extractCQLLibraryDataObject(cqlLibrary);
+            cqlLibraryDataSetObject.setCqlText(getCQLLibraryData(cqlLibrary));
+            return cqlLibraryDataSetObject;
+        } catch (RuntimeException re) {
+            log.error("CQLLibraryService::findCQLLibraryByID " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override
@@ -881,39 +890,47 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     @Override
     public SaveUpdateCQLResult getCQLData(String id) {
         SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-        CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
-        String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+        try {
+            CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
+            String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
 
-        if (cqlLibraryXml != null) {
-            cqlResult = cqlService.getCQLData(id, false, cqlLibraryXml);
-            lintAndAddToResult(cqlResult, cqlLibrary);
-            cqlResult.setSetId(cqlLibrary.getSetId());
-            cqlResult.setSuccess(true);
+            if (cqlLibraryXml != null) {
+                cqlResult = cqlService.getCQLData(id, false, cqlLibraryXml);
+                lintAndAddToResult(cqlResult, cqlLibrary);
+                cqlResult.setSetId(cqlLibrary.getSetId());
+                cqlResult.setSuccess(true);
+            }
+        } catch (RuntimeException re) {
+            log.error("CQLLibraryService::getCQLData " + re.getMessage(), re);
+            throw re;
         }
-
         return cqlResult;
     }
 
     @Override
     public SaveUpdateCQLResult getCQLDataForLoad(String id) {
         SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-        CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
-        String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+        try {
+            CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
+            String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
 
-        if (cqlLibraryXml != null) {
-            cqlResult = cqlService.getCQLDataForLoad(cqlLibraryXml);
-            cqlResult.setSetId(cqlLibrary.getSetId());
-            cqlResult.setLibDescription(cqlLibrary.getDescription());
-            cqlResult.setLibIsExperimental(cqlLibrary.isExperimental());
-            cqlResult.setLibStewardId(cqlLibrary.getStewardId());
-            cqlResult.setLibStewards(getAllStewardList(getAllOrganizations()));
-            cqlResult.setSuccess(true);
+            if (cqlLibraryXml != null) {
+                cqlResult = cqlService.getCQLDataForLoad(cqlLibraryXml);
+                cqlResult.setSetId(cqlLibrary.getSetId());
+                cqlResult.setLibDescription(cqlLibrary.getDescription());
+                cqlResult.setLibIsExperimental(cqlLibrary.isExperimental());
+                cqlResult.setLibStewardId(cqlLibrary.getStewardId());
+                cqlResult.setLibStewards(getAllStewardList(getAllOrganizations()));
+                cqlResult.setSuccess(true);
 
-            if (cqlLibrary.isDraft() && cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
-                cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                if (cqlLibrary.isDraft() && cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
+                    cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                }
             }
+        } catch (RuntimeException re) {
+            log.error("CQLLibraryService::getCQLDataForLoad " + re.getMessage(), re);
+            throw re;
         }
-
         return cqlResult;
     }
 

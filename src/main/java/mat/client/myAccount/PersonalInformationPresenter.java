@@ -230,9 +230,9 @@ public class PersonalInformationPresenter implements MatPresenter {
                                 messages.add(MatContext.get().getMessageDelegate().
                                         getUnknownErrorMessage(result.getFailureReason()));
                         }
-                        Mat.hideLoadingMessage();
                         display.getErrorMessageDisplay().createAlert(messages);
                     }
+                    Mat.hideLoadingMessage();
                 }
             });
         }

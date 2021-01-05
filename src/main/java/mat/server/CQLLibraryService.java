@@ -1424,6 +1424,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
+
         if (cqlLibrary.isDraft()) {
             boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
@@ -1432,11 +1433,13 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             config.setPreviousCQLModel(result.getCqlModel());
-            CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
-            result.getLinterErrors().addAll(linter.getErrors());
-            result.getLinterErrorMessages().addAll(linter.getErrorMessages());
-            result.setDoesMeasureHaveIncludedLibraries(result.getCqlModel().getIncludedLibrarys().size() > 0);
-            result.setMeasureComposite(false);
+            if (!result.isSevereError()) {
+                CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+                result.getLinterErrors().addAll(linter.getErrors());
+                result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+                result.setDoesMeasureHaveIncludedLibraries(result.getCqlModel().getIncludedLibrarys().size() > 0);
+                result.setMeasureComposite(false);
+            }
         } else {
             result.resetErrors();
         }

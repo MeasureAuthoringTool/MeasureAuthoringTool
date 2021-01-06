@@ -934,6 +934,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 if (cqlLibrary.isDraft() && cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
                     cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
                 }
+
+                if (StringUtils.isNotBlank(cqlLibrary.getSevereErrorCql())) {
+                    cqlResult.setSevereError(true);
+                } else {
+                    cqlResult.setSevereError(false);
+                }
             }
         } catch (RuntimeException re) {
             log.error("CQLLibraryService::getCQLDataForLoad " + re.getMessage(), re);
@@ -1418,6 +1424,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
+
         if (cqlLibrary.isDraft()) {
             boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
@@ -1426,11 +1433,13 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             config.setPreviousCQLModel(result.getCqlModel());
-            CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
-            result.getLinterErrors().addAll(linter.getErrors());
-            result.getLinterErrorMessages().addAll(linter.getErrorMessages());
-            result.setDoesMeasureHaveIncludedLibraries(result.getCqlModel().getIncludedLibrarys().size() > 0);
-            result.setMeasureComposite(false);
+            if (!result.isSevereError()) {
+                CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+                result.getLinterErrors().addAll(linter.getErrors());
+                result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+                result.setDoesMeasureHaveIncludedLibraries(result.getCqlModel().getIncludedLibrarys().size() > 0);
+                result.setMeasureComposite(false);
+            }
         } else {
             result.resetErrors();
         }
@@ -1964,8 +1973,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     lib.setSevereErrorCql(result.getCqlString());
                 } else {
                     result.setSevereError(true);
-                    result.setSuccess(false);
                 }
+                result.setSuccess(false);
             } else {
                 lib.setSevereErrorCql(null);
             }

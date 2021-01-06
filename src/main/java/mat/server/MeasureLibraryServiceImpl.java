@@ -43,6 +43,7 @@ import mat.model.ComponentMeasureTabObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
+import mat.server.service.cql.FhirCqlParser;
 import mat.vsacmodel.ValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
@@ -280,6 +281,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Autowired
     private PatientBasedValidator patientBasedValidator;
+
+    @Autowired
+    private MeasureXMLDAO measureXmlDao;
 
     @Override
     public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -4704,8 +4708,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     xml.setSevereErrorCql(result.getCqlString());
                 } else {
                     result.setSevereError(true);
-                    result.setSuccess(false);
                 }
+                result.setSuccess(false);
             } else {
                 xml.setSevereErrorCql(null);
             }
@@ -5400,6 +5404,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 }
             } else {
                 result.setSuccess(false);
+            }
+            //Check for Severe errors to disable leftSidePanel
+            MeasureXML xml = measureXmlDao.findForMeasure(measureId);
+            if (xml == null) {
+                throw new MatRuntimeException("Can't find measureXml for " + measure.getId());
+            }
+            if (StringUtils.isNotBlank(xml.getSevereErrorCql())) {
+                result.setSevereError(true);
+            } else {
+                result.setSevereError(false);
             }
             return result;
         } catch (RuntimeException re) {

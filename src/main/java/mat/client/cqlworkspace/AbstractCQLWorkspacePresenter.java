@@ -590,10 +590,15 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {
         logger.log(Level.INFO, "onSaveCQLFileFailure failureReason" + result.getFailureReason());
         SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
-        if (result.getFailureReason() == SaveUpdateCQLResult.CUSTOM) {
-            StringBuilder msg = new StringBuilder();
-            result.getCqlErrors().forEach(e -> msg.append(msg.length() > 0 ? ", " : "").append(e.getErrorMessage()));
-            messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. Errors: " + msg);
+        if (result.isSevereError()) {
+            cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(false);
+            cqlWorkspaceView.getCQLLeftNavBarPanelView().disbaleBadges();
+
+            List<String> errorMessages = new ArrayList<>();
+            errorMessages.add("The CQL does not conform to the ANTLR grammar: <a href='https://cql.hl7.org/grammar.html' target='_blank'>https://cql.hl7.org/grammar.html</a>");
+            errorMessages.add("Until the CQL conforms, the tabs on the left for Includes, ValueSets, Codes, Parameters, Definitions, and Functions will be disabled.");
+            errorMessages.add("Commenting out offending defines and functions is an easy temporary fix.");
+            messagePanel.getErrorMessageAlert().createAlert(errorMessages);
         }
         if (result.getFailureReason() == SaveUpdateCQLResult.SYNTAX_ERRORS) {
             messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. All items entered must be written in the correct CQL syntax. The line where MAT is no longer able to read the file is marked with a red square.");

@@ -64114,7 +64114,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      }));
+      }), '.o-form-fieldset', { prepend: true });
       if (this.options.appState.get('allowRememberDevice')) {
         this.addInput({
           label: false,

@@ -11864,7 +11864,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 /* 7 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.9' };
+var core = module.exports = { version: '2.6.12' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -26694,7 +26694,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(39) ? 'pure' : 'global',
-  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -26858,6 +26858,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           }
         };
       }
+
+      props.termsconditions = {
+        type: 'boolean',
+        validate: function validate(value) {
+          if (!value) {
+            return "Please accept the Terms and Conditions";
+          }
+        }
+      };
+
       return props;
     },
 
@@ -29543,16 +29553,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
     template: '\
     <ul>\
     <li>\
-     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
-    </li>\
-    <li>\
     {{harpSignUpHeaderContent}}\
       <a href="{{harpSignUpUrl}}" class="mft-links" target="_blank">\
        {{harpSignUpLinkContent}}\
       </a>\
     </li>\
     <li>\
-      <a href="{{harpRecorveryUrl}}" class=""mft-links" target="_blank">\
+     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
+    </li>\
+    <li>\
+      <a href="{{harpRecorveryUrl}}" class="mft-links" target="_blank">\
        {{harpRecoveryContent}}\
       </a>\
     </li>\
@@ -31045,6 +31055,7 @@ return new F();
 (function(self) {
 
 var irrelevant = (function (exports) {
+
   var support = {
     searchParams: 'URLSearchParams' in self,
     iterable: 'Symbol' in self && 'iterator' in Symbol,
@@ -40804,8 +40815,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      }), '.o-form-fieldset', { prepend: true });
-
+      }));
       if (this.options.appState.get('allowRememberDevice')) {
         this.addInput({
           label: false,
@@ -40825,6 +40835,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
         console.log(e);
       }
     }
+
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));

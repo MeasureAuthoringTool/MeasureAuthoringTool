@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -279,12 +280,7 @@ public class CQLLeftNavBarPanelView {
 		includesLibrary.setTitle("Includes");
 		includesBadge.setText("0" + viewIncludeLibrarys.size());
 		Anchor includesAnchor = (Anchor) (includesLibrary.getWidget(0));
-		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				event.stopPropagation();
-			}
-		});
+		includesAnchor.addDoubleClickHandler(event -> event.stopPropagation());
 
 		includesAnchor.addClickHandler(event -> {
 			includesLibrary.setDataToggle(Toggle.COLLAPSE);
@@ -1522,4 +1518,22 @@ public class CQLLeftNavBarPanelView {
 		getDefinitionLibrary().setActive(false);
 		getCQLLibraryEditorTab().setActive(false);
 	}
+
+	public void toggleLeftNavBarPanel(boolean isEnabled) {
+        includesLibrary.setEnabled(isEnabled);
+        appliedQDM.setEnabled(isEnabled);
+        codesLibrary.setEnabled(isEnabled);
+        parameterLibrary.setEnabled(isEnabled);
+        definitionLibrary.setEnabled(isEnabled);
+        functionLibrary.setEnabled(isEnabled);
+    }
+
+    public void disbaleBadges() {
+        getIncludesBadge().setText("--");
+        getValueSetBadge().setText("--");
+        getCodesBadge().setText("--");
+        getParamBadge().setText("--");
+        getDefineBadge().setText("--");
+        getFunctionBadge().setText("--");
+    }
 }

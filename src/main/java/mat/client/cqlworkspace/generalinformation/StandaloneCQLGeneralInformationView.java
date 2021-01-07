@@ -1,5 +1,6 @@
 package mat.client.cqlworkspace.generalinformation;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -322,7 +323,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         experimentalLabel.getElement().setAttribute("for", "experimentalCheckbox");
         experimentalCheckbox.getElement().setAttribute(STYLE, "margin-left:15px;width:50px;height:32px;");
         experimentalCheckbox.getElement().setId("experimentalCheckbox");
-        experimentalCheckbox.getElement().setAttribute("aria-label","Experimental Checkbox");
+        ((Element) experimentalCheckbox.getElement().getChild(0)).setAttribute("title", "Experimental Checkbox");
         experimentalGroup.add(experimentalCheckbox);
         experimentalGroup.add(experimentalLabel);
 

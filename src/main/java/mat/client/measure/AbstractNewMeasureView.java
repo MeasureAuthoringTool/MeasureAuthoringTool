@@ -1,5 +1,6 @@
 package mat.client.measure;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -262,6 +263,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
      * @return measureModelPanel
      */
     protected VerticalFlowPanel buildModelTypePanel() {
+        ((Element) fhirModel.getElement().getChild(0)).setAttribute("aria-label","Model FHIR");
+        ((Element) qdmModel.getElement().getChild(0)).setAttribute("aria-label","Model QDM");
+
         VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
         measureModelGroup.add(buildModelTypeLabel());
         //new model creation defaulted to FHIR

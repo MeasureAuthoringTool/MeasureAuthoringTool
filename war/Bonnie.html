@@ -47,9 +47,9 @@
 		}
 
         function setFocusToFirstFocusable() {
-          let tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
+          var tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
           if (tabs) {
-            for (let i = 0; i < tabs.length; i++) {
+            for (var i = 0; i < tabs.length; i++) {
               if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
                 let focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
                 for (let j = 0; j < focusArray.length; j++) {

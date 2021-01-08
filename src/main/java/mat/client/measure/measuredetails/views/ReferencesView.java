@@ -201,6 +201,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
     private VerticalPanel buildReferenceTypePanel() {
         referenceTypeEditor = new ListBox();
+        referenceTypeEditor.setTitle("Reference Type");
         referenceTypeEditor.setMultipleSelect(false);
         Arrays.stream(MeasureReferenceType.values()).forEach(refType -> {
             referenceTypeEditor.addItem(refType.getDisplayName(), refType.name());

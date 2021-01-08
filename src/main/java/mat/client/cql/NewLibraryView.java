@@ -1,5 +1,6 @@
 package mat.client.cql;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.*;
@@ -100,6 +101,9 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     }
 
     private HorizontalPanel buildCQLLibraryNamePanel() {
+        ((Element) fhirModel.getElement().getChild(0)).setAttribute("aria-label","Model FHIR");
+        ((Element) qdmModel.getElement().getChild(0)).setAttribute("aria-label","Model QDM");
+
         HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.add(nameField);
         horizontalPanel.add(new HTML(AbstractNewMeasureView.CAUTION_LIBRARY_NAME_MSG_STR));

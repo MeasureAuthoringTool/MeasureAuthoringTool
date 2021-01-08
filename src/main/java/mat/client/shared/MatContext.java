@@ -1208,7 +1208,7 @@ public class MatContext implements IsSerializable {
     }
 
     public boolean isCurrentCQLLibraryModelTypeFhir() {
-        return "FHIR".equals(currentLibraryInfo.getLibraryModelType());
+        return currentLibraryInfo != null && "FHIR".equals(currentLibraryInfo.getLibraryModelType());
     }
 
     public String getCurrentCQLLibraryModelType() {

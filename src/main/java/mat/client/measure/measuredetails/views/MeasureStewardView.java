@@ -8,22 +8,12 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureStewardDeveloperObserver;
-import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
+import mat.client.shared.*;
 import mat.client.util.CellTableUtility;
 import mat.client.validator.ErrorHandler;
 import mat.model.Author;
@@ -67,6 +57,11 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		buildAuthorCellTable(measureStewardDeveloperModel.getMeasureDeveloperList());
 		this.model = new MeasureStewardDeveloperModel(this.originalModel);
 		buildDetailView();
+	}
+
+	@Override
+	public boolean hasSomeRequiredFields() {
+		return MatContext.get().isCurrentModelTypeFhir();
 	}
 
 	private void buildStewardListComponent(VerticalPanel moreMeasureDetailsVP) {

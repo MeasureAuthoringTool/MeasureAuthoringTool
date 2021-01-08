@@ -31,6 +31,11 @@ public class DescriptionView implements MeasureDetailViewInterface {
         buildDetailView();
     }
 
+    @Override
+    public boolean hasAllRequiredFields() {
+        return MatContext.get().isCurrentModelTypeFhir();
+    }
+
 
     @Override
     public Widget getWidget() {

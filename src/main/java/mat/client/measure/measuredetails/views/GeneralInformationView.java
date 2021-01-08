@@ -6,6 +6,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.*;
 import mat.client.codelist.HasListBox;
@@ -73,6 +74,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         this.isCompositeMeasure = isComposite;
         compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
         buildDetailView();
+    }
+
+    @Override
+    public boolean hasSomeRequiredFields() {
+        return MatContext.get().isCurrentModelTypeFhir();
     }
 
     private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {

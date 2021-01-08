@@ -65,7 +65,7 @@ public class SharedCQLWorkspaceUtility {
 
     private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
         messagePanel.clearAlerts();
-        List<String> errorMessages = new ArrayList<String>();
+        List<String> errorMessages = new ArrayList<>();
         if (!result.isQDMVersionMatching()) {
             errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
         } else if (!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
@@ -79,6 +79,10 @@ public class SharedCQLWorkspaceUtility {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE);
             } else if (!MatContext.get().isCurrentModelTypeFhir() && result.isDoesMeasureHaveIncludedLibraries()) {
                 prepareIncludeErrors(result, errorMessages);
+            } else if (result.isSevereError()) {
+                errorMessages.add("The CQL does not conform to the ANTLR grammar: <a href='https://cql.hl7.org/grammar.html' target='_blank'>https://cql.hl7.org/grammar.html</a>");
+                errorMessages.add("Until the CQL conforms, the tabs on the left for Includes, ValueSets, Codes, Parameters, Definitions, and Functions will be disabled.");
+                errorMessages.add("Commenting out offending defines and functions is an easy temporary fix.");
             } else {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
             }
@@ -87,10 +91,6 @@ public class SharedCQLWorkspaceUtility {
         }
         if (!result.isDatatypeUsedCorrectly()) {
             errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
-        }
-
-        if (result.isSevereError()) {
-            errorMessages.add("Please correct the syntax errors so the CQL can be validated.");
         }
 
         if (!errorMessages.isEmpty()) {

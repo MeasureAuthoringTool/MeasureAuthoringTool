@@ -55,18 +55,23 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
     @Override
     public List<QualityDataSetDTO> getQDSElements(String measureId,
                                                   String version) {
-        List<QualityDataSetDTO> qdsElements = getCodeListService().getQDSElements(measureId, version);
-        List<QualityDataSetDTO> filteredQDSElements = new ArrayList<>();
-        for (QualityDataSetDTO dataSet : qdsElements) {
-            if ((dataSet.getOid() != null) && !dataSet.getOid().equals(ConstantMessages.GENDER_OID)
-                    && !dataSet.getOid().equals(ConstantMessages.RACE_OID) && !dataSet.getOid().equals(ConstantMessages.ETHNICITY_OID)
-                    && !dataSet.getOid().equals(ConstantMessages.PAYER_OID)) {
-                filteredQDSElements.add(dataSet);
-            }
+        try {
+            List<QualityDataSetDTO> qdsElements = getCodeListService().getQDSElements(measureId, version);
+            List<QualityDataSetDTO> filteredQDSElements = new ArrayList<>();
+            for (QualityDataSetDTO dataSet : qdsElements) {
+                if ((dataSet.getOid() != null) && !dataSet.getOid().equals(ConstantMessages.GENDER_OID)
+                        && !dataSet.getOid().equals(ConstantMessages.RACE_OID) && !dataSet.getOid().equals(ConstantMessages.ETHNICITY_OID)
+                        && !dataSet.getOid().equals(ConstantMessages.PAYER_OID)) {
+                    filteredQDSElements.add(dataSet);
+                }
 
+            }
+            Collections.sort(filteredQDSElements, (o1, o2) -> o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName()));
+            return filteredQDSElements;
+        } catch (RuntimeException re) {
+            log("CodeListServiceImpl::getQDSElements " + re.getMessage(), re);
+            throw re;
         }
-        Collections.sort(filteredQDSElements, (o1, o2) -> o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName()));
-        return filteredQDSElements;
     }
 
     @Override

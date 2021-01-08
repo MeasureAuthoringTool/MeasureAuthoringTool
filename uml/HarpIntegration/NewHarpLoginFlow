@@ -1,0 +1,18 @@
+@startuml
+start
+:validateHarp(String accessToken) On the server side we will do the equivalent of the Old Harp flow;
+if (isValid) then (yes)
+  :Returns users harp info, store it off on the client and Continue on loading MAT;
+  stop;
+elseif (accountLocked) then (yes)
+  :Show locked message;
+  :Show harp support page;
+  end;
+elseif (showLinkHarpAccount) then (yes)
+  :Show link harp account page;
+  end;
+else (harpIdNotFound)
+  :Show harp id not found message.;
+  :Show harp support page;
+  end;
+@enduml

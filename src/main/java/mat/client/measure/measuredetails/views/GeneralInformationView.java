@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails.views;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
@@ -480,7 +481,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         experimentalCheckbox.getElement().setAttribute("id", "experimentalCB");
         experimentalCheckbox.setValue(generalInformationModel.isExperimental());
         experimentalCheckbox.setTitle(experimentalLabel.getTitle());
-        experimentalCheckbox.getElement().setAttribute("aria-label", "Experimental Checkbox");
+        ((Element) experimentalCheckbox.getElement().getChild(0)).setAttribute("title", "Experimental Checkbox");
 
         panel.add(experimentalLabel);
         panel.add(experimentalCheckbox);

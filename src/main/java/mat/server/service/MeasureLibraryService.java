@@ -70,7 +70,8 @@ public interface MeasureLibraryService {
 	
 	/**
 	 * Check for timing elements and append.
-	 * 
+	 *
+     *
 	 * @param xmlProcessor
 	 *            the xml processor
 	 */

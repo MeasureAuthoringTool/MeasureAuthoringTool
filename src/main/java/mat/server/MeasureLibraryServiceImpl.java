@@ -43,6 +43,7 @@ import mat.model.ComponentMeasureTabObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
+import mat.server.service.cql.FhirCqlParser;
 import mat.vsacmodel.ValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
@@ -281,16 +282,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Autowired
     private PatientBasedValidator patientBasedValidator;
 
+    @Autowired
+    private MeasureXMLDAO measureXmlDao;
+
     @Override
     public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
         String result = "";
-        MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-        if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())
-                && StringUtils.isNotBlank(nodeName)) {
-            result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName,
-                    measureXmlModel.getParentNode());
-            xmlModel.setXml(result);
-            measurePackageService.saveMeasureXml(xmlModel);
+        try {
+            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+            if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())
+                    && StringUtils.isNotBlank(nodeName)) {
+                result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName,
+                        measureXmlModel.getParentNode());
+                xmlModel.setXml(result);
+                measurePackageService.saveMeasureXml(xmlModel);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::appendAndSaveNode " + re.getMessage(), re);
+            throw re;
         }
         return result;
     }
@@ -698,18 +707,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
         ManageMeasureDetailModel details = null;
-        if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-            details = new ManageCompositeMeasureDetailModel();
-            createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) details, measure);
-        } else {
-            details = new ManageMeasureDetailModel();
-            createMeasureDetailsModelFromMeasure(details, measure);
+        try {
+            if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+                details = new ManageCompositeMeasureDetailModel();
+                createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) details, measure);
+            } else {
+                details = new ManageMeasureDetailModel();
+                createMeasureDetailsModelFromMeasure(details, measure);
+            }
+        } catch (Exception e) {
+            log.error("createModelForNoXML" + e.getMessage(), e);
         }
-
         return details;
     }
 
     private void createMeasureDetailsModelForCompositeMeasure(final ManageCompositeMeasureDetailModel model, final Measure measure) {
+        log.debug("In MeasureLibraryServiceImpl.createMeasureDetailsModelForCompositeMeasure()");
         createMeasureDetailsModelFromMeasure(model, measure);
         model.setCompositeScoringMethod(measure.getCompositeScoring());
         model.setQdmVersion(measure.getQdmVersion());
@@ -727,6 +740,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
 
         model.setAliasMapping(aliasMapping);
+        log.debug("Exiting MeasureLibraryServiceImpl.createMeasureDetailsModelForCompositeMeasure()");
     }
 
     /**
@@ -781,22 +795,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         String nodeName = "elementLookUp";
 
-        MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureID);
+        try {
+            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureID);
 
-        if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())
-                && StringUtils.isNotBlank(nodeName)) {
-            XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-            String result = xmlProcessor.replaceNode(xmlString, nodeName, MEASURE);
+            if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())
+                    && StringUtils.isNotBlank(nodeName)) {
+                XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+                String result = xmlProcessor.replaceNode(xmlString, nodeName, MEASURE);
 
-            MeasureXmlModel exportModal = new MeasureXmlModel();
-            exportModal.setMeasureId(measureID);
-            exportModal.setParentNode("/measure");
-            exportModal.setToReplaceNode("elementLookUp");
-            exportModal.setXml(result);
-            exportModal.setMeasureModel(xmlModel.getMeasureModel());
-            measurePackageService.saveMeasureXml(exportModal);
+                MeasureXmlModel exportModal = new MeasureXmlModel();
+                exportModal.setMeasureId(measureID);
+                exportModal.setParentNode("/measure");
+                exportModal.setToReplaceNode("elementLookUp");
+                exportModal.setXml(result);
+                exportModal.setMeasureModel(xmlModel.getMeasureModel());
+                measurePackageService.saveMeasureXml(exportModal);
+            }
+        } catch (RuntimeException re) {
+            log.error("createAndSaveElementLookUp " + re.getMessage(), re);
+            throw re;
         }
-
     }
 
     @Override
@@ -1076,16 +1094,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
         manageMeasureSearchModel.setData(detailModelList);
 
-        boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
-        for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
-            ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId(), isSuperUser);
-            if (isFhirEnabled) {
-                detailModelList.add(detail);
-            } else if (!ModelTypeHelper.isFhir(detail.getMeasureModel())) {
-                detailModelList.add(detail);
+        try {
+            boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
+            for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
+                ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId(), isSuperUser);
+                if (isFhirEnabled) {
+                    detailModelList.add(detail);
+                } else if (!ModelTypeHelper.isFhir(detail.getMeasureModel())) {
+                    detailModelList.add(detail);
+                }
             }
-
+        } catch (RuntimeException re) {
+            log.error("getAllRecentMeasureForUser " + re.getMessage(), re);
+            throw re;
         }
+
         return manageMeasureSearchModel;
     }
 
@@ -1182,26 +1205,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                                      final boolean checkForSupplementData) {
         MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
         QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
-        ArrayList<QualityDataSetDTO> finalList = new ArrayList<>();
-        if (details != null) {
-            if (details.getQualityDataDTO() != null && !details.getQualityDataDTO().isEmpty()) {
-                log.debug(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
-                for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-                    if (StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())) {
-                        dataSetDTO.setSpecificOccurrence(true);
-                    }
-                    if (dataSetDTO.getCodeListName() != null && !(checkForSupplementData && dataSetDTO.isSuppDataElement())) {
-                        finalList.add(dataSetDTO);
+        try {
+            ArrayList<QualityDataSetDTO> finalList = new ArrayList<>();
+            if (details != null) {
+                if (details.getQualityDataDTO() != null && !details.getQualityDataDTO().isEmpty()) {
+                    log.debug(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+                    for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+                        if (StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())) {
+                            dataSetDTO.setSpecificOccurrence(true);
+                        }
+                        if (dataSetDTO.getCodeListName() != null && !(checkForSupplementData && dataSetDTO.isSuppDataElement())) {
+                            finalList.add(dataSetDTO);
+                        }
                     }
                 }
+                Collections.sort(finalList, (o1, o2) -> o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName()));
+
+                finalList = findUsedQDMs(finalList, measureXmlModel);
+                details.setQualityDataDTO(finalList);
+                log.debug("finalList()of QualityDataSetDTO ::" + finalList.size());
             }
-            Collections.sort(finalList, (o1, o2) -> o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName()));
-
-            finalList = findUsedQDMs(finalList, measureXmlModel);
-            details.setQualityDataDTO(finalList);
+        } catch (RuntimeException re) {
+            log.error("getAppliedQDMFromMeasureXml " + re.getMessage(), re);
+            throw re;
         }
-
-        log.debug("finalList()of QualityDataSetDTO ::" + finalList.size());
         return details;
 
     }
@@ -1296,32 +1323,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public final ManageMeasureDetailModel getMeasure(final String measureId) {
         log.debug("In MeasureLibraryServiceImpl.getMeasure() method..");
         log.debug("Loading Measure for MeasureId: " + measureId);
-        Measure measure = measurePackageService.getById(measureId);
-        if (!measure.getIsCompositeMeasure()) {
-            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
-            String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+        try {
+            Measure measure = measurePackageService.getById(measureId);
+            if (!measure.getIsCompositeMeasure()) {
+                MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+                String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 
-            ManageMeasureDetailModel manageMeasureDetailModel;
-            MeasureDetailResult measureDetailResult;
-            if (xmlString == null || measure.getMeasureDetails() != null) {
-                manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure);
-                measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+                ManageMeasureDetailModel manageMeasureDetailModel;
+                MeasureDetailResult measureDetailResult;
+                if (xmlString == null || measure.getMeasureDetails() != null) {
+                    manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure);
+                    measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+                } else {
+                    manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
+                    measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
+                    addIdsToMeasureType(manageMeasureDetailModel);
+                }
+
+                setCQLLibraryName(measure, manageMeasureDetailModel);
+                manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
+                manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
+                manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+                manageMeasureDetailModel.setExperimental(measure.isExperimental());
+                manageMeasureDetailModel.setPopulationBasis(measure.getPopulationBasis());
+
+                return manageMeasureDetailModel;
             } else {
-                manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
-                measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
-                addIdsToMeasureType(manageMeasureDetailModel);
+                return getCompositeMeasure(measureId);
             }
-
-            setCQLLibraryName(measure, manageMeasureDetailModel);
-            manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
-            manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
-            manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
-            manageMeasureDetailModel.setExperimental(measure.isExperimental());
-            manageMeasureDetailModel.setPopulationBasis(measure.getPopulationBasis());
-
-            return manageMeasureDetailModel;
-        } else {
-            return getCompositeMeasure(measureId);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getMeasure " + re.getMessage(), re);
+            throw re;
         }
     }
 
@@ -1350,26 +1382,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
-        Measure measure = measurePackageService.getById(measureId);
-        MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
-        MeasureDetailResult measureDetailResult = new MeasureDetailResult();
-        String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+        try {
+            Measure measure = measurePackageService.getById(measureId);
+            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+            MeasureDetailResult measureDetailResult = new MeasureDetailResult();
+            String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 
-        ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
-        if (xmlString == null || measure.getMeasureDetails() != null) {
-            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure);
-            measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
-        } else {
-            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
-            measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
-            addIdsToMeasureType(manageCompositeMeasureDetailModel);
+            ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
+            if (xmlString == null || measure.getMeasureDetails() != null) {
+                manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure);
+                measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+            } else {
+                manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
+                measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
+                addIdsToMeasureType(manageCompositeMeasureDetailModel);
+            }
+
+            setCQLLibraryName(measure, manageCompositeMeasureDetailModel);
+            manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+            manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
+
+            return manageCompositeMeasureDetailModel;
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::getCompositeMeasure " + e.getMessage(), e);
+            throw e;
         }
-
-        setCQLLibraryName(measure, manageCompositeMeasureDetailModel);
-        manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
-        manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
-
-        return manageCompositeMeasureDetailModel;
     }
 
     @Override
@@ -1406,10 +1443,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(final String measureId) {
         SortedClauseMapResult result = new SortedClauseMapResult();
-        MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-        LinkedHashMap<String, String> sortedSubTreeMap = getSortedClauseMap(measureId);
-        result.setMeasureXmlModel(model);
-        result.setClauseMap(sortedSubTreeMap);
+        try {
+            MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+            LinkedHashMap<String, String> sortedSubTreeMap = getSortedClauseMap(measureId);
+            result.setMeasureXmlModel(model);
+            result.setClauseMap(sortedSubTreeMap);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getMeasureXmlForMeasureAndSortedSubTreeMap " + re.getMessage(), re);
+            throw re;
+        }
         return result;
     }
 
@@ -1497,23 +1539,28 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public final ManageMeasureShareModel getUsersForShare(final String userName, final String measureId, final int startIndex,
                                                           final int pageSize) {
-        ManageMeasureShareModel model = new ManageMeasureShareModel();
-        List<MeasureShareDTO> dtoList = measurePackageService.getUsersForShare(userName, measureId, startIndex, pageSize);
-        model.setResultsTotal(measurePackageService.countUsersForMeasureShare());
-        List<MeasureShareDTO> dataList = new ArrayList<>();
-        for (MeasureShareDTO dto : dtoList) {
-            dataList.add(dto);
+        try {
+            ManageMeasureShareModel model = new ManageMeasureShareModel();
+            List<MeasureShareDTO> dtoList = measurePackageService.getUsersForShare(userName, measureId, startIndex, pageSize);
+            model.setResultsTotal(measurePackageService.countUsersForMeasureShare());
+            List<MeasureShareDTO> dataList = new ArrayList<>();
+            for (MeasureShareDTO dto : dtoList) {
+                dataList.add(dto);
+            }
+            // model.setData(dtoList); Directly setting dtoList causes the RPC
+            // serialization exception(java.util.RandomaccessSubList) since we are
+            // sublisting it
+            model.setData(dataList);
+            model.setStartIndex(startIndex);
+            model.setMeasureId(measureId);
+            Measure measure = measurePackageService.getById(measureId);
+            model.setMeasureName(measure.getDescription());
+            model.setPrivate(measure.getIsPrivate());
+            return model;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getUsersForShare " + re.getMessage(), re);
+            throw re;
         }
-        // model.setData(dtoList); Directly setting dtoList causes the RPC
-        // serialization exception(java.util.RandomaccessSubList) since we are
-        // sublisting it
-        model.setData(dataList);
-        model.setStartIndex(startIndex);
-        model.setMeasureId(measureId);
-        Measure measure = measurePackageService.getById(measureId);
-        model.setMeasureName(measure.getDescription());
-        model.setPrivate(measure.getIsPrivate());
-        return model;
     }
 
     private void rollbackMeasureVersioning(String toVersion, String toRevision, boolean toDraftState, Measure measure) {
@@ -1689,21 +1736,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model) {
-        Measure measure = measurePackageService.getById(model.getId());
-        Integer revisionNumber = NumberUtils.INTEGER_ZERO;
-        if ((measure.getRevisionNumber() != null) && StringUtils.isNotEmpty(measure.getRevisionNumber())) {
-            revisionNumber = Integer.parseInt(measure.getRevisionNumber());
-            revisionNumber = revisionNumber + 1;
-            measure.setRevisionNumber(String.format("%03d", revisionNumber));
-            model.setRevisionNumber(String.format("%03d", revisionNumber));
-        } else {
-            revisionNumber = revisionNumber + 1;
-            measure.setRevisionNumber(String.format("%03d", revisionNumber));
-            model.setRevisionNumber(String.format("%03d", revisionNumber));
+        try {
+            Measure measure = measurePackageService.getById(model.getId());
+            Integer revisionNumber = NumberUtils.INTEGER_ZERO;
+            if ((measure.getRevisionNumber() != null) && StringUtils.isNotEmpty(measure.getRevisionNumber())) {
+                revisionNumber = Integer.parseInt(measure.getRevisionNumber());
+                revisionNumber = revisionNumber + 1;
+                measure.setRevisionNumber(String.format("%03d", revisionNumber));
+                model.setRevisionNumber(String.format("%03d", revisionNumber));
+            } else {
+                revisionNumber = revisionNumber + 1;
+                measure.setRevisionNumber(String.format("%03d", revisionNumber));
+                model.setRevisionNumber(String.format("%03d", revisionNumber));
+            }
+            measurePackageService.save(measure);
+            SaveMeasureResult result = saveOrUpdateMeasure(model);
+            return result;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveMeasureAtPackage " + re.getMessage(), re);
+            throw re;
         }
-        measurePackageService.save(measure);
-        SaveMeasureResult result = saveOrUpdateMeasure(model);
-        return result;
     }
 
     @Override
@@ -1712,102 +1764,106 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (model != null) {
             model.scrubForMarkUp();
         }
+        try {
+            boolean isFhir = ModelTypeHelper.isFhir(model.getMeasureModel());
 
-        boolean isFhir = ModelTypeHelper.isFhir(model.getMeasureModel());
-
-        SaveMeasureResult result = new SaveMeasureResult();
-        if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
-            result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
-            result.setSuccess(false);
-            return result;
-        }
-
-        if (CQLValidationUtil.isCQLReservedWord(model.getCQLLibraryName())) {
-            result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);
-            result.setSuccess(false);
-            return result;
-        }
-
-        ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-        List<String> message = manageMeasureModelValidator.validateMeasure(model);
-        String existingMeasureScoringType = "";
-        String existingMeasurePopulationBasis = "";
-        if (message.isEmpty()) {
-            Measure measure = null;
-            MeasureSet measureSet = null;
-            if (model.getId() != null) {
-                // editing an existing measure
-                measure = measurePackageService.getById(model.getId());
-                model.setVersionNumber(measure.getVersion());
-                if (measure.isDraft()) {
-                    model.setRevisionNumber(measure.getRevisionNumber());
-                } else {
-                    model.setRevisionNumber("000");
-                }
-                if (measure.getMeasureSet().getId() != null) {
-                    measureSet = measurePackageService.findMeasureSet(measure.getMeasureSet().getId());
-                }
-                if (!measure.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
-                    // US 194 User is changing the measure scoring. Make sure to
-                    // delete any groupings for that measure and save.
-                    measurePackageService.deleteExistingPackages(measure.getId());
-                }
-                existingMeasureScoringType = measure.getMeasureScoring();
-                existingMeasurePopulationBasis = measure.getPopulationBasis();
-            } else {
-                // creating a new measure.
-                measure = new Measure();
-                measure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
-                if (!isFhir) {
-                    measure.setQdmVersion(propertiesService.getQdmVersion());
-                } else {
-                    measure.setFhirVersion(propertiesService.getFhirVersion());
-                    measure.setPopulationBasis("boolean");//todo MAT-1546 add boolean as default value
-                    measure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
-                    measure.setMeasurementPeriodTo(getNextCalenderYearToDate());
-                }
-                measure.setCqlLibraryName(model.getCQLLibraryName());
-                model.setRevisionNumber("000");
-                measureSet = new MeasureSet();
-                measureSet.setId(UUID.randomUUID().toString());
-                measurePackageService.save(measureSet);
-            }
-
-            if (measure.getMeasureDetails() == null) {
-                MeasureDetails measureDetails = new MeasureDetails();
-                if (isFhir) {
-                    //Defaulted on new measures for fhir.
-                    measureDetails.setImprovementNotation("increase");
-                }
-                measureDetails.setMeasure(measure);
-                measure.setMeasureDetails(measureDetails);
-            }
-
-            measure.setMeasureSet(measureSet);
-            setValueFromModel(model, measure);
-
-            try {
-                getAndValidateValueSetDate(model.getValueSetDate());
-                measure.setValueSetDate(DateUtility.addTimeToDate(measure.getValueSetDate()));
-                measurePackageService.save(measure);
-            } catch (InvalidValueSetDateException e) {
+            SaveMeasureResult result = new SaveMeasureResult();
+            if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
                 result.setSuccess(false);
-                result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
-                result.setId(measure.getId());
                 return result;
             }
-            result.setVersionStr(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-            result.setSuccess(true);
-            result.setId(measure.getId());
-            saveMeasureXml(createMeasureXmlModel(measure, MEASURE), measure.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
-            // Adds population nodes to new measures
-            updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
-            return result;
-        } else {
-            log.debug("Validation Failed for measure :: Invalid Data Issues.");
-            result.setSuccess(false);
-            result.setFailureReason(SaveMeasureResult.INVALID_DATA);
-            return result;
+
+            if (CQLValidationUtil.isCQLReservedWord(model.getCQLLibraryName())) {
+                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);
+                result.setSuccess(false);
+                return result;
+            }
+
+            ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+            List<String> message = manageMeasureModelValidator.validateMeasure(model);
+            String existingMeasureScoringType = "";
+            String existingMeasurePopulationBasis = "";
+            if (message.isEmpty()) {
+                Measure measure = null;
+                MeasureSet measureSet = null;
+                if (model.getId() != null) {
+                    // editing an existing measure
+                    measure = measurePackageService.getById(model.getId());
+                    model.setVersionNumber(measure.getVersion());
+                    if (measure.isDraft()) {
+                        model.setRevisionNumber(measure.getRevisionNumber());
+                    } else {
+                        model.setRevisionNumber("000");
+                    }
+                    if (measure.getMeasureSet().getId() != null) {
+                        measureSet = measurePackageService.findMeasureSet(measure.getMeasureSet().getId());
+                    }
+                    if (!measure.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+                        // US 194 User is changing the measure scoring. Make sure to
+                        // delete any groupings for that measure and save.
+                        measurePackageService.deleteExistingPackages(measure.getId());
+                    }
+                    existingMeasureScoringType = measure.getMeasureScoring();
+                    existingMeasurePopulationBasis = measure.getPopulationBasis();
+                } else {
+                    // creating a new measure.
+                    measure = new Measure();
+                    measure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+                    if (!isFhir) {
+                        measure.setQdmVersion(propertiesService.getQdmVersion());
+                    } else {
+                        measure.setFhirVersion(propertiesService.getFhirVersion());
+                        measure.setPopulationBasis("boolean");//todo MAT-1546 add boolean as default value
+                        measure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                        measure.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                    }
+                    measure.setCqlLibraryName(model.getCQLLibraryName());
+                    model.setRevisionNumber("000");
+                    measureSet = new MeasureSet();
+                    measureSet.setId(UUID.randomUUID().toString());
+                    measurePackageService.save(measureSet);
+                }
+
+                if (measure.getMeasureDetails() == null) {
+                    MeasureDetails measureDetails = new MeasureDetails();
+                    if (isFhir) {
+                        //Defaulted on new measures for fhir.
+                        measureDetails.setImprovementNotation("increase");
+                    }
+                    measureDetails.setMeasure(measure);
+                    measure.setMeasureDetails(measureDetails);
+                }
+
+                measure.setMeasureSet(measureSet);
+                setValueFromModel(model, measure);
+
+                try {
+                    getAndValidateValueSetDate(model.getValueSetDate());
+                    measure.setValueSetDate(DateUtility.addTimeToDate(measure.getValueSetDate()));
+                    measurePackageService.save(measure);
+                } catch (InvalidValueSetDateException e) {
+                    result.setSuccess(false);
+                    result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+                    result.setId(measure.getId());
+                    return result;
+                }
+                result.setVersionStr(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+                result.setSuccess(true);
+                result.setId(measure.getId());
+                saveMeasureXml(createMeasureXmlModel(measure, MEASURE), measure.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
+                // Adds population nodes to new measures
+                updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
+                return result;
+            } else {
+                log.debug("Validation Failed for measure :: Invalid Data Issues.");
+                result.setSuccess(false);
+                result.setFailureReason(SaveMeasureResult.INVALID_DATA);
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::saveOrUpdateMeasure " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -2193,63 +2249,68 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) throws MatException {
         log.debug("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
-        Measure measure = measurePackageService.getById(model.getId());
-        setCQLLibraryName(measure, model);
-        model.scrubForMarkUp();
-        ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-        List<String> message = manageMeasureModelValidator.validateMeasure(model);
-        if ((CollectionUtils.isNotEmpty(model.getMeasureTypeSelectedList()) && isDuplicateMeasureType(model.getMeasureTypeSelectedList())) || (CollectionUtils.isNotEmpty(model.getAuthorSelectedList()) && isDuplicateMeasureDeveloper(model.getAuthorSelectedList()))) {
-            throw new MatException();
-        }
-
-        String existingMeasureScoringType = "";
-        String existingMeasurePopulationBasis = "";
-        if (message.isEmpty()) {
-            if (model.getId() != null) {
-                existingMeasureScoringType = measure.getMeasureScoring();
-                existingMeasurePopulationBasis = measure.getPopulationBasis();
-
-                measure.setDescription(model.getMeasureName());
-                String shortName = buildMeasureShortName(model);
-
-                model.setShortName(shortName);
-                measure.setaBBRName(shortName);
-                measure.setMeasureScoring(model.getMeasScoring());
-                measure.setPatientBased(model.isPatientBased());
-
-                MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, measure);
-                measure.setMeasureDetails(measureDetails);
-                measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
-                measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
-                measure.setMeasureStewardId(model.getStewardId());
-
-                measure.seteMeasureId(model.geteMeasureId());
-                measure.setNqfNumber(model.getNqfId());
-                measure.setExperimental(model.isExperimental());
-
-                if (model.getPopulationBasis() == null) {
-                    measure.setPopulationBasis(null);
-                } else {
-                    measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
-                }
-                calculateCalendarYearForMeasure(model, measure);
-
-                measurePackageService.save(measure);
+        try {
+            Measure measure = measurePackageService.getById(model.getId());
+            setCQLLibraryName(measure, model);
+            model.scrubForMarkUp();
+            ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+            List<String> message = manageMeasureModelValidator.validateMeasure(model);
+            if ((CollectionUtils.isNotEmpty(model.getMeasureTypeSelectedList()) && isDuplicateMeasureType(model.getMeasureTypeSelectedList())) || (CollectionUtils.isNotEmpty(model.getAuthorSelectedList()) && isDuplicateMeasureDeveloper(model.getAuthorSelectedList()))) {
+                throw new MatException();
             }
-            model.setRevisionNumber(measure.getRevisionNumber());
 
-            updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
+            String existingMeasureScoringType = "";
+            String existingMeasurePopulationBasis = "";
+            if (message.isEmpty()) {
+                if (model.getId() != null) {
+                    existingMeasureScoringType = measure.getMeasureScoring();
+                    existingMeasurePopulationBasis = measure.getPopulationBasis();
 
-            SaveMeasureResult result = new SaveMeasureResult();
-            result.setSuccess(true);
-            log.debug("Saving of Measure Details Success");
-            return result;
-        } else {
-            SaveMeasureResult result = new SaveMeasureResult();
-            result.setSuccess(false);
-            result.setMessages(message);
-            log.debug("Saving of Measure Details Failed. Invalid Data issue.");
-            return result;
+                    measure.setDescription(model.getMeasureName());
+                    String shortName = buildMeasureShortName(model);
+
+                    model.setShortName(shortName);
+                    measure.setaBBRName(shortName);
+                    measure.setMeasureScoring(model.getMeasScoring());
+                    measure.setPatientBased(model.isPatientBased());
+
+                    MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, measure);
+                    measure.setMeasureDetails(measureDetails);
+                    measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
+                    measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
+                    measure.setMeasureStewardId(model.getStewardId());
+
+                    measure.seteMeasureId(model.geteMeasureId());
+                    measure.setNqfNumber(model.getNqfId());
+                    measure.setExperimental(model.isExperimental());
+
+                    if (model.getPopulationBasis() == null) {
+                        measure.setPopulationBasis(null);
+                    } else {
+                        measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
+                    }
+                    calculateCalendarYearForMeasure(model, measure);
+
+                    measurePackageService.save(measure);
+                }
+                model.setRevisionNumber(measure.getRevisionNumber());
+
+                updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
+
+                SaveMeasureResult result = new SaveMeasureResult();
+                result.setSuccess(true);
+                log.debug("Saving of Measure Details Success");
+                return result;
+            } else {
+                SaveMeasureResult result = new SaveMeasureResult();
+                result.setSuccess(false);
+                result.setMessages(message);
+                log.debug("Saving of Measure Details Failed. Invalid Data issue.");
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::saveMeasureDetails " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -2373,15 +2434,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir) {
 
-        Measure measure = measureDAO.find(measureId);
-        String libraryName = measure.getCqlLibraryName();
-        String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
+        try {
+            Measure measure = measureDAO.find(measureId);
+            String libraryName = measure.getCqlLibraryName();
+            String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
 
-        MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-        if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
-            saveExistingNonBlankMeasureXml(measureXmlModel, version, xmlModel);
-        } else {
-            saveNewMeasureXml(measureXmlModel, libraryName, version, isFhir);
+            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+            if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
+                saveExistingNonBlankMeasureXml(measureXmlModel, version, xmlModel);
+            } else {
+                saveNewMeasureXml(measureXmlModel, libraryName, version, isFhir);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveMeasureXml " + re.getMessage(), re);
+            throw re;
         }
     }
 
@@ -2503,13 +2569,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
         ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-
-        if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-            searchForAdmin(measureSearchModel, searchModel);
-        } else {
-            searchForUser(measureSearchModel, currentUserId, isSuperUser, searchModel);
+        try {
+            if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
+                searchForAdmin(measureSearchModel, searchModel);
+            } else {
+                searchForUser(measureSearchModel, currentUserId, isSuperUser, searchModel);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::search " + re.getMessage(), re);
         }
-
         searchStopwatch.stop();
         log.debug("MeasureLibraryServiceImpl::search took " + searchStopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
         log.debug("MeasureLibraryServiceImpl::search - exit");
@@ -2630,31 +2698,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public final TransferOwnerShipModel searchUsers(final String searchText, final int startIndex,
                                                     final int pageSize) {
-        UserService usersService = userService;
-        List<User> searchResults;
-        if (searchText.equals("")) {
-            searchResults = usersService.searchNonAdminUsers("", startIndex, pageSize);
-        } else {
-            searchResults = usersService.searchNonAdminUsers(searchText, startIndex, pageSize);
+        try {
+            UserService usersService = userService;
+            List<User> searchResults;
+            if (searchText.equals("")) {
+                searchResults = usersService.searchNonAdminUsers("", startIndex, pageSize);
+            } else {
+                searchResults = usersService.searchNonAdminUsers(searchText, startIndex, pageSize);
+            }
+            log.debug("User search returned " + searchResults.size());
+
+            TransferOwnerShipModel result = new TransferOwnerShipModel();
+            List<TransferOwnerShipModel.Result> detailList = new ArrayList<>();
+            for (User user : searchResults) {
+                TransferOwnerShipModel.Result r = new TransferOwnerShipModel.Result();
+                r.setFirstName(user.getFirstName());
+                r.setLastName(user.getLastName());
+                r.setEmailId(user.getEmailAddress());
+                r.setKey(user.getId());
+                detailList.add(r);
+            }
+            result.setData(detailList);
+            result.setStartIndex(startIndex);
+            result.setResultsTotal(searchResults.size());
+
+            return result;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::searchUsers " + re.getMessage(), re);
+            throw re;
         }
-        log.debug("User search returned " + searchResults.size());
-
-        TransferOwnerShipModel result = new TransferOwnerShipModel();
-        List<TransferOwnerShipModel.Result> detailList = new ArrayList<>();
-        for (User user : searchResults) {
-            TransferOwnerShipModel.Result r = new TransferOwnerShipModel.Result();
-            r.setFirstName(user.getFirstName());
-            r.setLastName(user.getLastName());
-            r.setEmailId(user.getEmailAddress());
-            r.setKey(user.getId());
-            detailList.add(r);
-        }
-        result.setData(detailList);
-        result.setStartIndex(startIndex);
-        result.setResultsTotal(searchResults.size());
-
-        return result;
-
     }
 
     private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
@@ -2818,24 +2890,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      */
     @Override
     public final SaveMeasureResult updateLockedDate(final String measureId, final String userId) {
-        Measure existingmeasure = null;
-        User user = null;
-        SaveMeasureResult result = new SaveMeasureResult();
-        if ((measureId != null) && (userId != null)) {
-            existingmeasure = measurePackageService.getById(measureId);
-            if (existingmeasure != null) {
-                if (!isLocked(existingmeasure)) {
-                    user = userService.getById(userId);
-                    existingmeasure.setLockedUser(user);
-                    existingmeasure.setLockedOutDate(new Timestamp(new Date().getTime()));
-                    measurePackageService.save(existingmeasure);
-                    result.setSuccess(true);
+        try {
+            Measure existingmeasure = null;
+            User user = null;
+            SaveMeasureResult result = new SaveMeasureResult();
+            if ((measureId != null) && (userId != null)) {
+                existingmeasure = measurePackageService.getById(measureId);
+                if (existingmeasure != null) {
+                    if (!isLocked(existingmeasure)) {
+                        user = userService.getById(userId);
+                        existingmeasure.setLockedUser(user);
+                        existingmeasure.setLockedOutDate(new Timestamp(new Date().getTime()));
+                        measurePackageService.save(existingmeasure);
+                        result.setSuccess(true);
+                    }
                 }
             }
-        }
 
-        result.setId(existingmeasure.getId());
-        return result;
+            result.setId(existingmeasure.getId());
+            return result;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::updateLockedDate " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     /**
@@ -2854,31 +2931,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public final void updateMeasureXML(final QualityDataSetDTO modifyWithDTO, final QualityDataSetDTO modifyDTO,
                                        final String measureId) {
         log.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: " + measureId);
-        MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+        try {
+            MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+            if (model != null) {
+                XmlProcessor processor = new XmlProcessor(model.getXml());
+                if (modifyDTO.isUsed()) {
+                    // Update all elementRef's in SubTreeLookUp
+                    updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
 
-        if (model != null) {
-            XmlProcessor processor = new XmlProcessor(model.getXml());
-            if (modifyDTO.isUsed()) {
-                // Update all elementRef's in SubTreeLookUp
-                updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
+                    // update elementLookUp Tag
+                    updateElementLookUp(processor, modifyWithDTO, modifyDTO);
+                    // update cqlLookUp Tag
+                    updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
+                    updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
+                    model.setXml(processor.transform(processor.getOriginalDoc()));
+                    measurePackageService.saveMeasureXml(model);
 
-                // update elementLookUp Tag
-                updateElementLookUp(processor, modifyWithDTO, modifyDTO);
-                // update cqlLookUp Tag
-                updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
-                updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
-                model.setXml(processor.transform(processor.getOriginalDoc()));
-                measurePackageService.saveMeasureXml(model);
+                } else {
+                    // update elementLookUp Tag
+                    updateElementLookUp(processor, modifyWithDTO, modifyDTO);
+                    // update cqlLookUp Tag
+                    updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
+                    model.setXml(processor.transform(processor.getOriginalDoc()));
+                    measurePackageService.saveMeasureXml(model);
+                }
 
-            } else {
-                // update elementLookUp Tag
-                updateElementLookUp(processor, modifyWithDTO, modifyDTO);
-                // update cqlLookUp Tag
-                updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
-                model.setXml(processor.transform(processor.getOriginalDoc()));
-                measurePackageService.saveMeasureXml(model);
             }
-
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::updateMeasureXML " + re.getMessage(), re);
+            throw re;
         }
         log.debug(" MeasureLibraryServiceImpl: updateMeasureXML End : Measure Id :: " + measureId);
     }
@@ -3260,47 +3341,56 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public ManageMeasureSearchModel getComponentMeasures(String measureId) {
         ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-        List<Measure> componentMeasures = measurePackageService.getComponentMeasuresInfo(measureId);
-        List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
-        searchModel.setData(detailModelList);
-        for (Measure componentMeasure : componentMeasures) {
-            ManageMeasureSearchModel.Result detail = extractManageMeasureSearchModelDetail(componentMeasure);
-            detailModelList.add(detail);
+        try {
+            List<Measure> componentMeasures = measurePackageService.getComponentMeasuresInfo(measureId);
+            List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
+            searchModel.setData(detailModelList);
+            for (Measure componentMeasure : componentMeasures) {
+                ManageMeasureSearchModel.Result detail = extractManageMeasureSearchModelDetail(componentMeasure);
+                detailModelList.add(detail);
+            }
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::getComponentMeasures " + e.getMessage(), e);
+            throw e;
         }
-
         return searchModel;
     }
 
     @Override
     public List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId) {
         List<ComponentMeasureTabObject> componentMeasureInformationList = new ArrayList<>();
-        Measure compositeMeasure = measureDAO.find(compositeMeasureId);
+        try {
+            Measure compositeMeasure = measureDAO.find(compositeMeasureId);
 
-        List<ComponentMeasure> componentMeasures = compositeMeasure.getComponentMeasures();
+            List<ComponentMeasure> componentMeasures = compositeMeasure.getComponentMeasures();
 
-        for (ComponentMeasure componentMeasure : componentMeasures) {
-            Measure measure = measureDAO.find(componentMeasure.getComponentMeasure().getId());
-            String measureName = measure.getDescription();
-            String ownerName = measure.getOwner().getFullName();
-            String alias = componentMeasure.getAlias();
-            String componentId = measure.getId();
+            for (ComponentMeasure componentMeasure : componentMeasures) {
+                Measure measure = measureDAO.find(componentMeasure.getComponentMeasure().getId());
+                String measureName = measure.getDescription();
+                String ownerName = measure.getOwner().getFullName();
+                String alias = componentMeasure.getAlias();
+                String componentId = measure.getId();
 
-            CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(componentId);
-            String version = library.getVersionNumber() + ".000";
+                CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(componentId);
+                String version = library.getVersionNumber() + ".000";
 
-            String libraryName = library.getName();
-            String data = "";
-            try {
-                data = new String(library.getCqlXML().getBytes(1, (int) library.getCqlXML().length()));
-            } catch (SQLException e) {
-                log.error("Cannot get read library's xml:" + e.getMessage(), e);
+                String libraryName = library.getName();
+                String data = "";
+                try {
+                    data = new String(library.getCqlXML().getBytes(1, (int) library.getCqlXML().length()));
+                } catch (SQLException e) {
+                    log.error("Cannot get read library's xml:" + e.getMessage(), e);
+                }
+
+                CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
+                String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();
+
+                ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
+                componentMeasureInformationList.add(o);
             }
-
-            CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
-            String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();
-
-            ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
-            componentMeasureInformationList.add(o);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getCQLLibraryInformationForComponentMeasure " + re.getMessage(), re);
+            throw re;
         }
 
         return componentMeasureInformationList;
@@ -3331,16 +3421,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public ValidateMeasureResult validatePackageGrouping(ManageMeasureDetailModel model) {
         ValidateMeasureResult result = new ValidateMeasureResult();
         log.debug(" MeasureLibraryServiceImpl: validatePackageGrouping Start :  ");
-        MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(model.getId());
-        if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
-            result = validateMeasureXmlAtCreateMeasurePackager(xmlModel);
-        } else {
-            List<String> message = new ArrayList<>();
-            message.add(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-            result.setValid(false);
-            result.setValidationMessages(message);
+        try {
+            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(model.getId());
+            if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
+                result = validateMeasureXmlAtCreateMeasurePackager(xmlModel);
+            } else {
+                List<String> message = new ArrayList<>();
+                message.add(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                result.setValid(false);
+                result.setValidationMessages(message);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::validatePackageGrouping " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -4047,7 +4141,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
                     if (groupSDE.getLength() == 0) {
                         message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
-
                     } else {
                         for (int i = 1; i <= groupSDE.getLength(); i++) {
                             NodeList numberOfStratificationPerGroup = (NodeList) xPath.evaluate(
@@ -4060,7 +4153,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                 break;
                             }
                         }
-
                     }
                 } catch (XPathExpressionException e) {
                     log.error("validateForGroup: " + e.getMessage(), e);
@@ -4095,17 +4187,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      */
     @Override
     public final List<MeasureType> getAllMeasureTypes() {
-        List<MeasureTypeDTO> measureTypeDTOList = measureTypeDAO.getAllMeasureTypes();
-        List<MeasureType> measureTypeList = new ArrayList<>();
-        for (MeasureTypeDTO measureTypeDTO : measureTypeDTOList) {
-            MeasureType measureType = new MeasureType();
-            measureType.setId(measureTypeDTO.getId());
-            measureType.setDescription(measureTypeDTO.getName());
-            measureType.setAbbrName(measureTypeDTO.getAbbrName());
-            measureTypeList.add(measureType);
+        try {
+            List<MeasureTypeDTO> measureTypeDTOList = measureTypeDAO.getAllMeasureTypes();
+            List<MeasureType> measureTypeList = new ArrayList<>();
+            for (MeasureTypeDTO measureTypeDTO : measureTypeDTOList) {
+                MeasureType measureType = new MeasureType();
+                measureType.setId(measureTypeDTO.getId());
+                measureType.setDescription(measureTypeDTO.getName());
+                measureType.setAbbrName(measureTypeDTO.getAbbrName());
+                measureTypeList.add(measureType);
+            }
+            return measureTypeList;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getAllMeasureTypes " + re.getMessage(), re);
+            throw re;
         }
-        return measureTypeList;
-
     }
 
     @Override
@@ -4292,23 +4388,28 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public final QualityDataModelWrapper getDefaultSDEFromMeasureXml(final String measureId) {
         log.debug("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: Start");
-        MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
-        QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
-        ArrayList<QualityDataSetDTO> finalList = new ArrayList<>();
-        if (details != null) {
-            if (details.getQualityDataDTO() != null && !details.getQualityDataDTO().isEmpty()) {
-                log.debug(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
-                for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-                    if (dataSetDTO.getCodeListName() != null && dataSetDTO.isSuppDataElement()) {
-                        finalList.add(dataSetDTO);
+        try {
+            MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+            QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
+            ArrayList<QualityDataSetDTO> finalList = new ArrayList<>();
+            if (details != null) {
+                if (details.getQualityDataDTO() != null && !details.getQualityDataDTO().isEmpty()) {
+                    log.debug(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+                    for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+                        if (dataSetDTO.getCodeListName() != null && dataSetDTO.isSuppDataElement()) {
+                            finalList.add(dataSetDTO);
+                        }
                     }
                 }
+                details.setQualityDataDTO(finalList);
             }
-            details.setQualityDataDTO(finalList);
+            log.debug("finalList()of QualityDataSetDTO ::" + finalList.size());
+            log.debug("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: END");
+            return details;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getDefaultSDEFromMeasureXml " + re.getMessage(), re);
+            throw re;
         }
-        log.debug("finalList()of QualityDataSetDTO ::" + finalList.size());
-        log.debug("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: END");
-        return details;
     }
 
     @Override
@@ -4437,51 +4538,58 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        Measure measure = measureDAO.find(measureId);
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            Measure measure = measureDAO.find(measureId);
+            if (model != null && StringUtils.isNotBlank(model.getXml())) {
+                String xmlString = model.getXml();
+                result = cqlService.getCQLFileData(measureId, true, xmlString);
+                lintAndAddToResult(measureId, result);
+                result.setSuccess(true);
+                if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
+                    result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                }
 
-        if (model != null && StringUtils.isNotBlank(model.getXml())) {
-            String xmlString = model.getXml();
-            result = cqlService.getCQLFileData(measureId, true, xmlString);
-            lintAndAddToResult(measureId, result);
-            result.setSuccess(true);
-            if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
-                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                result.setMeasureStewardId(measure.getMeasureStewardId());
+                if (measure.getMeasureDetails() != null) {
+                    result.setMeasureDescription(measure.getMeasureDetails().getDescription());
+                }
+                result.setPopulationBasis(measure.getPopulationBasis());
+                if (CollectionUtils.isNotEmpty(measure.getMeasureTypes())) {
+                    result.setMeasureTypes(new ArrayList<>());
+                    var resultMts = result.getMeasureTypes();
+                    measure.getMeasureTypes().forEach(mt -> resultMts.add(mt.getMeasureTypes().getAbbrName()));
+                }
+            } else {
+                result.setSuccess(false);
             }
-
-            result.setMeasureStewardId(measure.getMeasureStewardId());
-            if (measure.getMeasureDetails() != null ) {
-                result.setMeasureDescription(measure.getMeasureDetails().getDescription());
-            }
-            result.setPopulationBasis(measure.getPopulationBasis());
-            if (CollectionUtils.isNotEmpty(measure.getMeasureTypes())) {
-                result.setMeasureTypes(new ArrayList<>());
-                var resultMts = result.getMeasureTypes();
-                measure.getMeasureTypes().forEach(mt -> resultMts.add(mt.getMeasureTypes().getAbbrName()));
-            }
-        } else {
-            result.setSuccess(false);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getMeasureCQLFileData " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
     @Override
     public SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
 
-        if (model != null && StringUtils.isNotBlank(model.getXml())) {
-            String xmlString = model.getXml();
-            result = cqlService.loadMeasureCql(measureDAO.find(measureId),
-                    xmlString);
-            lintAndAddToResult(measureId, result);
+            if (model != null && StringUtils.isNotBlank(model.getXml())) {
+                String xmlString = model.getXml();
+                result = cqlService.loadMeasureCql(measureDAO.find(measureId),
+                        xmlString);
+                lintAndAddToResult(measureId, result);
 
-            result.setSuccess(true);
-        } else {
-            result.setSuccess(false);
+                result.setSuccess(true);
+            } else {
+                result.setSuccess(false);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getMeasureCQLLibraryData " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -4523,57 +4631,61 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
         SaveUpdateCQLResult result = null;
 
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            Measure measure = measureDAO.find(measureId);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                Measure measure = measureDAO.find(measureId);
 
-            CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
+                CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
 
-            CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
-                    MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-                    ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
+                CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
+                        MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
+                        ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
 
-            config.setPreviousCQLModel(previousModel);
+                config.setPreviousCQLModel(previousModel);
 
-            result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
+                result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
 
-            if (!result.isSevereError()) {
-                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
-                measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+                if (!result.isSevereError()) {
+                    XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                    processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
+                    measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+
+                    if (result.isSuccess()) {
+                        // need to clean definitions from populations and groupings.
+                        // go through all of the definitions in the previous model and check if they are in the new model
+                        // if the old definition is not in the new model, clean the groupings
+                        for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
+                            Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
+                            if (!previousDefinitionInNewModel.isPresent()) {
+                                cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
+                            }
+                        }
+
+                        // do the same thing for functions
+                        for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
+                            Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
+                            if (!previousFunctionInNewModel.isPresent()) {
+                                cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
+                            }
+                        }
+                    }
+                    measurePackageService.saveMeasureXml(measureXMLModel);
+                }
 
                 if (result.isSuccess()) {
-                    // need to clean definitions from populations and groupings.
-                    // go through all of the definitions in the previous model and check if they are in the new model
-                    // if the old definition is not in the new model, clean the groupings
-                    for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
-                        Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
-                        if (!previousDefinitionInNewModel.isPresent()) {
-                            cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
-                        }
+                    measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
+
+                    if (result.getCqlModel().isFhir()) {
+                        result = handleSaveFhirSevereErrors(result, measure, cql);
                     }
-
-                    // do the same thing for functions
-                    for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
-                        Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
-                        if (!previousFunctionInNewModel.isPresent()) {
-                            cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
-                        }
-                    }
+                    measureDAO.save(measure);
                 }
-                measurePackageService.saveMeasureXml(measureXMLModel);
             }
-
-            if (result.isSuccess()) {
-                measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
-
-                if (result.getCqlModel().isFhir()) {
-                    result = handleSaveFhirSevereErrors(result, measure, cql);
-                }
-                measureDAO.save(measure);
-            }
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::saveCQLFile " + e.getMessage(), e);
+            throw e;
         }
-
         return result;
     }
 
@@ -4596,8 +4708,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     xml.setSevereErrorCql(result.getCqlString());
                 } else {
                     result.setSevereError(true);
-                    result.setSuccess(false);
                 }
+                result.setSuccess(false);
             } else {
                 xml.setSevereErrorCql(null);
             }
@@ -4611,19 +4723,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                         CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            Measure measure = measureDAO.find(measureId);
-            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (measureXMLModel != null) {
-                result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable, measure.getMeasureModel());
-                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                if (result.isSuccess()) {
-                    updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(measureXMLModel);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                Measure measure = measureDAO.find(measureId);
+                MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (measureXMLModel != null) {
+                    result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable, measure.getMeasureModel());
+                    XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                    if (result.isSuccess()) {
+                        updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(measureXMLModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveAndModifyDefinitions " + re.getMessage(), re);
+            throw re;
         }
         return result;
     }
@@ -4650,19 +4767,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                        CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            Measure measure = measureDAO.find(measureId);
-            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (measureXMLModel != null) {
-                result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-                        parameterList, isFormatable, measure.getMeasureModel());
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(measureXMLModel);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                Measure measure = measureDAO.find(measureId);
+                MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (measureXMLModel != null) {
+                    result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
+                            parameterList, isFormatable, measure.getMeasureModel());
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(measureXMLModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveAndModifyParameters " + re.getMessage(), re);
+            throw re;
         }
 
         return result;
@@ -4673,21 +4795,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                       CQLFunctions currentObj, List<CQLFunctions> functionsList, boolean isFormatable) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            Measure measure = measureDAO.find(measureId);
-            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (measureXMLModel != null) {
-                result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-                        functionsList, isFormatable, measure.getMeasureModel());
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                Measure measure = measureDAO.find(measureId);
+                MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (measureXMLModel != null) {
+                    result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
+                            functionsList, isFormatable, measure.getMeasureModel());
 
-                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                if (result.isSuccess()) {
-                    updateFunctionDisplayName(processor, toBeModifiedObj, currentObj);
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(measureXMLModel);
+                    XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                    if (result.isSuccess()) {
+                        updateFunctionDisplayName(processor, toBeModifiedObj, currentObj);
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(measureXMLModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveAndModifyFunctions " + re.getMessage(), re);
+            throw re;
         }
         return result;
 
@@ -4718,26 +4845,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId, String libraryName, String
             comments) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
-            Measure measure = measureDAO.find(currentMeasureId);
-            if (libraryNameExists(libraryName, measure.getMeasureSet().getId())) {
-                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
-                result.setSuccess(false);
-            } else {
-                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
-                if (xmlModel != null) {
-                    result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
-                    if (result.isSuccess()) {
-                        measure.setCqlLibraryName(libraryName);
-                        measureDAO.save(measure);
-                        xmlModel.setXml(result.getXml());
-                        measurePackageService.saveMeasureXml(xmlModel);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
+                Measure measure = measureDAO.find(currentMeasureId);
+                if (libraryNameExists(libraryName, measure.getMeasureSet().getId())) {
+                    result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                    result.setSuccess(false);
+                } else {
+                    MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
+                    if (xmlModel != null) {
+                        result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
+                        if (result.isSuccess()) {
+                            measure.setCqlLibraryName(libraryName);
+                            measureDAO.save(measure);
+                            xmlModel.setXml(result.getXml());
+                            measurePackageService.saveMeasureXml(xmlModel);
+                        }
                     }
                 }
             }
-
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveAndModifyCQLGeneralInfo " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -4745,19 +4875,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (xmlModel != null) {
-                result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj);
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    cleanPopulationsAndGroups(toBeDeletedObj, xmlModel);
-                    measurePackageService.saveMeasureXml(xmlModel);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (xmlModel != null) {
+                    result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj);
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        cleanPopulationsAndGroups(toBeDeletedObj, xmlModel);
+                        measurePackageService.saveMeasureXml(xmlModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::deleteDefinition " + re.getMessage(), re);
+            throw re;
         }
+
         return result;
     }
 
@@ -4841,21 +4977,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeletedObj) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 
-            if (xmlModel != null) {
-                result = getCqlService().deleteFunction(xmlModel.getXml(), toBeDeletedObj);
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    cleanMeasureObservationAndGroups(toBeDeletedObj, xmlModel);
-                    measurePackageService.saveMeasureXml(xmlModel);
+                if (xmlModel != null) {
+                    result = getCqlService().deleteFunction(xmlModel.getXml(), toBeDeletedObj);
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        cleanMeasureObservationAndGroups(toBeDeletedObj, xmlModel);
+                        measurePackageService.saveMeasureXml(xmlModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::deleteFunction " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -4917,20 +5057,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 
-            if (xmlModel != null) {
-                result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj);
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(xmlModel);
+                if (xmlModel != null) {
+                    result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj);
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(xmlModel);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::deleteParameter " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -4946,18 +5090,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId) {
-        MeasureXmlModel measureXML = measurePackageService.getMeasureXmlForMeasure(measureId);
-        Measure measure = measureDAO.find(measureId);
+        try {
+            MeasureXmlModel measureXML = measurePackageService.getMeasureXmlForMeasure(measureId);
+            Measure measure = measureDAO.find(measureId);
 
-        if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
-            CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel,
-                    cqlFileString,
-                    ValidationRequest.builder().validateReturnType(true).build());
-            return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);
-        } else {
-            return getCqlService().getUsedCQlArtifacts(measureXML.getXml());
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
+                CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
+                String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
+                SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel,
+                        cqlFileString,
+                        ValidationRequest.builder().validateReturnType(true).build());
+                return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);
+            } else {
+                return getCqlService().getUsedCQlArtifacts(measureXML.getXml());
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getUsedCqlArtifacts " + re.getMessage(), re);
+            throw re;
         }
     }
 
@@ -4965,19 +5114,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String measureID) {
 
         SaveUpdateCQLResult cqlResult = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
-            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
-            if (model != null && model.getXml() != null) {
-                cqlResult = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
-                if (cqlResult != null && cqlResult.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(model.getXml());
-                    processor.replaceNode(cqlResult.getXml(), "cqlLookUp", "measure");
-                    model.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(model);
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
+                MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
+                if (model != null && model.getXml() != null) {
+                    cqlResult = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
+                    if (cqlResult != null && cqlResult.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(model.getXml());
+                        processor.replaceNode(cqlResult.getXml(), "cqlLookUp", "measure");
+                        model.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(model);
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("deleteValueSet " + re.getMessage(), re);
+            throw re;
         }
-
         return cqlResult;
     }
 
@@ -4985,16 +5138,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID) {
 
         SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
-            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
-            if (model != null && model.getXml() != null) {
-                cqlResult = getCqlService().deleteCode(measureID, true, model.getXml(), toBeDeletedId);
-                if (cqlResult != null && cqlResult.isSuccess()) {
-                    model.setXml(cqlResult.getXml());
-                    measurePackageService.saveMeasureXml(model);
-                    cqlResult.setCqlCodeList(getCQLCodes(measureID).getCqlCodeList());
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
+                MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
+                if (model != null && model.getXml() != null) {
+                    cqlResult = getCqlService().deleteCode(measureID, true, model.getXml(), toBeDeletedId);
+                    if (cqlResult != null && cqlResult.isSuccess()) {
+                        model.setXml(cqlResult.getXml());
+                        measurePackageService.saveMeasureXml(model);
+                        cqlResult.setCqlCodeList(getCQLCodes(measureID).getCqlCodeList());
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::deleteCode " + re.getMessage(), re);
+            throw re;
         }
         return cqlResult;
     }
@@ -5010,14 +5168,40 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             (List<CQLValueSetTransferObject> transferObjectList, List<CQLQualityDataSetDTO> appliedValueSetList, String
                     measureId) {
         CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-        MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+        try {
+            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            for (CQLValueSetTransferObject transferObject : transferObjectList) {
-                SaveUpdateCQLResult result = null;
-                transferObject.setAppliedQDMList(appliedValueSetList);
-                result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), transferObject);
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                for (CQLValueSetTransferObject transferObject : transferObjectList) {
+                    SaveUpdateCQLResult result = null;
+                    transferObject.setAppliedQDMList(appliedValueSetList);
+                    result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), transferObject);
 
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(measureXMLModel);
+                    }
+                }
+
+                wrapper = getCQLValusets(measureId);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveValueSetList " + re.getMessage(), re);
+            throw re;
+        }
+        return wrapper;
+    }
+
+    @Override
+    public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+        try {
+            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(valueSetTransferObject.getMeasureId());
+
+            if (measureXMLModel != null) {
+                result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), valueSetTransferObject);
                 if (result.isSuccess()) {
                     XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
                     processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
@@ -5025,27 +5209,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     measurePackageService.saveMeasureXml(measureXMLModel);
                 }
             }
-
-            wrapper = getCQLValusets(measureId);
-        }
-
-        return wrapper;
-    }
-
-    @Override
-    public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
-        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-
-        MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(valueSetTransferObject.getMeasureId());
-
-        if (measureXMLModel != null) {
-            result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), valueSetTransferObject);
-            if (result.isSuccess()) {
-                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-                measurePackageService.saveMeasureXml(measureXMLModel);
-            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveCQLValuesettoMeasure " + re.getMessage(), re);
+            throw re;
         }
 
         return result;
@@ -5055,33 +5221,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject) {
 
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getId())) {
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(transferObject.getId());
-            if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
-                result = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-
-                    CQLCodeSystem codeSystem = new CQLCodeSystem();
-                    codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
-                    codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
-                    codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
-
-                    SaveUpdateCQLResult saveCodesystemResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
-                    if (saveCodesystemResult.isSuccess()) {
-                        processor.replaceNode(saveCodesystemResult.getXml(), "cqlLookUp", "measure");
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getId())) {
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(transferObject.getId());
+                if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
+                    result = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
                         xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                        result = saveCodesystemResult;
-                    }
 
-                    measurePackageService.saveMeasureXml(xmlModel);
-                    result.setCqlCodeList(result.getCqlModel().getCodeList());
+                        CQLCodeSystem codeSystem = new CQLCodeSystem();
+                        codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
+                        codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
+                        codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
+
+                        SaveUpdateCQLResult saveCodesystemResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
+                        if (saveCodesystemResult.isSuccess()) {
+                            processor.replaceNode(saveCodesystemResult.getXml(), "cqlLookUp", "measure");
+                            xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                            result = saveCodesystemResult;
+                        }
+
+                        measurePackageService.saveMeasureXml(xmlModel);
+                        result.setCqlCodeList(result.getCqlModel().getCodeList());
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveCQLCodestoMeasure " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -5089,59 +5259,67 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         result.setSuccess(true);
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
-                for (CQLCode cqlCode : codeList) {
-                    MatCodeTransferObject transferObject = new MatCodeTransferObject();
-                    transferObject.setCqlCode(cqlCode);
-                    transferObject.setId(measureId);
-                    SaveUpdateCQLResult codeResult = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
-                    if (codeResult != null && codeResult.isSuccess()) {
-                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                        processor.replaceNode(codeResult.getXml(), "cqlLookUp", "measure");
-                        xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-
-                        CQLCodeSystem codeSystem = new CQLCodeSystem();
-                        codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
-                        codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
-                        codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
-
-                        SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
-                        if (updatedResult.isSuccess()) {
-                            processor.replaceNode(updatedResult.getXml(), "cqlLookUp", "measure");
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
+                    for (CQLCode cqlCode : codeList) {
+                        MatCodeTransferObject transferObject = new MatCodeTransferObject();
+                        transferObject.setCqlCode(cqlCode);
+                        transferObject.setId(measureId);
+                        SaveUpdateCQLResult codeResult = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
+                        if (codeResult != null && codeResult.isSuccess()) {
+                            XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                            processor.replaceNode(codeResult.getXml(), "cqlLookUp", "measure");
                             xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+
+                            CQLCodeSystem codeSystem = new CQLCodeSystem();
+                            codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
+                            codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
+                            codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
+
+                            SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
+                            if (updatedResult.isSuccess()) {
+                                processor.replaceNode(updatedResult.getXml(), "cqlLookUp", "measure");
+                                xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                            }
+                            result.setXml(xmlModel.getXml());
+                        } else {
+                            result.setSuccess(false);
+                            break;
                         }
-                        result.setXml(xmlModel.getXml());
-                    } else {
-                        result.setSuccess(false);
-                        break;
                     }
-                }
-                if (result.isSuccess()) {
-                    measurePackageService.saveMeasureXml(xmlModel);
-                    CQLCodeWrapper wrapper = getCqlService().getCQLCodes(measureId, true, xmlModel.getXml());
-                    if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
-                        result.setCqlCodeList(wrapper.getCqlCodeList());
-                        CQLModel cqlModel = cqlService.getCQLData(measureId, true, result.getXml()).getCqlModel();
-                        result.setCqlModel(cqlModel);
+                    if (result.isSuccess()) {
+                        measurePackageService.saveMeasureXml(xmlModel);
+                        CQLCodeWrapper wrapper = getCqlService().getCQLCodes(measureId, true, xmlModel.getXml());
+                        if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
+                            result.setCqlCodeList(wrapper.getCqlCodeList());
+                            CQLModel cqlModel = cqlService.getCQLData(measureId, true, result.getXml()).getCqlModel();
+                            result.setCqlModel(cqlModel);
+                        }
                     }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveCQLCodeListToMeasure " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
     @Override
     public CQLCodeWrapper getCQLCodes(String measureID) {
         CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
-        if (model != null) {
-            String xmlString = model.getXml();
-            cqlCodeWrapper = getCqlService().getCQLCodes(measureID, true, xmlString);
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
+            if (model != null) {
+                String xmlString = model.getXml();
+                cqlCodeWrapper = getCqlService().getCQLCodes(measureID, true, xmlString);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getCQLCodes " + re.getMessage(), re);
+            throw re;
         }
-
         return cqlCodeWrapper;
     }
 
@@ -5150,34 +5328,39 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                             CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 
         SaveUpdateCQLResult result = null;
-        Measure measure = measureDAO.find(measureId);
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+        try {
+            Measure measure = measureDAO.find(measureId);
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            if (xmlModel != null) {
-                int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
-                if (numberOfAssociations < 10) {
-                    result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(),
-                            toBeModifiedObj, currentObj, incLibraryList, measure.getMeasureModel());
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                if (xmlModel != null) {
+                    int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
+                    if (numberOfAssociations < 10) {
+                        result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(),
+                                toBeModifiedObj, currentObj, incLibraryList, measure.getMeasureModel());
 
-                    if (result.isSuccess()) {
-                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
                         if (result.isSuccess()) {
-                            processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                            xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                            measurePackageService.saveMeasureXml(xmlModel);
-                        }
+                            XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                            if (result.isSuccess()) {
+                                processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                                xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                                measurePackageService.saveMeasureXml(xmlModel);
+                            }
 
-                        getCqlService().saveCQLAssociation(currentObj, measureId);
-                        if (toBeModifiedObj != null) {
-                            getCqlService().deleteCQLAssociation(toBeModifiedObj, measureId);
+                            getCqlService().saveCQLAssociation(currentObj, measureId);
+                            if (toBeModifiedObj != null) {
+                                getCqlService().deleteCQLAssociation(toBeModifiedObj, measureId);
+                            }
                         }
+                    } else {
+                        log.debug("Already 10 associations exists for this measure.");
                     }
-                } else {
-                    log.debug("Already 10 associations exists for this measure.");
-                }
 
+                }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::saveIncludeLibrayInCQLLookUp " + re.getMessage(), re);
+            throw re;
         }
         return result;
     }
@@ -5185,18 +5368,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult getMeasureCQLData(String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        Measure measure = measurePackageService.getById(measureId);
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            Measure measure = measurePackageService.getById(measureId);
 
-        if (model != null && StringUtils.isNotBlank(model.getXml())) {
-            String xmlString = model.getXml();
-            result = cqlService.getCQLData(measureId, true, xmlString);
-            result.setSetId(measure.getMeasureSet().getId());
-            result.setSuccess(true);
-        } else {
-            result.setSuccess(false);
+            if (model != null && StringUtils.isNotBlank(model.getXml())) {
+                String xmlString = model.getXml();
+                result = cqlService.getCQLData(measureId, true, xmlString);
+                result.setSetId(measure.getMeasureSet().getId());
+                result.setSuccess(true);
+            } else {
+                result.setSuccess(false);
+            }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::getMeasureCQLData " + re.getMessage(), re);
+            throw re;
         }
-
         return result;
     }
 
@@ -5218,9 +5405,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             } else {
                 result.setSuccess(false);
             }
+            //Check for Severe errors to disable leftSidePanel
+            MeasureXML xml = measureXmlDao.findForMeasure(measureId);
+            if (xml == null) {
+                throw new MatRuntimeException("Can't find measureXml for " + measure.getId());
+            }
+            if (StringUtils.isNotBlank(xml.getSevereErrorCql())) {
+                result.setSevereError(true);
+            } else {
+                result.setSevereError(false);
+            }
             return result;
         } catch (RuntimeException re) {
-            log.error("Error in getMeasureCQLDataForLoad:" + re.getMessage(), re);
+            log.error("Error in getMeasureCQLDataForLoad: " + re.getMessage(), re);
             throw re;
         }
     }
@@ -5229,35 +5426,44 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj) {
 
         SaveUpdateCQLResult result = null;
-        if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
+        try {
+            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
 
-            MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
-            if (xmlModel != null) {
-                result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj);
-                if (result.isSuccess()) {
-                    XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-                    processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-                    xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-                    measurePackageService.saveMeasureXml(xmlModel);
-                    getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
-                    result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlModel.getXml()));
+                MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
+                if (xmlModel != null) {
+                    result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj);
+                    if (result.isSuccess()) {
+                        XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+                        processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+                        xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+                        measurePackageService.saveMeasureXml(xmlModel);
+                        getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
+                        result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlModel.getXml()));
+                    }
                 }
             }
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::deleteInclude " + re.getMessage(), re);
+            throw re;
         }
         return result;
-
     }
 
     @Override
     public VsacApiResult updateCQLVSACValueSets(String measureId, String expansionId, String sessionId) {
-        CQLQualityDataModelWrapper details = getCQLAppliedQDMFromMeasureXml(measureId, false);
-        List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
-        appliedQDMList = appliedQDMList.stream().filter(v -> !StringUtils.isEmpty(v.getOriginalCodeListName())).collect(Collectors.toList());
-        VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
-        if (result.isSuccess()) {
-            updateAllCQLInMeasureXml(result.getCqlQualityDataSetMap(), measureId);
+        try {
+            CQLQualityDataModelWrapper details = getCQLAppliedQDMFromMeasureXml(measureId, false);
+            List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
+            appliedQDMList = appliedQDMList.stream().filter(v -> !StringUtils.isEmpty(v.getOriginalCodeListName())).collect(Collectors.toList());
+            VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
+            if (result.isSuccess()) {
+                updateAllCQLInMeasureXml(result.getCqlQualityDataSetMap(), measureId);
+            }
+            return result;
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::updateCQLVSACValueSets " + re.getMessage(), re);
+            throw re;
         }
-        return result;
     }
 
     /**
@@ -5349,16 +5555,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
         ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 
-        List<MeasureShareDTO> measureTotalList = measurePackageService.searchComponentMeasuresWithFilter(measureSearchModel);
-        searchModel.setResultsTotal(measureTotalList.size());
+        try {
+            List<MeasureShareDTO> measureTotalList = measurePackageService.searchComponentMeasuresWithFilter(measureSearchModel);
+            searchModel.setResultsTotal(measureTotalList.size());
 
-        List<MeasureShareDTO> measureList = getSublist(measureSearchModel, measureTotalList);
-        searchModel.setStartIndex(measureSearchModel.getStartIndex());
+            List<MeasureShareDTO> measureList = getSublist(measureSearchModel, measureTotalList);
+            searchModel.setStartIndex(measureSearchModel.getStartIndex());
 
 
-        List<ManageMeasureSearchModel.Result> detailModelList = extractModelDetailList(currentUserId, isSuperUser, measureList);
-        searchModel.setData(detailModelList);
-
+            List<ManageMeasureSearchModel.Result> detailModelList = extractModelDetailList(currentUserId, isSuperUser, measureList);
+            searchModel.setData(detailModelList);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::searchComponentMeasures " + re.getMessage(), re);
+            throw re;
+        }
         return searchModel;
     }
 
@@ -5374,7 +5584,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public CompositeMeasureValidationResult validateCompositeMeasure(
             ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
-        return compositeMeasureValidator.validateCompositeMeasure(manageCompositeMeasureDetailModel);
+        try {
+            return compositeMeasureValidator.validateCompositeMeasure(manageCompositeMeasureDetailModel);
+        } catch (RuntimeException re) {
+            log.error("MeasureLibraryServiceImpl::validateCompositeMeasure " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     private List<MeasureType> getMeasureTypeForComposite(List<MeasureType> list) {
@@ -5398,137 +5613,142 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             throw new MatException();
         }
 
-        boolean isExisting = false;
-        // Scrubbing out Mark Up.
-        if (model != null) {
-            model.scrubForMarkUp();
-        }
-        Measure pkg = null;
+        try {
+            boolean isExisting = false;
+            // Scrubbing out Mark Up.
+            if (model != null) {
+                model.scrubForMarkUp();
+            }
+            Measure pkg = null;
 
-
-        if (model.getId() != null) {
-            pkg = measurePackageService.getById(model.getId());
-            setCQLLibraryName(pkg, model);
-            isExisting = true;
-        }
-
-
-        SaveMeasureResult result = new SaveMeasureResult();
-        if (!isExisting && libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
-            result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
-            result.setSuccess(false);
-            return result;
-        }
-
-        ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
-        List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
-        if (message.isEmpty()) {
-            String shortName = buildMeasureShortName(model);
-            model.setShortName(shortName);
-
-            MeasureSet measureSet = null;
-            String existingMeasureScoringType = "";
-            String existingMeasurePopulationBasis = "";
-            final boolean existingMeasure;
 
             if (model.getId() != null) {
-
-                // editing an existing measure
-                existingMeasure = true;
-
-                existingMeasureScoringType = pkg.getMeasureScoring();
-                existingMeasurePopulationBasis = pkg.getPopulationBasis();
-                model.setVersionNumber(pkg.getVersion());
-                if (pkg.isDraft()) {
-                    model.setRevisionNumber(pkg.getRevisionNumber());
-                } else {
-                    model.setRevisionNumber("000");
-                }
-                if (pkg.getMeasureSet().getId() != null) {
-                    measureSet = measurePackageService.findMeasureSet(pkg.getMeasureSet().getId());
-                }
-                if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
-                    // US 194 User is changing the measure scoring. Make sure to
-                    // delete any groupings for that measure and save.
-                    measurePackageService.deleteExistingPackages(pkg.getId());
-                }
-
-            } else {
-                // creating a new measure.
-                model.setMeasureModel(ModelTypeHelper.QDM);
-                existingMeasure = false;
-                pkg = new Measure();
-                pkg.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
-                pkg.setQdmVersion(propertiesService.getQdmVersion());
-                pkg.setIsCompositeMeasure(Boolean.TRUE);
-                pkg.setCqlLibraryName(model.getCQLLibraryName());
-                List<MeasureTypeAssociation> measureTypes = new ArrayList<>(1);
-                MeasureType composite = findMeasureTypeById("1");
-                measureTypes.add(new MeasureTypeAssociation(pkg, composite));
-                pkg.setMeasureTypes(measureTypes);
-
-                model.setRevisionNumber("000");
-                measureSet = new MeasureSet();
-                measureSet.setId(UUID.randomUUID().toString());
-                measurePackageService.save(measureSet);
+                pkg = measurePackageService.getById(model.getId());
+                setCQLLibraryName(pkg, model);
+                isExisting = true;
             }
-            pkg.setCompositeScoring(model.getCompositeScoringMethod());
-            pkg.setMeasureSet(measureSet);
 
-            MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, pkg);
-            pkg.setMeasureDetails(measureDetails);
-            if (isExisting) {
-                pkg.setMeasureTypes(getSelectedMeasureTypes(pkg, model));
-            }
-            pkg.setMeasureDevelopers(getSelectedDeveloperList(pkg, model));
-            pkg.setMeasureStewardId(model.getStewardId());
 
-            pkg.seteMeasureId(model.geteMeasureId());
-            pkg.setNqfNumber(model.getNqfId());
-
-            calculateCalendarYearForMeasure(model, pkg);
-
-            setValueFromModel(model, pkg);
-            try {
-                getAndValidateValueSetDate(model.getValueSetDate());
-                pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
-                measurePackageService.save(pkg);
-                if (existingMeasure) {
-                    if (null != model.getAppliedComponentMeasures()) {
-                        deleteAndSaveComponentMeasures(model);
-                    }
-                } else {
-                    saveComponentMeasures(pkg.getId(), model);
-                }
-
-            } catch (InvalidValueSetDateException e) {
+            SaveMeasureResult result = new SaveMeasureResult();
+            if (!isExisting && libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
                 result.setSuccess(false);
-                result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
-                result.setId(pkg.getId());
                 return result;
             }
 
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE),
-                    pkg.getId(),
-                    StringUtils.equals("FHIR", model.getMeasureModel()));
+            ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+            List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
+            if (message.isEmpty()) {
+                String shortName = buildMeasureShortName(model);
+                model.setShortName(shortName);
 
-            updateMeasureXml(model, pkg, existingMeasureScoringType, existingMeasurePopulationBasis);
+                MeasureSet measureSet = null;
+                String existingMeasureScoringType = "";
+                String existingMeasurePopulationBasis = "";
+                final boolean existingMeasure;
 
-            result.setSuccess(true);
-            result.setId(pkg.getId());
-            model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));
-            createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
+                if (model.getId() != null) {
 
-            if (isExisting) {
-                result.setCompositeMeasureDetailModel(getCompositeMeasure(model.getId()));
+                    // editing an existing measure
+                    existingMeasure = true;
+
+                    existingMeasureScoringType = pkg.getMeasureScoring();
+                    existingMeasurePopulationBasis = pkg.getPopulationBasis();
+                    model.setVersionNumber(pkg.getVersion());
+                    if (pkg.isDraft()) {
+                        model.setRevisionNumber(pkg.getRevisionNumber());
+                    } else {
+                        model.setRevisionNumber("000");
+                    }
+                    if (pkg.getMeasureSet().getId() != null) {
+                        measureSet = measurePackageService.findMeasureSet(pkg.getMeasureSet().getId());
+                    }
+                    if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+                        // US 194 User is changing the measure scoring. Make sure to
+                        // delete any groupings for that measure and save.
+                        measurePackageService.deleteExistingPackages(pkg.getId());
+                    }
+
+                } else {
+                    // creating a new measure.
+                    model.setMeasureModel(ModelTypeHelper.QDM);
+                    existingMeasure = false;
+                    pkg = new Measure();
+                    pkg.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+                    pkg.setQdmVersion(propertiesService.getQdmVersion());
+                    pkg.setIsCompositeMeasure(Boolean.TRUE);
+                    pkg.setCqlLibraryName(model.getCQLLibraryName());
+                    List<MeasureTypeAssociation> measureTypes = new ArrayList<>(1);
+                    MeasureType composite = findMeasureTypeById("1");
+                    measureTypes.add(new MeasureTypeAssociation(pkg, composite));
+                    pkg.setMeasureTypes(measureTypes);
+
+                    model.setRevisionNumber("000");
+                    measureSet = new MeasureSet();
+                    measureSet.setId(UUID.randomUUID().toString());
+                    measurePackageService.save(measureSet);
+                }
+                pkg.setCompositeScoring(model.getCompositeScoringMethod());
+                pkg.setMeasureSet(measureSet);
+
+                MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, pkg);
+                pkg.setMeasureDetails(measureDetails);
+                if (isExisting) {
+                    pkg.setMeasureTypes(getSelectedMeasureTypes(pkg, model));
+                }
+                pkg.setMeasureDevelopers(getSelectedDeveloperList(pkg, model));
+                pkg.setMeasureStewardId(model.getStewardId());
+
+                pkg.seteMeasureId(model.geteMeasureId());
+                pkg.setNqfNumber(model.getNqfId());
+
+                calculateCalendarYearForMeasure(model, pkg);
+
+                setValueFromModel(model, pkg);
+                try {
+                    getAndValidateValueSetDate(model.getValueSetDate());
+                    pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+                    measurePackageService.save(pkg);
+                    if (existingMeasure) {
+                        if (null != model.getAppliedComponentMeasures()) {
+                            deleteAndSaveComponentMeasures(model);
+                        }
+                    } else {
+                        saveComponentMeasures(pkg.getId(), model);
+                    }
+
+                } catch (InvalidValueSetDateException e) {
+                    result.setSuccess(false);
+                    result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+                    result.setId(pkg.getId());
+                    return result;
+                }
+
+                saveMeasureXml(createMeasureXmlModel(pkg, MEASURE),
+                        pkg.getId(),
+                        StringUtils.equals("FHIR", model.getMeasureModel()));
+
+                updateMeasureXml(model, pkg, existingMeasureScoringType, existingMeasurePopulationBasis);
+
+                result.setSuccess(true);
+                result.setId(pkg.getId());
+                model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));
+                createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
+
+                if (isExisting) {
+                    result.setCompositeMeasureDetailModel(getCompositeMeasure(model.getId()));
+                }
+
+                return result;
+            } else {
+                log.debug("Validation Failed for measure :: Invalid Data Issues.");
+                result.setSuccess(false);
+                result.setFailureReason(SaveMeasureResult.INVALID_DATA);
+                return result;
             }
-
-            return result;
-        } else {
-            log.debug("Validation Failed for measure :: Invalid Data Issues.");
-            result.setSuccess(false);
-            result.setFailureReason(SaveMeasureResult.INVALID_DATA);
-            return result;
+        } catch (Exception e) {
+            log.error("MeasureLibraryServiceImpl::saveCompositeMeasure " + e.getMessage(), e);
+            throw e;
         }
     }
 

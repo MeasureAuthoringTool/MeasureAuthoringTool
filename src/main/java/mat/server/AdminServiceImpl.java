@@ -73,8 +73,13 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
      */
     @Override
     public void deleteOrganization(ManageOrganizationSearchModel.Result organization) {
-        Organization org = getOrganizationDAO().findByOid(organization.getOid());
-        getOrganizationDAO().deleteOrganization(org);
+        try {
+            Organization org = getOrganizationDAO().findByOid(organization.getOid());
+            getOrganizationDAO().deleteOrganization(org);
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::deleteOrganization " + re.getMessage(), re);
+            throw re;
+        }
     }
 
 
@@ -231,17 +236,21 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
         List<ManageOrganizationSearchModel.Result> results = new ArrayList<ManageOrganizationSearchModel.Result>();
 
-        List<Organization> organizations = getOrganizationDAO().getAllOrganizations();
-        for (Organization organization : organizations) {
-            ManageOrganizationSearchModel.Result result = new ManageOrganizationSearchModel.Result();
-            result.setId(String.valueOf(organization.getId()));
-            result.setOrgName(organization.getOrganizationName());
-            result.setOid(organization.getOrganizationOID());
-            results.add(result);
+        try {
+            List<Organization> organizations = getOrganizationDAO().getAllOrganizations();
+            for (Organization organization : organizations) {
+                ManageOrganizationSearchModel.Result result = new ManageOrganizationSearchModel.Result();
+                result.setId(String.valueOf(organization.getId()));
+                result.setOrgName(organization.getOrganizationName());
+                result.setOid(organization.getOrganizationOID());
+                results.add(result);
+            }
+            model.setData(results);
+            logger.debug("Getting all organizations.");
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::getAllOrganizations " + re.getMessage(), re);
+            throw re;
         }
-        model.setData(results);
-        logger.debug("Getting all organizations.");
-
         return model;
     }
 
@@ -261,8 +270,13 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     @Override
     public ManageOrganizationDetailModel getOrganization(String key) {
         logger.debug("Retrieving organization for OID " + key);
-        Organization organization = getOrganizationDAO().findByOid(key);
-        return extractOrganizationModel(organization);
+        try {
+            Organization organization = getOrganizationDAO().findByOid(key);
+            return extractOrganizationModel(organization);
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::getOrganization " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     /**
@@ -276,10 +290,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 
     @Override
     public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException {
-        checkAdminUser();
-        logger.debug("Retrieving user " + key);
-        User user = userService.getById(key);
-        return extractUserModel(user);
+        try {
+            checkAdminUser();
+            logger.debug("Retrieving user " + key);
+            User user = userService.getById(key);
+            return extractUserModel(user);
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::getUser " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     /**
@@ -300,70 +319,90 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 
     @Override
     public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
-        checkAdminUser();
-        model.scrubForMarkUp();
-        AdminManageUserModelValidator test = new AdminManageUserModelValidator();
-        List<String> messages = test.isValidUsersDetail(model);
-        SaveUpdateUserResult result = new SaveUpdateUserResult();
-        if (messages.size() != 0) {
-            for (String message : messages) {
-                logger.debug("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
-                        + model.getLoginId() + " And failure Message is :" + message);
-            }
-            result.setSuccess(false);
-            result.setMessages(messages);
-            result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
-        } else {
-            if (model.isBeingRevoked()) {
-                try {
-                    bonnieService.revokeBonnieAccessTokenForUser(model.getKey());
-                } catch (Exception e) {
-                    logger.error("Error in BonnieService::revokeBonnieAccessTokenForUser: " + e.getMessage(), e);
+        try {
+            checkAdminUser();
+            model.scrubForMarkUp();
+            AdminManageUserModelValidator test = new AdminManageUserModelValidator();
+            List<String> messages = test.isValidUsersDetail(model);
+            SaveUpdateUserResult result = new SaveUpdateUserResult();
+            if (messages.size() != 0) {
+                for (String message : messages) {
+                    logger.debug("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
+                            + model.getLoginId() + " And failure Message is :" + message);
                 }
+                result.setSuccess(false);
+                result.setMessages(messages);
+                result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+            } else {
+                if (model.isBeingRevoked()) {
+                    try {
+                        bonnieService.revokeBonnieAccessTokenForUser(model.getKey());
+                    } catch (Exception e) {
+                        logger.error("Error in BonnieService::revokeBonnieAccessTokenForUser: " + e.getMessage(), e);
+                    }
+                }
+                result = userService.saveUpdateUser(model);
             }
-            result = userService.saveUpdateUser(model);
-        }
 
-        return result;
+            return result;
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::saveUpdateUser " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override
     public ManageOrganizationSearchModel searchOrganization(String key) {
-        List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
-        HashMap<String, Organization> usedOrganizationsMap = userService.searchForUsedOrganizations();
-        logger.debug("Organization search returned " + searchResults.size());
-        ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
-        List<ManageOrganizationSearchModel.Result> detailList = new ArrayList<ManageOrganizationSearchModel.Result>();
-        for (Organization org : searchResults) {
-            ManageOrganizationSearchModel.Result r = new ManageOrganizationSearchModel.Result();
-            r.setOrgName(org.getOrganizationName());
-            r.setOid(org.getOrganizationOID());
-            r.setId(Long.toString(org.getId()));
-            r.setUsed(usedOrganizationsMap.get(Long.toString(org.getId())) != null);
-            detailList.add(r);
+        try {
+            List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
+            HashMap<String, Organization> usedOrganizationsMap = userService.searchForUsedOrganizations();
+            logger.debug("Organization search returned " + searchResults.size());
+            ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
+            List<ManageOrganizationSearchModel.Result> detailList = new ArrayList<ManageOrganizationSearchModel.Result>();
+            for (Organization org : searchResults) {
+                ManageOrganizationSearchModel.Result r = new ManageOrganizationSearchModel.Result();
+                r.setOrgName(org.getOrganizationName());
+                r.setOid(org.getOrganizationOID());
+                r.setId(Long.toString(org.getId()));
+                r.setUsed(usedOrganizationsMap.get(Long.toString(org.getId())) != null);
+                detailList.add(r);
+            }
+            model.setData(detailList);
+            model.setResultsTotal(searchResults.size());
+            logger.debug("Searching Organization on " + key);
+            return model;
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::searchOrganization " + re.getMessage(), re);
+            throw re;
         }
-        model.setData(detailList);
-        model.setResultsTotal(searchResults.size());
-        logger.debug("Searching Organization on " + key);
-        return model;
     }
 
     public ManageUsersSearchModel searchUsersWithActiveBonnie(String key) throws InCorrectUserRoleException {
-        checkAdminUser();
-        List<User> activeBonnieUsers = userService.searchForUsersWithActiveBonnie(key);
-        ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, activeBonnieUsers);
-        return model;
+        try {
+            checkAdminUser();
+            List<User> activeBonnieUsers = userService.searchForUsersWithActiveBonnie(key);
+            ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, activeBonnieUsers);
+            return model;
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::searchUsersWithActiveBonnie " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override
     public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException {
-        checkAdminUser();
-        logger.debug("Searching users on " + key);
-        List<User> searchResults = userService.searchForUsersByName(key);
-        logger.debug("User search returned " + searchResults.size());
-        ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
+        try {
+            checkAdminUser();
+            logger.debug("Searching users on " + key);
+            List<User> searchResults = userService.searchForUsersByName(key);
+            logger.debug("User search returned " + searchResults.size());
+            ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
 
-        return model;
+            return model;
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::searchUsers " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     private ManageUsersSearchModel generateManageUsersSearchModelFromUser(String key, List<User> searchResults) {
@@ -389,10 +428,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 
     @Override
     public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException {
-        checkAdminUser();
-        logger.debug("Retrieving user " + emailId);
-        User user = userService.findByEmailID(emailId);
-        return extractUserModel(user);
+        try {
+            checkAdminUser();
+            logger.debug("Retrieving user " + emailId);
+            User user = userService.findByEmailID(emailId);
+            return extractUserModel(user);
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::getUserByEmail " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override
@@ -418,26 +462,31 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     public SaveUpdateOrganizationResult saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel) {
         AdminManageOrganizationModelValidator organizationValidator = new AdminManageOrganizationModelValidator();
         SaveUpdateOrganizationResult result = new SaveUpdateOrganizationResult();
-        if (organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) {
-            if (organizationAlreadyExists(updatedOrganizationDetailModel)) {
-                result.setSuccess(false);
-                result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
-            } else {
-                try {
-                    Organization organization = new Organization();
-                    organization.setOrganizationName(updatedOrganizationDetailModel.getOrganization());
-                    organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
-                    getOrganizationDAO().saveOrganization(organization);
-                    result.setSuccess(true);
-                } catch (Exception exception) {
+        try {
+            if (organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) {
+                if (organizationAlreadyExists(updatedOrganizationDetailModel)) {
                     result.setSuccess(false);
                     result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+                } else {
+                    try {
+                        Organization organization = new Organization();
+                        organization.setOrganizationName(updatedOrganizationDetailModel.getOrganization());
+                        organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
+                        getOrganizationDAO().saveOrganization(organization);
+                        result.setSuccess(true);
+                    } catch (Exception exception) {
+                        result.setSuccess(false);
+                        result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+                    }
                 }
+            } else {
+                result.setSuccess(false);
+                result.setMessages(organizationValidator.getValidationErrors(updatedOrganizationDetailModel));
+                result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
             }
-        } else {
-            result.setSuccess(false);
-            result.setMessages(organizationValidator.getValidationErrors(updatedOrganizationDetailModel));
-            result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+        } catch (RuntimeException re) {
+            log("AdminServiceImpl::saveOrganization " + re.getMessage(), re);
+            throw re;
         }
         return result;
     }

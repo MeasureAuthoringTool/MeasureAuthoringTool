@@ -46,14 +46,13 @@
 		  top.location = self.location; 
 		}
 
-
         function setFocusToFirstFocusable() {
           var tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
           if (tabs) {
             for (var i = 0; i < tabs.length; i++) {
               if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
-                var focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
-                for (var j = 0; j < focusArray.length; j++) {
+                let focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
+                for (let j = 0; j < focusArray.length; j++) {
                   if (!(focusArray[j].readonly || focusArray[j].disabled) &&
                           focusArray[j].ariaHidden !== 'true' &&
                           focusArray[j].tabIndex !== '-1') {

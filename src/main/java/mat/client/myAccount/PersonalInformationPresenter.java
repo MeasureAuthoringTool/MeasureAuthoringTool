@@ -183,6 +183,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 	private void savePersonalInformation() {
 		display.getErrorMessageDisplay().clearAlert();
 		display.getSuccessMessageDisplay().clearAlert();
+        Mat.showLoadingMessage();
         currentModel = getValues();
         if(isValid(currentModel)) {
         	Mat.showLoadingMessage();
@@ -191,6 +192,7 @@ public class PersonalInformationPresenter implements MatPresenter {
                 public void onFailure(Throwable caught) {
                 	Mat.hideLoadingMessage();
                     Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                    Mat.hideLoadingMessage();
                 }
 
                 @Override
@@ -218,7 +220,7 @@ public class PersonalInformationPresenter implements MatPresenter {
                         Mat.setSignedInAsNameOrg();
                         MatContext.get().getLoggedInUserPreference().setFreeTextEditorEnabled(currentModel.isEnableFreeTextEditor());
                     } else {
-                        List<String> messages = new ArrayList<String>();
+                        List<String> messages = new ArrayList<>();
                         switch(result.getFailureReason()) {
                             case SaveMyAccountResult.ID_NOT_UNIQUE:
                                 messages.add(MatContext.get().getMessageDelegate()
@@ -233,6 +235,7 @@ public class PersonalInformationPresenter implements MatPresenter {
                         }
                         display.getErrorMessageDisplay().createAlert(messages);
                     }
+                    Mat.hideLoadingMessage();
                 }
             });
         }

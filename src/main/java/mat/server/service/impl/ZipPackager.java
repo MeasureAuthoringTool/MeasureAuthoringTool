@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -419,15 +420,25 @@ public class ZipPackager {
         var measure = jsonParser.parseResource(org.hl7.fhir.r4.model.Measure.class, measureJson);
         var libBundle = jsonParser.parseResource(Bundle.class, libBundleJson);
 
+        //For export the ids are set to the CQL LIBRARY NAME.
+        measure.setId(measure.getName());
+        libBundle.getEntry().forEach(e -> {
+            Library l = (Library) e.getResource();
+            l.setId(l.getName());
+        });
+
         Bundle result = new Bundle();
         result.getMeta().addProfile("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/measure-bundle-cqfm");
-        result.setType(Bundle.BundleType.COLLECTION);
+        result.setType(Bundle.BundleType.TRANSACTION);
         result.addEntry().setResource(measure).getRequest()
                 .setUrl("Measure/" + getFhirId(measure))
                 .setMethod(Bundle.HTTPVerb.PUT);
 
         libBundle.getEntry().forEach(e ->
-                result.addEntry().setResource(e.getResource()).setRequest(e.getRequest()));
+                result.addEntry().setResource(e.getResource()).
+                        getRequest().setMethod(Bundle.HTTPVerb.PUT).
+                        setUrl("Library/" + e.getResource().getId()));
+        //Setup the request to match the newly set ID.
 
         return jsonParser.encodeResourceToString(result);
     }

@@ -100,59 +100,63 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     public CQLConstantContainer getAllCQLConstants(boolean isFhirEnabled) {
         final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
-        // get the unit dto list
-        final List<UnitDTO> unitDTOList = codeListService.getAllUnits();
-        cqlConstantContainer.setCqlUnitDTOList(unitDTOList);
+        try {
+            // get the unit dto list
+            final List<UnitDTO> unitDTOList = codeListService.getAllUnits();
+            cqlConstantContainer.setCqlUnitDTOList(unitDTOList);
 
-        // get the unit map in the form of <UnitName, CQLUnit>
-        final Map<String, String> unitMap = new LinkedHashMap<>();
-        unitMap.put(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
-        for (final UnitDTO unit : unitDTOList) {
-            unitMap.put(unit.getUnit(), unit.getCqlunit());
+            // get the unit map in the form of <UnitName, CQLUnit>
+            final Map<String, String> unitMap = new LinkedHashMap<>();
+            unitMap.put(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+            for (final UnitDTO unit : unitDTOList) {
+                unitMap.put(unit.getUnit(), unit.getCqlunit());
+            }
+            cqlConstantContainer.setCqlUnitMap(unitMap);
+
+            if (isFhirEnabled) {
+                loadFhirAttributes(cqlConstantContainer);
+            }
+
+            // get all qdm attributes
+            final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
+            cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
+
+            // get the datatypes
+            final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
+            final List<String> datatypeList = new ArrayList<>();
+            for (int i = 0; i < dataTypeListBoxList.size(); i++) {
+                datatypeList.add(dataTypeListBoxList.get(i).getItem());
+            }
+
+            final List<String> qdmDatatypeList = new ArrayList<>();
+            Collections.sort(datatypeList);
+            qdmDatatypeList.addAll(datatypeList);
+            datatypeList.remove("attribute");
+
+            cqlConstantContainer.setCqlDatatypeList(datatypeList);
+            cqlConstantContainer.setQdmDatatypeList(qdmDatatypeList);
+
+            // get keywords
+            final CQLKeywords keywordList = measureLibraryService.getCQLKeywordsLists();
+            cqlConstantContainer.setCqlKeywordList(keywordList);
+
+            // get timings
+            final List<String> timings = keywordList.getCqlTimingList();
+            Collections.sort(timings);
+            cqlConstantContainer.setCqlTimingList(timings);
+
+            cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQdmVersion());
+            cqlConstantContainer.setCurrentFhirVersion(MATPropertiesService.get().getFhirVersion());
+            cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+
+            cqlConstantContainer.setQdmContainer(getQDMInformation());
+            cqlConstantContainer.setCqlTypeContainer(getCQLTypeInformation());
+
+            cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
+        } catch (Exception e) {
+            log("CQLConstantServiceImpl::getAllCQLConstants " + e.getMessage(), e);
+            throw e;
         }
-        cqlConstantContainer.setCqlUnitMap(unitMap);
-
-        if (isFhirEnabled) {
-            loadFhirAttributes(cqlConstantContainer);
-        }
-
-        // get all qdm attributes
-        final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
-        cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
-
-        // get the datatypes
-        final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
-        final List<String> datatypeList = new ArrayList<>();
-        for (int i = 0; i < dataTypeListBoxList.size(); i++) {
-            datatypeList.add(dataTypeListBoxList.get(i).getItem());
-        }
-
-        final List<String> qdmDatatypeList = new ArrayList<>();
-        Collections.sort(datatypeList);
-        qdmDatatypeList.addAll(datatypeList);
-        datatypeList.remove("attribute");
-
-        cqlConstantContainer.setCqlDatatypeList(datatypeList);
-        cqlConstantContainer.setQdmDatatypeList(qdmDatatypeList);
-
-        // get keywords
-        final CQLKeywords keywordList = measureLibraryService.getCQLKeywordsLists();
-        cqlConstantContainer.setCqlKeywordList(keywordList);
-
-        // get timings
-        final List<String> timings = keywordList.getCqlTimingList();
-        Collections.sort(timings);
-        cqlConstantContainer.setCqlTimingList(timings);
-
-        cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQdmVersion());
-        cqlConstantContainer.setCurrentFhirVersion(MATPropertiesService.get().getFhirVersion());
-        cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-
-        cqlConstantContainer.setQdmContainer(getQDMInformation());
-        cqlConstantContainer.setCqlTypeContainer(getCQLTypeInformation());
-
-        cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
-
         return cqlConstantContainer;
     }
 

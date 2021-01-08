@@ -601,6 +601,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                         onSaveCQLFileFailure(result);
                     } else {
                         handleCQLData(result);
+                        cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(true);
                         onSaveCQLFileSuccess(result);
                         setIsPageDirty(false);
                     }
@@ -1274,27 +1275,33 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onSuccess(SaveUpdateCQLResult result) {
-                handleCQLData(result);
-                showSearchingBusy(false);
-                if (MatContext.get().isCurrentModelTypeFhir()) {
-                    logger.log(Level.INFO, "isCurrentModelTypeFhir, calling getOidToVsacCodeSystemMap");
-                    MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            logger.log(Level.SEVERE, "Error in CodeSystemMappingService.getOidToFhirUrlMap. Error message: " + throwable.getMessage(), throwable);
-                            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                            showSearchingBusy(false);
-                        }
-
-                        @Override
-                        public void onSuccess(Map<String, VSACCodeSystemDTO> map) {
-                            logger.log(Level.INFO, "called getOidToVsacCodeSystemMap " + map);
-                            MatContext.get().setOidToVSACCodeSystemMap(map);
-                            showSearchingBusy(false);
-                        }
-                    });
-                } else {
+                if (result.isSevereError()) {
                     showSearchingBusy(false);
+                    cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(false);
+                    cqlWorkspaceView.getCQLLeftNavBarPanelView().disbaleBadges();
+                } else {
+                    handleCQLData(result);
+                    showSearchingBusy(false);
+                    if (MatContext.get().isCurrentModelTypeFhir()) {
+                        logger.log(Level.INFO, "isCurrentModelTypeFhir, calling getOidToVsacCodeSystemMap");
+                        MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                logger.log(Level.SEVERE, "Error in CodeSystemMappingService.getOidToFhirUrlMap. Error message: " + throwable.getMessage(), throwable);
+                                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                showSearchingBusy(false);
+                            }
+
+                            @Override
+                            public void onSuccess(Map<String, VSACCodeSystemDTO> map) {
+                                logger.log(Level.INFO, "called getOidToVsacCodeSystemMap " + map);
+                                MatContext.get().setOidToVSACCodeSystemMap(map);
+                                showSearchingBusy(false);
+                            }
+                        });
+                    } else {
+                        showSearchingBusy(false);
+                    }
                 }
             }
 
@@ -2009,6 +2016,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                         showSearchingBusy(false);
                         if (result.isSuccess()) {
                             buildCQLViewSuccess(result);
+                        }
+                        if (result.isSevereError()) {
+                            cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(false);
+                            cqlWorkspaceView.getCQLLeftNavBarPanelView().disbaleBadges();
                         }
                     }
 

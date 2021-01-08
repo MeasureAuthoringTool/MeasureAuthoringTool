@@ -1,6 +1,7 @@
 package mat.server;
 
 import mat.client.login.LoginModel;
+import mat.client.login.service.HarpService;
 import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
@@ -40,22 +41,15 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     @Autowired
     private LoginCredentialService loginCredentialService;
 
-    @Override
-    public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
-        logger.debug("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
-        HttpSession session = getThreadLocalRequest().getSession();
-        if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
-            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
-        }
-        return loginCredentialService.initSession(harpUserInfo, session.getId());
-    }
+    @Autowired
+    private HarpService harpService;
 
     @Override
     public Boolean checkForAssociatedHarpId(String harpId) throws MatException {
         try {
             return userDAO.findAssociatedHarpId(harpId);
         } catch (Exception e) {
-            throw new MatException("Unable to verify if user has associated Harp Id");
+            throw new MatException("CHECK_ASSOCIATED_HARP_ID");
         }
     }
 
@@ -73,7 +67,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     }
 
     @Override
-    public boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo) throws MatException {
+    public boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, String accessToken) throws MatException {
+        Map<String, String> harpUserInfo = harpService.generateUserInfoFromAccessToken(accessToken);
         User user = userDAO.findByLoginId(loginId);
         if (StringUtils.isNotBlank(securityAnswer)) {
             for (UserSecurityQuestion q : user.getUserSecurityQuestions()) {
@@ -102,8 +97,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     }
 
     @Override
-    public void switchUser(Map<String, String> harpUserInfo, String newUserId) {
+    public void switchUser(String accessToken, String newUserId) throws MatException {
         String sessionId = getThreadLocalRequest().getSession().getId();
+        Map<String, String> harpUserInfo = harpService.generateUserInfoFromAccessToken(accessToken);
         logger.debug("LoginnService::switchUser HARP_ID: " + harpUserInfo.get(HarpConstants.HARP_ID) + " Session ID: " + sessionId + " New User ID: " + newUserId);
         loginCredentialService.switchUser(harpUserInfo, newUserId, sessionId);
     }

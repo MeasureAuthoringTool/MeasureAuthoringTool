@@ -6,17 +6,24 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mat.client.login.LoginModel;
 import mat.client.login.service.HarpService;
+import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;
 import mat.server.logging.LogFactory;
+import mat.server.service.LoginCredentialService;
+import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
+import mat.shared.HarpConstants;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +31,7 @@ import static java.util.Objects.isNull;
 import static mat.shared.HarpConstants.HARP_FAMILY_NAME;
 import static mat.shared.HarpConstants.HARP_FULLNAME;
 import static mat.shared.HarpConstants.HARP_GIVEN_NAME;
+import static mat.shared.HarpConstants.HARP_ID;
 import static mat.shared.HarpConstants.HARP_MIDDLE_NAME;
 import static mat.shared.HarpConstants.HARP_PRIMARY_EMAIL_ID;
 
@@ -33,6 +41,15 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     private static final Log logger = LogFactory.getLog(HarpServiceImpl.class);
 
     private WebClient harpOtkaClient;
+
+    @Autowired
+    LoginService loginService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private LoginCredentialService loginCredentialService;
 
     @Override
     public boolean revoke(String accessToken) {
@@ -49,7 +66,16 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     }
 
     @Override
-    public Map<String, String> getUserInfo(String accessToken) {
+    public void validateUserAndInitSession(String accessToken) throws MatException {
+        Map<String, String> harpUserInfo = generateUserInfoFromAccessToken(accessToken);
+        if (loginService.checkForAssociatedHarpId(harpUserInfo.get(HARP_ID))) {
+            initSession(harpUserInfo);
+        } else {
+            throw new MatException("NO_ASSOCIATED_HARP_ID");
+        }
+    }
+
+    private Map<String, String> getUserInfo(String accessToken, String harpUserName) {
         UserInfo userinfo = userinfo(accessToken);
         Map<String, String> harpUserInfo = new HashMap<>();
         harpUserInfo.put(HARP_GIVEN_NAME, userinfo.getGivenName());
@@ -57,8 +83,30 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         harpUserInfo.put(HARP_FAMILY_NAME, userinfo.getFamilyName());
         harpUserInfo.put(HARP_FULLNAME, userinfo.getName());
         harpUserInfo.put(HARP_PRIMARY_EMAIL_ID, userinfo.getEmail());
+        harpUserInfo.put(HARP_ID, harpUserName);
         harpUserInfo.values().forEach(logger::debug);
         return harpUserInfo;
+    }
+
+    private LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
+        logger.debug("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        HttpSession session = getThreadLocalRequest().getSession();
+        if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
+            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+        }
+        return loginCredentialService.initSession(harpUserInfo, session.getId());
+    }
+
+    @Override
+    public Map<String, String> generateUserInfoFromAccessToken(String accessToken) throws MatException {
+        String harpUserName = "";
+        try {
+            TokenIntrospect introspect = validate(accessToken);
+            harpUserName = introspect.getUsername();
+        } catch (Exception e) {
+            throw new MatException("INVALID_ACCESS_TOKEN");
+        }
+        return getUserInfo(accessToken, harpUserName);
     }
 
     @Override

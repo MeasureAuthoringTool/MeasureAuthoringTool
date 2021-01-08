@@ -272,15 +272,17 @@ public class CQLServiceImpl implements CQLService {
 
             // Validation.
             SaveUpdateCQLResult parsedResult;
-            if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
+            if (ModelTypeHelper.isFhir(modelType)) {
                 parsedResult = parseFhirCQLForErrors(newModel, fhirResponse);
             } else {
                 parsedResult = parseCQLLibraryForErrors(newModel);
             }
 
             // Duplicate identifiers.
-            if (CQLValidationUtil.doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(newModel)) {
-                parsedResult.setXml(xml); // retain the old xml if there are duplicate identifiers (essentially not saving)
+            if (!ModelTypeHelper.isFhir(modelType)) {
+                //This does more than catch invalid keywords it also catches duplicate codesystems,valuesets,codes,etc.
+                //For QDM business as usual. For FHIR they will be errors the user can fix.
+                parsedResult.setXml(xml);
                 parsedResult.setCqlString(cql);
                 parsedResult.setSuccess(false);
                 parsedResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);
@@ -1932,14 +1934,18 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public CQLQualityDataModelWrapper getCQLValusets(String measureId,
                                                      CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        String xmlString = model.getXml();
-        SaveUpdateCQLResult cqlDataResult = getCQLData(measureId, true, xmlString);
-        List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-                .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
-        cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-
-        return cqlQualityDataModelWrapper;
+        try {
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            String xmlString = model.getXml();
+            SaveUpdateCQLResult cqlDataResult = getCQLData(measureId, true, xmlString);
+            List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
+                    .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
+            cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
+            return cqlQualityDataModelWrapper;
+        } catch (RuntimeException re) {
+            logger.error("getCQLValusets " + re.getMessage(), re);
+            throw re;
+        }
     }
 
     @Override

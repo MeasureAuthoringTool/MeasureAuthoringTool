@@ -19,7 +19,7 @@ public interface LoginService extends RemoteService {
 
     void switchRole(String newRole);
 
-    void switchUser(Map<String, String> harpUserInfo, String newUserId);
+    void switchUser(String accessToken, String newUserId) throws MatException;
 
     /**
      * Gets the footer ur ls.
@@ -47,18 +47,10 @@ public interface LoginService extends RemoteService {
      */
     boolean isValidPassword(String userId, String password);
 
-    /**
-     * Retrieves MAT user details for provided HARP ID.
-     *
-     * @param harpUserInfo User's info
-     * @return
-     */
-    LoginModel initSession(Map<String, String> harpUserInfo) throws MatException;
-
     Boolean checkForAssociatedHarpId(String harpId) throws MatException;
 
 
     String getSecurityQuestionToVerifyHarpUser(String loginId, String password) throws MatException;
 
-    boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo) throws MatException;
+    boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, String accessToken) throws MatException;
 }

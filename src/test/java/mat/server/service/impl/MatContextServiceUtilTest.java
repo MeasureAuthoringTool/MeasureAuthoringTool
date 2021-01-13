@@ -1,9 +1,11 @@
 package mat.server.service.impl;
 
+import mat.dao.FhirConversionHistoryDao;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureSet;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.FeatureFlagService;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -27,13 +30,15 @@ import static org.junit.Assert.assertTrue;
 public class MatContextServiceUtilTest {
 
     private static final String OWNER_USER_1 = "user1";
-    private MatContextServiceUtil util = new MatContextServiceUtil();
     private Measure measure = new Measure();
     private CQLLibrary cqlLibrary = new CQLLibrary();
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     @Mock
     private FeatureFlagService featureFlagService;
+
+    @Mock
+    private FhirConversionHistoryDao fhirConversionHistoryDao;
 
     @InjectMocks
     private MatContextServiceUtil matContextServiceUtil;
@@ -45,14 +50,14 @@ public class MatContextServiceUtilTest {
 
     @Test
     public void testDefaultMeasureNotConvertible() {
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
     public void testMeasureConvertible() {
         setUserAndRole();
         createConvertibleMeasure();
-        assertTrue(util.isMeasureConvertible(measure));
+        assertTrue(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
@@ -60,7 +65,7 @@ public class MatContextServiceUtilTest {
         PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn("OTHER_USER");
         PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.USER_ROLE);
         createConvertibleMeasure();
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
@@ -68,7 +73,7 @@ public class MatContextServiceUtilTest {
         PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn("OTHER_USER");
         PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.SUPER_USER_ROLE);
         createConvertibleMeasure();
-        assertTrue(util.isMeasureConvertible(measure));
+        assertTrue(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
 
@@ -76,6 +81,8 @@ public class MatContextServiceUtilTest {
         measure.setMeasureModel("QDM");
         measure.setReleaseVersion("v5.8");
         measure.setQdmVersion("5.5");
+        measure.setMeasureSet(new MeasureSet());
+        measure.getMeasureSet().setId("FUBAR");
         User owner = new User();
         owner.setId(OWNER_USER_1);
         measure.setOwner(owner);
@@ -85,35 +92,35 @@ public class MatContextServiceUtilTest {
     public void testFhirMeasureNotConvertible() {
         createConvertibleMeasure();
         measure.setMeasureModel("FHIR");
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
     public void testCompositeMeasureIsNotConvertible() {
         createConvertibleMeasure();
         measure.setIsCompositeMeasure(true);
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
     public void testPreCQL() {
         createConvertibleMeasure();
         measure.setMeasureModel("Pre-CQL");
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
     public void testVersionFail() {
         createConvertibleMeasure();
         measure.setReleaseVersion("v5.7");
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test
     public void testQdmVersionFail() {
         createConvertibleMeasure();
         measure.setQdmVersion("5.4");
-        assertFalse(util.isMeasureConvertible(measure));
+        assertFalse(matContextServiceUtil.isMeasureConvertible(measure));
     }
 
     @Test

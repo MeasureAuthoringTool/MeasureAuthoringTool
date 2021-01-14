@@ -1,8 +1,6 @@
 FROM tomcat:9
 
-ARG STOREPASS
-ARG NR_APM_KEY
-ARG NR_APM_NAME
+ARG STOREPASS="changeit"
 ARG WAR_PATH="MeasureAuthoringTool.war"
 
 RUN curl -O https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
@@ -14,8 +12,6 @@ RUN curl -O https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
 
 RUN curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip \
     && unzip newrelic-java.zip \
-    && sed -i "s/'<%= license_key %>'/${NR_APM_KEY}/" newrelic/newrelic.yml \
-    && sed -i "s/My Application/${NR_APM_NAME}/" newrelic/newrelic.yml \
     && sed -i "/common: &default_settings/a \ \ host: gov-collector.newrelic.com" newrelic/newrelic.yml
 
 COPY target/MeasureAuthoringTool.war /usr/local/tomcat/webapps/${WAR_PATH}

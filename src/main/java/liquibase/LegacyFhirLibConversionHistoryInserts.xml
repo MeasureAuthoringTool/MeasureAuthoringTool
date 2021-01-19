@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+
+        <!-- No need for SupplementalDataElement it is new for FHIR. -->
+        <!-- AdvancedIllnessandFrailtyExclusionECQM -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="60aebe4a-ef31-4ff1-8cfb-93bd7ee79cf5"/>
+            <column name="fhir_set_id" value="B04CCC1C-4388-46F2-A440-E1901DB21A81"/>
+        </insert>
+
+        <!-- AdultOutpatientEncountersFHIR4 -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="47bbc6ea-a2f3-421d-85ca-fae959fcbafd"/>
+            <column name="fhir_set_id" value="F1105667-B287-4DB2-A8D0-F88439E12476"/>
+        </insert>
+
+        <!-- TJCOverall -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="d838ba65-b0cf-4494-a10f-8e4565b85137"/>
+            <column name="fhir_set_id" value="17CD49CC-2DBB-4B23-A494-3B65FA5FC3EC"/>
+        </insert>
+
+        <!-- VTEICU -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="75d229d4-0b25-4232-88c9-93675caca343"/>
+            <column name="fhir_set_id" value="7697D333-1152-4B3C-A993-99D8B2A18743"/>
+        </insert>
+
+        <!-- Hospice -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="64299b80-f383-4dc9-82e4-d6ef0b271b11"/>
+            <column name="fhir_set_id" value="FABC6604-264A-4DD6-AE4B-2A67C3C3B306"/>
+        </insert>
+
+        <!-- MATGlobalCommonFunctions -->
+        <insert tableName="FHIR_CONVERSION_HISTORY ">
+            <column name="qdm_set_id" value="8bdc0a19-b210-4a58-8a07-f5d95a34eca9"/>
+            <column name="fhir_set_id" value="E1DA3599-7CF7-4991-B0E0-D3ED63239836"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

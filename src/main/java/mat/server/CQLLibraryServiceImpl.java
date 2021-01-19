@@ -252,11 +252,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
     }
 
     @Override
-    public CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object) {
-        return this.getCQLLibraryService().checkLibraryForConversion(object);
-    }
-
-    @Override
     public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException {
         return this.getCQLLibraryService().convertCqlLibrary(object);
     }

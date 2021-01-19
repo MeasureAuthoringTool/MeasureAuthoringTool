@@ -31,6 +31,12 @@ public class MatContextServiceUtil implements InitializingBean {
     @Autowired
     private FeatureFlagService featureFlagService;
 
+    @Autowired
+    private MeasureDAO measureDao;
+
+    @Autowired
+    private CQLLibraryDAO cqlLibDao;
+
     @Override
     public void afterPropertiesSet() {
         instance = this;
@@ -206,15 +212,19 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
         String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
-        return isConvertible(measure.getMeasureSet().getId(),measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
+        return isConvertible(measure.getId(), true, measure.getMeasureSet().getId(), measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
     }
 
-    public boolean isConvertible(String setId, String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
+    private boolean isConvertible(String id, boolean isMeasure, String setId, String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
         FhirConversionHistory history = null;
         try {
-            history = fhirConversionHistoryDao.find(setId);
+            history = fhirConversionHistoryDao.lookupByQdmSetId(setId);
             if (history != null) {
-                history.getFhirSetId();
+                if (isMeasure && !measureDao.existsWithSetId(history.getFhirSetId())) {
+                    history = null;
+                } else if (!isMeasure && !cqlLibDao.existsWithSetId(history.getFhirSetId())) {
+                    history = null;
+                }
             }
         } catch (RuntimeException re) {
             history = null;
@@ -257,6 +267,8 @@ public class MatContextServiceUtil implements InitializingBean {
     public boolean isCqlLibraryConvertible(CQLLibrary l) {
         String ownerId = l.getOwnerId() == null ? null : l.getOwnerId().getId();
         return isConvertible(
+                l.getId(),
+                false,
                 l.getSetId(),
                 l.getLibraryModelType(),
                 l.isDraft(),
@@ -266,7 +278,10 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isCqlLibraryConvertible(CQLLibraryShareDTO l) {
-        return isConvertible(l.getCqlLibrarySetId(),
+        return isConvertible(
+                l.getCqlLibraryId(),
+                false,
+                l.getCqlLibrarySetId(),
                 l.getLibraryModelType(),
                 l.isDraft(),
                 l.getQdmVersion(),

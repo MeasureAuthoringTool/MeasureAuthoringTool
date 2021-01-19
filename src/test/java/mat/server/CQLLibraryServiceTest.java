@@ -38,61 +38,6 @@ class CQLLibraryServiceTest {
     @InjectMocks
     private CQLLibraryService cqlLibraryService;
 
-    @Test
-    public void testCheckLibraryForConversionNoDraftLibraries() {
-        CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
-        cqlLibraryDataSetObject.setId("libraryId");
-        cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
-
-        List<CQLLibrary> cqlLibraries = new ArrayList<>();
-
-        Mockito.when(cqlLibraryDAO.getDraftLibraryBySet(cqlLibraryDataSetObject.getCqlSetId())).thenReturn(cqlLibraries);
-
-        CheckForConversionResult actualResult = cqlLibraryService.checkLibraryForConversion(cqlLibraryDataSetObject);
-
-        assertTrue(actualResult.isProceedImmediately());
-    }
-
-    @Test
-    public void testCheckLibraryForConversionFhirDraft() {
-        CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
-        cqlLibraryDataSetObject.setId("libraryId");
-        cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
-
-        CQLLibrary cqlLibrary = new CQLLibrary();
-        cqlLibrary.setLibraryModelType(ModelTypeHelper.FHIR);
-        cqlLibrary.setSetId("cqlLibrarySetId");
-
-        List<CQLLibrary> cqlLibraries = new ArrayList<>();
-        cqlLibraries.add(cqlLibrary);
-
-        Mockito.when(cqlLibraryDAO.getDraftLibraryBySet(cqlLibraryDataSetObject.getCqlSetId())).thenReturn(cqlLibraries);
-
-        CheckForConversionResult actualResult = cqlLibraryService.checkLibraryForConversion(cqlLibraryDataSetObject);
-
-        assertTrue(actualResult.isConfirmBeforeProceed());
-    }
-
-    @Test
-    public void testCheckLibraryForConversionQDMDraft() {
-        CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
-        cqlLibraryDataSetObject.setId("libraryId");
-        cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
-
-        CQLLibrary cqlLibrary = new CQLLibrary();
-        cqlLibrary.setLibraryModelType(ModelTypeHelper.QDM);
-        cqlLibrary.setSetId("cqlLibrarySetId");
-
-        List<CQLLibrary> cqlLibraries = new ArrayList<>();
-        cqlLibraries.add(cqlLibrary);
-
-        Mockito.when(cqlLibraryDAO.getDraftLibraryBySet(cqlLibraryDataSetObject.getCqlSetId())).thenReturn(cqlLibraries);
-
-        CheckForConversionResult actualResult = cqlLibraryService.checkLibraryForConversion(cqlLibraryDataSetObject);
-
-        assertFalse(actualResult.isConfirmBeforeProceed());
-        assertFalse(actualResult.isProceedImmediately());
-    }
 
     @Test
     public void testConvertCqlLibrary() throws MatException, MarshalException, MappingException, ValidationException, IOException {

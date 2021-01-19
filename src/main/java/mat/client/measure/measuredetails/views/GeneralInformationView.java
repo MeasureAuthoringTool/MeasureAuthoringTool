@@ -351,8 +351,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         eMeasureIdentifierInput.setWidth("150px");
 
         if (generalInformationModel.geteMeasureId() != 0) {
-            eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
-            eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+            if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                eMeasureIdentifierInput.setText(generalInformationModel.geteMeasureId() + "FHIR");
+                eMeasureIdentifierInput.setValue(generalInformationModel.geteMeasureId() + "FHIR");
+            } else {
+                eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
+                eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+            }
             generateEMeasureIDButton.setEnabled(false);
         }
 

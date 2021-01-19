@@ -5,14 +5,10 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -39,7 +35,6 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -60,7 +55,6 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
-import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.SearchHistoryDTO;
@@ -607,31 +601,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setContent(detailDisplay.asWidget());
     }
 
-    private void confirmAndConvertFhir(Result object) {
-        ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
-        confirmationDialogBox.getNoButton().setVisible(true);
-        confirmationDialogBox.setObserver(new ConfirmationObserver() {
-
-            @Override
-            public void onYesButtonClicked() {
-                convertMeasureFhir(object);
-            }
-
-            @Override
-            public void onNoButtonClicked() {
-                // Just skip any conversion
-            }
-
-            @Override
-            public void onClose() {
-                // Just skip any conversion
-            }
-        });
-
-        setSearchingBusy(false);
-        confirmationDialogBox.show();
-    }
-
     private void convertMeasureFhir(Result object) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) {
             logger.log(Level.WARNING, "User is not logged in UMSL");
@@ -655,9 +624,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 String outcome = response.getValidationStatus().getOutcome();
                 String errorReason = response.getValidationStatus().getErrorReason();
                 logger.log(Level.WARNING, "Measure " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
-                setSearchingBusy(false);
                 showFhirValidationReport(response.getFhirMeasureId(), true);
                 displaySearch();
+                setSearchingBusy(false);
             }
         });
     }
@@ -1693,31 +1662,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onConvertMeasureFhir(Result object) {
-                FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckForConversionResult>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        logger.log(Level.SEVERE, "Error while checking a draft for the measure set " + object.getMeasureSetId() + ". Error message: " + caught.getMessage(), caught);
-                        setSearchingBusy(false);
-                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage(), false);
-                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
-                    }
-
-                    @Override
-                    public void onSuccess(CheckForConversionResult result) {
-                        logger.log(Level.WARNING, "Result is " + result);
-                        if (result.isProceedImmediately()) {
-                            convertMeasureFhir(object);
-                        } else if (result.isConfirmBeforeProceed()) {
-                            confirmAndConvertFhir(object);
-                        } else {
-                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessage(), false);
-                        }
-                    }
-                });
+                convertMeasureFhir(object);
             }
-
         };
     }
 

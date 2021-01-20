@@ -10,6 +10,7 @@ import mat.server.logging.RequestResponseLoggingInterceptor;
 import mat.server.logging.RequestResponseLoggingMdcInternalInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
+import mat.vsac.RefreshTokenManagerImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -308,6 +309,6 @@ public class Application extends WebSecurityConfigurerAdapter {
             urlBase = "https://vsac.nlm.nih.gov";
         }
 
-        return new VsacService(ticketBase,urlBase,restTemplate);
+        return new VsacService(ticketBase,urlBase,restTemplate, RefreshTokenManagerImpl.getInstance());
     }
 }

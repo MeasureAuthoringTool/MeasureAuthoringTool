@@ -251,13 +251,13 @@ public class MeasureLibraryResultTable {
         if (object.isMeasureFamily()) {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)
-                    .appendHtmlConstant("<button id='div1' class='textEmptySpaces' disabled tabIndex='-1'></button>")
+                    .appendHtmlConstant("<span id='div1' class='textEmptySpaces' tabIndex='-1'></span>")
                     .appendHtmlConstant("</div>");
         } else {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)
-                    .appendHtmlConstant("<button id='div1' disabled tabIndex='-1' "
-                            + SafeHtmlUtils.htmlEscape(object.getName()) + "\" class=\"" + cssClass + "\"></button>")
+                    .appendHtmlConstant("<span id='div1' disabled tabIndex='-1' "
+                            + SafeHtmlUtils.htmlEscape(object.getName()) + "\" class=\"" + cssClass + "\"></span>")
                     .appendHtmlConstant("</div>");
 
         }

@@ -133,8 +133,6 @@ public interface CQLLibraryServiceInterface {
 
     void saveFhirCQLLibraryExport(CQLLibrary cqlLibrary, FhirLibraryPackageResult fhirPackageResults);
 
-    CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object);
-
     FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException;
 
     int deleteDraftFhirLibrariesBySetId(String setId);

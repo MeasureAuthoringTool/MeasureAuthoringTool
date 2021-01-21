@@ -629,27 +629,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             @Override
             public void onConvertClicked(CQLLibraryDataSetObject object) {
                 showSearchingBusy(true);
-                MatContext.get().getCQLLibraryService().checkLibraryForConversion(object, new AsyncCallback<CheckForConversionResult>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        logger.log(Level.SEVERE, "Error while checking a draft for the library set " + object.getCqlSetId() + ". Error message: " + caught.getMessage(), caught);
-                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage(), false);
-                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
-                    }
-
-                    @Override
-                    public void onSuccess(CheckForConversionResult result) {
-                        logger.log(Level.WARNING, "Result is " + result);
-                        if (result.isProceedImmediately()) {
-                            convertCqlLibraryFhir(object);
-                        } else if (result.isConfirmBeforeProceed()) {
-                            confirmAndConvertFhir(object);
-                        } else {
-                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessageForCqlLibrary(), false);
-                        }
-                    }
-                });
+                convertCqlLibraryFhir(object);
             }
 
 

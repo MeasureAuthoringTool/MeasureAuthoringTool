@@ -124,9 +124,6 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
         CQLLibrary existingLibrary = cqlLibraryDAO.find(sourceLibrary.getId());
 
-        /*if draft FHIR library already exists then delete it */
-        deleteDraftFhirLibrariesInSet(existingLibrary.getSetId());
-
         ConversionResultDto conversionResult = fhirLibRemote.convert(sourceLibrary.getId(), ConversionType.CONVERSION);
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
 
@@ -204,12 +201,6 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
                 "Converted from QDM/CQL to FHIR",
                 newFhirLibrary.getName() + " FHIR DRAFT 0.0.000 was created by converting from QDM Version " + existingLibrary.getMatVersion(),
                 false);
-    }
-
-    public void deleteDraftFhirLibrariesInSet(String setId) {
-        logger.debug("deleteDraftFhirLibrariesInSet : setId = " + setId);
-        int removed = cqlLibService.deleteDraftFhirLibrariesBySetId(setId);
-        logger.debug("deleteDraftFhirLibrariesInSet : removed " + removed);
     }
 
     private String generateCqlXml(CQLLibrary existingLibrary, CQLLibrary newFhirLibrary, String newCql) throws MarshalException, MappingException, ValidationException, IOException {

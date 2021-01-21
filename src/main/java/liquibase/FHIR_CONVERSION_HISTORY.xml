@@ -13,7 +13,7 @@
         <createTable tableName="FHIR_CONVERSION_HISTORY">
             <column name="qdm_set_id" type="varchar(45)"/>
             <column name="fhir_set_id" type="varchar(45)"/>
-            <column name="LAST_MODIFIED_BY" type="varchar(40)"/>
+            <column name="LAST_MODIFIED_BY" type="varchar(40)" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="LAST_MODIFIED_ON" type="DATETIME"/>
         </createTable>
         <addPrimaryKey tableName="FHIR_CONVERSION_HISTORY" columnNames="qdm_set_id"/>

@@ -4,6 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 			http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-    <include file="classpath:/liquibase/FHIR_CONVERSION_HISTORYv2.xml"/>
-    <include file="classpath:/liquibase/LegacyFhirLibConversionHistoryInsertsv2.xml"/>
+    <include file="classpath:/liquibase/FHIR_CONVERSION_HISTORYv3.xml"/>
+    <include file="classpath:/liquibase/LegacyFhirLibConversionHistoryInsertsv3.xml"/>
 </databaseChangeLog>

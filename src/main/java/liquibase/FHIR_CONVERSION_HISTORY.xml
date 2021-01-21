@@ -17,9 +17,6 @@
             <column name="LAST_MODIFIED_ON" type="DATETIME"/>
         </createTable>
         <addPrimaryKey tableName="FHIR_CONVERSION_HISTORY" columnNames="qdm_set_id"/>
-        <addForeignKeyConstraint baseTableName="FHIR_CONVERSION_HISTORY" baseColumnNames="LAST_MODIFIED_BY"
-                                 constraintName="FHIR_CONVERSION_HISTORY.LAST_MODIFIED_BY" referencedTableName="USER"
-                                 referencedColumnNames="USER_ID"/>
         <createIndex tableName="FHIR_CONVERSION_HISTORY" indexName="FHIR_CONVERSION_HISTORY.fhir_set_id">
             <column name="fhir_set_id"/>
         </createIndex>

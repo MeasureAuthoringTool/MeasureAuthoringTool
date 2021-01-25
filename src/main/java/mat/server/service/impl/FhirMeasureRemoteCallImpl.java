@@ -134,7 +134,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         uriVariables.put("id", measureId);
         uriVariables.put("conversionType", conversionType.name());
         uriVariables.put("xmlSource", draft ? MEASURE_XML_SOURCE : SIMPLE_XML_SOURCE);
-        uriVariables.put("vsacGrantingTicket", vsacGrantingTicket);
+        uriVariables.put("vsacGrantingTicket", vsacGrantingTicket);  // vsac not used currently in mat fhir services
 
         return rest(fhirServicesUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS,
                 HttpMethod.PUT,

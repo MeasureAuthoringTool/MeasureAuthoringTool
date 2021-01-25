@@ -33,7 +33,7 @@
         <powermock.version>2.0.9</powermock.version>
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
-        <hapi-fhir-version>4.1.0</hapi-fhir-version>
+        <hapi-fhir-version>5.2.1</hapi-fhir-version>
 
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>

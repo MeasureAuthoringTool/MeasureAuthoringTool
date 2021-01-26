@@ -50,3 +50,4 @@ war/WEB-INF/jetty-env.xml
 /mat_cypress/*_env.sh
 /mat_cypress/mochawesome-report/
 /mat_cypress/cypress/results/
+**/.DS_Store

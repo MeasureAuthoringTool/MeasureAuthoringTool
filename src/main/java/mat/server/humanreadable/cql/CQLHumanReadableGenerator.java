@@ -19,6 +19,9 @@ public class CQLHumanReadableGenerator {
 	
 	public String generate(HumanReadableModel model, boolean isFhir) throws IOException, TemplateException {
 		Map<String, Object> paramsMap = new HashMap<>();
+		if (isFhir) {
+            model.getMeasureInformation().setEcqmIdentifier(model.getMeasureInformation().getEcqmIdentifier() + "FHIR");
+        }
 		paramsMap.put("model", model);
 		paramsMap.put("isFhir", isFhir);
 		setMeasurementPeriodForQdm(model.getMeasureInformation());
@@ -37,6 +40,9 @@ public class CQLHumanReadableGenerator {
 		    setMeasurementPeriodForQdm(measureInformationModel);
         } else {
             setMeasurementPeriodForFhir(measureInformationModel);
+            if (measureInformationModel.getEcqmIdentifier() != null) {
+                measureInformationModel.setEcqmIdentifier(measureInformationModel.getEcqmIdentifier() + "FHIR");
+            }
         }
 		HumanReadableModel model = new HumanReadableModel();
 		model.setMeasureInformation(measureInformationModel);

@@ -1149,13 +1149,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 
-        boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
+        boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() &&
+                !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
                 || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
         // Pass measure
-        boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId(), false);
+        boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
+                measure.getId(),
+                false);
         if (isEditableForVersion && !isLocked) {
             caclulateVersionAndDraft(detail, measuresInSet);
         }
@@ -1168,7 +1171,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             detail.setLockedUserInfo(lockedUserInfo);
         }
         return detail;
-
     }
 
     private void caclulateVersionAndDraft(Result detail, List<Measure> measuresInSet) {

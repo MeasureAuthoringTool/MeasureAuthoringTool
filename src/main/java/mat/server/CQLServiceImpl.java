@@ -279,7 +279,8 @@ public class CQLServiceImpl implements CQLService {
             }
 
             // Duplicate identifiers.
-            if (!ModelTypeHelper.isFhir(modelType)) {
+            if (!ModelTypeHelper.isFhir(modelType) &&
+                    CQLValidationUtil.doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(newModel)) {
                 //This does more than catch invalid keywords it also catches duplicate codesystems,valuesets,codes,etc.
                 //For QDM business as usual. For FHIR they will be errors the user can fix.
                 parsedResult.setXml(xml);

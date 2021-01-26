@@ -1,6 +1,7 @@
 package mat.model.clause;
 
 import mat.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
@@ -532,5 +533,17 @@ public class Measure {
 
     public void setPopulationBasis(String populationBasis) {
         this.populationBasis = populationBasis;
+    }
+
+    @Transient
+    public String getMatVersion() {
+        String version = getVersion().toString();
+        String revision = getRevisionNumber().toString();
+
+        String[] split = version.split("\\.");
+
+        return "" + Integer.parseInt(split[0]) + "." +
+                Integer.parseInt(split[1]) + "." +
+                StringUtils.leftPad(revision, 3, '0');
     }
 }

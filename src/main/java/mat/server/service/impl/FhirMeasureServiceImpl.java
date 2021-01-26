@@ -96,9 +96,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-        if (isUpdatingMatDB) {
-            deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
-        }
 
         ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(sourceMeasureDetails.getCQLLibraryName(),conversionResult);
@@ -191,6 +188,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     CQLModel.class);
 
             var destModel = cqlParser.parse(cql, sourceCqlModel).getCqlModel();
+            destModel.setLibraryName(sourceCqlModel.getLibraryName() + "FHIR");
 
             String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destModel);
             String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");

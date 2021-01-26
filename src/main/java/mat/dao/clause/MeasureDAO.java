@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface MeasureDAO extends IDAO<Measure, String> {
+    boolean existsWithSetId(String setId);
+
     /**
      * Count users for measure share.
      *

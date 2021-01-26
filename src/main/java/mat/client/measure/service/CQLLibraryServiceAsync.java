@@ -117,7 +117,5 @@ public interface CQLLibraryServiceAsync {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId,
 			AsyncCallback<CQLQualityDataModelWrapper> callback);
 
-    void checkLibraryForConversion(CQLLibraryDataSetObject object, AsyncCallback<CheckForConversionResult> checkMeasureForConversionResultAsyncCallback);
-
     void convertCqlLibrary(CQLLibraryDataSetObject object, AsyncCallback<FhirConvertResultResponse> fhirConvertResultResponseAsyncCallback);
 }

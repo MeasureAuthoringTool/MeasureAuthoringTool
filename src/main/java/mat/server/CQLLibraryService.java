@@ -568,28 +568,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject sourceLibrary) {
-        try {
-            log.debug("checkLibraryForConversion  libraryId: " + sourceLibrary.getId() + " setId: " + sourceLibrary.getCqlSetId());
-            CheckForConversionResult result = new CheckForConversionResult();
-            List<CQLLibrary> draftLibraries = cqlLibraryDAO.getDraftLibraryBySet(sourceLibrary.getCqlSetId());
-            if (draftLibraries.isEmpty()) {
-                // If no drafts found we can proceed with conversion
-                result.setProceedImmediately(true);
-            } else {
-                // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
-                // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)
-                result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary() && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
-            }
-
-            return result;
-        } catch (RuntimeException re) {
-            log.error("checkLibraryForConversion", re);
-            throw re;
-        }
-    }
-
-    @Override
     public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject sourceLibrary) throws MatException {
         log.debug("Converting  libraryId: " + sourceLibrary.getId());
         try {

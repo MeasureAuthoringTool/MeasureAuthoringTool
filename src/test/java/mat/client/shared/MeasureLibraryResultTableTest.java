@@ -10,7 +10,9 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.MeasureSearchView;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -24,6 +26,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Disabled
+@Ignore
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureLibraryResultTableTest {
 

@@ -1,5 +1,5 @@
 {
-  "name": "mat_cypress",
+  "name": "mat-cypress",
   "version": "1.0.0",
   "description": "Test Mat",
   "main": "index.js",
@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "cypress": "^6.3.0",
-    "cypress-multi-reporters": "^1.4.0"
+    "cypress-multi-reporters": "^1.4.0",
     "mocha": "^8.2.1",
     "mochawesome": "^6.2.1",
     "mochawesome-merge": "^4.2.0",

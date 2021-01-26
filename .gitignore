@@ -42,3 +42,11 @@ war/WEB-INF/jetty-env.xml
 /MeasureAuthoringTool.iml
 
 /temp/
+
+/mat_cypress/.idea/
+/mat_cypress/cypress/screenshots/
+/mat_cypress/cypress/videos/
+/mat_cypress/node_modules/
+/mat_cypress/*_env.sh
+/mat_cypress/mochawesome-report/
+/mat_cypress/cypress/results/

@@ -273,7 +273,7 @@ export const enterTextBlur = (el, text) => {
     cy.get(el).clear().type(text, {delay: 50}).focus().blur()
 }
 export const enterTextConfirm = (el, text) => {
-    cy.get(el).clear().type(text, {delay: 50}).should('have.value', text)
+    cy.get(el).click().focused().clear().type(text, {delay: 50, force: true}).should('have.value', text)
 }
 export const enterTextNoClear = (el, text) => {
     cy.get(el).type(text, {delay: 50})

@@ -1,8 +1,8 @@
 /// <reference types="Cypress" />
 
-import * as cqlElements from '../../elements/CqlLibraryElements'
-import * as helper from '../support/helpers'
-import * as measureElements from '../../elements/MeasureLibraryElements'
+import * as cqlElements from '../../../elements/CqlLibraryElements'
+import * as helper from '../../support/helpers'
+import * as measureElements from '../../../elements/MeasureLibraryElements'
 
 
 describe('Mat Test', function () {

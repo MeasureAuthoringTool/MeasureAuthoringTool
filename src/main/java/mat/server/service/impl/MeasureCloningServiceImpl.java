@@ -28,6 +28,7 @@ import mat.model.cql.CQLParameter;
 import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.logging.LogFactory;
+import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureCloningService;
 import mat.server.util.CQLValidationUtil;
 import mat.server.util.MATPropertiesService;
@@ -121,6 +122,8 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     private final FhirConversionHistoryDao fhirConversionHIstoryDAO;
 
+    private final MeasureAuditService auditService;
+
     public MeasureCloningServiceImpl(
             MATPropertiesService propertiesService,
             CQLLibraryService cqlLibraryService,
@@ -129,7 +132,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             MeasureSetDAO measureSetDAO,
             OrganizationDAO organizationDAO,
             UserDAO userDAO,
-            CQLService cqlService, FhirConversionHistoryDao fhirConversionHIstoryDAO) {
+            CQLService cqlService, FhirConversionHistoryDao fhirConversionHIstoryDAO, MeasureAuditService auditService) {
         this.propertiesService = propertiesService;
         this.cqlLibraryService = cqlLibraryService;
         this.measureDAO = measureDAO;
@@ -139,6 +142,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         this.userDAO = userDAO;
         this.cqlService = cqlService;
         this.fhirConversionHIstoryDAO = fhirConversionHIstoryDAO;
+        this.auditService = auditService;
     }
 
     @Override
@@ -235,10 +239,15 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
             createFhirConversionHistory(measure, clonedMeasure, user);
 
+            auditService.recordMeasureEvent(measure.getId(),
+                    "Converted QDM/CQL to FHIR",
+                    clonedMeasure.getDescription() + " FHIR DRAFT 0.0.000 was created from QDM Version " + measure.getMatVersion(),
+                    false);
+
             ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
             result.setId(clonedMeasure.getId());
-            result.setName(currentDetails.getMeasureName());
-            result.setShortName(currentDetails.getShortName());
+            result.setName(clonedMeasure.getDescription());
+            result.setShortName(clonedMeasure.getaBBRName());
             result.setScoringType(currentDetails.getMeasScoring());
             result.setVersion(formattedVersionWithText);
             result.setMeasureModel(clonedMeasure.getMeasureModel());

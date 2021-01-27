@@ -1,8 +1,10 @@
 /// <reference types="Cypress" />
 
 
-const badPassword = "bad__Password_";
-const badUserName = "bad__User__Name_";
+const BAD_PASSWORD = "bad__Password_";
+const BAD_USER_NAME = "bad__User__Name_";
+const OKTA_ERROR_ELEMENT = '.okta-form-infobox-error';
+
 describe('Test Login functionality', function () {
 
 
@@ -19,13 +21,13 @@ describe('Test Login functionality', function () {
 
     it('Mat login logout', function () {
 
-        cy.matLogin(badUserName, badPassword)
+        cy.matLogin(BAD_USER_NAME, BAD_PASSWORD)
 
-        cy.get('.okta-form-infobox-error').contains("Sign in failed!")
+        cy.get(OKTA_ERROR_ELEMENT).contains("Sign in failed!")
 
-        cy.matLogin(this.data.userName, badPassword)
+        cy.matLogin(this.data.userName, BAD_PASSWORD)
 
-        cy.get('.okta-form-infobox-error').contains("Sign in failed!")
+        cy.get(OKTA_ERROR_ELEMENT).contains("Sign in failed!")
 
         cy.matLogin(this.data.userName, this.data.password, false) // wont check checkBox
         cy.get('#okta-signin-submit').should('be.disabled')
@@ -37,6 +39,5 @@ describe('Test Login functionality', function () {
         cy.get('.help-block').contains('Login failed. Please sign in again.')
         cy.get('.close').click()
         cy.umlsLogin(this.data.umlsApiKey);
-
     })
 })

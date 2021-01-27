@@ -4,8 +4,8 @@ import * as newMeasureElements from '../../../elements/CreateNewMeasureElements'
 import * as measureComposerElements from '../../../elements/MeasureComposerElements'
 import * as cqlLibraryElements from '../../../elements/CqlLibraryElements'
 import * as createNewCqlLibrary from '../../../elements/CreateNewCQLLibraryElements'
-import * as cqlComposer from '../../../elements/CQLComposerElements'
-import * as measureDetails from '../../../elements/MeasureDetailsElements'
+import * as cqlComposerElements from '../../../elements/CQLComposerElements'
+import * as measureDetailsEleemnts from '../../../elements/MeasureDetailsElements'
 import * as gridRowActions from './GridRowActions'
 
 const draftMeasure = 'DraftMeasure'
@@ -375,26 +375,26 @@ export const createDraftMeasure = (measure, model) => {
 
   helper.verifySpinnerAppearsAndDissappears()
 
-  cy.get(measureDetails.measureStewardDeveloper).click()
-  cy.get(measureDetails.measureStewardListBox).select('SemanticBits')
-  cy.get(measureDetails.row1CheckBox).click()
-  cy.get(measureDetails.saveBtn).click()
+  cy.get(measureDetailsEleemnts.measureStewardDeveloper).click()
+  cy.get(measureDetailsEleemnts.measureStewardListBox).select('SemanticBits')
+  cy.get(measureDetailsEleemnts.row1CheckBox).click()
+  cy.get(measureDetailsEleemnts.saveBtn).click()
   helper.verifySpinnerAppearsAndDissappears()
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
-  cy.get(measureDetails.description).click()
-  helper.enterText(measureDetails.textAreaInput, 'description')
-  cy.get(measureDetails.saveBtn).click()
+  cy.get(measureDetailsEleemnts.description).click()
+  helper.enterText(measureDetailsEleemnts.textAreaInput, 'description')
+  cy.get(measureDetailsEleemnts.saveBtn).click()
   helper.verifySpinnerAppearsAndDissappears()
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
-  cy.get(measureDetails.measureType).click()
-  cy.get(measureDetails.row1CheckBox).click()
-  cy.get(measureDetails.saveBtn).click()
+  cy.get(measureDetailsEleemnts.measureType).click()
+  cy.get(measureDetailsEleemnts.row1CheckBox).click()
+  cy.get(measureDetailsEleemnts.saveBtn).click()
 
   helper.verifySpinnerAppearsAndDissappears()
 
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
   cy.get(measureLibraryElements.measureLibraryTab).click()
 
@@ -435,24 +435,24 @@ export const createFHIRMeasureByType = (measure, type, patient_based) => {
   helper.verifySpinnerAppearsAndDissappears()
   helper.verifySpinnerAppearsAndDissappears()
 
-  cy.get(measureDetails.measureStewardDeveloper).click()
-  cy.get(measureDetails.measureStewardListBox).select('SemanticBits')
-  cy.get(measureDetails.row1CheckBox).click()
-  cy.get(measureDetails.saveBtn).click()
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  cy.get(measureDetailsEleemnts.measureStewardDeveloper).click()
+  cy.get(measureDetailsEleemnts.measureStewardListBox).select('SemanticBits')
+  cy.get(measureDetailsEleemnts.row1CheckBox).click()
+  cy.get(measureDetailsEleemnts.saveBtn).click()
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
-  cy.get(measureDetails.description).click()
-  helper.enterText(measureDetails.textAreaInput, 'description')
-  cy.get(measureDetails.saveBtn).click()
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  cy.get(measureDetailsEleemnts.description).click()
+  helper.enterText(measureDetailsEleemnts.textAreaInput, 'description')
+  cy.get(measureDetailsEleemnts.saveBtn).click()
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
-  cy.get(measureDetails.measureType).click()
-  cy.get(measureDetails.row1CheckBox).click()
-  cy.get(measureDetails.saveBtn).click()
+  cy.get(measureDetailsEleemnts.measureType).click()
+  cy.get(measureDetailsEleemnts.row1CheckBox).click()
+  cy.get(measureDetailsEleemnts.saveBtn).click()
 
   helper.verifySpinnerAppearsAndDissappears()
 
-  helper.visibleWithTimeout(measureDetails.warningMessage)
+  helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage)
 
   cy.get(measureLibraryElements.measureLibraryTab).click()
 
@@ -500,7 +500,7 @@ export const createDraftCqlLibrary = (library, model) => {
   helper.verifySpinnerAppearsAndDissappears()
   helper.verifySpinnerAppearsAndDissappears()
 
-  cy.get(cqlComposer.confirmationContinueBtn).click()
+  cy.get(cqlComposerElements.confirmationContinueBtn).click()
 
   helper.verifySpinnerAppearsAndDissappears()
 

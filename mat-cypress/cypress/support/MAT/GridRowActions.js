@@ -8,8 +8,8 @@ export const doubleClickRow = (row) => {
 
 export const selectRow = (row) => {
 
-  cy.get(row).click()
+  cy.get(row).click({force: true})
 
-  cy.get(row).click()
+  // cy.get(row).click()
 
 }

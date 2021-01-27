@@ -3,31 +3,6 @@ import * as matheader from '../../elements/MATheader'
 
 const os = Cypress.platform // values are aix, darwin, freebsd, linux, openbsd, sunos, win32, android
 
-let API_Key = Cypress.env('VSAC_API_KEY')
-
-// Cookie management
-export const preserveCookies = () => {
-    Cypress.Cookies.preserveOnce('JSESSIONID')
-}
-export const setCookie = (cookie, value) => {
-    cy.setCookie(cookie, value)
-}
-export const setAuthCookie = (value) => {
-    cy.setCookie('qpp_auth_token', value)
-}
-export const setHasAuthCookie = () => {
-    cy.setCookie('qpp_has_authorizations', 'true')
-}
-// Cookie management
-export const saveLocalStorage = () => {
-    cy.saveLocalStorage()
-}
-export const restoreLocalStorage = () => {
-    cy.restoreLocalStorage()
-}
-export const storeTokens = () => {
-    cy.storeTokens()
-}
 export const copyScreenshots = () => {
     cy.log('Current OS: ' + os)
     if ((os === 'darwin') || (os === 'linux')) {
@@ -37,7 +12,6 @@ export const copyScreenshots = () => {
         cy.exec(`xcopy .\\cypress\\screenshots .\\screenshots\\current\\${env} /E /I /S`, {timeout: 60000}).its('code').should('eq', 0)
     }
 }
-
 
 export const logoutUserwithMultipleMAT = () => {
 
@@ -110,46 +84,18 @@ export const notVisible = (element) => {
 export const visibleContain = (element, text) => {
     cy.get(element).should('be.visible').should('contain', text)
 }
-export const existsWithTimeout = (element, timeout) => {
-    let time
-    // If we don't pass in a time, set timeout to 60 sec.
-    if (timeout === undefined) {
-        time = 60000
-    } else { // If we do pass in a time, then set timeout to that time.
-        time = timeout
-    }
-    cy.get(element, {timeout: time}).should('exist')
+export const existsWithTimeout = (element, timeout = 6000) => {
+    cy.get(element, {timeout: timeout}).should('exist')
 }
-export const notExistsWithTimeout = (element, timeout) => {
-    let time
-    // If we don't pass in a time, set timeout to 60 sec.
-    if (timeout === undefined) {
-        time = 60000
-    } else { // If we do pass in a time, then set timeout to that time.
-        time = timeout
-    }
-    cy.get(element, {timeout: time}).should('not.exist')
+export const notExistsWithTimeout = (element, timeout= 60000) => {
+    cy.get(element, {timeout: timeout}).should('not.exist')
 }
-export const visibleWithTimeout = (element, timeout) => {
-    let time
-
+export const visibleWithTimeout = (element, timeout = 60000) => {
     cy.log('Element->' + element)
-
-    if (timeout === undefined) {
-        time = 60000
-    } else {
-        time = timeout
-    }
-    cy.get(element, {timeout: time}).should('be.visible')
+    cy.get(element, {timeout: timeout}).should('be.visible')
 }
-export const notVisibleWithTimeout = (element, timeout) => {
-    let time
-    if (timeout === undefined) {
-        time = 400000
-    } else {
-        time = timeout
-    }
-    cy.get(element, {timeout: time}).should('not.be.visible')
+export const notVisibleWithTimeout = (element, timeout=400000) => {
+    cy.get(element, {timeout: timeout}).should('not.be.visible')
 }
 export const notNull = (element) => {
     cy.get(element).should('not.be.null')
@@ -518,10 +464,10 @@ export const spinnerNotVisible = () => {
     // waitToHaveText(matheader.spinnerShadow,'...')
 
     notVisibleWithTimeout(matheader.spinner, 90000)
-    notVisibleWithTimeout(matheader.spinnerWrapper, 90000)
-    notVisibleWithTimeout(matheader.spinnerShadow, 90000)
-    notVisibleWithTimeout(matheader.spinnerModal, 90000)
-    notVisibleWithTimeout(matheader.spinner, 90000)
+  //  notVisibleWithTimeout(matheader.spinnerWrapper, 90000)
+  //  notVisibleWithTimeout(matheader.spinnerShadow, 90000)
+  //  notVisibleWithTimeout(matheader.spinnerModal, 90000)
+ //   notVisibleWithTimeout(matheader.spinner, 90000)
 }
 export const spinnerExists = () => {
     existsWithTimeout(matheader.spinner, 60000)
@@ -551,17 +497,6 @@ export const containClick = (text) => {
 export const changeTargetToSelf = (element) => {
     // cy.get(element).invoke('attr', 'target', '_self').should('have.attr', 'target', '_self')
     cy.get(element).invoke('removeAttr', 'target')
-}
-export const createVirusTestFile = (fileType) => {
-    const fixture = 'tmp'
-    const eicar = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'
-    if (fileType === 'text') {
-        cy.writeFile(`${fixture}/file_virus.txt`, eicar, 'ascii')
-        copyFileGeneric(`${fixture}/file_virus.txt`, 'tmp')
-    } else if (fileType === 'comtext') {
-        cy.writeFile(`${fixture}/file_virus.com.txt`, eicar, 'ascii')
-        copyFileGeneric(`${fixture}/file_virus.com.txt`, 'tmp')
-    }
 }
 
 Date.prototype.getMonthFormatted = function () {

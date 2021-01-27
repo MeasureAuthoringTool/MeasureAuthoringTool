@@ -30,14 +30,14 @@ Cypress.Commands.add("matLogin", (userName, password, checkCheckBox = true) => {
 
 Cypress.Commands.add("matLogout", () => {
     cy.get('#userprofile > .fa').click()
-    cy.get(':nth-child(6) > a').click()
+    cy.get('[title="Sign Out"]').click()
 
     cy.get('.okta-form-title').contains('Sign In')
 })
 
 Cypress.Commands.add("umlsLogin", (umlsApiKey, headerLabel = 'UMLS Active') => {
     cy.get(':nth-child(1) > .loginSpacer > :nth-child(1) > .btn > span').click();
-
+    cy.wait(1000)
     helper.enterTextConfirm('#inputPwd', umlsApiKey)
 
     cy.get('#umlsSubmitButton').click()

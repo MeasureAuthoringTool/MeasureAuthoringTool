@@ -24,7 +24,7 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>1.4.6</cqframework.version>
+        <cqframework.version>1.5.2-SNAPSHOT</cqframework.version>
         <axis.version>1.7.9</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -122,10 +122,11 @@
             <artifactId>qdm</artifactId>
             <version>${cqframework.version}</version>
         </dependency>
+        <!-- TO DO why is this no longer in 1.5.2-SNAPSHOT. Do we even need it? -->
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql-formatter</artifactId>
-            <version>${cqframework.version}</version>
+            <version>1.4.6</version>
         </dependency>
 
         <dependency>

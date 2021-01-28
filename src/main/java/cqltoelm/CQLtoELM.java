@@ -6,11 +6,7 @@ import cqltoelm.parsers.TrackbackListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -361,7 +357,8 @@ public class CQLtoELM {
                 identifier.setId(include.getPath());
                 identifier.setVersion(include.getVersion());
                 try {
-                    TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier, new ArrayList<>());
+                    //TO DO: make sure this options is correct for QDM 5.6.
+                    TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier, new CqlTranslatorOptions(),new ArrayList<>());
                     fetchTranslatedLibraries(childLibrary);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());

@@ -10,52 +10,7 @@ import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
-import org.hl7.elm.r1.AggregateExpression;
-import org.hl7.elm.r1.AliasedQuerySource;
-import org.hl7.elm.r1.BinaryExpression;
-import org.hl7.elm.r1.ByExpression;
-import org.hl7.elm.r1.Case;
-import org.hl7.elm.r1.CaseItem;
-import org.hl7.elm.r1.CodeRef;
-import org.hl7.elm.r1.CodeSystemRef;
-import org.hl7.elm.r1.Combine;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.ExpressionRef;
-import org.hl7.elm.r1.Filter;
-import org.hl7.elm.r1.First;
-import org.hl7.elm.r1.ForEach;
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.If;
-import org.hl7.elm.r1.InCodeSystem;
-import org.hl7.elm.r1.InValueSet;
-import org.hl7.elm.r1.IncludeDef;
-import org.hl7.elm.r1.IndexOf;
-import org.hl7.elm.r1.Instance;
-import org.hl7.elm.r1.InstanceElement;
-import org.hl7.elm.r1.Interval;
-import org.hl7.elm.r1.Last;
-import org.hl7.elm.r1.LetClause;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.NaryExpression;
-import org.hl7.elm.r1.OperandDef;
-import org.hl7.elm.r1.ParameterDef;
-import org.hl7.elm.r1.ParameterRef;
-import org.hl7.elm.r1.PositionOf;
-import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.Query;
-import org.hl7.elm.r1.RelationshipClause;
-import org.hl7.elm.r1.Retrieve;
-import org.hl7.elm.r1.Round;
-import org.hl7.elm.r1.Sort;
-import org.hl7.elm.r1.SortByItem;
-import org.hl7.elm.r1.TernaryExpression;
-import org.hl7.elm.r1.ToList;
-import org.hl7.elm.r1.Tuple;
-import org.hl7.elm.r1.TupleElement;
-import org.hl7.elm.r1.UnaryExpression;
-import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ProfileInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
@@ -734,10 +689,10 @@ public class CQLFilter {
 	private void checkForInValuesets(Expression expression) {
 		InValueSet inValueSet = (InValueSet) expression;
 		// System.out.println("\t" + inValueSet.getValueset().getName());
-		String name = inValueSet.getValueset().getName();
+		String name =  ((IdentifierRef) inValueSet.getValueset()).getName();
 
 		
-		String libraryAlias = inValueSet.getValueset().getLibraryName();
+		String libraryAlias = ((IdentifierRef) inValueSet.getValueset()).getLibraryName();
 
 		if (libraryAlias != null) {
 			LibraryInfoHolder libHolder = getIncludedLibrary(libraryAlias);
@@ -822,7 +777,7 @@ public class CQLFilter {
 	private void checkForInCodeSystem(Expression expression) {
 		InCodeSystem inCodeSystem = (InCodeSystem) expression;
 		
-		String name = inCodeSystem.getCodesystem().getName();
+		String name = ((IdentifierRef) inCodeSystem.getCodesystem()).getName();
 
 		if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
 			name =  this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 

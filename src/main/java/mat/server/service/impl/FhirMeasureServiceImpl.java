@@ -161,7 +161,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
                 auditService.recordMeasureEvent(fhirMeasure.getId(),
                         "Converted QDM/CQL to FHIR",
-                        fhirMeasure.getName() + " measure was converted from " + sourceMeasureDetails.getCQLLibraryName() + " Version " + sourceMeasureDetails.getFormattedVersion(),
+                        fhirMeasure.getName() + " measure was converted from " + sourceMeasureDetails.getMeasureName() + " Version " + sourceMeasureDetails.getFormattedVersion(),
                         false);
             } catch (MatException | MatRuntimeException e) {
                 logger.error("persistFhirMeasure error", e);

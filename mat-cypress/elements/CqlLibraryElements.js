@@ -40,19 +40,21 @@ export const createDraftRecentActivityBtn = '#recentActivitySummary_gridToolbar 
 //Library search columns
 export const cqlLibrarySearchTable = '#cqlCellTablePanel_VerticalPanel > .cellTablePanel > :nth-child(1) > :nth-child(7) > [align="left"]'
 export const row1CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > .GB-MJYKBKI > :nth-child(3)'
+export const row2CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(3)'
+export const row2CqlLibraryVersionColumn = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(4)'
 
 //All CQL Libraries Button Bar
 export const createVersionDraftCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to create version or draft"]'
-export const historyCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to view history"]'
+export const historyCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [aria-label="Search History View History"]'
 export const viewCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Read-Only"]'
-export const editCqllibrariesEnabledBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to edit"]'
+export const editCqllibrariesEnabledBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Edit"]'
 export const shareCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to share"]'
 export const deleteCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to delete library"]'
 export const confirmDeleteText = '#password_PasswordTextBox'
 export const confirmDeleteBtn = '.modal-footer > :nth-child(2)'
 export const createVersionCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to create version"]'
 export const createDraftCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to create draft"]'
-export const convertToFhirLibrarySearchBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to convert"]'
+export const convertToFhirLibrarySearchBtn = '#cqlLibrarySearchCellTable_gridToolbar > [aria-label="Search History Convert"]'
 
 //Draft Version
 export const majorVersionTypeRadio = '#cqlmajorRadio_RadioButton'

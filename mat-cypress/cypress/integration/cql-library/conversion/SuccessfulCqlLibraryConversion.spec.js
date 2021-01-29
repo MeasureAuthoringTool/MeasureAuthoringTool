@@ -10,16 +10,16 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
     before(function () {
         cy.fixture('mat').then(function (data) {
             this.data = data;
+            cy.log(this.data.password)
             cy.loadCredentials(this.data)
+        }).then(function () {
+            cy.matLogin(this.data.userName, this.data.password)
+            cy.umlsLogin(this.data.umlsApiKey)
         })
     })
 
-    beforeEach(function () {
-        cy.matLogin(this.data.userName, this.data.password)
-        cy.umlsLogin(this.data.umlsApiKey);
-    })
-
     after(() => {
+        cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
         cy.matLogout()
     })
 
@@ -53,6 +53,7 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
 
         cy.get(cqlLibrary.historyCqllibrariesBtn).click()
 
+        helper.verifySpinnerAppearsAndDissappears()
         // verifying the log entries
         helper.visibleWithTimeout(cqlLibrary.historyConvertToFHIRUserActionLogEntry)
         helper.visibleWithTimeout(cqlLibrary.historyCQLLibraryCreatedUserActionLogEntry)

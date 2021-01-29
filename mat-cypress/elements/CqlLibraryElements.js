@@ -39,7 +39,7 @@ export const createDraftRecentActivityBtn = '#recentActivitySummary_gridToolbar 
 
 //Library search columns
 export const cqlLibrarySearchTable = '#cqlCellTablePanel_VerticalPanel > .cellTablePanel > :nth-child(1) > :nth-child(7) > [align="left"]'
-export const row1CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > .GB-MJYKBKI > :nth-child(3)'
+export const row1CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(1) > :nth-child(3)'
 export const row2CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(3)'
 export const row2CqlLibraryVersionColumn = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(4)'
 

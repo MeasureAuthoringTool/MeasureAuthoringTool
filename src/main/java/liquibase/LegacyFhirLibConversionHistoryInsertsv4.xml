@@ -5,10 +5,22 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <primaryKeyExists primaryKeyName="60aebe4a-ef31-4ff1-8cfb-93bd7ee79cf5" tableName="FHIR_CONVERSION_HISTORY" />
+                <primaryKeyExists primaryKeyName="47bbc6ea-a2f3-421d-85ca-fae959fcbafd" tableName="FHIR_CONVERSION_HISTORY" />
+                <primaryKeyExists primaryKeyName="d838ba65-b0cf-4494-a10f-8e4565b85137" tableName="FHIR_CONVERSION_HISTORY" />
+                <primaryKeyExists primaryKeyName="75d229d4-0b25-4232-88c9-93675caca343" tableName="FHIR_CONVERSION_HISTORY" />
+                <primaryKeyExists primaryKeyName="64299b80-f383-4dc9-82e4-d6ef0b271b11" tableName="FHIR_CONVERSION_HISTORY" />
+                <primaryKeyExists primaryKeyName="8bdc0a19-b210-4a58-8a07-f5d95a34eca9" tableName="FHIR_CONVERSION_HISTORY" />
+            </or>
+        </preConditions>
 
         <!-- No need for SupplementalDataElement it is new for FHIR. -->
         <!-- AdvancedIllnessandFrailtyExclusionECQM -->
+
         <insert tableName="FHIR_CONVERSION_HISTORY">
+
             <column name="qdm_set_id" value="60aebe4a-ef31-4ff1-8cfb-93bd7ee79cf5"/>
             <column name="fhir_set_id" value="0445f523-6e51-4de8-9487-920e977ed928"/>
         </insert>

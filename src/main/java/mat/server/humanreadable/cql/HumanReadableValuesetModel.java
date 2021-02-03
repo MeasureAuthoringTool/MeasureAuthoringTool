@@ -69,19 +69,22 @@ public class HumanReadableValuesetModel implements HumanReadableTerminologyModel
 		this.terminologyDisplay = display;
 	}
 
-	
 	private void createtDataCriteriaDisplay() {
-		if("attribute".equals(datatype)){
-			datatype = "Attribute";
+		if( StringUtils.isBlank(name) && StringUtils.isBlank(oid)){
+			this.dataCriteriaDisplay = '"' + datatype + '"';
+		} else {
+			if ("attribute".equals(datatype)) {
+				datatype = "Attribute";
+			}
+
+			String output = String.format("\"%s: %s\" using \"%s (%s)\"", datatype, name, name, oid);
+
+			if (StringUtils.isNotBlank(version) && !version.equals("1.0") && !version.equals("1")) {
+				output = String.format("\"%s: %s\" using \"%s (%s, version %s)\"", datatype, name, name, oid, version);
+			}
+
+			this.dataCriteriaDisplay = output;
 		}
-									
-		String output = String.format("\"%s: %s\" using \"%s (%s)\"", datatype, name, name, oid);
-		
-		if(StringUtils.isNotBlank(version) && !version.equals("1.0") && !version.equals("1")){
-			output = String.format("\"%s: %s\" using \"%s (%s, version %s)\"", datatype, name, name, oid, version);
-		}
-		
-		this.dataCriteriaDisplay = output; 
 	}
 	
 	public String getDataCriteriaDisplay() {

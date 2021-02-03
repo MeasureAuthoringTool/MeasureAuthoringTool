@@ -191,24 +191,25 @@ public class ZipPackager {
         return ret;
     }
 
-    /**
-     * @param emeasureName
-     * @param zip
-     * @param emeasureHTMLStr
-     * @param emeasureXMLStr
-     * @param cqlExportResult
-     * @param elmExportResult
-     * @param jsonExportResult
-     * @param currentRealeaseVersion
-     * @param parentPath
-     * @param measureId
-     */
-    public void getZipBarr(String emeasureName, ZipOutputStream zip, String emeasureHTMLStr, String emeasureXMLStr,
-                           ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
-                           String currentRealeaseVersion, String parentPath, String measureId) {
 
-        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
+    public String buildFhirMeasureJsonBundle(String measureId) {
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
+        return buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+    }
+
+
+    public void getZipBarr(String emeasureName,
+                           ZipOutputStream zip,
+                           String emeasureHTMLStr,
+                           String emeasureXMLStr,
+                           ExportResult cqlExportResult,
+                           ExportResult elmExportResult,
+                           ExportResult jsonExportResult,
+                           String currentRealeaseVersion,
+                           String parentPath,
+                           String measureId,
+                           String measureJsonBundle) {
+        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
 
         try {
             String measureReleaseVersion = currentRealeaseVersion;
@@ -229,7 +230,6 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
                 addBytesToZip(parentPath + File.separator + "measure-json-bundle.json",
                         measureJsonBundle.getBytes(),
                         zip);

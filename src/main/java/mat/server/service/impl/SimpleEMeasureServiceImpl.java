@@ -97,7 +97,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     private static final Log LOGGER = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
     private static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
 
-   private static final String XPATH_ELEMENTLOOKUP_QDM = "/measure/elementLookUp/qdm[not(@oid='" + userDefinedOID + "')]";
+    private static final String XPATH_ELEMENTLOOKUP_QDM = "/measure/elementLookUp/qdm[not(@oid='" + userDefinedOID + "')]";
 
     @Autowired
     private MeasureDAO measureDAO;
@@ -761,7 +761,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
      *
      * @param measureId the measure id
      * @param me        the me
-     * @return the zip barr
      * @throws Exception the exception
      */
     public final void getZipBarr(final String measureId, final MeasureExport me, final String parentPath, ZipOutputStream zip) throws Exception {
@@ -1144,7 +1143,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                                                String simpleXmlStr,
                                                List<String> dataRequirementsNoValueSet) throws Exception {
         //if measure export is null then create the file
-
         if (measureExport.getHumanReadable() == null) {
             measureExport.setHumanReadable(getHumanReadableForMeasure(measureId,
                     simpleXmlStr,

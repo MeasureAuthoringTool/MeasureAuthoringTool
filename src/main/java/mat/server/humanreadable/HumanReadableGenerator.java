@@ -164,6 +164,7 @@ public class HumanReadableGenerator {
                                 processDataRequirementsNoValueSet(dataRequirementsNoValueSet, model.getValuesetAndCodeDataCriteriaList());
 
                         model.getValuesetAndCodeDataCriteriaList().addAll(dataRequirementsNoValueSetList);
+                        sortDataCriteriaList(model.getValuesetAndCodeDataCriteriaList());
                     }
 
                 } else {
@@ -213,9 +214,10 @@ public class HumanReadableGenerator {
     }
 
     private void sortDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
+
         valuesetAndCodeDataCriteriaList.sort((o1, o2) -> {
-            String o1String = o1.getDatatype() + ": " + o1.getName();
-            String o2String = o2.getDatatype() + ": " + o2.getName();
+            String o1String = (o1.getDatatype() == null ? "" : o1.getDatatype()) + ": " + (o1.getName() == null ? "" : o1.getName());
+            String o2String = (o2.getDatatype() == null) ? "" : o2.getDatatype() + ": " + (o2.getName() == null ? "" : o2.getName());
             return o1String.compareToIgnoreCase(o2String);
         });
     }

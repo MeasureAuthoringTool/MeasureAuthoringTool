@@ -714,7 +714,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         } else {
             String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
             FileNameUtility fnu = new FileNameUtility();
-            String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
+            String parentPath = "";
+            if (me.isFhir()) {
+                parentPath =  fnu.getFhirExportFileName(me.getMeasure());
+            } else {
+                parentPath =  fnu.getParentPath(me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ZipOutputStream zip = new ZipOutputStream(baos);
             getZipBarr(measureId, me, parentPath, zip);

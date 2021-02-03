@@ -209,6 +209,7 @@ public class ZipPackager {
 
         Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
+        FileNameUtility fnu = new FileNameUtility();
 
         try {
             String measureReleaseVersion = currentRealeaseVersion;
@@ -230,17 +231,9 @@ public class ZipPackager {
                 }
             } else {
                 String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
-                addBytesToZip(parentPath + File.separator + "measure-json-bundle.json",
-                        measureJsonBundle.getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure-xml-bundle.xml",
-                        convertToXmlBundle(measureJsonBundle).getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "human-readable.html",
-                        emeasureHTMLStr.getBytes(),
-                        zip);
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".json", measureJsonBundle.getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".xml", convertToXmlBundle(measureJsonBundle).getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".html", emeasureHTMLStr.getBytes(), zip);
 
             }
         } catch (Exception e) {

@@ -4,6 +4,8 @@ import freemarker.template.TemplateException;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
@@ -79,6 +81,9 @@ public class HumanReadableGenerator {
     private FhirMeasureRemoteCall fhirMeasureRemoteCall;
     private Consumer<HumanReadableCodeModel> humanReadableCodeModelConsumer;
 
+    @Autowired
+    private MeasureXMLDAO measureXMLDAO;
+
     public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML, CQLLibraryDAO cqlLibraryDAO) {
 
         XmlProcessor subXMLProcessor = new XmlProcessor(subXML);
@@ -118,9 +123,10 @@ public class HumanReadableGenerator {
         log.debug("Generating human readable for ver:" + measureReleaseVersion);
         if (MatContext.get().isCQLMeasure(measureReleaseVersion)) {
             try {
+                MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
                 XmlProcessor processor = new XmlProcessor(simpleXml);
 
-                CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
+                CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
                 String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
                 CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());

@@ -39,7 +39,7 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
             createException(CANNOT_ACCESS_MEASURE);
         }
 
-        return measureCloningService.clone(currentDetails, false);
+        return measureCloningService.clone(currentDetails);
     }
 
     @Override
@@ -52,13 +52,8 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
         if (StringUtils.isNotBlank(name)) {
             createException("This draft can not be created. A draft of " + name + " has already been created in the system.");
         }
-
-        if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentDetails.getMeasureModel())) {
-            return measureCloningService.cloneForFhir(currentDetails,false);
-        } else {
-            return measureCloningService.clone(currentDetails, true);
-        }
-
+        return measureCloningService.draft(currentDetails,
+                ModelTypeHelper.FHIR.equalsIgnoreCase(currentDetails.getMeasureModel()));
     }
 
     private void createException(String message) throws MatException {

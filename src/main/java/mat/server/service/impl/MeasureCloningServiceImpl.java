@@ -237,7 +237,9 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             String formattedVersionWithText = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(),
                     clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 
-            createFhirConversionHistory(measure, clonedMeasure, user);
+            if (isQdmToFhir) {
+                createFhirConversionHistory(measure, clonedMeasure, user);
+            }
 
             auditService.recordMeasureEvent(measure.getId(),
                     "Converted QDM/CQL to FHIR",

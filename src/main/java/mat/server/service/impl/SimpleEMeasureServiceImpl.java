@@ -774,9 +774,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
         ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
+        List<String> dataRequirementsNoValueSet = null;
+        String measureJsonBundle = null;
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-        String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-        List<String> dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+
+        if (measureExport.isFhir()) {
+            measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
+            dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+        }
 
         String emeasureHTMLStr = createOrGetHumanReadableFile(measureId, me, simpleXmlStr, dataRequirementsNoValueSet);
 

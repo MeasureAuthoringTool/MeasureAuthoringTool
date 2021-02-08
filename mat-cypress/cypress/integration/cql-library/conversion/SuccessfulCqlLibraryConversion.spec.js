@@ -19,7 +19,7 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
     })
 
     after(() => {
-        cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
+        cy.deleteCqlLibrary(qdmCqlLibraryName)
         cy.matLogout()
     })
 
@@ -43,9 +43,7 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
         cqlLibraryHelper.createCqlLibraryVersionAndVerify()
 
         cqlLibraryHelper.convertCqlLibraryToFHIRAndVerify(qdmCqlLibraryName)
-    })
 
-    it('Verify FHIR reconversion and cql library history', () => {
         gridRowActions.selectRow(cqlLibrary.row2CqlLibrarySearch)
         helper.disabledWithTimeout(cqlLibrary.convertToFhirLibrarySearchBtn)
 
@@ -54,32 +52,28 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
         cy.get(cqlLibrary.historyCqllibrariesBtn).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-        // verifying the log entries
         helper.visibleWithTimeout(cqlLibrary.historyConvertToFHIRUserActionLogEntry)
         helper.visibleWithTimeout(cqlLibrary.historyCQLLibraryCreatedUserActionLogEntry)
 
         cy.get(cqlLibrary.returnToCqlLibrary).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-    })
 
-    it('Verify QDM Cql library reconversion and Cql library history', () => {
         // Verify to see if reconversion is disabled
         gridRowActions.selectRow(cqlLibrary.row1CqlLibrarySearch)
         helper.disabledWithTimeout(cqlLibrary.convertToFhirLibrarySearchBtn)
 
         cy.get(cqlLibrary.historyCqllibrariesBtn).click()
 
-        // verifying the log entries
         helper.visibleWithTimeout(cqlLibrary.historyConvertToFHIRUserActionLogEntry)
 
         cy.get(cqlLibrary.returnToCqlLibrary).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-    })
 
-    it('Delete converted FHIR library and reconvert', () => {
-        cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
+        // Delete converted FHIR library and reconvert
+        cy.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
+        // cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
 
         helper.verifySpinnerAppearsAndDissappears()
 

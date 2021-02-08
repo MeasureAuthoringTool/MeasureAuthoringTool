@@ -2,23 +2,6 @@ import * as helper from '../helpers'
 import * as gridRowActions from './GridRowActions'
 import * as cqlLibrary from '../../../elements/CqlLibraryElements'
 
-export function deleteCqlLibrary (cqlLibraryName) {
-    helper.visibleWithTimeout('#CQLLibrarySearchCellTable')
-    cy.get('#CQLLibrarySearchCellTable > :nth-child(3)').each(element => {
-        if (cy.wrap(element).contains(cqlLibraryName)) {
-            gridRowActions.selectRow(element)
-        } else {
-            cy.log(cqlLibraryName + ' is not available')
-        }
-    })
-    cy.get(cqlLibrary.deleteCqllibrariesBtn).click()
-
-    cy.get(cqlLibrary.confirmDeleteText).type('DELETE', { force: true })
-    cy.get(cqlLibrary.confirmDeleteBtn).click()
-
-    cy.get(cqlLibrary.shareWarningMessage).should('contain.text', 'CQL Library successfully deleted.')
-}
-
 export function createCqlLibraryVersionAndVerify () {
     cy.get(cqlLibrary.createVersionCqllibrariesBtn).click()
     cy.get(cqlLibrary.majorVersionTypeRadio).click()

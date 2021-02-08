@@ -17,7 +17,7 @@
 import './commands'
 
 import './loginCommands'
-import './CqlLibraryCommands'
+import './CqlLibraryGridCommands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

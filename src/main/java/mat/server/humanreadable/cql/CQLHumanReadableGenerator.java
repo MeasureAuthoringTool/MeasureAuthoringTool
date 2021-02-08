@@ -19,7 +19,7 @@ public class CQLHumanReadableGenerator {
 	
 	public String generate(HumanReadableModel model, boolean isFhir) throws IOException, TemplateException {
 		Map<String, Object> paramsMap = new HashMap<>();
-		if (isFhir) {
+		if (isFhir && model.getMeasureInformation().getEcqmIdentifier() != null) {
             model.getMeasureInformation().setEcqmIdentifier(model.getMeasureInformation().getEcqmIdentifier() + "FHIR");
         }
 		paramsMap.put("model", model);

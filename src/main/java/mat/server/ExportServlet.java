@@ -411,10 +411,15 @@ public class ExportServlet extends HttpServlet {
     private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
             throws Exception {
         ExportResult export = getService().getEMeasureZIP(id, exportDate);
-
+        FileNameUtility fnu = new FileNameUtility();
         String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
-        resp.setHeader(CONTENT_DISPOSITION,
-                replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "-" + currentReleaseVersion)));
+        if (measure.isFhirMeasure()) {
+            resp.setHeader(CONTENT_DISPOSITION,
+                    replaceUnderscores(ATTACHMENT_FILENAME + fnu.getFhirZipName(measure)));
+        } else {
+            resp.setHeader(CONTENT_DISPOSITION,
+                    replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "-" + currentReleaseVersion)));
+        }
         resp.setContentType(APPLICATION_ZIP);
         resp.getOutputStream().write(export.zipbarr);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);

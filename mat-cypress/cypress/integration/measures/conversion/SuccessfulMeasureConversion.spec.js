@@ -1,6 +1,7 @@
 import * as helper from '../../../support/helpers'
 import * as measureLibrary from '../../../../elements/MeasureLibraryElements'
 import * as dataCreation from '../../../support/MAT/MeasureAndCQLLibraryCreation'
+import * as cqlElements from "../../../../elements/CqlLibraryElements";
 
 
 describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
@@ -69,5 +70,10 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
         cy.get('#MeasureSearchCellTable > tbody > tr > td').contains(fhirMeasureName)
         cy.get('#MeasureSearchCellTable > tbody > tr > td').contains('QDM / CQL')
         cy.get('#MeasureSearchCellTable > tbody > tr > td').contains('FHIR / CQL')
+
+        cy.wait(1000);
+
+        cy.deleteMeasure(cqlMeasureName, false)
+        cy.deleteMeasure(fhirMeasureName, true)
     })
 })

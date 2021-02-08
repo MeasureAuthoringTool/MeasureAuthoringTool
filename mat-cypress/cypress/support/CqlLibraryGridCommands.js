@@ -43,8 +43,6 @@ function searchAndSelectCqlLibrary(cqlLibraryName) {
     cy.get('#CQLLibrarySearchCellTable > :nth-child(3)').each(element => {
         if (cy.wrap(element).contains(cqlLibraryName)) {
             gridRowActions.selectRow(element)
-        } else {
-            cy.log(cqlLibraryName + ' is not available')
         }
     })
 }

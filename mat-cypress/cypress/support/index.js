@@ -19,5 +19,7 @@ import './commands'
 import './loginCommands'
 import './CqlLibraryGridCommands'
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+
+import './measureCommands'
+
+

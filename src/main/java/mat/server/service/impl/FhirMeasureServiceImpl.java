@@ -149,7 +149,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         // Just to make sure the change is atomic and performed within the same single transaction.
         transactionTemplate.executeWithoutResult(status -> {
             try {
-                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails,true);
+                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.convert(sourceMeasureDetails);
 
                 //Update the MAT xml.
                 convertXml(sourceMeasureDetails.getId(),

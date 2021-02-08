@@ -1,7 +1,6 @@
 import * as dataCreation from "../../../support/MAT/MeasureAndCQLLibraryCreation";
 import * as helper from '../../../support/helpers'
 import * as gridRowActions from '../../../support/MAT/GridRowActions'
-import * as cqlLibraryHelper from '../../../support/MAT/CqlLibraryHelper'
 import * as cqlLibrary from '../../../../elements/CqlLibraryElements'
 
 let qdmCqlLibraryName = ''
@@ -19,7 +18,7 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
     })
 
     after(() => {
-        cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
+        cy.deleteCqlLibrary(qdmCqlLibraryName)
         cy.matLogout()
     })
 
@@ -38,14 +37,10 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
         cy.get(cqlLibrary.cqlLibrarySearchTable).should('contain.text', 'Model Version')
         cy.get(cqlLibrary.row1CqlLibraryModelVersion).should('contain.text', '5.5')
 
-        // Select the Qdm Cql library created and version it
-        gridRowActions.selectRow(cqlLibrary.row1CqlLibrarySearch)
-        cqlLibraryHelper.createCqlLibraryVersionAndVerify()
+        // Select the Qdm Cql library created, version it and convert
+        cy.createCqlLibraryVersionAndVerify(qdmCqlLibraryName)
+        cy.convertCqlLibraryToFHIRAndVerify(qdmCqlLibraryName)
 
-        cqlLibraryHelper.convertCqlLibraryToFHIRAndVerify(qdmCqlLibraryName)
-    })
-
-    it('Verify FHIR reconversion and cql library history', () => {
         gridRowActions.selectRow(cqlLibrary.row2CqlLibrarySearch)
         helper.disabledWithTimeout(cqlLibrary.convertToFhirLibrarySearchBtn)
 
@@ -54,36 +49,31 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
         cy.get(cqlLibrary.historyCqllibrariesBtn).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-        // verifying the log entries
         helper.visibleWithTimeout(cqlLibrary.historyConvertToFHIRUserActionLogEntry)
         helper.visibleWithTimeout(cqlLibrary.historyCQLLibraryCreatedUserActionLogEntry)
 
         cy.get(cqlLibrary.returnToCqlLibrary).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-    })
 
-    it('Verify QDM Cql library reconversion and Cql library history', () => {
         // Verify to see if reconversion is disabled
         gridRowActions.selectRow(cqlLibrary.row1CqlLibrarySearch)
         helper.disabledWithTimeout(cqlLibrary.convertToFhirLibrarySearchBtn)
 
         cy.get(cqlLibrary.historyCqllibrariesBtn).click()
 
-        // verifying the log entries
         helper.visibleWithTimeout(cqlLibrary.historyConvertToFHIRUserActionLogEntry)
 
         cy.get(cqlLibrary.returnToCqlLibrary).click()
 
         helper.verifySpinnerAppearsAndDissappears()
-    })
 
-    it('Delete converted FHIR library and reconvert', () => {
-        cqlLibraryHelper.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
+        // Delete converted FHIR library and reconvert
+        cy.deleteCqlLibrary(qdmCqlLibraryName + 'FHIR')
 
         helper.verifySpinnerAppearsAndDissappears()
 
         gridRowActions.selectRow(cqlLibrary.row1CqlLibrarySearch)
-        cqlLibraryHelper.convertCqlLibraryToFHIRAndVerify(qdmCqlLibraryName)
+        cy.convertCqlLibraryToFHIRAndVerify(qdmCqlLibraryName)
     })
 })

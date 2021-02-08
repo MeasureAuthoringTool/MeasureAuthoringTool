@@ -17,6 +17,7 @@
 import './commands'
 
 import './loginCommands'
+import './CqlLibraryGridCommands'
 
 
 import './measureCommands'

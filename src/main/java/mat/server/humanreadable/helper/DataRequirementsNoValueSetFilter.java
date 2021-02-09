@@ -3,6 +3,7 @@ package mat.server.humanreadable.helper;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,7 @@ public class DataRequirementsNoValueSetFilter {
             return true;
         } else {
             return valuesetAndCodeDataCriteriaList.stream()
+                    .filter(v -> StringUtils.isNotBlank(v.getDatatype()))
                     .filter(v -> v.getDatatype().equals(dataRequirementsNoValue))
                     .findAny().isEmpty();
 

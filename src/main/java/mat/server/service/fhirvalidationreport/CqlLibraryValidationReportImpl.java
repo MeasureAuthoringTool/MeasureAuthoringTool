@@ -15,6 +15,7 @@ import mat.shared.CQLError;
 import mat.shared.DateUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -27,8 +28,6 @@ import java.util.Map;
 
 @Service
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
-    private static final String currentMatVersion = "v6.03";
-
     public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
     public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";
 
@@ -36,6 +35,8 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
     private final CQLLibraryDAO libraryDAO;
     private final FhirCqlParser fhirCqlParser;
 
+    @Value("${mat.measure.current.release.version}")
+    private String currentMatVersion;
 
     public CqlLibraryValidationReportImpl(Configuration freemarkerConfiguration,
                                           CQLLibraryDAO libraryDAO,

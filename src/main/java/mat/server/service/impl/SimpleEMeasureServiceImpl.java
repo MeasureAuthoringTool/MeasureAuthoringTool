@@ -552,11 +552,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final ExportResult getHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
         MeasureExport measureExport = getMeasureExport(measureId);
 
-        ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-        String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-        List<String> dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
-
-
+        List<String> dataRequirementsNoValueSet = new ArrayList<>();
+        if (measureExport.isFhir()) {
+            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+            String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
+            dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+        }
         String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoValueSet);
 
         ExportResult exportResult = new ExportResult();
@@ -569,10 +570,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final ExportResult createOrGetHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
         MeasureExport measureExport = getMeasureExport(measureId);
         if (measureExport.getHumanReadable() == null) {
-            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-            List<String> dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
-
+            List<String> dataRequirementsNoValueSet = new ArrayList<>();
+            if (measureExport.isFhir()) {
+                ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+                String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
+                dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+            }
             measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoValueSet));
             measureExportDAO.save(measureExport);
         }
@@ -779,7 +782,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
         ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
-        List<String> dataRequirementsNoValueSet = null;
+        List<String> dataRequirementsNoValueSet = new ArrayList<>();
         String measureJsonBundle = null;
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
 
@@ -1051,9 +1054,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
         String simpleXmlStr = me.getSimpleXML();
 
+
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-        String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-        List<String> dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+        List<String> dataRequirementsNoValueSet = new ArrayList<>();
+        if (me.isFhir()) {
+            String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
+            dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+        }
 
         String emeasureHTMLStr = createOrGetHumanReadableFile(measureId, me, simpleXmlStr, dataRequirementsNoValueSet);
         ExportResult emeasureExportResult = createOrGetHQMF(measureId);

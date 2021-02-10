@@ -135,8 +135,7 @@ public class HumanReadableGenerator {
                 HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
                 List<String> measureTypes = null;
                 if (model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
-                    measureTypes = new ArrayList<>();
-                    measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
+                    measureTypes = new ArrayList<>(model.getMeasureInformation().getMeasureTypes());
                     Collections.sort(measureTypes);
                 }
 
@@ -161,7 +160,7 @@ public class HumanReadableGenerator {
 
                     if (CollectionUtils.isNotEmpty(dataRequirementsNoValueSet)) {
                         List<HumanReadableTerminologyModel> dataRequirementsNoValueSetList =
-                                processDataRequirementsNoValueSet(dataRequirementsNoValueSet, model.getValuesetAndCodeDataCriteriaList());
+                                processDataRequirementsNoValueSet(dataRequirementsNoValueSet);
 
                         model.getValuesetAndCodeDataCriteriaList().addAll(dataRequirementsNoValueSetList);
                         sortDataCriteriaList(model.getValuesetAndCodeDataCriteriaList());
@@ -201,10 +200,9 @@ public class HumanReadableGenerator {
         return html;
     }
 
-    private List<HumanReadableTerminologyModel> processDataRequirementsNoValueSet(List<String> dataRequirementsNoValueSet,
-                                                                                  List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
+    private List<HumanReadableTerminologyModel> processDataRequirementsNoValueSet(List<String> dataRequirementsNoValueSet) {
         DataRequirementsNoValueSetFilter dataRequirementsNoValueSetFilter =
-                new DataRequirementsNoValueSetFilter(dataRequirementsNoValueSet, valuesetAndCodeDataCriteriaList);
+                new DataRequirementsNoValueSetFilter(dataRequirementsNoValueSet);
 
         return dataRequirementsNoValueSetFilter.process();
     }

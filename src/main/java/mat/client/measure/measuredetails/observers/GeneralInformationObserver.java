@@ -150,8 +150,13 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
                     if (result > 0) {
                         int eMeasureId = result.intValue();
                         generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
-                        generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(eMeasureId));
-                        generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(eMeasureId));
+                        if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                            generalMeasureInformationView.geteMeasureIdentifierInput().setText(eMeasureId + "FHIR");
+                            generalMeasureInformationView.geteMeasureIdentifierInput().setValue(eMeasureId + "FHIR");
+                        } else {
+                            generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(eMeasureId));
+                            generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(eMeasureId));
+                        }
                         generalMeasureInformationView.updateEmeasureId(eMeasureId);
                         generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
                     }

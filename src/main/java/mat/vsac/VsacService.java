@@ -51,10 +51,13 @@ public class VsacService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final JsonMapper jsonMapper = new JsonMapper();
 
-    public VsacService(String baseTicketUrl, String baseVsacUrl, RestTemplate restTemplate) {
+    private final  RefreshTokenManager refreshTokenManager;
+
+    public VsacService(String baseTicketUrl, String baseVsacUrl, RestTemplate restTemplate, RefreshTokenManager refreshTokenManager) {
         this.baseTicketUrl = baseTicketUrl;
         this.baseVsacUrl = baseVsacUrl;
         this.restTemplate = restTemplate;
+        this.refreshTokenManager = refreshTokenManager;
     }
 
     /**
@@ -97,7 +100,32 @@ public class VsacService {
      * @param ticketGrantingTicket A users ticket granting ticket.
      * @return Null if a service ticket couldn't be obtained.
      */
-    public String getServiceTicket(String ticketGrantingTicket) {
+    public String getServiceTicket(String ticketGrantingTicket, String apiKey) {
+
+        String serviceTicket = fetchServiceTicket(ticketGrantingTicket);
+
+        if (serviceTicket == null) {
+
+            if( StringUtils.isNotBlank(apiKey) ) {
+                String newTicketGrantingTicket = getTicketGrantingTicket(apiKey);
+
+                serviceTicket = fetchServiceTicket(newTicketGrantingTicket);
+
+                if (serviceTicket == null) {
+                    log.warn("Failed to recover from a failing VSAC grantingTicket");
+                } else {
+                    log.info("Recover from a failing VSAC grantingTicket");
+                    refreshTokenManager.setRefreshedToken(newTicketGrantingTicket);
+                }
+            } else {
+                log.warn("Failed to recover from a failing VSAC grantingTicket, apiKey is blank");
+            }
+        }
+
+        return serviceTicket;
+    }
+
+    private String fetchServiceTicket(String ticketGrantingTicket) {
         Map<String, String> params = new HashMap<>();
         params.put("tgt", ticketGrantingTicket);
         params.put("service", "http://umlsks.nlm.nih.gov");
@@ -108,8 +136,8 @@ public class VsacService {
         return postForString2xx(uri, buildEntityWithTicketHeaders());
     }
 
-    public ValueSetWrapper getVSACValueSetWrapper(String oid, String ticketGrantingTicket) {
-        ValueSetResult vsacResponseResult = getValueSetResult(oid, ticketGrantingTicket);
+    public ValueSetWrapper getVSACValueSetWrapper(String oid, String ticketGrantingTicket, String apiKey) {
+        ValueSetResult vsacResponseResult = getValueSetResult(oid, ticketGrantingTicket, apiKey);
 
         if (isSuccessFull(vsacResponseResult)) {
             try {
@@ -125,10 +153,10 @@ public class VsacService {
     }
 
     @Cacheable(value = "vsacCodesystemVersions")
-    public CodeSystemVersionResponse getCodeSystemVersionFromName(String codeSystemName, String ticketGrantingTicket) {
+    public CodeSystemVersionResponse getCodeSystemVersionFromName(String codeSystemName, String ticketGrantingTicket, String apiKey) {
         String path = "/CodeSystem/" + codeSystemName + "/Info";
 
-        VsacCode vsacResponse = getCode(path, ticketGrantingTicket);
+        VsacCode vsacResponse = getCode(path, ticketGrantingTicket, apiKey);
 
         if (vsacResponse.getMessage().equals("ok") && vsacResponse.getData() != null
                 && vsacResponse.getData().getResultSet().size() == 1 &&
@@ -165,11 +193,11 @@ public class VsacService {
     }
 
     // cannot cache due to all users not having the same rights
-    public VsacCode getCode(String path, String ticketGrantingTicket) {
+    public VsacCode getCode(String path, String ticketGrantingTicket, String apiKey) {
         //  https://vsac.nlm.nih.gov/vsac/CodeSystem/LOINC/Version/2.66/Code/21112-8/Info?ticket=ST-281185-McNb53ZGHYtaGjHamgKg-cas&resultFormat=json&resultSet=standard
         // "/CodeSystem/LOINC22/Version/2.67/Code/21112-8/Info";
 
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
 
         if (StringUtils.isEmpty(singleUseTicket)) {
             return createErrorResponse(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET);
@@ -212,9 +240,9 @@ public class VsacService {
      * @param ticketGrantingTicket The service ticket.
      * @return VSACResponseResult The result.
      */
-    public BasicResponse getProfileList(String ticketGrantingTicket) {
+    public BasicResponse getProfileList(String ticketGrantingTicket, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/profiles
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
 
         if (StringUtils.isEmpty(singleUseTicket)) {
             log.error("Error getting singleUseTicket");
@@ -365,8 +393,37 @@ public class VsacService {
         }
     }
 
-    public ValueSetResult getValueSetResult(String oid, String ticketGrantingTicket) {
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
+    public BasicResponse getValueSet(String oid, String ticketGrantingTicket, String apiKey) {
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
+
+        if (StringUtils.isEmpty(singleUseTicket)) {
+            throw new RuntimeException(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET);
+        }
+
+        final Map<String, String> params = new HashMap<>();
+        params.put("oid", oid);
+        params.put("profile", PROFILE);
+        params.put("includeDraft", "yes");
+        params.put("st", singleUseTicket);
+        URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
+                "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
+                .buildAndExpand(params)
+                .encode()
+                .toUri();
+
+        try {
+            return buildBasicResponseFromEntity(restTemplate.getForEntity(
+                    UriComponentsBuilder.fromUri(uri)
+                            .buildAndExpand(params)
+                            .encode()
+                            .toUri(), String.class));
+        } catch (HttpClientErrorException e) {
+            return buildBasicResponseForHttpClientError(e);
+        }
+    }
+
+    public ValueSetResult getValueSetResult(String oid, String ticketGrantingTicket, String apiKey) {
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
 
         if (StringUtils.isEmpty(singleUseTicket)) {
             return ValueSetResult.builder()
@@ -380,11 +437,11 @@ public class VsacService {
         params.put("profile", PROFILE);
         params.put("includeDraft", "yes");
         params.put("st", singleUseTicket);
-        URI uri =  UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                        "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
-                        .buildAndExpand(params)
-                        .encode()
-                        .toUri();
+        URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
+                "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
+                .buildAndExpand(params)
+                .encode()
+                .toUri();
 
         try {
             String xml = restTemplate.getForObject(uri, String.class);

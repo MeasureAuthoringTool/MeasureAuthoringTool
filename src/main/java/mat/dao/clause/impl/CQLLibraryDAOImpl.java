@@ -27,28 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Repository("cqlLibraryDAO")
@@ -110,6 +94,20 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     }
 
     private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
+
+    @Override
+    public boolean existsWithSetId(String setId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        final Root<CQLLibrary> root = countQuery.from(CQLLibrary.class);
+
+        countQuery = countQuery.select(cb.count(root)).where(cb.equal(root.get("setId"),setId));
+
+        final Long count = session.createQuery(countQuery).getSingleResult();
+
+        return (count == null) ? false : count > 0;
+    }
 
     @Override
     public List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText, String modelType) {

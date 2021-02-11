@@ -1,14 +1,11 @@
 package mat.server.service.impl;
 
+import mat.dao.FhirConversionHistoryDao;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ModelTypeHelper;
-import mat.model.clause.ShareLevel;
+import mat.model.clause.*;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.FeatureFlagService;
@@ -29,7 +26,16 @@ public class MatContextServiceUtil implements InitializingBean {
     private static MatContextServiceUtil instance;
 
     @Autowired
+    private FhirConversionHistoryDao fhirConversionHistoryDao;
+
+    @Autowired
     private FeatureFlagService featureFlagService;
+
+    @Autowired
+    private MeasureDAO measureDao;
+
+    @Autowired
+    private CQLLibraryDAO cqlLibDao;
 
     @Override
     public void afterPropertiesSet() {
@@ -206,11 +212,28 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
         String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
-        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
+        return isConvertible(measure.getId(), true, measure.getMeasureSet().getId(), measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
     }
 
-    public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
-        return isModelTypeEligibleForConversion(modelType) && !isDraft && isVersionEligibleForFhirValidation(qdmVersion, releaseVersion) && canUserConvert(ownerId);
+    private boolean isConvertible(String id, boolean isMeasure, String setId, String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
+        FhirConversionHistory history = null;
+        try {
+            history = fhirConversionHistoryDao.lookupByQdmSetId(setId);
+            if (history != null) {
+                if (isMeasure && !measureDao.existsWithSetId(history.getFhirSetId())) {
+                    history = null;
+                } else if (!isMeasure && !cqlLibDao.existsWithSetId(history.getFhirSetId())) {
+                    history = null;
+                }
+            }
+        } catch (RuntimeException re) {
+            history = null;
+        }
+        return isModelTypeEligibleForConversion(modelType) &&
+                !isDraft &&
+                isVersionEligibleForFhirValidation(qdmVersion, releaseVersion) &&
+                canUserConvert(ownerId) &&
+                history == null;
     }
 
     private boolean canUserConvert(String ownerId) {
@@ -241,13 +264,44 @@ public class MatContextServiceUtil implements InitializingBean {
         }
     }
 
-    public boolean isCqlLibraryConvertible(CQLLibrary cqlLibrary) {
-        String ownerId = cqlLibrary.getOwnerId() == null ? null : cqlLibrary.getOwnerId().getId();
-        return isConvertible(cqlLibrary.getLibraryModelType(), cqlLibrary.isDraft(), cqlLibrary.getQdmVersion(), cqlLibrary.getReleaseVersion(), ownerId);
+    public boolean isCqlLibraryConvertible(CQLLibrary l) {
+        String ownerId = l.getOwnerId() == null ? null : l.getOwnerId().getId();
+        return isConvertible(
+                l.getId(),
+                false,
+                l.getSetId(),
+                l.getLibraryModelType(),
+                l.isDraft(),
+                l.getQdmVersion(),
+                l.getReleaseVersion(),
+                ownerId);
     }
 
-    public boolean isCqlLibraryConvertible(CQLLibraryShareDTO cqlLibrary) {
-        return isConvertible(cqlLibrary.getLibraryModelType(), cqlLibrary.isDraft(), cqlLibrary.getQdmVersion(), cqlLibrary.getReleaseVersion(), cqlLibrary.getOwnerUserId());
+    public boolean isCqlLibraryConvertible(CQLLibraryShareDTO l) {
+        return isConvertible(
+                l.getCqlLibraryId(),
+                false,
+                l.getCqlLibrarySetId(),
+                l.getLibraryModelType(),
+                l.isDraft(),
+                l.getQdmVersion(),
+                l.getReleaseVersion(),
+                l.getOwnerUserId());
     }
 
+    public FhirConversionHistoryDao getFhirConversionHistoryDao() {
+        return fhirConversionHistoryDao;
+    }
+
+    public void setFhirConversionHistoryDao(FhirConversionHistoryDao fhirConversionHistoryDao) {
+        this.fhirConversionHistoryDao = fhirConversionHistoryDao;
+    }
+
+    public FeatureFlagService getFeatureFlagService() {
+        return featureFlagService;
+    }
+
+    public void setFeatureFlagService(FeatureFlagService featureFlagService) {
+        this.featureFlagService = featureFlagService;
+    }
 }

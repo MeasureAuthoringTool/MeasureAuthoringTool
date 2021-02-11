@@ -1,0 +1,5 @@
+{
+  "userName": "env:MAT_USERNAME",
+  "password": "env:MAT_PASSWORD",
+  "umlsApiKey": "env:UMLS_API_KEY"
+}

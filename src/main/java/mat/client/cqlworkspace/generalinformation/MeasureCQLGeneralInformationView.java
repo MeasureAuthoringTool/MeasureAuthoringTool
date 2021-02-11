@@ -2,6 +2,7 @@ package mat.client.cqlworkspace.generalinformation;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.buttons.SaveToolBarButton;
 import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
@@ -65,6 +66,7 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         commentsGroup.clear();
         heading.addStyleName("leftAligned");
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
+        generalInfoTopPanel.add(new Label("* Indicates a required field."));
 
         FormLabel libraryNameLabel = new FormLabel();
         libraryNameLabel.setText("CQL Library Name");

@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
@@ -26,8 +27,10 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     private Button exportButton;
     private Button fhirValidationButton;
     private Button convertButton;
+    private String ariaLabelPrefix;
 
-    public MeasureLibraryGridToolbar() {
+    public MeasureLibraryGridToolbar(String ariaLabelPrefix) {
+        this.ariaLabelPrefix = ariaLabelPrefix;
         setStyleName("action-button-bar");
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
@@ -69,18 +72,18 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     }
 
     private void applyDefaultAllButExport() {
-        buildButton(versionButton, IconType.STAR, "Create Version or Draft", "Click to create version or draft", "160px");
-        buildButton(historyButton, IconType.CLOCK_O, "History", "Click to view history", "73px");
-        buildButton(editOrViewButton, IconType.EDIT, "Edit", "Click to edit", "64px");
-        buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
-        buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
-        buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", "Click to Run FHIR Validation", "146px");
-        buildButton(convertButton, IconType.RANDOM, "Convert to FHIR", "Click to convert", "124px");
+        buildButton(versionButton, IconType.STAR, "Create Version or Draft", ariaLabelPrefix + " Create version or draft", "160px");
+        buildButton(historyButton, IconType.CLOCK_O, "History", ariaLabelPrefix + " View History", "73px");
+        buildButton(editOrViewButton, IconType.EDIT, "Edit", ariaLabelPrefix + " Edit", "64px");
+        buildButton(shareButton, IconType.SHARE_SQUARE, "Share", ariaLabelPrefix + " Share", "68px");
+        buildButton(cloneButton, IconType.CLONE, "Clone", ariaLabelPrefix + " Clone", "69px");
+        buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", ariaLabelPrefix + " Run FHIR Validation", "146px");
+        buildButton(convertButton, IconType.RANDOM, "Convert to FHIR", ariaLabelPrefix + " Convert", "124px");
     }
 
     private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
         actionButton.setText(text);
-        actionButton.setTitle(title);
+        actionButton.getElement().setAttribute("aria-label",title);
         actionButton.setWidth(width);
         actionButton.setType(ButtonType.DEFAULT);
         actionButton.setSize(ButtonSize.SMALL);
@@ -98,7 +101,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         if (ModelTypeHelper.isQdm(selectedItem.getMeasureModel()) ||
                 ModelTypeHelper.isFhir(selectedItem.getMeasureModel()) && options.isFhirExportEnabled()) {
             exportButton.setEnabled(selectedItems.iterator().next().isExportable());
-                exportButton.setTitle("Click to Export MAT " + selectedItem.getHqmfReleaseVersion());
+            exportButton.setTitle("Click to Export MAT " + selectedItem.getHqmfReleaseVersion());
         }
 
         if (selectedItems.size() > 1) {
@@ -195,13 +198,13 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         this.options = options;
     }
 
-    public static MeasureLibraryGridToolbar withOptionsFromFlags() {
-        return withOptions(Options.fromFeatureFlags());
+    public static MeasureLibraryGridToolbar withOptionsFromFlags(String ariaLabelPrefix) {
+        return withOptions(ariaLabelPrefix, Options.fromFeatureFlags());
     }
 
     @VisibleForTesting
-    static MeasureLibraryGridToolbar withOptions(Options options) {
-        MeasureLibraryGridToolbar toolbar = new MeasureLibraryGridToolbar();
+    static MeasureLibraryGridToolbar withOptions(String ariaLabelPrefix, Options options) {
+        MeasureLibraryGridToolbar toolbar = new MeasureLibraryGridToolbar(ariaLabelPrefix);
         toolbar.setOptions(options);
         toolbar.applyOptions();
         return toolbar;

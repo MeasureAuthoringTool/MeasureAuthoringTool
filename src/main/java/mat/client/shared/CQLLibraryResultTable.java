@@ -239,15 +239,15 @@ public class CQLLibraryResultTable {
         if (object.isFamily()) {
             sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
-            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' disabled></button>");
+            sb.appendHtmlConstant("<span id='div1' class='textEmptySpaces'></span>");
             sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");
         } else {
             sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
-            sb.appendHtmlConstant("<button id='div1' disabled title=\"" + object.getCqlName()
-                    + "\" class=\" " + cssClass + "\"></button>");
+            sb.appendHtmlConstant("<span id='div1' disabled title=\"" + object.getCqlName()
+                    + "\" class=\" " + cssClass + "\"></span>");
             sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");

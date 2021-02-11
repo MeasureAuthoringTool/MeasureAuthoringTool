@@ -1,0 +1,21 @@
+{
+  "name": "mat-cypress",
+  "version": "1.0.0",
+  "description": "Test Mat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "combine:reports": "npx mochawesome-merge cypress/results/*.json > cypress/results/mochawesome.json",
+    "generateOne:report": "npx marge cypress/results/mochawesome.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^6.3.0",
+    "cypress-multi-reporters": "^1.4.0",
+    "mocha": "^8.2.1",
+    "mochawesome": "^6.2.1",
+    "mochawesome-merge": "^4.2.0",
+    "mochawesome-report-generator": "^5.1.0"
+  }
+}

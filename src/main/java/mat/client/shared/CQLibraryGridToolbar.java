@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -19,13 +20,13 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     public static final String SHARE_TEXT = "Share";
     public static final String DELETE_TEXT = "Delete";
 
-    public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create version or draft";
-    public static final String CLICK_TO_VIEW_HISTORY_TITLE = "Click to view history";
-    public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
-    public static final String CLICK_TO_SHARE_TITLE = "Click to share";
-    public static final String CLICK_TO_DELETE_LIBRARY_TITLE = "Click to delete library";
+    public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Create version or draft";
+    public static final String CLICK_TO_VIEW_HISTORY_TITLE = "View History";
+    public static final String CLICK_TO_EDIT_TITLE = "Edit";
+    public static final String CLICK_TO_SHARE_TITLE = "Share";
+    public static final String CLICK_TO_DELETE_LIBRARY_TITLE = "Delete library";
     public static final String CONVERT_TO_FHIR_TEXT = "Convert to FHIR";
-    public static final String CONVERT_TO_FHIR_TITLE = "Click to convert";
+    public static final String CONVERT_TO_FHIR_TITLE = "Convert";
 
     private Button versionButton;
     private Button historyButton;
@@ -34,8 +35,10 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     private Button deleteButton;
     private Button convertButton;
     private Options options;
+    private String ariaLabelPrefix;
 
-    public CQLibraryGridToolbar() {
+    public CQLibraryGridToolbar(String ariaLabelPrefix) {
+        this.ariaLabelPrefix = ariaLabelPrefix;
         setStyleName("action-button-bar");
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
@@ -77,7 +80,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
     private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
         actionButton.setText(text);
-        actionButton.setTitle(title);
+        actionButton.getElement().setAttribute("aria-label", ariaLabelPrefix + " " + title);
         actionButton.setWidth(width);
         actionButton.setType(ButtonType.DEFAULT);
         actionButton.setSize(ButtonSize.SMALL);
@@ -182,13 +185,13 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         this.options = options;
     }
 
-    public static CQLibraryGridToolbar withOptionsFromFlags() {
-        return withOptions(Options.fromFeatureFlags());
+    public static CQLibraryGridToolbar withOptionsFromFlags(String ariaLabelPrefix) {
+        return withOptions(ariaLabelPrefix, Options.fromFeatureFlags());
     }
 
     @VisibleForTesting
-    static CQLibraryGridToolbar withOptions(Options options) {
-        CQLibraryGridToolbar toolbar = new CQLibraryGridToolbar();
+    static CQLibraryGridToolbar withOptions(String ariaLabelPrefix, Options options) {
+        CQLibraryGridToolbar toolbar = new CQLibraryGridToolbar(ariaLabelPrefix);
         toolbar.setOptions(options);
         toolbar.applyOptions();
         return toolbar;

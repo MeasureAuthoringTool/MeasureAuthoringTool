@@ -6,6 +6,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.*;
 import mat.client.codelist.HasListBox;
@@ -73,6 +74,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         this.isCompositeMeasure = isComposite;
         compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
         buildDetailView();
+    }
+
+    @Override
+    public boolean hasSomeRequiredFields() {
+        return MatContext.get().isCurrentModelTypeFhir();
     }
 
     private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
@@ -345,8 +351,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         eMeasureIdentifierInput.setWidth("150px");
 
         if (generalInformationModel.geteMeasureId() != 0) {
-            eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
-            eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+            if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                eMeasureIdentifierInput.setText(generalInformationModel.geteMeasureId() + "FHIR");
+                eMeasureIdentifierInput.setValue(generalInformationModel.geteMeasureId() + "FHIR");
+            } else {
+                eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
+                eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+            }
             generateEMeasureIDButton.setEnabled(false);
         }
 

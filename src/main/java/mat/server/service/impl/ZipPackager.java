@@ -191,36 +191,39 @@ public class ZipPackager {
         return ret;
     }
 
-    /**
-     * @param emeasureName
-     * @param zip
-     * @param emeasureHTMLStr
-     * @param emeasureXMLStr
-     * @param cqlExportResult
-     * @param elmExportResult
-     * @param jsonExportResult
-     * @param currentRealeaseVersion
-     * @param parentPath
-     * @param measureId
-     */
-    public void getZipBarr(String emeasureName, ZipOutputStream zip, String emeasureHTMLStr, String emeasureXMLStr,
-                           ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
-                           String currentRealeaseVersion, String parentPath, String measureId) {
 
-        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
+    public String buildFhirMeasureJsonBundle(String measureId) {
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 
+        return buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+    }
+
+
+    public void getZipBarr(String emeasureName,
+                           ZipOutputStream zip,
+                           String emeasureHTMLStr,
+                           String emeasureXMLStr,
+                           ExportResult cqlExportResult,
+                           ExportResult elmExportResult,
+                           ExportResult jsonExportResult,
+                           String currentReleaseVersion,
+                           String parentPath,
+                           String measureId,
+                           String measureJsonBundle) {
+        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
+        FileNameUtility fnu = new FileNameUtility();
+
         try {
-            String measureReleaseVersion = currentRealeaseVersion;
-            if (currentRealeaseVersion.contains(".")) {
-                currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
+            String measureReleaseVersion = currentReleaseVersion;
+            if (currentReleaseVersion.contains(".")) {
+                currentReleaseVersion = currentReleaseVersion.replace(".", "_");
             }
 
             if (!measure.isFhirMeasure()) {
-                String measureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion));
+                String measureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion));
                 addBytesToZip(measureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 
-                String measureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion));
+                String measureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion));
                 addBytesToZip(measureXMLPath, emeasureXMLStr.getBytes(), zip);
 
                 if (isV5OrGreater(measureReleaseVersion)) {
@@ -229,19 +232,9 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
-                addBytesToZip(parentPath + File.separator + "measure-json-bundle.json",
-                        measureJsonBundle.getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure-xml-bundle.xml",
-                        convertToXmlBundle(measureJsonBundle).getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "human-readable.html",
-                        emeasureHTMLStr.getBytes(),
-                        zip);
-
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".json", measureJsonBundle.getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".xml", convertToXmlBundle(measureJsonBundle).getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + fnu.getFhirExportFileName(measure) + ".html", emeasureHTMLStr.getBytes(), zip);
             }
         } catch (Exception e) {
             log.error("getZipBarr", e);

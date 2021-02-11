@@ -152,7 +152,7 @@ public class FhirMeasureServiceImplTest {
 
         ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
         fhirMeasureResult.setId(fhirMeasureId);
-        Mockito.when(measureCloningService.cloneForFhir(any(),eq(true))).thenReturn(fhirMeasureResult);
+        Mockito.when(measureCloningService.convert(any())).thenReturn(fhirMeasureResult);
 
         sourceMeasureResult.setId(sourceMeasureId);
 

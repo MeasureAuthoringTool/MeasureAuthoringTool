@@ -24,7 +24,7 @@ import java.util.List;
 public class MeasureDetailsView {
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel mainContentPanel = new HorizontalPanel();
-	private HorizontalPanel headingPanel = new HorizontalPanel();
+	private Panel headingPanel = new VerticalPanel();
 	private HorizontalPanel saveButtonPanel = new HorizontalPanel();
 	private VerticalPanel widgetComponentPanel = new VerticalPanel();
 	private ErrorMessageAlert errorAlert = new ErrorMessageAlert();
@@ -60,13 +60,22 @@ public class MeasureDetailsView {
 
 	private void buildHeading() {
 		headingPanel.clear();
+
 		headingHTML = new HTML();
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
 		headingHTML.getElement().setTabIndex(-1);
+
 		headingPanel.add(headingHTML);
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
+
+		if (componentDetailView.hasAllRequiredFields()) {
+			headingPanel.add(new Label("All fields are required."));
+		} else if (componentDetailView.hasSomeRequiredFields()) {
+			headingPanel.add(new Label("* Indicates a required field."));
+		}
+
 		widgetComponentPanel.add(headingPanel);
 		messagePanel = new MessagePanel();
 		messagePanel.setWidth("625px");
@@ -147,9 +156,10 @@ public class MeasureDetailsView {
 	public VerticalPanel buildDetailView(MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver) {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver, messagePanel);
+
 		buildHeading();
 		
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver, messagePanel);
 
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");

@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
+	boolean existsWithSetId(String setId);
+
 	List<CQLLibraryShareDTO> search(LibrarySearchModel librarySearchModel, int pageSize, User user);
 
 	boolean isLibraryLocked(String id);

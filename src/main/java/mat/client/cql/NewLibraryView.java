@@ -2,6 +2,7 @@ package mat.client.cql;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.*;
 import mat.client.CqlLibraryPresenter;
@@ -84,6 +85,7 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         detailForm.add(formFieldSet);
 
         VerticalPanel contentPanel = new VerticalPanel();
+        contentPanel.add(new Label("All fields are required."));
         contentPanel.setWidth("90%");
         contentPanel.setHeight("100%");
         contentPanel.add(new SpacerWidget());

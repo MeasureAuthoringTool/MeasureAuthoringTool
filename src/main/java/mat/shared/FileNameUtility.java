@@ -1,5 +1,9 @@
 package mat.shared;
 
+import mat.model.clause.Measure;
+import mat.server.util.MeasureUtility;
+import java.text.DecimalFormat;
+
 /**
  * Delegate common File name creation behavior shared by ExportServlet.java and ZipPackager.java
  *
@@ -7,6 +11,8 @@ package mat.shared;
  */
 public class FileNameUtility {
 
+
+    private static DecimalFormat revisionFormat = new DecimalFormat("000");
     /**
      * Gets the eCQM xml name.
      *
@@ -39,6 +45,12 @@ public class FileNameUtility {
         return name.replaceAll("\\W", "") + "-Artifacts.zip";
     }
 
+    public String getFhirZipName(Measure measure) {
+        return measure.getaBBRName() + "-v" +
+                getMeasureVersionFhir(measure) + "-" + measure.getMeasureModel() + "-" +
+                measure.getFhirVersion().replace(".", "-") + ".zip";
+    }
+
     /**
      * Gets the eCQM html name.
      *
@@ -68,6 +80,20 @@ public class FileNameUtility {
     public String getParentPath(String name) {
         return name.replaceAll("\\W", "") + "-Artifacts";
     }
+
+    public String getFhirExportFileName(Measure measure) {
+        return measure.getaBBRName() + "-v" +
+                getMeasureVersionFhir(measure) + "-" + measure.getMeasureModel() + "-" +
+                measure.getFhirVersion().replace(".", "-");
+    }
+
+    public String getMeasureVersionFhir(Measure measure) {
+        String mVersion = MeasureUtility.formatVersionText(measure.getVersion());
+        String version = measure.isDraft() ? (mVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber()))) : mVersion;
+
+        return version.replace(".", "-");
+    }
+
 
     /**
      * Gets the eCQM human readable name.
@@ -111,17 +137,6 @@ public class FileNameUtility {
      * @param currentTime the current time
      * @return the cSV file name
      */
-    public static String getHTMLFileName(String name, String currentTime) {
-        return (name.concat(currentTime)).replaceAll("\\W", "").concat(".html");
-    }
-
-    /**
-     * Gets the cSV file name.
-     *
-     * @param name        the name
-     * @param currentTime the current time
-     * @return the cSV file name
-     */
     public static String getCSVFileName(String name, String currentTime) {
         return (name.concat(currentTime)).replaceAll("\\W", "").concat(".csv");
     }
@@ -134,16 +149,9 @@ public class FileNameUtility {
         return name.replaceAll("\\W", "") + "-ELM.xml";
     }
 
-    public static String getJsonFilePath(String releaseVersion) {
-        return "-" + releaseVersion + ".json";
-    }
 
     public static String getJsonFilePath(String measureName, String releaseVersion) {
         return "-" + measureName + "-" + releaseVersion + ".json";
-    }
-
-    public static String getXmlFilePath(String measureName, String releaseVersion) {
-        return "-" + measureName + "-" + releaseVersion + ".xml";
     }
 
     public static String getHtmlFilePath(String measureName, String releaseVersion) {

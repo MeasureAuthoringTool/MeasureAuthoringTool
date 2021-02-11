@@ -7,6 +7,7 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.shared.MessageDelegate;
+import mat.dao.FhirConversionHistoryDao;
 import mat.dao.OrganizationDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
@@ -16,6 +17,7 @@ import mat.model.Author;
 import mat.model.Organization;
 import mat.model.User;
 import mat.model.clause.ComponentMeasure;
+import mat.model.clause.FhirConversionHistory;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureSet;
@@ -26,6 +28,7 @@ import mat.model.cql.CQLParameter;
 import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.logging.LogFactory;
+import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureCloningService;
 import mat.server.util.CQLValidationUtil;
 import mat.server.util.MATPropertiesService;
@@ -117,6 +120,10 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     private final MATPropertiesService propertiesService;
 
+    private final FhirConversionHistoryDao fhirConversionHIstoryDAO;
+
+    private final MeasureAuditService auditService;
+
     public MeasureCloningServiceImpl(
             MATPropertiesService propertiesService,
             CQLLibraryService cqlLibraryService,
@@ -125,7 +132,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             MeasureSetDAO measureSetDAO,
             OrganizationDAO organizationDAO,
             UserDAO userDAO,
-            CQLService cqlService) {
+            CQLService cqlService, FhirConversionHistoryDao fhirConversionHIstoryDAO, MeasureAuditService auditService) {
         this.propertiesService = propertiesService;
         this.cqlLibraryService = cqlLibraryService;
         this.measureDAO = measureDAO;
@@ -134,23 +141,53 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         this.organizationDAO = organizationDAO;
         this.userDAO = userDAO;
         this.cqlService = cqlService;
+        this.fhirConversionHIstoryDAO = fhirConversionHIstoryDAO;
+        this.auditService = auditService;
+    }
+
+    /*
+     *  4 Scenarios are covered by this service:
+     *  1. QDM Draft -> QDM with bumped version in draft state
+     *  2. QDM Clone -> QDM with version reset in draft state
+     *  3. QDM to FHIR Conversion -> FHIR with version reset in draft state
+     *  4. FHIR Draft -> FHIR with bumped version in draft state
+     *
+     *                         boolean usage
+     * creatingDraft -> True, user is creating a draft of an existing FHIR or QDM Measure.
+     *                  False, user is Cloning existing QDM measure
+     *
+     * isFhir -> True, source measure is FHIR based.
+     *           False, source measure is QDM based.
+     *
+     * convertingQdmToFhir  ->  True, user is converting source QDM measure to FHIR.
+     *                           False,
+     *
+     *   boolean           QDM Draft   QDM Clone   QDM->FHIR  FHIR Draft
+     * creatingDraft            T           F           T          T
+     * isFhir                   F           F           T          T
+     * convertingQdmToFhir      F           F           T          F
+     */
+
+    @Override
+    public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails) throws MatException {
+        return execute(currentDetails, false, false, false);
     }
 
     @Override
-    public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft) throws MatException {
-        return clone(currentDetails, creatingDraft, false, false);
+    public ManageMeasureSearchModel.Result draft(ManageMeasureDetailModel currentDetails, boolean isFhir) throws MatException {
+        return execute(currentDetails, true, isFhir, false);
     }
 
     @Override
-    public ManageMeasureSearchModel.Result cloneForFhir(ManageMeasureDetailModel currentDetails, boolean isQdmToFhir) throws MatException {
-        return clone(currentDetails, true, true, isQdmToFhir);
+    public ManageMeasureSearchModel.Result convert(ManageMeasureDetailModel currentDetails) throws MatException {
+        return execute(currentDetails, true, true, true);
     }
 
-    private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails,
+    private ManageMeasureSearchModel.Result execute(ManageMeasureDetailModel currentDetails,
                                                   boolean creatingDraft,
-                                                  boolean creatingFhir,
-                                                  boolean isQdmToFhir) throws MatException {
-        logger.debug("In MeasureCloningServiceImpl.clone() method..");
+                                                  boolean isFhir,
+                                                  boolean convertingQdmToFhir) throws MatException {
+        logger.debug("In MeasureCloningServiceImpl.execute() method...");
 
         validateMeasure(currentDetails);
 
@@ -158,28 +195,30 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             Measure measure = measureDAO.find(currentDetails.getId());
 
             if (checkNonCQLCloningValidation(measure, creatingDraft)) {
-                MatException e = new MatException("Cannot clone this measure.");
-                logger.error(e.getMessage(), e);
-                throw e;
+                throw new MatException("Cannot clone this measure.");
             }
-
-            MeasureXML originalMeasureXml = measureXmlDAO.findForMeasure(currentDetails.getId());
 
             Measure clonedMeasure = new Measure();
-            if (creatingFhir) {
-                clonedMeasure.setSourceMeasureId(measure.getId());
-            }
-            String originalXml = originalMeasureXml.getMeasureXMLAsString();
+            clonedMeasure.setMeasureModel(isFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel());
+            clonedMeasure.setReleaseVersion(measure.getReleaseVersion());
+            clonedMeasure.setDraft(Boolean.TRUE);
+            clonedMeasure.setPatientBased(currentDetails.isPatientBased());
+            clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+            clonedMeasure.setPopulationBasis(currentDetails.getPopulationBasis());
+            clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring() != null ? currentDetails.getMeasScoring() : measure.getMeasureScoring());
 
-            clonedMeasure.setaBBRName(currentDetails.getShortName());
-            clonedMeasure.setDescription(currentDetails.getMeasureName());
-            String newMeasureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
-            clonedMeasure.setMeasureModel(newMeasureModel);
-            clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
-            if (isQdmToFhir) {
+            if (convertingQdmToFhir) {
                 clonedMeasure.seteMeasureId(currentDetails.geteMeasureId());
+                clonedMeasure.setaBBRName(currentDetails.getShortName() + "FHIR");
+                clonedMeasure.setDescription(currentDetails.getMeasureName() + "FHIR");
+                clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName() + "FHIR");
+            } else {
+                clonedMeasure.setaBBRName(currentDetails.getShortName());
+                clonedMeasure.setDescription(currentDetails.getMeasureName());
+                clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             }
-            if (creatingFhir) {
+
+            if (isFhir) {
                 if (measure.getMeasurementPeriodFrom() == null || measure.getMeasurementPeriodTo() == null) {
                     clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
                     clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
@@ -188,42 +227,45 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                     clonedMeasure.setMeasurementPeriodTo(measure.getMeasurementPeriodTo());
                 }
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
+                clonedMeasure.setSourceMeasureId(measure.getId());
             } else {
                 clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
                 clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
                 clonedMeasure.setQdmVersion(propertiesService.getQdmVersion());
             }
-            clonedMeasure.setReleaseVersion(measure.getReleaseVersion());
-            clonedMeasure.setDraft(Boolean.TRUE);
-            clonedMeasure.setPatientBased(currentDetails.isPatientBased());
-            clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
-            clonedMeasure.setPopulationBasis(currentDetails.getPopulationBasis());
 
-
+            // Handle Component/Composite measures
             if (CollectionUtils.isNotEmpty(measure.getComponentMeasures()) && Boolean.TRUE.equals(measure.getIsCompositeMeasure())) {
                 clonedMeasure.setIsCompositeMeasure(measure.getIsCompositeMeasure());
                 clonedMeasure.setCompositeScoring(measure.getCompositeScoring());
                 clonedMeasure.setComponentMeasures(cloneAndSetComponentMeasures(measure.getComponentMeasures(), clonedMeasure));
             }
 
-            clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring() != null ? currentDetails.getMeasScoring() : measure.getMeasureScoring());
-
             // when creating a draft of a shared version Measure then the Measure Owner should not change
             if (creatingDraft) {
-                createDraftAndDetermineIfNonCQLAndPersist(isQdmToFhir, clonedMeasure, currentDetails, measure);
+                createDraftAndDetermineIfNonCQLAndPersist(convertingQdmToFhir, clonedMeasure, currentDetails, measure);
             } else {
                 cloneMeasureAndPersist(clonedMeasure);
             }
 
-            createMeasureXmlAndPersist(currentDetails, creatingDraft, creatingFhir, measure, clonedMeasure, originalXml);
+            MeasureXML originalMeasureXml = measureXmlDAO.findForMeasure(currentDetails.getId());
+            createMeasureXmlAndPersist(currentDetails, creatingDraft, isFhir, measure, clonedMeasure, originalMeasureXml.getMeasureXMLAsString());
+
+            if (convertingQdmToFhir) {
+                createFhirConversionHistory(measure, clonedMeasure, userDAO.findByLoginId(LoggedInUserUtil.getLoggedUserName()));
+                auditService.recordMeasureEvent(measure.getId(),
+                        "Converted QDM/CQL to FHIR",
+                        clonedMeasure.getDescription() + " FHIR DRAFT 0.0.000 was created from QDM Version " + measure.getMatVersion(),
+                        false);
+            }
 
             String formattedVersionWithText = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(),
                     clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 
             ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
             result.setId(clonedMeasure.getId());
-            result.setName(currentDetails.getMeasureName());
-            result.setShortName(currentDetails.getShortName());
+            result.setName(clonedMeasure.getDescription());
+            result.setShortName(clonedMeasure.getaBBRName());
             result.setScoringType(currentDetails.getMeasScoring());
             result.setVersion(formattedVersionWithText);
             result.setMeasureModel(clonedMeasure.getMeasureModel());
@@ -239,7 +281,16 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
     }
 
-    private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {
+    private void createFhirConversionHistory(Measure existingMeasure, Measure newFhirMeasure, User user) {
+        var h = new FhirConversionHistory();
+        h.setQdmSetId(existingMeasure.getMeasureSet().getId());
+        h.setFhirSetId(newFhirMeasure.getMeasureSet().getId());
+        h.setLastModifiedBy(user);
+        h.setLastModifiedOn(new Timestamp(System.currentTimeMillis()));
+        fhirConversionHIstoryDAO.save(h);
+    }
+
+    private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean isFhir, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {
         Document originalDoc = parseOriginalDocument(originalXml);
         Document clonedDoc = originalDoc;
 
@@ -263,7 +314,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         clonedXml.setMeasureId(clonedMeasure.getId());
 
         XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-        if (!creatingFhir) {
+        if (!isFhir) {
             // Don't do this for fhir. The converted CQL will still have these and they they can't be found when
             // generating the new mat xml.
             List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
@@ -274,7 +325,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         updateScoring(currentDetails, measure, clonedMeasure, xmlProcessor);
 
-        boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure, creatingFhir);
+        boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure, isFhir);
         xmlProcessor.clearValuesetVersionAttribute();
 
         if (creatingDraft) {
@@ -285,7 +336,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         // this means this is a CQL Measure to CQL Measure draft/clone.
         if (!isUpdatedForCQL) {
-            updateForCqlMeasureDraftOrClone(creatingFhir, xmlProcessor);
+            updateForCqlMeasureDraftOrClone(isFhir, xmlProcessor);
         }
         updateCqlLibraryName(clonedMeasure, xmlProcessor);
 
@@ -416,14 +467,14 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return componentMeasures.stream().map(f -> new ComponentMeasure(clonedMeasure, f.getComponentMeasure(), f.getAlias())).collect(Collectors.toList());
     }
 
-    private boolean createDraftAndDetermineIfNonCQLAndPersist(boolean isQdmToFhir, Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
+    private boolean createDraftAndDetermineIfNonCQLAndPersist(boolean convertingQdmToFhir, Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
 
-        copyMeasureDetails(isQdmToFhir, clonedMeasure, currentDetails);
+        copyMeasureDetails(convertingQdmToFhir, clonedMeasure, currentDetails);
 
         boolean isNonCQLtoCQLDraft = false;
         clonedMeasure.setOwner(measure.getOwner());
-        clonedMeasure.setMeasureSet(measure.getMeasureSet());
-        //MAT-9206 changes
+
+//        MAT-9206 changes
         String draftVer;
         if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
             draftVer = measure.getVersion();
@@ -431,7 +482,19 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             isNonCQLtoCQLDraft = true;
             draftVer = getVersionOnNonCQLDraft(currentDetails.getVersionNumber());
         }
-        clonedMeasure.setVersion(draftVer);
+
+        if(convertingQdmToFhir) {
+            //For conversion create a new set id for FHIR.
+            MeasureSet measureSet = new MeasureSet();
+            measureSet.setId(UUID.randomUUID().toString());
+            measureSetDAO.save(measureSet);
+            clonedMeasure.setMeasureSet(measureSet);
+            clonedMeasure.setVersion(VERSION_ZERO);
+        } else {
+            clonedMeasure.setVersion(draftVer);
+            clonedMeasure.setMeasureSet(measure.getMeasureSet());
+        }
+
         clonedMeasure.setRevisionNumber("000");
         clonedMeasure.seteMeasureId(measure.geteMeasureId());
         measureDAO.saveMeasure(clonedMeasure);

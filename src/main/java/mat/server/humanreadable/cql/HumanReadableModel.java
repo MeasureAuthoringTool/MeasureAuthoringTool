@@ -1,145 +1,121 @@
 package mat.server.humanreadable.cql;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class HumanReadableModel {
-	
-	private HumanReadableMeasureInformationModel measureInformation; 
-	private List<HumanReadablePopulationCriteriaModel> populationCriterias; 
-	private List<HumanReadableExpressionModel> supplementalDataElements; 
-	private List<HumanReadableExpressionModel> riskAdjustmentVariables; 
-	private List<HumanReadableTerminologyModel> codeTerminologyList;
-	private List<HumanReadableTerminologyModel> valuesetTerminologyList; 
-	private List<HumanReadableCodeModel> codeDataCriteriaList; 
-	private List<HumanReadableValuesetModel> valuesetDataCriteriaList; 
-	private List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList; 
-	
-	private List<HumanReadableExpressionModel> definitions; 
-	private List<HumanReadableExpressionModel> functions; 
-	
-	private int numberOfGroups = 1; 
-	
-	public HumanReadableModel(HumanReadableMeasureInformationModel measureInformationModel, List<HumanReadablePopulationCriteriaModel> populations, 
-			List<HumanReadableExpressionModel> definitions, List<HumanReadableExpressionModel> functions,
-			List<HumanReadableTerminologyModel> valuesetTerminologyList, List<HumanReadableTerminologyModel> codeTerminologyList,
-			List<HumanReadableValuesetModel> valuesetDataCriteriaList, List<HumanReadableCodeModel> codeDataCriteriaList,
-			List<HumanReadableExpressionModel> supplementalDataElements,  List<HumanReadableExpressionModel> riskAdjustmentVariables) {
-		this.measureInformation = measureInformationModel;
-		this.populationCriterias = populations; 
-		this.definitions = definitions;
-		this.functions =functions; 
-		this.codeTerminologyList = codeTerminologyList;
-		this.valuesetTerminologyList = valuesetTerminologyList;
-		this.valuesetDataCriteriaList = valuesetDataCriteriaList;
-		this.codeDataCriteriaList = codeDataCriteriaList;
-		this.supplementalDataElements = supplementalDataElements;
-		this.riskAdjustmentVariables = riskAdjustmentVariables;	
-		this.valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
-		this.valuesetAndCodeDataCriteriaList.addAll(valuesetDataCriteriaList);
-		this.valuesetAndCodeDataCriteriaList.addAll(codeDataCriteriaList);
-		this.valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getDataCriteriaDisplay));				
-		this.setNumberOfGroups(populationCriterias.size());
-	}
 
-	public HumanReadableModel() {
-	}
+    private HumanReadableMeasureInformationModel measureInformation;
+    private List<HumanReadablePopulationCriteriaModel> populationCriterias;
+    private List<HumanReadableExpressionModel> supplementalDataElements;
+    private List<HumanReadableExpressionModel> riskAdjustmentVariables;
+    private List<HumanReadableTerminologyModel> codeTerminologyList;
+    private List<HumanReadableTerminologyModel> valuesetTerminologyList;
+    private List<HumanReadableCodeModel> codeDataCriteriaList;
+    private List<HumanReadableValuesetModel> valuesetDataCriteriaList;
+    private List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList;
 
-	public HumanReadableMeasureInformationModel getMeasureInformation() {
-		return measureInformation;
-	}
+    private List<HumanReadableExpressionModel> definitions;
+    private List<HumanReadableExpressionModel> functions;
 
-	public void setMeasureInformation(HumanReadableMeasureInformationModel measureInformation) {
-		this.measureInformation = measureInformation;
-	}
+    private int numberOfGroups = 1;
 
-	public List<HumanReadablePopulationCriteriaModel> getPopulationCriterias() {
-		return populationCriterias;
-	}
+    public HumanReadableModel() {
+    }
 
-	public void setPopulationCriterias(List<HumanReadablePopulationCriteriaModel> groups) {
-		this.populationCriterias = groups;
-		this.setNumberOfGroups(groups.size());
-	}
+    public HumanReadableMeasureInformationModel getMeasureInformation() {
+        return measureInformation;
+    }
 
-	public int getNumberOfGroups() {
-		return populationCriterias.size();
-	}
+    public void setMeasureInformation(HumanReadableMeasureInformationModel measureInformation) {
+        this.measureInformation = measureInformation;
+    }
 
-	public void setNumberOfGroups(int numberOfGroups) {
-		this.numberOfGroups = numberOfGroups;
-	}
+    public List<HumanReadablePopulationCriteriaModel> getPopulationCriterias() {
+        return populationCriterias;
+    }
 
-	public List<HumanReadableExpressionModel> getSupplementalDataElements() {
-		return supplementalDataElements;
-	}
+    public void setPopulationCriterias(List<HumanReadablePopulationCriteriaModel> groups) {
+        this.populationCriterias = groups;
+        this.setNumberOfGroups(groups.size());
+    }
 
-	public void setSupplementalDataElements(List<HumanReadableExpressionModel> supplementalDataElements) {
-		this.supplementalDataElements = supplementalDataElements;
-	}
+    public int getNumberOfGroups() {
+        return populationCriterias.size();
+    }
 
-	public List<HumanReadableExpressionModel> getRiskAdjustmentVariables() {
-		return riskAdjustmentVariables;
-	}
+    public void setNumberOfGroups(int numberOfGroups) {
+        this.numberOfGroups = numberOfGroups;
+    }
 
-	public void setRiskAdjustmentVariables(List<HumanReadableExpressionModel> riskAdjustmentVariables) {
-		this.riskAdjustmentVariables = riskAdjustmentVariables;
-	}
+    public List<HumanReadableExpressionModel> getSupplementalDataElements() {
+        return supplementalDataElements;
+    }
 
-	public List<HumanReadableTerminologyModel> getCodeTerminologyList() {
-		return codeTerminologyList;
-	}
+    public void setSupplementalDataElements(List<HumanReadableExpressionModel> supplementalDataElements) {
+        this.supplementalDataElements = supplementalDataElements;
+    }
 
-	public void setCodeTerminologyList(List<HumanReadableTerminologyModel> codeTerminologyList) {
-		this.codeTerminologyList = codeTerminologyList;
-	}
+    public List<HumanReadableExpressionModel> getRiskAdjustmentVariables() {
+        return riskAdjustmentVariables;
+    }
 
-	public List<HumanReadableTerminologyModel> getValuesetTerminologyList() {
-		return valuesetTerminologyList;
-	}
+    public void setRiskAdjustmentVariables(List<HumanReadableExpressionModel> riskAdjustmentVariables) {
+        this.riskAdjustmentVariables = riskAdjustmentVariables;
+    }
 
-	public void setValuesetTerminologyList(List<HumanReadableTerminologyModel> valuesetTerminologyList) {
-		this.valuesetTerminologyList = valuesetTerminologyList;
-	}
+    public List<HumanReadableTerminologyModel> getCodeTerminologyList() {
+        return codeTerminologyList;
+    }
 
-	public List<HumanReadableCodeModel> getCodeDataCriteriaList() {
-		return codeDataCriteriaList;
-	}
+    public void setCodeTerminologyList(List<HumanReadableTerminologyModel> codeTerminologyList) {
+        this.codeTerminologyList = codeTerminologyList;
+    }
 
-	public void setCodeDataCriteriaList(List<HumanReadableCodeModel> codeDataCriteriaList) {
-		this.codeDataCriteriaList = codeDataCriteriaList;
-	}
+    public List<HumanReadableTerminologyModel> getValuesetTerminologyList() {
+        return valuesetTerminologyList;
+    }
 
-	public List<HumanReadableValuesetModel> getValuesetDataCriteriaList() {
-		return valuesetDataCriteriaList;
-	}
+    public void setValuesetTerminologyList(List<HumanReadableTerminologyModel> valuesetTerminologyList) {
+        this.valuesetTerminologyList = valuesetTerminologyList;
+    }
 
-	public void setValuesetDataCriteriaList(List<HumanReadableValuesetModel> valuesetDataCriteriaList) {
-		this.valuesetDataCriteriaList = valuesetDataCriteriaList;
-	}
+    public List<HumanReadableCodeModel> getCodeDataCriteriaList() {
+        return codeDataCriteriaList;
+    }
 
-	public List<HumanReadableExpressionModel> getDefinitions() {
-		return definitions;
-	}
+    public void setCodeDataCriteriaList(List<HumanReadableCodeModel> codeDataCriteriaList) {
+        this.codeDataCriteriaList = codeDataCriteriaList;
+    }
 
-	public void setDefinitions(List<HumanReadableExpressionModel> definitions) {
-		this.definitions = definitions;
-	}
+    public List<HumanReadableValuesetModel> getValuesetDataCriteriaList() {
+        return valuesetDataCriteriaList;
+    }
 
-	public List<HumanReadableExpressionModel> getFunctions() {
-		return functions;
-	}
+    public void setValuesetDataCriteriaList(List<HumanReadableValuesetModel> valuesetDataCriteriaList) {
+        this.valuesetDataCriteriaList = valuesetDataCriteriaList;
+    }
 
-	public void setFunctions(List<HumanReadableExpressionModel> functions) {
-		this.functions = functions;
-	}
+    public List<HumanReadableExpressionModel> getDefinitions() {
+        return definitions;
+    }
 
-	public List<HumanReadableTerminologyModel> getValuesetAndCodeDataCriteriaList() {
-		return valuesetAndCodeDataCriteriaList;
-	}
+    public void setDefinitions(List<HumanReadableExpressionModel> definitions) {
+        this.definitions = definitions;
+    }
 
-	public void setValuesetAndCodeDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
-		this.valuesetAndCodeDataCriteriaList = valuesetAndCodeDataCriteriaList;
-	}
+    public List<HumanReadableExpressionModel> getFunctions() {
+        return functions;
+    }
+
+    public void setFunctions(List<HumanReadableExpressionModel> functions) {
+        this.functions = functions;
+    }
+
+    public List<HumanReadableTerminologyModel> getValuesetAndCodeDataCriteriaList() {
+        return valuesetAndCodeDataCriteriaList;
+    }
+
+    public void setValuesetAndCodeDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
+        this.valuesetAndCodeDataCriteriaList = valuesetAndCodeDataCriteriaList;
+    }
 }

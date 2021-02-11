@@ -23,6 +23,9 @@ public interface MeasureDetailViewInterface {
 	default List<String> preSave() {
 		return null;
 	}
+	default boolean hasSomeRequiredFields() {return false; }
+
+	default boolean hasAllRequiredFields() {return false; }
 
 	void setObserver(MeasureDetailsComponentObserver observer);
 	MeasureDetailsComponentObserver getObserver();

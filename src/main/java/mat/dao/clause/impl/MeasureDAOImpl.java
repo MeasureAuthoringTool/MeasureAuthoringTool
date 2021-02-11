@@ -89,6 +89,20 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     }
 
     @Override
+    public boolean existsWithSetId(String setId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        final Root<Measure> root = countQuery.from(Measure.class);
+
+        countQuery = countQuery.select(cb.count(root)).where(cb.equal(root.get("measureSet").get(ID),setId));
+
+        final Long count = session.createQuery(countQuery).getSingleResult();
+
+        return (count == null) ? false : count > 0;
+    }
+
+    @Override
     public List<Measure> getMeasureListForMeasureOwner(User user) {
         final Session session = getSessionFactory().getCurrentSession();
         final CriteriaBuilder cb = session.getCriteriaBuilder();

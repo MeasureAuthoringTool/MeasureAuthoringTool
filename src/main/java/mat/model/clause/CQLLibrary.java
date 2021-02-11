@@ -3,6 +3,7 @@ package mat.model.clause;
 import mat.hibernate.HibernateConf;
 import mat.model.User;
 import mat.model.cql.CQLLibraryShare;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -409,5 +410,17 @@ public class CQLLibrary {
 
     public void setExperimental(boolean experimental) {
         isExperimental = experimental;
+    }
+
+    @Transient
+    public String getMatVersion() {
+        String version = getVersion().toString();
+        String revision = getRevisionNumber().toString();
+
+        String[] split = version.split("\\.");
+
+        return "" + Integer.parseInt(split[0]) + "." +
+                Integer.parseInt(split[1]) + "." +
+                StringUtils.leftPad(revision, 3, '0');
     }
 }

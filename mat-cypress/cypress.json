@@ -1,0 +1,12 @@
+{
+  "defaultCommandTimeout": 20000,
+  "reporter": "mochawesome",
+  "reporterOptions": {
+    "reportDir": "cypress/results",
+    "overwrite": false,
+    "html": false,
+    "timestamp": "mmddyyyy_HHMMss",
+    "json": true,
+    "inline": true
+  }
+}

@@ -29,7 +29,6 @@ public class CQLEditorPanel extends Composite {
 		this.isReadOnly = isReadOnly;
 		this.editor = new CQLEditor(isReadOnly);
 		this.editor.getElement().getElementsByTagName("textarea").getItem(0).setTitle(text);
-		this.editor.getElement().setTitle(text);
 		initWidget(buildWidget());
 	}
 	

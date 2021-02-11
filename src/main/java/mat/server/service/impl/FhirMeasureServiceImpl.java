@@ -96,9 +96,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-        if (isUpdatingMatDB) {
-            deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
-        }
 
         ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(sourceMeasureDetails.getCQLLibraryName(),conversionResult);
@@ -152,7 +149,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         // Just to make sure the change is atomic and performed within the same single transaction.
         transactionTemplate.executeWithoutResult(status -> {
             try {
-                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails,true);
+                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.convert(sourceMeasureDetails);
 
                 //Update the MAT xml.
                 convertXml(sourceMeasureDetails.getId(),
@@ -163,8 +160,8 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
 
                 auditService.recordMeasureEvent(fhirMeasure.getId(),
-                        "Converted from QDM/CQL to FHIR",
-                        "QDM measure " + sourceMeasureDetails.getCQLLibraryName(),
+                        "Converted QDM/CQL to FHIR",
+                        fhirMeasure.getName() + " measure was converted from " + sourceMeasureDetails.getMeasureName() + " Version " + sourceMeasureDetails.getFormattedVersion(),
                         false);
             } catch (MatException | MatRuntimeException e) {
                 logger.error("persistFhirMeasure error", e);
@@ -191,6 +188,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     CQLModel.class);
 
             var destModel = cqlParser.parse(cql, sourceCqlModel).getCqlModel();
+            destModel.setLibraryName(sourceCqlModel.getLibraryName() + "FHIR");
 
             String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destModel);
             String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");

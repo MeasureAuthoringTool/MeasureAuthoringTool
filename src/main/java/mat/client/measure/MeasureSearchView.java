@@ -197,7 +197,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
                 cellTablePanel.add(invisibleLabel);
             } else {
 
-                MeasureLibraryGridToolbar gridToolbar = MeasureLibraryGridToolbar.withOptionsFromFlags();
+                MeasureLibraryGridToolbar gridToolbar = MeasureLibraryGridToolbar.withOptionsFromFlags("Search History");
                 gridToolbar.getElement().setAttribute("id", "MeasureSearchCellTable_gridToolbar");
 
                 table = measureLibraryResultTable.addColumnToTable(gridToolbar, table, MeasureSearchView.this);

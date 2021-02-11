@@ -1,10 +1,7 @@
 package mat.client.cqlworkspace.generalinformation;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import mat.client.buttons.SaveToolBarButton;
 import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
@@ -193,6 +190,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         heading.addStyleName("leftAligned");
         VerticalPanel generalInfoTopPanel = new VerticalPanel();
 
+
         FormLabel libraryNameLabel = new FormLabel();
         libraryNameLabel.setText("CQL Library Name");
         libraryNameLabel.setShowRequiredIndicator(true);
@@ -330,6 +328,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         heading.getElement().setTabIndex(-1);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
+        generalInfoTopPanel.add(new Label("* Indicates required fields."));
 
         generalInfoTopPanel.add(new SpacerWidget());
         generalInfoTopPanel.add(new SpacerWidget());

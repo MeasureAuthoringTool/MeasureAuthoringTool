@@ -53,6 +53,11 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
         buildDetailView();
     }
 
+    @Override
+    public boolean hasAllRequiredFields() {
+        return MatContext.get().isCurrentModelTypeFhir();
+    }
+
     private void updateForCompositeType(boolean isCompositeMeasure) {
         final MeasureType compositeType = getMeasureTypeList().stream().filter(m -> m.getAbbrName().equals(COMPOSITE)).findFirst().orElse(new MeasureType());
 

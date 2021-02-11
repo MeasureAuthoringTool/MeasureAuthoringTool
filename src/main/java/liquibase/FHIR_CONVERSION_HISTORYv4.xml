@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="FHIR_CONVERSION_HISTORY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="FHIR_CONVERSION_HISTORY">
+            <column name="qdm_set_id" type="varchar(45)"/>
+            <column name="fhir_set_id" type="varchar(45)"/>
+            <column name="LAST_MODIFIED_BY" type="varchar(40)"/>
+            <column name="LAST_MODIFIED_ON" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addPrimaryKey tableName="FHIR_CONVERSION_HISTORY" columnNames="qdm_set_id"/>
+        <createIndex tableName="FHIR_CONVERSION_HISTORY" indexName="FHIR_CONVERSION_HISTORY.fhir_set_id">
+            <column name="fhir_set_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

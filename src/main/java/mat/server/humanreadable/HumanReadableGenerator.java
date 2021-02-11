@@ -1,7 +1,6 @@
 package mat.server.humanreadable;
 
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
@@ -17,6 +16,7 @@ import mat.server.humanreadable.cql.HumanReadablePopulationCriteriaModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
+import mat.server.humanreadable.helper.DataRequirementsNoValueSetFilter;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
 import mat.server.logging.LogFactory;
 import mat.server.service.FhirMeasureRemoteCall;
@@ -55,22 +55,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class HumanReadableGenerator {
-
-    private final String CQLFUNCTION = "cqlfunction";
-
-    private final String CQLDEFINITION = "cqldefinition";
-
     private static final Log log = LogFactory.getLog(HumanReadableGenerator.class);
-
-    private Map<String, Integer> populationCountMap = new HashMap<>();
-    private Map<String, Integer> popCountMultipleMap = new HashMap<>();
-    private Map<String, String> populationNameMap = new HashMap<>();
 
     private static final String[] POPULATION_NAME_ARRAY = {MatConstants.INITIAL_POPULATION,
             MatConstants.DENOMINATOR, MatConstants.DENOMINATOR_EXCLUSIONS, MatConstants.NUMERATOR,
             MatConstants.NUMERATOR_EXCLUSIONS, MatConstants.DENOMINATOR_EXCEPTIONS,
             MatConstants.MEASURE_POPULATION, MatConstants.MEASURE_POPULATION_EXCLUSIONS, MatConstants.STRATUM,
             MatConstants.MEASURE_OBSERVATION_POPULATION};
+
+    private final String CQLFUNCTION = "cqlfunction";
+    private final String CQLDEFINITION = "cqldefinition";
+    private Map<String, Integer> populationCountMap = new HashMap<>();
+    private Map<String, Integer> popCountMultipleMap = new HashMap<>();
+    private Map<String, String> populationNameMap = new HashMap<>();
 
     @Autowired
     private CQLHumanReadableGenerator humanReadableGenerator;
@@ -97,7 +94,7 @@ public class HumanReadableGenerator {
                 HumanReadablePopulationModel population;
                 try {
                     population = getPopulationModel(measureXML, cqlNode.getParentNode());
-                    html = humanReadableGenerator.generateSinglePopulation(population,measureXML.contains("<usingModel>QDM</usingModel>"));
+                    html = humanReadableGenerator.generateSinglePopulation(population, measureXML.contains("<usingModel>QDM</usingModel>"));
                 } catch (XPathExpressionException | IOException | TemplateException e) {
                     e.printStackTrace();
                 }
@@ -114,7 +111,8 @@ public class HumanReadableGenerator {
     public String generateHTMLForMeasure(String measureId,
                                          String simpleXml,
                                          String measureReleaseVersion,
-                                         CQLLibraryDAO cqlLibraryDAO) {
+                                         CQLLibraryDAO cqlLibraryDAO,
+                                         List<String> dataRequirementsNoValueSet) {
 
         String html = "";
         log.debug("Generating human readable for ver:" + measureReleaseVersion);
@@ -137,8 +135,7 @@ public class HumanReadableGenerator {
                 HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
                 List<String> measureTypes = null;
                 if (model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
-                    measureTypes = new ArrayList<>();
-                    measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
+                    measureTypes = new ArrayList<>(model.getMeasureInformation().getMeasureTypes());
                     Collections.sort(measureTypes);
                 }
 
@@ -160,6 +157,15 @@ public class HumanReadableGenerator {
                     } else {
                         model.getMeasureInformation().setImprovementNotation("Increased score indicates improvement");
                     }
+
+                    if (CollectionUtils.isNotEmpty(dataRequirementsNoValueSet)) {
+                        List<HumanReadableTerminologyModel> dataRequirementsNoValueSetList =
+                                processDataRequirementsNoValueSet(dataRequirementsNoValueSet);
+
+                        model.getValuesetAndCodeDataCriteriaList().addAll(dataRequirementsNoValueSetList);
+                        sortDataCriteriaList(model.getValuesetAndCodeDataCriteriaList());
+                    }
+
                 } else {
                     // For QDM unused is filtered.
                     model.setDefinitions(getDefinitionsQDM(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
@@ -179,10 +185,11 @@ public class HumanReadableGenerator {
                     List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>();
                     valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
                     valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
+
                     sortDataCriteriaList(valuesetAndCodeDataCriteriaList);
                     model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
                 }
-                html = humanReadableGenerator.generate(model,cqlModel.isFhir());
+                html = humanReadableGenerator.generate(model, cqlModel.isFhir());
             } catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
                 log.error("Error in HumanReadableGenerator::generateHTMLForMeasure: " + e.getMessage(), e);
             }
@@ -193,31 +200,28 @@ public class HumanReadableGenerator {
         return html;
     }
 
+    private List<HumanReadableTerminologyModel> processDataRequirementsNoValueSet(List<String> dataRequirementsNoValueSet) {
+        DataRequirementsNoValueSetFilter dataRequirementsNoValueSetFilter =
+                new DataRequirementsNoValueSetFilter(dataRequirementsNoValueSet);
+
+        return dataRequirementsNoValueSetFilter.process();
+    }
+
     private SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
         return cqlService.parseFhirCQLForErrors(cqlModel, cqlString);
     }
 
     private void sortDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
-        Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {
 
-            @Override
-            public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
-
-                String o1String = o1.getDatatype() + ": " + o1.getName();
-                String o2String = o2.getDatatype() + ": " + o2.getName();
-                return o1String.compareToIgnoreCase(o2String);
-            }
+        valuesetAndCodeDataCriteriaList.sort((o1, o2) -> {
+            String o1String = (o1.getDatatype() == null ? "" : o1.getDatatype()) + ": " + (o1.getName() == null ? "" : o1.getName());
+            String o2String = (o2.getDatatype() == null) ? "" : o2.getDatatype() + ": " + (o2.getName() == null ? "" : o2.getName());
+            return o1String.compareToIgnoreCase(o2String);
         });
     }
 
     private void sortTerminologyList(List<HumanReadableTerminologyModel> terminologyList) throws XPathExpressionException {
-        Collections.sort(terminologyList, new Comparator<HumanReadableTerminologyModel>() {
-
-            @Override
-            public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        terminologyList.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
     }
 
     private List<String> getCQLIdentifiers(CQLModel cqlModel) {

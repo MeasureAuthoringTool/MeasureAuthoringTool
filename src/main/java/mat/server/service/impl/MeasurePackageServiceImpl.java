@@ -353,7 +353,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public int returnMaxEMeasureId() {
-        return measureDAO.getMaxEMeasureId() + 1;
+        try {
+            return measureDAO.getMaxEMeasureId() + 1;
+        } catch (RuntimeException re) {
+            logger.error("MeasurePackageServiceImpl::returnMaxEMeasureId -> Error retrieving MaxEMeasureId", re);
+            throw re;
+        }
     }
 
     @Override

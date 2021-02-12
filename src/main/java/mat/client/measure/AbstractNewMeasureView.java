@@ -217,6 +217,16 @@ public class AbstractNewMeasureView implements DetailDisplay {
         return generateCmsIdCheckbox;
     }
 
+    @Override
+    public RadioButton getFhirModel() {
+        return fhirModel;
+    }
+
+    @Override
+    public RadioButton getQdmModel() {
+        return qdmModel;
+    }
+
     protected void buildMainPanel() {
         mainPanel.setStylePrimaryName("contentPanel");
         mainPanel.addStyleName("leftAligned");

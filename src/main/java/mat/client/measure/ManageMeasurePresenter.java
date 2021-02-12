@@ -554,13 +554,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 
         detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
-        detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
-            if (clickEvent.getValue()) {
-                generateCmsIdAndSetLibraryName(detailDisplay);
-            } else {
-                detailDisplay.getCQLLibraryNameTextBox().setValue("");
-            }
-        });
+        addHandlerToGenerateCmsId();
         detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 
@@ -580,11 +574,33 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
     }
 
+    private void addHandlerToGenerateCmsId() {
+        detailDisplay.getFhirModel().addValueChangeHandler(clickEvent -> {
+            if (clickEvent.getValue()) {
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID and matching Library Name upon save");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID and matching Library Name upon save");
+            }
+        });
+        detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
+            if (clickEvent.getValue()) {
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a eCQM ID and matching Library Name upon save");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate a eCQM ID and matching Library Name upon save");
+            }
+        });
+        detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            if (clickEvent.getValue()) {
+                generateCmsIdAndSetLibraryName(detailDisplay);
+            } else {
+                detailDisplay.getCQLLibraryNameTextBox().setValue("");
+            }
+        });
+    }
+
     private void generateCmsIdAndSetLibraryName(DetailDisplay detailDisplay) {
         MatContext.get().getMeasureService().generateMaxEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {
-                logger.log(Level.WARNING, "unable to generateMaxEmeasureIdForNewMeasure");
+                logger.log(Level.WARNING, "Unable to generateMaxEmeasureIdForNewMeasure");
             }
 
             @Override

@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.RadioButton;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
@@ -57,6 +58,10 @@ public interface DetailDisplay extends BaseDisplay {
 	WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
 
     CheckBox getGenerateCmsIdCheckbox();
+
+    RadioButton getFhirModel();
+
+    RadioButton getQdmModel();
 
     ErrorHandler getErrorHandler();
 }

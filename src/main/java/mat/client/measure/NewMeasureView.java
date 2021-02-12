@@ -20,6 +20,8 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameTextBox);
 		//Measure mode type radios
 		addMeasureModelType();
+
+		addGenerateCmsIdCheckbox();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);

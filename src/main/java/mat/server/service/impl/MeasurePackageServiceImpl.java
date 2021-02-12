@@ -352,6 +352,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     }
 
     @Override
+    public int returnMaxEMeasureId() {
+        return measureDAO.getMaxEMeasureId() + 1;
+    }
+
+    @Override
     public void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
         MeasureXML measureXML = measureXMLDAO.findForMeasure(measureXmlModel.getMeasureId());
         if (measureXML != null) {

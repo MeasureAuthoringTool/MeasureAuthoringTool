@@ -12,8 +12,8 @@ import mat.client.shared.*;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
-import mat.shared.CQLModelValidator;
 import mat.shared.validator.measure.CommonMeasureValidator;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.*;
@@ -41,6 +41,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormGroup messageFormGrp = new FormGroup();
     protected FormGroup measureNameGroup = new FormGroup();
     protected FormGroup measureModelGroup = new FormGroup();
+    protected FormGroup generateCmsIdGroup = new FormGroup();
     protected FormGroup cqlLibraryNameGroup = new FormGroup();
     protected FormGroup shortNameGroup = new FormGroup();
     protected FormGroup scoringGroup = new FormGroup();
@@ -50,6 +51,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
     EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
     private ErrorHandler errorHandler = new ErrorHandler();
+
+    private CheckBox generateCmsIdCheckbox = new CheckBox();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -85,6 +88,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         cqlLibraryNameTextBox.setText("");
         measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
         helpBlock.setText("");
+        generateCmsIdCheckbox.setValue(false);
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();
         warningMessageAlert.clearAlert();
@@ -208,6 +212,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
         return confirmationDialogBox;
     }
 
+    @Override
+    public CheckBox getGenerateCmsIdCheckbox() {
+        return generateCmsIdCheckbox;
+    }
+
     protected void buildMainPanel() {
         mainPanel.setStylePrimaryName("contentPanel");
         mainPanel.addStyleName("leftAligned");
@@ -301,6 +310,15 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void addCompositeMeasureModelType() {
         measureModelGroup.add(buildCompositeModelTypePanel());
+    }
+
+    protected void addGenerateCmsIdCheckbox() {
+        generateCmsIdCheckbox.setText("Automatically generate a CMS ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setTitle("Click to generate a CMS ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
+        ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
+        generateCmsIdGroup.add(generateCmsIdCheckbox);
     }
 
     protected void buildMeasureNameTextArea() {
@@ -444,6 +462,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         FieldSet formFieldSet = new FieldSet();
         formFieldSet.add(measureNameGroup);
         formFieldSet.add(measureModelGroup);
+        formFieldSet.add(generateCmsIdGroup);
         formFieldSet.add(cqlLibraryNameGroup);
         formFieldSet.add(shortNameGroup);
         formFieldSet.add(scoringGroup);

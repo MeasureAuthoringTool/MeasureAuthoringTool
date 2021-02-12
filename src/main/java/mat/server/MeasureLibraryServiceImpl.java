@@ -5880,6 +5880,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
+    public int generateMaxEmeasureIdForNewMeasure() {
+        MeasurePackageService service = measurePackageService;
+        return service.returnMaxEMeasureId();
+    }
+
+    @Override
     public String getHumanReadableForMeasureDetails(String measureId, String measureModel) {
         String humanReadableHTML = "";
         try {

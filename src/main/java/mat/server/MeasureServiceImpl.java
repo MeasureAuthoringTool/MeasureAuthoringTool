@@ -526,6 +526,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
+    public int generateMaxEmeasureIdForNewMeasure() {
+        return this.getMeasureLibraryService().generateMaxEmeasureIdForNewMeasure();
+    }
+
+    @Override
     public String getHumanReadableForMeasureDetails(String measureId, String measureModel) {
         return this.getMeasureLibraryService().getHumanReadableForMeasureDetails(measureId, measureModel);
     }

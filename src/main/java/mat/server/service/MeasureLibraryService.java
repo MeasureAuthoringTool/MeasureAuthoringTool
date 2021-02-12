@@ -649,6 +649,8 @@ public interface MeasureLibraryService {
 
 	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
+	int generateMaxEmeasureIdForNewMeasure();
+
 	String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);

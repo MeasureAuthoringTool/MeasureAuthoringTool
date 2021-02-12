@@ -553,6 +553,17 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
         detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 
+        detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+        detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            if (clickEvent.getValue()) {
+                generateCmsIdAndSetLibraryName(detailDisplay);
+            } else {
+                detailDisplay.getCQLLibraryNameTextBox().setValue("");
+            }
+        });
+        detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+        detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+
         MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -564,14 +575,24 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 detailDisplay.setScoringChoices(result);
             }
         });
-
         detailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
-
-        detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
-        detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
-        detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getMeasureScoringListBox().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
+    }
+
+    private void generateCmsIdAndSetLibraryName(DetailDisplay detailDisplay) {
+        MatContext.get().getMeasureService().generateMaxEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                logger.log(Level.WARNING, "unable to generateMaxEmeasureIdForNewMeasure");
+            }
+
+            @Override
+            public void onSuccess(Integer integer) {
+                currentDetails.seteMeasureId(integer);
+                detailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + integer);
+            }
+        });
     }
 
     private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {

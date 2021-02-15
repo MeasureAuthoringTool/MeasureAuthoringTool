@@ -87,14 +87,14 @@ export const visibleContain = (element, text) => {
 export const existsWithTimeout = (element, timeout = 6000) => {
     cy.get(element, {timeout: timeout}).should('exist')
 }
-export const notExistsWithTimeout = (element, timeout= 60000) => {
+export const notExistsWithTimeout = (element, timeout = 60000) => {
     cy.get(element, {timeout: timeout}).should('not.exist')
 }
 export const visibleWithTimeout = (element, timeout = 60000) => {
     cy.log('Element->' + element)
     cy.get(element, {timeout: timeout}).should('be.visible')
 }
-export const notVisibleWithTimeout = (element, timeout=400000) => {
+export const notVisibleWithTimeout = (element, timeout = 400000) => {
     cy.get(element, {timeout: timeout}).should('not.be.visible')
 }
 export const notNull = (element) => {
@@ -207,10 +207,10 @@ export const enabledWithTimeout = (element, timeout = 60000) => {
 }
 
 export const disabledWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, { timeout: timeout }).should('be.disabled')
+    cy.get(element, {timeout: timeout}).should('be.disabled')
 }
 export const notDisabledWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, { timeout: timeout }).should('not.be.disabled')
+    cy.get(element, {timeout: timeout}).should('not.be.disabled')
 }
 
 export const selectRadio = (el) => {
@@ -225,9 +225,20 @@ export const enterText = (el, text) => {
 export const enterTextBlur = (el, text) => {
     cy.get(el).clear().type(text, {delay: 50}).focus().blur()
 }
-export const enterTextConfirm = (el, text) => {
-    cy.get(el).click().focused().clear().type(text, {delay: 50, force: true}).should('have.value', text)
+
+export const enterTextConfirmCypress = (cypressElement, text) => {
+    cypressElement
+        .click()
+        .focused()
+        .clear()
+        .type(text, {delay: 50, force: true})
+        .should('have.value', text)
 }
+
+export const enterTextConfirm = (el, text) => {
+    enterTextConfirmCypress(cy.get(el), text)
+}
+
 export const enterTextNoClear = (el, text) => {
     cy.get(el).type(text, {delay: 50})
 }
@@ -471,10 +482,10 @@ export const spinnerNotVisible = () => {
     // waitToHaveText(matheader.spinnerShadow,'...')
 
     notVisibleWithTimeout(matheader.spinner, 90000)
-  //  notVisibleWithTimeout(matheader.spinnerWrapper, 90000)
-  //  notVisibleWithTimeout(matheader.spinnerShadow, 90000)
-  //  notVisibleWithTimeout(matheader.spinnerModal, 90000)
- //   notVisibleWithTimeout(matheader.spinner, 90000)
+    //  notVisibleWithTimeout(matheader.spinnerWrapper, 90000)
+    //  notVisibleWithTimeout(matheader.spinnerShadow, 90000)
+    //  notVisibleWithTimeout(matheader.spinnerModal, 90000)
+    //   notVisibleWithTimeout(matheader.spinner, 90000)
 }
 export const spinnerExists = () => {
     existsWithTimeout(matheader.spinner, 60000)

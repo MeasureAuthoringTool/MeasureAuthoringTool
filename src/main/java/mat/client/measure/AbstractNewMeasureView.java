@@ -52,7 +52,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
     private ErrorHandler errorHandler = new ErrorHandler();
 
-    private CheckBox generateCmsIdCheckbox = new CheckBox();
+    protected CheckBox generateCmsIdCheckbox = new CheckBox();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -330,6 +330,17 @@ public class AbstractNewMeasureView implements DetailDisplay {
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
         generateCmsIdGroup.add(generateCmsIdCheckbox);
     }
+
+    protected void addCompositeGenerateCmsIdCheckbox() {
+        generateCmsIdCheckbox.setText("Automatically generate a eCQM ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setTitle("Click to generate a eCQM ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
+        ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
+        generateCmsIdGroup.add(generateCmsIdCheckbox);
+    }
+
+
 
     protected void buildMeasureNameTextArea() {
         measureNameTextBox.setId("MeasureNameTextArea");

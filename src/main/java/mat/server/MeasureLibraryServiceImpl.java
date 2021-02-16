@@ -1770,6 +1770,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             boolean isFhir = ModelTypeHelper.isFhir(model.getMeasureModel());
 
             SaveMeasureResult result = new SaveMeasureResult();
+            int eMeasureId = generateMaxEmeasureIdForNewMeasure();
+            if (model.getId() == null && model.geteMeasureId() != 0 && model.geteMeasureId() != eMeasureId) {
+                result.setEMeasureId(eMeasureId);
+                result.setFailureReason(SaveUpdateCQLResult.INVALID_EMEASUREID);
+                result.setSuccess(false);
+                return result;
+            }
+
             if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
                 result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
                 result.setSuccess(false);
@@ -5632,6 +5640,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 
             SaveMeasureResult result = new SaveMeasureResult();
+            int eMeasureId = generateMaxEmeasureIdForNewMeasure();
+            if (model.getId() == null && model.geteMeasureId() != 0 && model.geteMeasureId() != eMeasureId) {
+                result.setEMeasureId(eMeasureId);
+                result.setFailureReason(SaveUpdateCQLResult.INVALID_EMEASUREID);
+                result.setSuccess(false);
+                return result;
+            }
+
             if (!isExisting && libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
                 result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
                 result.setSuccess(false);

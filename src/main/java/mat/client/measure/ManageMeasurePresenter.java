@@ -45,6 +45,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
+import mat.client.shared.InvalidEMeasureIdGeneratorDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.MessageDelegate;
@@ -476,6 +477,30 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         ((NewCompositeMeasureView) compositeDetailDisplay).getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
+
+
+        compositeDetailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            if (clickEvent.getValue()) {
+                generateCompositeCmsIdAndSetLibraryName();
+            } else {
+                compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("");
+            }
+        });
+    }
+
+    private void generateCompositeCmsIdAndSetLibraryName() {
+        MatContext.get().getMeasureService().generateMaxEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                logger.log(Level.WARNING, "Unable to generateMaxEmeasureIdForNewMeasure");
+            }
+
+            @Override
+            public void onSuccess(Integer integer) {
+                currentCompositeMeasureDetails.seteMeasureId(integer);
+                compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + integer);
+            }
+        });
     }
 
     private void setIsPageDirty(boolean isPageDirty) {
@@ -516,7 +541,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         public void onSuccess(Boolean result) {
                             if (result) {
                                 compositeDetailDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
-
                             } else {
                                 String panelHeading = "";
                                 if (StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
@@ -524,9 +548,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                 } else {
                                     panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
                                 }
-
                                 displayComponentDetails(panelHeading);
-
                             }
                         }
                     });
@@ -589,14 +611,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                generateCmsIdAndSetLibraryName(detailDisplay);
+                generateCmsIdAndSetLibraryName();
             } else {
                 detailDisplay.getCQLLibraryNameTextBox().setValue("");
             }
         });
     }
 
-    private void generateCmsIdAndSetLibraryName(DetailDisplay detailDisplay) {
+    private void generateCmsIdAndSetLibraryName() {
         MatContext.get().getMeasureService().generateMaxEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -845,6 +867,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         Mat.hideLoadingMessage();
                         if (result.isSuccess()) {
                             displaySuccessAndRedirectToMeasure(result.getId());
+                        } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID ) {
+                            handleInvalidEMeasureIdGenerator(result);
                         } else {
                             detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
                         }
@@ -854,6 +878,27 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 setSearchingBusy(false);
             }
         }
+    }
+
+    private void handleInvalidEMeasureIdGenerator(SaveMeasureResult result) {
+        InvalidEMeasureIdGeneratorDialogBox dialogBox = new InvalidEMeasureIdGeneratorDialogBox();
+        boolean isFhir = ModelTypeHelper.isFhir(currentDetails.getMeasureModel());
+        if (currentDetails.getCQLLibraryName().equalsIgnoreCase("CMS" + currentDetails.geteMeasureId())) {
+            dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID ")
+                    + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Do you wish to continue?");
+        } else {
+            dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
+                    + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "
+                    + (isFhir ? "CNS ID" : "eCQM ID") + "checkbox and update your Cql library Name accordingly.");
+            dialogBox.getConfirmButton().setEnabled(false);
+        }
+
+        dialogBox.getConfirmButton().addClickHandler(event -> {
+            currentDetails.seteMeasureId(result.geteMeasureId());
+            detailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + result.geteMeasureId());
+            createNewMeasure();
+            dialogBox.closeDialogBox();
+        });
     }
 
     private void displaySuccessAndRedirectToMeasure(String measureId) {
@@ -2289,13 +2334,35 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onSuccess(SaveMeasureResult result) {
                 if (result.isSuccess()) {
                     displaySuccessAndRedirectToComposite(result.getId());
-
+                } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID) {
+                    handleCompositeInvalidEMeasureIdGenerator(result);
                 } else {
                     componentMeasureDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
                 }
 
                 componentMeasureDisplay.setComponentBusy(false);
             }
+        });
+    }
+
+    private void handleCompositeInvalidEMeasureIdGenerator(SaveMeasureResult result) {
+        InvalidEMeasureIdGeneratorDialogBox dialogBox = new InvalidEMeasureIdGeneratorDialogBox();
+        boolean isFhir = ModelTypeHelper.isFhir(currentCompositeMeasureDetails.getMeasureModel());
+        if (currentCompositeMeasureDetails.getCQLLibraryName().equalsIgnoreCase("CMS" + currentCompositeMeasureDetails.geteMeasureId())) {
+            dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID ")
+                    + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Do you wish to continue?");
+        } else {
+            dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
+                    + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "
+                    + (isFhir ? "CNS ID" : "eCQM ID") + "checkbox and update your Cql library Name accordingly.");
+            dialogBox.getConfirmButton().setEnabled(false);
+        }
+
+        dialogBox.getConfirmButton().addClickHandler(event -> {
+            currentCompositeMeasureDetails.seteMeasureId(result.geteMeasureId());
+            compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + result.geteMeasureId());
+            createNewCompositeMeasure();
+            dialogBox.closeDialogBox();
         });
     }
 

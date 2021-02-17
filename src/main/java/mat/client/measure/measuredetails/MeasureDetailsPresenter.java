@@ -220,7 +220,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
         if (isDeletable()) {
             clearAlerts();
             dialogBox = new DeleteConfirmDialogBox();
-            dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
+            dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE(), "Delete Measure Forever");
             dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
         }
     }

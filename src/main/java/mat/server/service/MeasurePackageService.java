@@ -140,7 +140,7 @@ public interface MeasurePackageService {
      */
     int saveAndReturnMaxEMeasureId(Measure measure);
 
-    int returnMaxEMeasureId();
+    int generateEMeasureId();
 
     /**
      * Save measure xml.

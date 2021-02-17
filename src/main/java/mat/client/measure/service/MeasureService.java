@@ -598,7 +598,7 @@ public interface MeasureService extends RemoteService {
 
     int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
-    int generateMaxEmeasureIdForNewMeasure();
+    int generateEmeasureIdForNewMeasure();
 
     String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 

@@ -1770,7 +1770,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             boolean isFhir = ModelTypeHelper.isFhir(model.getMeasureModel());
 
             SaveMeasureResult result = new SaveMeasureResult();
-            int eMeasureId = generateMaxEmeasureIdForNewMeasure();
+            int eMeasureId = generateEmeasureIdForNewMeasure();
             if (model.getId() == null && model.geteMeasureId() != 0 && model.geteMeasureId() != eMeasureId) {
                 result.setEMeasureId(eMeasureId);
                 result.setFailureReason(SaveUpdateCQLResult.INVALID_EMEASUREID);
@@ -5640,7 +5640,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 
             SaveMeasureResult result = new SaveMeasureResult();
-            int eMeasureId = generateMaxEmeasureIdForNewMeasure();
+            int eMeasureId = generateEmeasureIdForNewMeasure();
             if (model.getId() == null && model.geteMeasureId() != 0 && model.geteMeasureId() != eMeasureId) {
                 result.setEMeasureId(eMeasureId);
                 result.setFailureReason(SaveUpdateCQLResult.INVALID_EMEASUREID);
@@ -5896,9 +5896,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public int generateMaxEmeasureIdForNewMeasure() {
+    public int generateEmeasureIdForNewMeasure() {
         MeasurePackageService service = measurePackageService;
-        return service.returnMaxEMeasureId();
+        return service.generateEMeasureId();
     }
 
     @Override

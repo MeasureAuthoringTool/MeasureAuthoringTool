@@ -23,7 +23,7 @@ class MeasurePackageServiceImplTest {
     @Test
     void testReturnMaxEMeasureId() {
         Mockito.when(measureDAO.getMaxEMeasureId()).thenReturn(1024);
-        int maxId = measurePackageService.returnMaxEMeasureId();
+        int maxId = measurePackageService.getMaxEMeasureId();
         assertEquals(1025 , maxId);
     }
 }

@@ -649,7 +649,7 @@ public interface MeasureLibraryService {
 
 	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
-	int generateMaxEmeasureIdForNewMeasure();
+	int generateEmeasureIdForNewMeasure();
 
 	String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 

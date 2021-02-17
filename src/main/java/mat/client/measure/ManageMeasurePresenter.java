@@ -2350,7 +2350,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         boolean isFhir = ModelTypeHelper.isFhir(currentCompositeMeasureDetails.getMeasureModel());
         if (currentCompositeMeasureDetails.getCQLLibraryName().equalsIgnoreCase("CMS" + currentCompositeMeasureDetails.geteMeasureId())) {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID ")
-                    + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Do you wish to continue?");
+                    + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, so the ID will be " + result.geteMeasureId() + ". Do you wish to continue?");
         } else {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
                     + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "

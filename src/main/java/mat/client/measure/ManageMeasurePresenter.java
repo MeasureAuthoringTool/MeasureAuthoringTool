@@ -605,8 +605,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a eCQM ID and matching Library Name (upon save)");
-                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate a eCQM ID and matching Library Name (upon save)");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate an eCQM ID and matching Library Name (upon save)");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID and matching Library Name (upon save)");
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
@@ -885,7 +885,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         boolean isFhir = ModelTypeHelper.isFhir(currentDetails.getMeasureModel());
         if (currentDetails.getCQLLibraryName().equalsIgnoreCase("CMS" + currentDetails.geteMeasureId())) {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID ")
-                    + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Do you wish to continue?");
+                    + currentDetails.geteMeasureId() + " has been taken, so your ID will be " + result.geteMeasureId() + ".");
         } else {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
                     + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "

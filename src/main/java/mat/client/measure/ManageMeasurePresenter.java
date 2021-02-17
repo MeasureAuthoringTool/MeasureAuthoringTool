@@ -599,14 +599,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void addHandlerToGenerateCmsId() {
         detailDisplay.getFhirModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID and matching Library Name upon save");
-                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID and matching Library Name upon save");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID and matching Library Name (upon save)");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID and matching Library Name (upon save)");
             }
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a eCQM ID and matching Library Name upon save");
-                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate a eCQM ID and matching Library Name upon save");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a eCQM ID and matching Library Name (upon save)");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate a eCQM ID and matching Library Name (upon save)");
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {

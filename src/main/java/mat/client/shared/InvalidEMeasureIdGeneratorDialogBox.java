@@ -3,7 +3,6 @@ package mat.client.shared;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.gwtbootstrap3.client.ui.Button;
@@ -26,7 +25,6 @@ public class InvalidEMeasureIdGeneratorDialogBox {
     public void displayInvalidEMeasureIdMessage(String message) {
         focusPanel.clear();
         panel = new Modal();
-        Button cancelButton = new Button("Cancel");
         confirmButton = new Button("Continue");
         ModalBody modalBody = new ModalBody();
         messageAlert = new ErrorMessageAlert();
@@ -52,7 +50,6 @@ public class InvalidEMeasureIdGeneratorDialogBox {
 
         messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
         messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
-        Window.alert(message);
         messageAlert.createAlert(message);
 
         ModalFooter modalFooter = new ModalFooter();
@@ -61,12 +58,6 @@ public class InvalidEMeasureIdGeneratorDialogBox {
         confirmButton.setSize(ButtonSize.DEFAULT);
         confirmButton.setEnabled(true);
 
-        cancelButton.setType(ButtonType.PRIMARY);
-        cancelButton.setSize(ButtonSize.DEFAULT);
-        cancelButton.setEnabled(true);
-        cancelButton.addClickHandler(e -> closeDialogBox());
-
-        modalFooter.add(cancelButton);
         modalFooter.add(confirmButton);
         VerticalPanel vp = new VerticalPanel();
         vp.add(messageAlert);

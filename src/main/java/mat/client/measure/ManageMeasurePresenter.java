@@ -889,7 +889,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         } else {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
                     + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "
-                    + (isFhir ? "CNS ID" : "eCQM ID") + "checkbox and update your Cql library Name accordingly.");
+                    + (isFhir ? "CMS ID" : "eCQM ID") + " checkbox and update your CQL library Name accordingly.");
             dialogBox.getConfirmButton().setEnabled(false);
         }
 
@@ -2354,7 +2354,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         } else {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
                     + currentCompositeMeasureDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "
-                    + (isFhir ? "CNS ID" : "eCQM ID") + "checkbox and update your Cql library Name accordingly.");
+                    + (isFhir ? "CMS ID" : "eCQM ID") + " checkbox and update your CQL library Name accordingly.");
             dialogBox.getConfirmButton().setEnabled(false);
         }
 

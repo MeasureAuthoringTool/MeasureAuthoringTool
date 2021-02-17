@@ -1,5 +1,9 @@
 import * as helper from "./helpers";
 
+import LoginPage from "./domain/pageObjects/LoginPage";
+import LogoutElement from "./domain/pageElements/LogoutElement";
+import UmlsElement from "./domain/pageElements/UmlsElement";
+
 const ENV_TAG = "env:"
 
 function parse(value = "") {
@@ -18,36 +22,43 @@ Cypress.Commands.add("loadCredentials", (credentials) => {
 })
 
 Cypress.Commands.add("matLogin", (userName, password, checkCheckBox = true) => {
-    cy.visit("/MeasureAuthoringTool/Login.html")
-    cy.get('#okta-signin-username').type(userName)
-    cy.get('#okta-signin-password').type(password)
+    const loginPage = new LoginPage()
+
+    loginPage.visitPage();
+    loginPage.userNameTextInput().type(userName)
+    loginPage.userPasswordTextInput().type(password)
 
     if (checkCheckBox) {
-        cy.get('.custom-checkbox input').check({force: true}).should('be.checked')
-        cy.get('#okta-signin-submit').click()
+        loginPage.termsAndConditionsCheckBox().check({force: true}).should('be.checked')
+        loginPage.submitButton().click()
     }
 })
 
 Cypress.Commands.add("matLogout", () => {
-    cy.get('#userprofile > .fa').click()
-    cy.get('[title="Sign Out"]').click()
+    const logoutPage = new LogoutElement()
+    const loginPage = new LoginPage()
 
-    cy.get('.okta-form-title').contains('Sign In')
+    logoutPage.userProfileDropDown().click()
+    logoutPage.signOutLink().click()
+
+    loginPage.formTitle().contains('Sign In')
 })
 
 Cypress.Commands.add("umlsLogin", (umlsApiKey, headerLabel = 'UMLS Active') => {
-    cy.get(':nth-child(1) > .loginSpacer > :nth-child(1) > .btn > span').click();
-    cy.wait(1000)
-    helper.enterTextConfirm('#inputPwd', umlsApiKey)
+    const umlsElement = new UmlsElement()
 
-    cy.get('#umlsSubmitButton').click()
+    umlsElement.signInLink().click();
+    cy.wait(1000)
+
+    helper.enterTextConfirmCypress(umlsElement.apiKeyTextInput(), umlsApiKey)
+
+    umlsElement.submitButton().click()
     cy.wait(1000)
 
     if (headerLabel.length === 0) {
         console.log("Not checking");
     } else {
-        console.log(" checking");
-        cy.get('.close').click()
-        cy.get('[style=""] > #disco > span').contains(headerLabel)
+        umlsElement.loginSuccessSpan().contains(headerLabel)
+        umlsElement.dialogCloseButton().click()
     }
 })

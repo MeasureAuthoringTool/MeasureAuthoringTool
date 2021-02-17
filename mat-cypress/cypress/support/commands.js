@@ -3,7 +3,6 @@ import * as helper from '../support/helpers'
 import * as cqlLibrary from "../../elements/CqlLibraryElements";
 
 
-
 const spinner = '.spinner-loading'
 const spinnerShadow = '.spinner-loading .spinner-loading-shadow'
 const spinnerWrapper = '.spinner-wrapper'

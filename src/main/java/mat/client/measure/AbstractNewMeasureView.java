@@ -332,8 +332,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     protected void addCompositeGenerateCmsIdCheckbox() {
-        generateCmsIdCheckbox.setText("Automatically generate a eCQM ID and matching Library Name upon save");
-        generateCmsIdCheckbox.setTitle("Click to generate a eCQM ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setText("Automatically generate an eCQM ID and matching Library Name upon save");
+        generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID and matching Library Name upon save");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");

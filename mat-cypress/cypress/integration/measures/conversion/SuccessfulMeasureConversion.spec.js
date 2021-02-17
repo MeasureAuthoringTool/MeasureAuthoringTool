@@ -2,6 +2,8 @@ import * as helper from '../../../support/helpers'
 import * as measureLibrary from '../../../../elements/MeasureLibraryElements'
 import * as dataCreation from '../../../support/MAT/MeasureAndCQLLibraryCreation'
 import * as cqlElements from "../../../../elements/CqlLibraryElements";
+import MeasureLibPage from "../../../support/domain/pageObjects/MeasureLibPage";
+import CreateMeasureVersionDraftPage from "../../../support/domain/pageObjects/CreateMeasureVersionDraftPage";
 
 
 describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
@@ -23,15 +25,20 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
 
     it('Convert QDM measure to FHIR successfully, verify measure history', () => {
 
+        const measureLibPage = new MeasureLibPage()
+
         const cqlMeasureName = dataCreation.createDraftMeasure('QdmCqlMeasure', 'QDM')
         const fhirMeasureName = cqlMeasureName + 'FHIR';
 
         cy.log("Working measureName: " + cqlMeasureName)
         //cy.spinnerNotVisible()
 
-        helper.enabledWithTimeout(measureLibrary.searchInputBox)
-        helper.enterText(measureLibrary.searchInputBox, cqlMeasureName)
-        cy.get(measureLibrary.searchBtn).click()
+        measureLibPage.searchInputBox().should('be.enabled')
+        //helper.enabledWithTimeout(measureLibrary.searchInputBox)
+
+        helper.enterTextConfirmCypress(measureLibPage.searchInputBox(), cqlMeasureName)
+
+        measureLibPage.searchButton().click()
 
         cy.spinnerNotVisible()
 
@@ -40,36 +47,41 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
         cy.get(measureLibrary.row1MeasureModelVersion).should('contain.text', '5.5')
 
         cy.wait(5000)
-        cy.get('.GB-MJYKBMI > div').click({force: true})//.should('be.checked')
+        measureLibPage.measureSearchResultCheckBox().click({force: true})
+        //cy.get('.GB-MJYKBMI > div').click({force: true})//.should('be.checked')
         cy.wait(5000)
 
 
-        cy.get(measureLibrary.createVersionMeasureSearchBtn).click()
-        cy.get(measureLibrary.majorVersionTypeRadio).click()
-        cy.get(measureLibrary.packageAndVersion).click()
+        measureLibPage.createVersionTabButton().click();
+        // cy.get(measureLibrary.createVersionMeasureSearchBtn).click()
 
+
+        const createMeasureVersionDraftPage = new CreateMeasureVersionDraftPage()
+        createMeasureVersionDraftPage.majorVersionTypeRadio().click()
+        createMeasureVersionDraftPage.packageAndVersionButton().click()
         cy.spinnerNotVisible()
-
-        cy.get(measureLibrary.continueBtn).click()
+        createMeasureVersionDraftPage.dialogContinueButton().click()
 
         helper.verifySpinnerAppearsAndDissappears()
 
-        helper.visibleWithTimeout(measureLibrary.row1MeasureSearch)
+       measureLibPage.tr1MeasureSearch().should('be.visible')
+        // helper.visibleWithTimeout(measureLibrary.row1MeasureSearch)
 
         cy.wait(5000)
-        cy.get('.GB-MJYKBMI > div > input').click({force: true})
+        measureLibPage.measureSearchResultCheckBox().click({force: true})
+       // cy.get('.GB-MJYKBMI > div > input').click({force: true})
         cy.wait(5000)
 
 
-        cy.get('[aria-label="Search History Convert"]').click()
+        measureLibPage.convertToFhirTabButton().click()
 
         cy.spinnerNotVisible()
 
         helper.visibleWithTimeout(measureLibrary.row1MeasureSearch)
         cy.wait(15000)
-        cy.get('#MeasureSearchCellTable > tbody > tr > td').contains(fhirMeasureName)
-        cy.get('#MeasureSearchCellTable > tbody > tr > td').contains('QDM / CQL')
-        cy.get('#MeasureSearchCellTable > tbody > tr > td').contains('FHIR / CQL')
+        measureLibPage.measureSearchCellTableTds().contains(fhirMeasureName)
+        measureLibPage.measureSearchCellTableTds().contains('QDM / CQL')
+        measureLibPage.measureSearchCellTableTds().contains('FHIR / CQL')
 
         cy.wait(1000);
 

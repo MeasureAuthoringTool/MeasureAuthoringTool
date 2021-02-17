@@ -90,6 +90,8 @@ export const existsWithTimeout = (element, timeout = 6000) => {
 export const notExistsWithTimeout = (element, timeout = 60000) => {
     cy.get(element, {timeout: timeout}).should('not.exist')
 }
+
+
 export const visibleWithTimeout = (element, timeout = 60000) => {
     cy.log('Element->' + element)
     cy.get(element, {timeout: timeout}).should('be.visible')

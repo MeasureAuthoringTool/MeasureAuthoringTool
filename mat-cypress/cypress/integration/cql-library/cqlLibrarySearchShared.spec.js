@@ -40,7 +40,7 @@ describe('Mat Test', function () {
         cy.get(cqlElements.searchBtn).click({force: true})
 
         cy.spinnerNotVisible()
-        cy.wait(2000)
+        cy.wait(2000 )
 
         cy.get('#CQLLibrarySearchCellTable [__gwt_row] > .GB-MJYKBGJ').each((element) => {
             cy.wrap(element).should('contain.text', 'QDM / CQL')

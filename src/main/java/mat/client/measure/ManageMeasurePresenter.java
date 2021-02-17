@@ -888,7 +888,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     + currentDetails.geteMeasureId() + " has been taken, so your ID will be " + result.geteMeasureId() + ".");
         } else {
             dialogBox.displayInvalidEMeasureIdMessage((isFhir ? "CMS ID " : "eCQM ID")
-                    + currentDetails.geteMeasureId() + " has been taken, So your ID will be " + result.geteMeasureId() + ". Please revisit "
+                    + currentDetails.geteMeasureId() + " has been taken, so the ID will be " + result.geteMeasureId() + ". Please revisit "
                     + (isFhir ? "CMS ID" : "eCQM ID") + " checkbox and update your CQL library Name accordingly.");
             dialogBox.getConfirmButton().setEnabled(false);
         }

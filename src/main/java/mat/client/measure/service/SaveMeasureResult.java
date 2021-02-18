@@ -52,6 +52,8 @@ public class SaveMeasureResult extends GenericResult {
 
     private ManageCompositeMeasureDetailModel compositeMeasureDetailModel;
 
+    private int eMeasureId;
+
     public List<Author> getAuthorList() {
         return authorList;
     }
@@ -98,6 +100,14 @@ public class SaveMeasureResult extends GenericResult {
 
     public void setCompositeMeasureDetailModel(ManageCompositeMeasureDetailModel compositeMeasureDetailModel) {
         this.compositeMeasureDetailModel = compositeMeasureDetailModel;
+    }
+
+    public void setEMeasureId(int eMeasureId) {
+        this.eMeasureId = eMeasureId;
+    }
+
+    public int geteMeasureId() {
+        return this.eMeasureId;
     }
 
 	@Override

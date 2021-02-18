@@ -2,48 +2,50 @@ package mat.client.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.RadioButton;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.validator.ErrorHandler;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 
 import java.util.List;
 
 public interface DetailDisplay extends BaseDisplay {
-	public void clearFields();
+	void clearFields();
 
-	public HasClickHandlers getCancelButton();
+	HasClickHandlers getCancelButton();
 
-	public ListBoxMVP getMeasureScoringListBox();
+	ListBoxMVP getMeasureScoringListBox();
 
-	public String getMeasureScoringValue();
+	String getMeasureScoringValue();
 
-	public String getMeasureModelType();
+	String getMeasureModelType();
 
-	public HasValue<String> getMeasureVersion();
+	HasValue<String> getMeasureVersion();
 
-	public HasValue<String> getMeasureNameTextBox();
+	HasValue<String> getMeasureNameTextBox();
 	
-	public HasValue<String> getCQLLibraryNameTextBox();
+	HasValue<String> getCQLLibraryNameTextBox();
 
-	public HasClickHandlers getSaveButton();
+	HasClickHandlers getSaveButton();
 
-	public HasValue<String> getECQMAbbreviatedTitleTextBox();
+	HasValue<String> getECQMAbbreviatedTitleTextBox();
 
-	public void setMeasureName(String name);
+	void setMeasureName(String name);
 
-	public void setMeasureModelType(String name);
+	void setMeasureModelType(String name);
 
-	public void allowAllMeasureModelTypes();
+	void allowAllMeasureModelTypes();
 
 	void setScoringChoices(List<? extends HasListBox> texts);
 
-	public void showCautionMsg(boolean show);
+	void showCautionMsg(boolean show);
 
-	public void showMeasureName(boolean show);
+	void showMeasureName(boolean show);
 
 	ListBoxMVP getPatientBasedListBox();
 
@@ -55,5 +57,11 @@ public interface DetailDisplay extends BaseDisplay {
 
 	WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
 
-	ErrorHandler getErrorHandler();
+    CheckBox getGenerateCmsIdCheckbox();
+
+    RadioButton getFhirModel();
+
+    RadioButton getQdmModel();
+
+    ErrorHandler getErrorHandler();
 }

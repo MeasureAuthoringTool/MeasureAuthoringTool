@@ -1,12 +1,12 @@
-import * as helper from "./helpers";
+import * as helper from './helpers';
 
-import LoginPage from "./domain/pageObjects/LoginPage";
-import LogoutElement from "./domain/pageElements/LogoutElement";
-import UmlsElement from "./domain/pageElements/UmlsElement";
+import LoginPage from './domain/pageObjects/LoginPage';
+import LogoutElement from './domain/pageElements/LogoutElement';
+import UmlsElement from './domain/pageElements/UmlsElement';
 
-const ENV_TAG = "env:";
+const ENV_TAG = 'env:';
 
-function parse(value = "") {
+function parse(value = '') {
     if (value.startsWith(ENV_TAG)) {
         const target = value.substr(ENV_TAG.length);
         return Cypress.env(target);
@@ -15,13 +15,13 @@ function parse(value = "") {
     }
 }
 
-Cypress.Commands.add("loadCredentials", (credentials) => {
+Cypress.Commands.add('loadCredentials', (credentials) => {
     credentials.password = parse(credentials.password);
     credentials.userName = parse(credentials.userName);
     credentials.umlsApiKey = parse(credentials.umlsApiKey);
 });
 
-Cypress.Commands.add("matLogin", (userName, password, checkCheckBox = true) => {
+Cypress.Commands.add('matLogin', (userName, password, checkCheckBox = true) => {
     const loginPage = new LoginPage();
 
     loginPage.visitPage();
@@ -34,7 +34,7 @@ Cypress.Commands.add("matLogin", (userName, password, checkCheckBox = true) => {
     }
 });
 
-Cypress.Commands.add("matLogout", () => {
+Cypress.Commands.add('matLogout', () => {
     const logoutPage = new LogoutElement();
     const loginPage = new LoginPage();
 
@@ -44,7 +44,7 @@ Cypress.Commands.add("matLogout", () => {
     loginPage.formTitle().contains('Sign In');
 });
 
-Cypress.Commands.add("umlsLogin", (umlsApiKey, headerLabel = 'UMLS Active') => {
+Cypress.Commands.add('umlsLogin', (umlsApiKey, headerLabel = 'UMLS Active') => {
     const umlsElement = new UmlsElement();
 
     umlsElement.signInLink().click();
@@ -56,7 +56,7 @@ Cypress.Commands.add("umlsLogin", (umlsApiKey, headerLabel = 'UMLS Active') => {
     cy.wait(1000);
 
     if (headerLabel.length === 0) {
-        console.log("Not checking");
+        console.log('Not checking');
     } else {
         umlsElement.loginSuccessSpan().contains(headerLabel);
         umlsElement.dialogCloseButton().click();

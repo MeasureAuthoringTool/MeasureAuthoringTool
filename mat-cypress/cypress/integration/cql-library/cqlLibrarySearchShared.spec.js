@@ -26,7 +26,7 @@ describe('Mat Test', function () {
         cy.spinnerNotVisible();
         helper.enabledWithTimeout(cqlElements.searchInputBox);
         cy.get(cqlElements.filterByMyLibrariesChkBox).click();
-        helper.enterText(cqlElements.searchInputBox, "AdvancedIllnessandFrailtyExclusion");
+        helper.enterText(cqlElements.searchInputBox, 'AdvancedIllnessandFrailtyExclusion');
 
         cy.get(cqlElements.modelTypeListBox).select('Model Type: FHIR / CQL Only').should('have.value', 'FHIR');
         cy.get(cqlElements.searchBtn).click();

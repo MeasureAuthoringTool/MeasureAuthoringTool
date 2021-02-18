@@ -52,13 +52,13 @@ Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
     cy.wait(1000);
 
     const deleteMeasureDialog = new DeleteMeasureDialog();
-    helper.enterTextConfirmCypress(deleteMeasureDialog.passwordTextBox(), "DELETE");
+    helper.enterTextConfirmCypress(deleteMeasureDialog.passwordTextBox(), 'DELETE');
     cy.wait(1000);
 
     deleteMeasureDialog.deleteLibraryForever().contains('Delete Library Forever').click();
 
     cy.url().should('include', measureLibPage.url());
     cy.wait(3000);
-    measureLibPage.alertSuccess().contains("No measures returned. Please change your search criteria and search again.");
+    measureLibPage.alertSuccess().contains('No measures returned. Please change your search criteria and search again.');
 });
 

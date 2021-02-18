@@ -18,6 +18,25 @@ export const loginCreateDraftCqlLibraryNotOwnerLogout = () => {
     return createDraftCqlLibrary();
 };
 
+export const addDefinition = (definitionName, CQL) => {
+    cy.get(measureComposerElements.definition).click();
+
+    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal2, 'Definition');
+
+    cy.get(measureComposerElements.addNewBtn).click();
+    cy.get(measureComposerElements.definitionNameInput).type(definitionName, {delay: 50});
+
+    helper.visibleWithTimeout(measureComposerElements.definitionCQLExpressionEditorInput);
+
+    cy.wait(1500);
+
+    cy.get(measureComposerElements.definitionCQLExpressionEditorInput).type(CQL, {delay: 50});
+    cy.get(measureComposerElements.definitionSaveBtn).click();
+
+    helper.visibleWithTimeout(measureComposerElements.warningMessage);
+};
+
+
 export const addCode = (codeUrl) => {
     cy.get(measureComposerElements.codes).click();
 
@@ -579,20 +598,3 @@ export const createMajorVersionMeasure = (measure) => {
 
 
 
-export const addDefinition = (definitionName, CQL) => {
-    cy.get(measureComposerElements.definition).click();
-
-    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal2, 'Definition');
-
-    cy.get(measureComposerElements.addNewBtn).click();
-    cy.get(measureComposerElements.definitionNameInput).type(definitionName, {delay: 50});
-
-    helper.visibleWithTimeout(measureComposerElements.definitionCQLExpressionEditorInput);
-
-    cy.wait(1500);
-
-    cy.get(measureComposerElements.definitionCQLExpressionEditorInput).type(CQL, {delay: 50});
-    cy.get(measureComposerElements.definitionSaveBtn).click();
-
-    helper.visibleWithTimeout(measureComposerElements.warningMessage);
-};

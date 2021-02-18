@@ -19,7 +19,6 @@ public class InvalidEMeasureIdGeneratorDialogBox {
     private Button confirmButton;
     private Modal panel;
     private FocusPanel focusPanel = new FocusPanel();
-    private ErrorMessageAlert messageAlert;
     private ClickHandler handler;
 
     public void displayInvalidEMeasureIdMessage(String message) {
@@ -27,7 +26,7 @@ public class InvalidEMeasureIdGeneratorDialogBox {
         panel = new Modal();
         confirmButton = new Button("Continue");
         ModalBody modalBody = new ModalBody();
-        messageAlert = new ErrorMessageAlert();
+        ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
         modalBody.clear();
         messageAlert.clear();

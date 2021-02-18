@@ -598,6 +598,8 @@ public interface MeasureService extends RemoteService {
 
     int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
+    int generateEmeasureIdForNewMeasure();
+
     String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 
     boolean checkIfLibraryNameExists(String libraryName, String setId);

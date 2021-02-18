@@ -55,6 +55,8 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 
 		//Measure mode type radios
 		addCompositeMeasureModelType();
+
+        addCompositeGenerateCmsIdCheckbox();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);
@@ -140,6 +142,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
 		formFieldSet.add(measureModelGroup);
+		formFieldSet.add(generateCmsIdCheckbox);
 		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(compositeScoringGroup);

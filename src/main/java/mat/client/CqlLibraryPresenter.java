@@ -622,7 +622,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             public void onDeleteClicked(CQLLibraryDataSetObject object) {
                 final String cqlLibraryId = object.getId();
                 dialogBox = new DeleteConfirmDialogBox();
-                dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getWARNING_DELETION_CQL_LIBRARY());
+                dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getWARNING_DELETION_CQL_LIBRARY(), "Delete Library Forever");
                 dialogBox.getConfirmButton().addClickHandler(event -> deleteCQLLibrary(cqlLibraryId));
             }
 

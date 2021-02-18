@@ -96,6 +96,7 @@ export const visibleWithTimeout = (element, timeout = 60000) => {
     cy.log('Element->' + element);
     cy.get(element, {timeout: timeout}).should('be.visible');
 };
+
 export const notVisibleWithTimeout = (element, timeout = 400000) => {
     cy.get(element, {timeout: timeout}).should('not.be.visible');
 };
@@ -211,9 +212,10 @@ export const enabledWithTimeout = (element, timeout = 60000) => {
 export const disabledWithTimeout = (element, timeout = 60000) => {
     cy.get(element, {timeout: timeout}).should('be.disabled');
 };
-export const notDisabledWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, {timeout: timeout}).should('not.be.disabled');
-};
+
+// export const notDisabledWithTimeout = (element, timeout = 60000) => {
+//     cy.get(element, {timeout: timeout}).should('not.be.disabled');
+// };
 
 export const selectRadio = (el) => {
     cy.get(el).check({force: true});

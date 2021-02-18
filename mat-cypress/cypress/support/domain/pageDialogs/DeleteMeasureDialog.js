@@ -10,4 +10,4 @@ class DeleteMeasureDialog {
     }
 }
 
-export default DeleteMeasureDialog
+export default DeleteMeasureDialog;

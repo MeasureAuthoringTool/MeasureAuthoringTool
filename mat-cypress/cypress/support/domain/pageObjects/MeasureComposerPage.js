@@ -2,13 +2,13 @@
 
 class MeasureComposerPage {
     url() {
-        return "/MeasureAuthoringTool/Mat.html#mainTab1"
+        return "/MeasureAuthoringTool/Mat.html#mainTab1";
     }
 
     deleteButton() {
-        return cy.get( '#MeasureDetailsView\\.deleteMeasureButton')
+        return cy.get('#MeasureDetailsView\\.deleteMeasureButton');
     }
 
 }
 
-export default MeasureComposerPage
+export default MeasureComposerPage;

@@ -2,24 +2,24 @@
 
 class UmlsElement {
     apiKeyTextInput() {
-        return cy.get('#inputPwd')
+        return cy.get('#inputPwd');
     }
 
     signInLink() {
-        return cy.get(':nth-child(1) > .loginSpacer > :nth-child(1) > .btn > span')
+        return cy.get(':nth-child(1) > .loginSpacer > :nth-child(1) > .btn > span');
     }
 
     submitButton() {
-        return cy.get('#umlsSubmitButton')
+        return cy.get('#umlsSubmitButton');
     }
 
     loginSuccessSpan() {
-        return cy.get('[style=""] > #disco > span')
+        return cy.get('[style=""] > #disco > span');
     }
 
     dialogCloseButton() {
-        return cy.get('.close')
+        return cy.get('.close');
     }
 }
 
-export default UmlsElement
+export default UmlsElement;

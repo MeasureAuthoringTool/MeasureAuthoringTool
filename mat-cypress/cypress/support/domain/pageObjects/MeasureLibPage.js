@@ -2,56 +2,56 @@
 
 class MeasureLibPage {
     url() {
-        return "/MeasureAuthoringTool/Mat.html#mainTab0"
+        return "/MeasureAuthoringTool/Mat.html#mainTab0";
     }
 
     searchInputBox() {
-        return cy.get('#SearchFilterWidget_SearchInputHPanel_forMeasure > tbody > tr > td > input')
+        return cy.get('#SearchFilterWidget_SearchInputHPanel_forMeasure > tbody > tr > td > input');
     }
 
     searchFilterTextBox() {
-        return cy.get('.form-control.searchFilterTextBox')
+        return cy.get('.form-control.searchFilterTextBox');
     }
 
     searchButton() {
-        return cy.get( '#SearchWidgetButton_forMeasure')
+        return cy.get('#SearchWidgetButton_forMeasure');
     }
 
     createVersionTabButton() {
-        return cy.get('#MeasureSearchCellTable_gridToolbar > [title="Click to create version"]')
+        return cy.get('#MeasureSearchCellTable_gridToolbar > [title="Click to create version"]');
     }
 
     convertToFhirTabButton() {
-        return cy.get('[aria-label="Search History Convert"]')
+        return cy.get('[aria-label="Search History Convert"]');
     }
 
     tr1MeasureSearch() {
-        return cy.get( '#MeasureSearchCellTable [__gwt_row="0"]')
+        return cy.get('#MeasureSearchCellTable [__gwt_row="0"]');
     }
 
     measureSearchResultCheckBox() {
-        return   cy.get('.GB-MJYKBMI > div > input');
+        return cy.get('.GB-MJYKBMI > div > input');
     }
 
     measureSearchCellTable() {
-        return   cy.get('#MeasureSearchCellTable');
+        return cy.get('#MeasureSearchCellTable');
     }
 
     measureSearchCellTableTds() {
-        return   cy.get('#MeasureSearchCellTable > tbody > tr > td');
+        return cy.get('#MeasureSearchCellTable > tbody > tr > td');
     }
 
     measureSearchCellTableTbody() {
-        return   cy.get('#MeasureSearchCellTable > tbody');
+        return cy.get('#MeasureSearchCellTable > tbody');
     }
 
     modelTypeSelect() {
-       return  cy.get('#modelType')
+        return cy.get('#modelType');
     }
 
     alertSuccess() {
-        return cy.get('.alert-success > div > b')
+        return cy.get('.alert-success > div > b');
     }
 }
 
-export default MeasureLibPage
+export default MeasureLibPage;

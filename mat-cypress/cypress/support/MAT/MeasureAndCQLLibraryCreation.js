@@ -9,6 +9,70 @@ import * as measureDetailsEleemnts from '../../../elements/MeasureDetailsElement
 import * as gridRowActions from './GridRowActions';
 
 const draftMeasure = 'DraftMeasure';
+
+export const createDraftMeasure = (measure, model) => {
+    let name = '';
+
+    if (!measure) {
+        name = draftMeasure + Date.now();
+    } else {
+        name = measure + Date.now();
+    }
+
+    // creating new measure
+    helper.enabledWithTimeout(measureLibraryElements.newMeasureButton);
+    cy.get(measureLibraryElements.newMeasureButton).click();
+
+    cy.get(newMeasureElements.measureName).type(name, {delay: 50});
+
+    if (!model || model === 'QDM') {
+        cy.get(newMeasureElements.modelradioQDM).click();
+    } else {
+        cy.get(newMeasureElements.modelradioFHIR).click();
+    }
+
+    cy.get(newMeasureElements.cqlLibraryName).type(name, {delay: 50});
+    cy.get(newMeasureElements.shortName).type(name, {delay: 50});
+
+    cy.get(newMeasureElements.measureScoringListBox).select('Proportion');
+    cy.get(newMeasureElements.patientBasedMeasureListBox).select('Yes');
+
+    cy.get(newMeasureElements.saveAndContinueBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(newMeasureElements.confirmationContinueBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(measureDetailsEleemnts.measureStewardDeveloper).click();
+    cy.get(measureDetailsEleemnts.measureStewardListBox).select('SemanticBits');
+    cy.get(measureDetailsEleemnts.row1CheckBox).click();
+    cy.get(measureDetailsEleemnts.saveBtn).click();
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
+
+    cy.get(measureDetailsEleemnts.description).click();
+    helper.enterText(measureDetailsEleemnts.textAreaInput, 'description');
+    cy.get(measureDetailsEleemnts.saveBtn).click();
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
+
+    cy.get(measureDetailsEleemnts.measureType).click();
+    cy.get(measureDetailsEleemnts.row1CheckBox).click();
+    cy.get(measureDetailsEleemnts.saveBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
+
+    cy.get(measureLibraryElements.measureLibraryTab).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    return name;
+};
+
 export const createDraftCqlLibrary = (library, model) => {
     let name = '';
 
@@ -63,7 +127,7 @@ export const createDraftCqlLibrary = (library, model) => {
 export const createMajorVersionMeasure = (measure) => {
     let name = '';
 
-    if (measure === undefined) {
+    if (!measure) {
         name = createDraftMeasure('MajorVersion');
     } else {
         name = measure;
@@ -477,74 +541,12 @@ export const createQDMProportionMeasure = () => {
 
 // Create Draft Measure
 
-export const createDraftMeasure = (measure, model) => {
-    let name = '';
-
-    if (measure === undefined) {
-        name = draftMeasure + Date.now();
-    } else {
-        name = measure + Date.now();
-    }
-
-    // creating new measure
-    helper.enabledWithTimeout(measureLibraryElements.newMeasureButton);
-    cy.get(measureLibraryElements.newMeasureButton).click();
-
-    cy.get(newMeasureElements.measureName).type(name, {delay: 50});
-
-    if (!model || model === 'QDM') {
-        cy.get(newMeasureElements.modelradioQDM).click();
-    } else {
-        cy.get(newMeasureElements.modelradioFHIR).click();
-    }
-
-    cy.get(newMeasureElements.cqlLibraryName).type(name, {delay: 50});
-    cy.get(newMeasureElements.shortName).type(name, {delay: 50});
-
-    cy.get(newMeasureElements.measureScoringListBox).select('Proportion');
-    cy.get(newMeasureElements.patientBasedMeasureListBox).select('Yes');
-
-    cy.get(newMeasureElements.saveAndContinueBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(newMeasureElements.confirmationContinueBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(measureDetailsEleemnts.measureStewardDeveloper).click();
-    cy.get(measureDetailsEleemnts.measureStewardListBox).select('SemanticBits');
-    cy.get(measureDetailsEleemnts.row1CheckBox).click();
-    cy.get(measureDetailsEleemnts.saveBtn).click();
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
-
-    cy.get(measureDetailsEleemnts.description).click();
-    helper.enterText(measureDetailsEleemnts.textAreaInput, 'description');
-    cy.get(measureDetailsEleemnts.saveBtn).click();
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
-
-    cy.get(measureDetailsEleemnts.measureType).click();
-    cy.get(measureDetailsEleemnts.row1CheckBox).click();
-    cy.get(measureDetailsEleemnts.saveBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    helper.visibleWithTimeout(measureDetailsEleemnts.warningMessage);
-
-    cy.get(measureLibraryElements.measureLibraryTab).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    return name;
-};
 
 // create FHIR Measure, specifying measure type
 export const createFHIRMeasureByType = (measure, type, patientBased) => {
     let name = '';
 
-    if (measure === undefined) {
+    if (!measure) {
         name = draftMeasure + Date.now();
     } else {
         name = measure + Date.now();

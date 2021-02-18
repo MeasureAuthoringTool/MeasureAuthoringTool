@@ -1,8 +1,8 @@
 import * as helper from '../../../support/helpers';
 import * as measureLibrary from '../../../../elements/MeasureLibraryElements';
 import * as dataCreation from '../../../support/MAT/MeasureAndCQLLibraryCreation';
-import MeasureLibPage from "../../../support/domain/pageObjects/MeasureLibPage";
-import CreateMeasureVersionDraftPage from "../../../support/domain/pageObjects/CreateMeasureVersionDraftPage";
+import MeasureLibPage from '../../../support/domain/pageObjects/MeasureLibPage';
+import CreateMeasureVersionDraftPage from '../../../support/domain/pageObjects/CreateMeasureVersionDraftPage';
 
 
 describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
@@ -29,7 +29,7 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
         const cqlMeasureName = dataCreation.createDraftMeasure('QdmCqlMeasure', 'QDM');
         const fhirMeasureName = cqlMeasureName + 'FHIR';
 
-        cy.log("Working measureName: " + cqlMeasureName);
+        cy.log('Working measureName: ' + cqlMeasureName);
         //cy.spinnerNotVisible()
 
         measureLibPage.searchInputBox().should('be.enabled');

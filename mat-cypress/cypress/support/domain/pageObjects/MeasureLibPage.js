@@ -2,7 +2,7 @@
 
 class MeasureLibPage {
     url() {
-        return "/MeasureAuthoringTool/Mat.html#mainTab0";
+        return '/MeasureAuthoringTool/Mat.html#mainTab0';
     }
 
     searchInputBox() {

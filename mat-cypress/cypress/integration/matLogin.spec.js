@@ -21,18 +21,18 @@ describe('Test Login functionality', function () {
 
         cy.matLogin(BAD_USER_NAME, BAD_PASSWORD);
 
-        loginPage.infoBoxError().contains("Sign in failed!");
+        loginPage.infoBoxError().contains('Sign in failed!');
 
         cy.matLogin(this.data.userName, BAD_PASSWORD);
 
-        loginPage.infoBoxError().contains("Sign in failed!");
+        loginPage.infoBoxError().contains('Sign in failed!');
 
         cy.matLogin(this.data.userName, this.data.password, false); // false/flag wont check checkBox
         loginPage.submitButton().should('be.disabled');
 
         cy.matLogin(this.data.userName, this.data.password);
 
-        cy.umlsLogin("2572222-1111-aaaa-yyyy-XXXXXXXXXX", ''); // MT string wont close or check for 'UMLS Active'
+        cy.umlsLogin('2572222-1111-aaaa-yyyy-XXXXXXXXXX', ''); // MT string wont close or check for 'UMLS Active'
 
         cy.get('.help-block').contains('Login failed. Please sign in again.');
         cy.get('.close').click();

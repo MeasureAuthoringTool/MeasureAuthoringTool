@@ -1,7 +1,7 @@
-import * as helper from "./helpers";
-import MeasureLibPage from "./domain/pageObjects/MeasureLibPage";
-import MeasureComposerPage from "./domain/pageObjects/MeasureComposerPage";
-import DeleteMeasureDialog from "./domain/pageDialogs/DeleteMeasureDialog";
+import * as helper from './helpers';
+import MeasureLibPage from './domain/pageObjects/MeasureLibPage';
+import MeasureComposerPage from './domain/pageObjects/MeasureComposerPage';
+import DeleteMeasureDialog from './domain/pageDialogs/DeleteMeasureDialog';
 
 export function getModelTypeLabel(isFhir) {
     if (isFhir) {
@@ -27,7 +27,7 @@ export function getModelTypeValue(isFhir) {
     }
 }
 
-Cypress.Commands.add("deleteMeasure", (measureName, isFhir) => {
+Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
     const measureLibPage = new MeasureLibPage();
 
     cy.url().should('include', measureLibPage.url());

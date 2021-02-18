@@ -18,6 +18,48 @@ export const loginCreateDraftCqlLibraryNotOwnerLogout = () => {
     return createDraftCqlLibrary();
 };
 
+export const addCode = (codeUrl) => {
+    cy.get(measureComposerElements.codes).click();
+
+    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal, 'Codes');
+
+    helper.visibleWithTimeout(measureComposerElements.codeUrlInput);
+    helper.enabledWithTimeout(measureComposerElements.codeUrlInput);
+    cy.get(measureComposerElements.codeUrlInput).click();
+    cy.get(measureComposerElements.codeUrlInput).type(codeUrl, {delay: 50});
+    cy.get(measureComposerElements.retrieveBtn).click();
+    helper.verifySpinnerAppearsAndDissappears();
+    cy.get(measureComposerElements.applyBtn).click();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    helper.visibleWithTimeout(measureComposerElements.warningMessage);
+};
+
+
+
+export const addValueSet = (OID) => {
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(measureComposerElements.valueSets).click();
+
+    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal, 'Value Sets');
+
+    cy.get(measureComposerElements.OIDInput).type(OID, {delay: 50});
+    cy.get(measureComposerElements.retrieveOIDBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    helper.waitForElementEnabled(measureComposerElements.applyBtn);
+    cy.get(measureComposerElements.applyBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    helper.visibleWithTimeout(measureComposerElements.warningMessage);
+};
+
+
 // create Cohort Fhir measure and package
 
 export const createFhirCohortMeasure = () => {
@@ -533,47 +575,9 @@ export const createMajorVersionMeasure = (measure) => {
 
     cy.get(measureLibraryElements.searchInputBox).clear();
 
-    return name;
-};
+    return name;};
 
-export const addValueSet = (OID) => {
-    helper.verifySpinnerAppearsAndDissappears();
 
-    cy.get(measureComposerElements.valueSets).click();
-
-    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal, 'Value Sets');
-
-    cy.get(measureComposerElements.OIDInput).type(OID, {delay: 50});
-    cy.get(measureComposerElements.retrieveOIDBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    helper.waitForElementEnabled(measureComposerElements.applyBtn);
-    cy.get(measureComposerElements.applyBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    helper.visibleWithTimeout(measureComposerElements.warningMessage);
-};
-
-export const addCode = (codeUrl) => {
-    cy.get(measureComposerElements.codes).click();
-
-    helper.waitToContainText(measureComposerElements.cqlWorkspaceTitleGlobal, 'Codes');
-
-    helper.visibleWithTimeout(measureComposerElements.codeUrlInput);
-    helper.enabledWithTimeout(measureComposerElements.codeUrlInput);
-    cy.get(measureComposerElements.codeUrlInput).click();
-    cy.get(measureComposerElements.codeUrlInput).type(codeUrl, {delay: 50});
-    cy.get(measureComposerElements.retrieveBtn).click();
-    helper.verifySpinnerAppearsAndDissappears();
-    cy.get(measureComposerElements.applyBtn).click();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    helper.visibleWithTimeout(measureComposerElements.warningMessage);
-};
 
 export const addDefinition = (definitionName, CQL) => {
     cy.get(measureComposerElements.definition).click();

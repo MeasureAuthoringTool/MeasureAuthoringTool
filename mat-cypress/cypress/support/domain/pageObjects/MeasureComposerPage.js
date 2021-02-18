@@ -2,7 +2,7 @@
 
 class MeasureComposerPage {
     url() {
-        return "/MeasureAuthoringTool/Mat.html#mainTab1";
+        return '/MeasureAuthoringTool/Mat.html#mainTab1';
     }
 
     deleteButton() {

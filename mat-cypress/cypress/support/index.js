@@ -14,12 +14,10 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
 
-import './loginCommands'
-import './CqlLibraryGridCommands'
-
-
-import './measureCommands'
+import './loginCommands';
+import './CqlLibraryGridCommands';
 
 
+import './measureCommands';

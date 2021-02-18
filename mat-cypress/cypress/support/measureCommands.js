@@ -1,53 +1,64 @@
-import * as helper from "./helpers";
+import * as helper from './helpers';
+import MeasureLibPage from './domain/pageObjects/MeasureLibPage';
+import MeasureComposerPage from './domain/pageObjects/MeasureComposerPage';
+import DeleteMeasureDialog from './domain/pageDialogs/DeleteMeasureDialog';
 
 export function getModelTypeLabel(isFhir) {
     if (isFhir) {
-        return 'Model Type: FHIR / CQL Only'
+        return 'Model Type: FHIR / CQL Only';
     } else {
-        return 'Model Type: QDM / CQL Only'
+        return 'Model Type: QDM / CQL Only';
     }
 }
 
 export function getCellTable(isFhir) {
     if (isFhir) {
-        return 'FHIR / CQL'
+        return 'FHIR / CQL';
     } else {
-        return 'QDM / CQL'
+        return 'QDM / CQL';
     }
 }
 
 export function getModelTypeValue(isFhir) {
     if (isFhir) {
-        return 'FHIR'
+        return 'FHIR';
     } else {
-        return 'QDM_CQL'
+        return 'QDM_CQL';
     }
 }
 
-Cypress.Commands.add("deleteMeasure", (measureName, isFhir) => {
-    cy.url().should('include', 'Mat.html#mainTab0')
-    helper.enterText('.form-control.searchFilterTextBox', measureName)
+Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
+    const measureLibPage = new MeasureLibPage();
 
-    cy.get('#modelType').select(getModelTypeLabel(isFhir)).should('have.value', getModelTypeValue(isFhir))
-    cy.get('#SearchWidgetButton_forMeasure').click();
-    cy.wait(2000)
-    cy.get('#MeasureSearchCellTable > tbody').find('tr').should('have.length', 2)
-    cy.get('#MeasureSearchCellTable > tbody > tr > td').contains(getCellTable(isFhir))
+    cy.url().should('include', measureLibPage.url());
 
-    cy.get('#MeasureSearchCellTable').find('tbody').first().find('tr').first().click();
-    cy.wait(100)
-    cy.get('#MeasureSearchCellTable').find('tbody').first().find('tr').first().dblclick();
-    cy.url().should('include', 'Mat.html#mainTab1')
+    helper.enterTextConfirmCypress(measureLibPage.searchFilterTextBox(), measureName);
 
-    cy.get('#MeasureDetailsView\\.deleteMeasureButton').click()
-    cy.wait(1000)
+    measureLibPage.modelTypeSelect().select(getModelTypeLabel(isFhir)).should('have.value', getModelTypeValue(isFhir));
+    measureLibPage.searchButton().click();
+    cy.wait(2000);
 
-    helper.enterText('#password_PasswordTextBox', "DELETE")
-    cy.wait(1000)
+    measureLibPage.measureSearchCellTableTbody().find('tr').should('have.length', 2);
+    measureLibPage.measureSearchCellTableTds().contains(getCellTable(isFhir));
 
-    cy.get('.btn-primary').contains('Delete Library Forever').click();
-    cy.url().should('include', 'Mat.html#mainTab0')
-    cy.wait(3000)
-    cy.get('b').contains("No measures returned. Please change your search criteria and search again.")
-})
+    measureLibPage.measureSearchCellTable().find('tbody').first().find('tr').first().click();
+    cy.wait(100);
+    measureLibPage.measureSearchCellTable().find('tbody').first().find('tr').first().dblclick();
+
+    const measureComposerPage = new MeasureComposerPage();
+    cy.url().should('include', measureComposerPage.url());
+
+    measureComposerPage.deleteButton().click();
+    cy.wait(1000);
+
+    const deleteMeasureDialog = new DeleteMeasureDialog();
+    helper.enterTextConfirmCypress(deleteMeasureDialog.passwordTextBox(), 'DELETE');
+    cy.wait(1000);
+
+    deleteMeasureDialog.deleteLibraryForever().contains('Delete Measure Forever').click();
+
+    cy.url().should('include', measureLibPage.url());
+    cy.wait(3000);
+    measureLibPage.alertSuccess().contains('No measures returned. Please change your search criteria and search again.');
+});
 

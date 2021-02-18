@@ -6,8 +6,8 @@ class LogoutElement {
     }
 
     signOutLink() {
-        return cy.get('[title="Sign Out"]')
+        return cy.get('[title="Sign Out"]');
     }
 }
 
-export default LogoutElement
+export default LogoutElement;

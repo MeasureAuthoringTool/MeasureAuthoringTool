@@ -19,12 +19,12 @@ export CYPRESS_MAT_PASSWORD="your_mat_password"
 export CYPRESS_UMLS_API_KEY="your_vsac_key"
 ```
 
-Make sure these values are set E.G. by sourcing the file **(make sure you don't push the secrets to GIT).**, 
-Or a user could maintain the state of the environment vars in a shell rc file
+Make sure these values are set E.G. by sourcing the file **(make sure you don't push the secrets to GIT).**, Or a user
+could maintain the state of the environment vars in a shell rc file
 
 ---
 
-## Config 
+## Config
 
 In the config directory is where the configuration params are set up (non secrets).
 

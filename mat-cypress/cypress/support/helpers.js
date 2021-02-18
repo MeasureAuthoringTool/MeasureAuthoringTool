@@ -481,6 +481,7 @@ export const checkColor = (element, r, g, b) => {
 export const spinnerVisible = () => {
     visibleWithTimeout(matheader.spinner, 60000);
 };
+
 export const spinnerNotVisible = () => {
 
     // waitToHaveText(matheader.spinnerShadow,'Loading Please Wait...')
@@ -492,9 +493,11 @@ export const spinnerNotVisible = () => {
     //  notVisibleWithTimeout(matheader.spinnerModal, 90000)
     //   notVisibleWithTimeout(matheader.spinner, 90000)
 };
+
 export const spinnerExists = () => {
     existsWithTimeout(matheader.spinner, 60000);
 };
+
 export const spinnerNotExists = () => {
     notExistsWithTimeout(matheader.spinner, 60000);
     //notExistsWithTimeout(matheader.spinnerWrapper, 60000)

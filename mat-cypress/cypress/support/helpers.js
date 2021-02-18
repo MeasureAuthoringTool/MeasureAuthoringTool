@@ -324,13 +324,14 @@ export const checkLoadTime = (timeIn) => {
         expect(time).to.be.lessThan(loadTime);
     });
 };
-export const createFile = (file, text) => {
-    cy.writeFile(file, text);
-};
-export const appendToFile = (file, text) => {
-    cy.writeFile(file, '\n', {flag: 'a+'});
-    cy.writeFile(file, text, {flag: 'a+'});
-};
+// export const createFile = (file, text) => {
+//     cy.writeFile(file, text);
+// };
+// export const appendToFile = (file, text) => {
+//     cy.writeFile(file, '\n', {flag: 'a+'});
+//     cy.writeFile(file, text, {flag: 'a+'});
+// };
+
 export const deleteScreenshots = () => {
     cy.log('Current OS: ' + os);
     if ((os === 'darwin') || (os === 'linux')) {
@@ -422,7 +423,7 @@ export const clickRowDirection = (element, row, direction) => {
     cy.get(element).eq(row).click(direction);
 };
 export const paginationLength = (element, length) => {
-    cy.get(element).should(`have.length.lte`, length);
+    cy.get(element).should('have.length.lte', length);
 };
 export const clickLastRow = (element) => {
     cy.get(element).last().click();

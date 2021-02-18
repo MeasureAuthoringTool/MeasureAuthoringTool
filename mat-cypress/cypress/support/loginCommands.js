@@ -55,9 +55,7 @@ Cypress.Commands.add('umlsLogin', (umlsApiKey, headerLabel = 'UMLS Active') => {
     umlsElement.submitButton().click();
     cy.wait(1000);
 
-    if (headerLabel.length === 0) {
-        console.log('Not checking');
-    } else {
+    if (headerLabel.length > 0) {
         umlsElement.loginSuccessSpan().contains(headerLabel);
         umlsElement.dialogCloseButton().click();
     }

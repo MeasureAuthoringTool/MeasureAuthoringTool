@@ -9,6 +9,94 @@ import * as measureDetailsEleemnts from '../../../elements/MeasureDetailsElement
 import * as gridRowActions from './GridRowActions';
 
 const draftMeasure = 'DraftMeasure';
+export const createDraftCqlLibrary = (library, model) => {
+    let name = '';
+
+    if (!library) {
+        name = 'DraftCqllibrary' + Date.now();
+    } else {
+        name = library + Date.now();
+    }
+
+    cy.get(measureLibraryElements.cqlLibraryTab).then((tab) => {
+        const value = tab.attr('class');
+
+        if (value.toString() === 'gwt-TabBarItem') {
+            cy.get(measureLibraryElements.cqlLibraryTab).click();
+            helper.verifySpinnerAppearsAndDissappears();
+        }
+    });
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.enabledWithTimeout(cqlLibraryElements.newLibraryBtn);
+    cy.get(cqlLibraryElements.newLibraryBtn).click();
+
+    if (!model || model === 'QDM') {
+
+        cy.get(createNewCqlLibrary.modelQDMRadio).click();
+
+    } else {
+
+        cy.get(createNewCqlLibrary.modelFHIRRadio).click();
+
+    }
+
+    cy.get(createNewCqlLibrary.cqlLibraryName).type(name, {delay: 50});
+
+    cy.get(createNewCqlLibrary.saveAndContinueBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(cqlComposerElements.confirmationContinueBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(measureLibraryElements.cqlLibraryTab).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    return name;
+};
+
+
+export const createMajorVersionMeasure = (measure) => {
+    let name = '';
+
+    if (measure === undefined) {
+        name = createDraftMeasure('MajorVersion');
+    } else {
+        name = measure;
+    }
+
+    cy.get(measureLibraryElements.searchInputBox).type(name, {delay: 50});
+    cy.get(measureLibraryElements.searchBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    helper.enabledWithTimeout(measureLibraryElements.searchInputBox);
+    helper.visibleWithTimeout(measureLibraryElements.row1MeasureSearch);
+
+    gridRowActions.selectRow(measureLibraryElements.row1MeasureSearch);
+
+    cy.get(measureLibraryElements.createVersionMeasureSearchBtn).click();
+
+    cy.get(measureLibraryElements.majorVersionTypeRadio).click();
+    cy.get(measureLibraryElements.packageAndVersion).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(measureLibraryElements.continueBtn).click();
+
+    helper.verifySpinnerAppearsAndDissappears();
+
+    cy.get(measureLibraryElements.searchInputBox).clear();
+
+    return name;
+};
+
 
 export const loginCreateVersionedMeasureNotOwnerLogout = () => {
     return createMajorVersionMeasure();
@@ -404,7 +492,7 @@ export const createDraftMeasure = (measure, model) => {
 
     cy.get(newMeasureElements.measureName).type(name, {delay: 50});
 
-    if (model === 'QDM' || model === undefined) {
+    if (!model || model === 'QDM') {
         cy.get(newMeasureElements.modelradioQDM).click();
     } else {
         cy.get(newMeasureElements.modelradioFHIR).click();
@@ -453,7 +541,7 @@ export const createDraftMeasure = (measure, model) => {
 };
 
 // create FHIR Measure, specifying measure type
-export const createFHIRMeasureByType = (measure, type, patient_based) => {
+export const createFHIRMeasureByType = (measure, type, patientBased) => {
     let name = '';
 
     if (measure === undefined) {
@@ -472,7 +560,7 @@ export const createFHIRMeasureByType = (measure, type, patient_based) => {
     cy.get(newMeasureElements.shortName).type(name, {delay: 50});
 
     cy.get(newMeasureElements.measureScoringListBox).select(type);
-    cy.get(newMeasureElements.patientBasedMeasureListBox).select(patient_based);
+    cy.get(newMeasureElements.patientBasedMeasureListBox).select(patientBased);
 
     cy.get(newMeasureElements.saveAndContinueBtn).click();
 
@@ -510,91 +598,7 @@ export const createFHIRMeasureByType = (measure, type, patient_based) => {
     return name;
 };
 
-export const createDraftCqlLibrary = (library, model) => {
-    let name = '';
 
-    if (library === undefined) {
-        name = 'DraftCqllibrary' + Date.now();
-    } else {
-        name = library + Date.now();
-    }
-
-    cy.get(measureLibraryElements.cqlLibraryTab).then(tab => {
-        const value = tab.attr('class');
-
-        if (value.toString() === 'gwt-TabBarItem') {
-            cy.get(measureLibraryElements.cqlLibraryTab).click();
-            helper.verifySpinnerAppearsAndDissappears();
-        }
-    });
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.enabledWithTimeout(cqlLibraryElements.newLibraryBtn);
-    cy.get(cqlLibraryElements.newLibraryBtn).click();
-
-    if (model === 'QDM' || model === undefined) {
-
-        cy.get(createNewCqlLibrary.modelQDMRadio).click();
-
-    } else {
-
-        cy.get(createNewCqlLibrary.modelFHIRRadio).click();
-
-    }
-
-    cy.get(createNewCqlLibrary.cqlLibraryName).type(name, {delay: 50});
-
-    cy.get(createNewCqlLibrary.saveAndContinueBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(cqlComposerElements.confirmationContinueBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(measureLibraryElements.cqlLibraryTab).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    return name;
-};
-
-export const createMajorVersionMeasure = (measure) => {
-    let name = '';
-
-    if (measure === undefined) {
-        name = createDraftMeasure('MajorVersion');
-    } else {
-        name = measure;
-    }
-
-    cy.get(measureLibraryElements.searchInputBox).type(name, {delay: 50});
-    cy.get(measureLibraryElements.searchBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    helper.enabledWithTimeout(measureLibraryElements.searchInputBox);
-    helper.visibleWithTimeout(measureLibraryElements.row1MeasureSearch);
-
-    gridRowActions.selectRow(measureLibraryElements.row1MeasureSearch);
-
-    cy.get(measureLibraryElements.createVersionMeasureSearchBtn).click();
-
-    cy.get(measureLibraryElements.majorVersionTypeRadio).click();
-    cy.get(measureLibraryElements.packageAndVersion).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(measureLibraryElements.continueBtn).click();
-
-    helper.verifySpinnerAppearsAndDissappears();
-
-    cy.get(measureLibraryElements.searchInputBox).clear();
-
-    return name;};
 
 
 

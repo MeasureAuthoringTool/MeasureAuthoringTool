@@ -13,6 +13,11 @@ export const copyScreenshots = () => {
     }
 };
 
+export const visibleWithTimeout = (element, timeout = 60000) => {
+    cy.log('Element->' + element);
+    cy.get(element, {timeout: timeout}).should('be.visible');
+};
+
 export const logoutUserwithMultipleMAT = () => {
 
     visibleWithTimeout(matheader.userprofile);
@@ -92,10 +97,7 @@ export const notExistsWithTimeout = (element, timeout = 60000) => {
 };
 
 
-export const visibleWithTimeout = (element, timeout = 60000) => {
-    cy.log('Element->' + element);
-    cy.get(element, {timeout: timeout}).should('be.visible');
-};
+
 
 export const notVisibleWithTimeout = (element, timeout = 400000) => {
     cy.get(element, {timeout: timeout}).should('not.be.visible');
@@ -344,21 +346,21 @@ export const deleteScreenshots = () => {
 };
 export const getElementTextValue = (element, inputValue) => {
     cy.get(element).invoke('text')
-        .then(value => {
+        .then((value) => {
             cy.log(value);
             expect(value).to.eql(inputValue);
         });
 };
 export const getElementInputValue = (element, inputValue) => {
     cy.get(element).invoke('val')
-        .then(value => {
+        .then((value) => {
             cy.log(value);
             expect(value).to.eql(inputValue);
         });
 };
 export const elementInputValueBlank = (element) => {
     cy.get(element).invoke('val')
-        .then(value => {
+        .then((value) => {
             cy.log(value);
             expect(value).to.eql('');
         });
@@ -520,17 +522,18 @@ export const verifySpinnerNotExists = () => {
 export const containClick = (text) => {
     cy.contains(text).click({force: true});
 };
+
 export const changeTargetToSelf = (element) => {
     // cy.get(element).invoke('attr', 'target', '_self').should('have.attr', 'target', '_self')
     cy.get(element).invoke('removeAttr', 'target');
 };
 
-Date.prototype.getMonthFormatted = function () {
-    var month = this.getMonth() + 1;
-    return month < 10 ? '0' + month : '' + month; // ('' + month) for string result
-};
-
-Date.prototype.getDayFormatted = function () {
-    var day = this.getDate();
-    return day < 10 ? '0' + day : '' + day; // ('' + month) for string result
-};
+// Date.prototype.getMonthFormatted = function () {
+//     var month = this.getMonth() + 1;
+//     return month < 10 ? '0' + month : '' + month; // ('' + month) for string result
+// };
+//
+// Date.prototype.getDayFormatted = function () {
+//     var day = this.getDate();
+//     return day < 10 ? '0' + day : '' + day; // ('' + month) for string result
+// };

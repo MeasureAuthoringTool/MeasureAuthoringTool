@@ -2,7 +2,7 @@
 
 class LoginPage {
     url() {
-        return "/MeasureAuthoringTool/Login.html";
+        return '/MeasureAuthoringTool/Login.html';
     }
 
     visitPage() {

@@ -2,6 +2,15 @@ import * as helper from "./helpers";
 import * as gridRowActions from "./MAT/GridRowActions";
 import * as cqlLibrary from "../../elements/CqlLibraryElements";
 
+function searchAndSelectCqlLibrary(cqlLibraryName) {
+    helper.visibleWithTimeout('#CQLLibrarySearchCellTable');
+    cy.get('#CQLLibrarySearchCellTable > :nth-child(3)').each(element => {
+        if (cy.wrap(element).contains(cqlLibraryName)) {
+            gridRowActions.selectRow(element);
+        }
+    });
+}
+
 Cypress.Commands.add("deleteCqlLibrary", (cqlLibraryName) => {
     searchAndSelectCqlLibrary(cqlLibraryName);
     cy.get(cqlLibrary.deleteCqllibrariesBtn).click();
@@ -38,12 +47,5 @@ Cypress.Commands.add("convertCqlLibraryToFHIRAndVerify", (cqlLibraryName) => {
     cy.get(cqlLibrary.row2CqlLibraryVersionColumn).should('contain.text', 'Draft v0.0.000');
 });
 
-function searchAndSelectCqlLibrary(cqlLibraryName) {
-    helper.visibleWithTimeout('#CQLLibrarySearchCellTable');
-    cy.get('#CQLLibrarySearchCellTable > :nth-child(3)').each(element => {
-        if (cy.wrap(element).contains(cqlLibraryName)) {
-            gridRowActions.selectRow(element);
-        }
-    });
-}
+
 

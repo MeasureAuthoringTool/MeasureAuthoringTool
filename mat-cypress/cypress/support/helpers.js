@@ -460,8 +460,8 @@ export const deleteDownloadedFile = (filename) => {
 export const deleteFileGeneric = (filename) => {
     cy.exec(`rm ${filename}`, {timeout: 60000}).its('code').should('eq', 0);
 };
-export const waitForElementEnabled = (element, timeout) => {
-    cy.get(element, {timeout: timeout}).should('be.enabled');
+export const waitForElementEnabled = (element, timeoutIn) => {
+    cy.get(element, {timeout: timeoutIn}).should('be.enabled');
 };
 
 export const copyFileGeneric = (source, destination) => {

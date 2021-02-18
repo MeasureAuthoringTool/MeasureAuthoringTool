@@ -26,18 +26,18 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
  * The Class DeleteConfirmDialogBox.
  */
 public class DeleteConfirmDialogBox {
-	private  Button confirmButton;
-	private  Modal panel;
+	private Button confirmButton;
+	private Modal panel;
 	private FocusPanel focusPanel = new FocusPanel();
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	private ErrorMessageAlert messageAlert;
 	private ClickHandler handler;
 	
-	public void showDeletionConfimationDialog(String message) {
+	public void showDeletionConfimationDialog(String message, String deleteButtonText) {
 		focusPanel.clear();
 	    panel = new Modal();
 		Button cancelButton = new Button("Do Not Delete");
-	    confirmButton = new Button("Delete Library Forever");
+	    confirmButton = new Button(deleteButtonText);
 		ModalBody modalBody = new ModalBody();
 		messageAlert = new ErrorMessageAlert();
 

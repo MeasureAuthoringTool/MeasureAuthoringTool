@@ -13,9 +13,9 @@ export const copyScreenshots = () => {
     }
 };
 
-export const visibleWithTimeout = (element, timeout = 60000) => {
+export const visibleWithTimeout = (element, timeoutIn = 60000) => {
     cy.log('Element->' + element);
-    cy.get(element, {timeout: timeout}).should('be.visible');
+    cy.get(element, {timeout: timeoutIn}).should('be.visible');
 };
 
 export const logoutUserwithMultipleMAT = () => {
@@ -62,14 +62,14 @@ export const haveText = (element, text) => {
 export const notHaveText = (element, text) => {
     cy.get(element).should('not.have.text', text);
 };
-export const waitToHaveText = (element, text, timeout) => {
-    cy.get(element, {timeout: timeout}).should('have.text', text);
+export const waitToHaveText = (element, text, timeoutIn) => {
+    cy.get(element, {timeout: timeoutIn}).should('have.text', text);
 };
-export const waitToContainText = (element, text, timeout) => {
-    cy.get(element, {timeout: timeout}).should('contain', text);
+export const waitToContainText = (element, text, timeoutIn) => {
+    cy.get(element, {timeout: timeoutIn}).should('contain', text);
 };
-export const waitToNotContainText = (element, text, timeout) => {
-    cy.get(element, {timeout: timeout}).should('not.contain', text);
+export const waitToNotContainText = (element, text, timeoutIn) => {
+    cy.get(element, {timeout: timeoutIn}).should('not.contain', text);
 };
 export const exists = (element) => {
     cy.get(element).should('exist');
@@ -89,18 +89,18 @@ export const notVisible = (element) => {
 export const visibleContain = (element, text) => {
     cy.get(element).should('be.visible').should('contain', text);
 };
-export const existsWithTimeout = (element, timeout = 6000) => {
-    cy.get(element, {timeout: timeout}).should('exist');
+export const existsWithTimeout = (element, timeoutIn = 6000) => {
+    cy.get(element, {timeout: timeoutIn}).should('exist');
 };
-export const notExistsWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, {timeout: timeout}).should('not.exist');
+export const notExistsWithTimeout = (element, timeoutIn = 60000) => {
+    cy.get(element, {timeout: timeoutIn}).should('not.exist');
 };
 
 
 
 
-export const notVisibleWithTimeout = (element, timeout = 400000) => {
-    cy.get(element, {timeout: timeout}).should('not.be.visible');
+export const notVisibleWithTimeout = (element, timeoutIn = 400000) => {
+    cy.get(element, {timeout: timeoutIn}).should('not.be.visible');
 };
 export const notNull = (element) => {
     cy.get(element).should('not.be.null');

@@ -55,7 +55,7 @@ Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
     helper.enterTextConfirmCypress(deleteMeasureDialog.passwordTextBox(), 'DELETE');
     cy.wait(1000);
 
-    deleteMeasureDialog.deleteLibraryForever().contains('Delete Library Forever').click();
+    deleteMeasureDialog.deleteLibraryForever().contains('Delete Measure Forever').click();
 
     cy.url().should('include', measureLibPage.url());
     cy.wait(3000);

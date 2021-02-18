@@ -50,7 +50,7 @@ class MeasureLibPage {
     }
 
     alertSuccess() {
-        return cy.get('.alert-success > div > b');
+        return cy.get('.gwt-HTML > b');
     }
 }
 

@@ -207,12 +207,12 @@ export const disabled = (el) => {
 export const enabled = (el) => {
     cy.get(el).should('be.enabled');
 };
-export const enabledWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, {timeout: timeout}).should('be.enabled');
+export const enabledWithTimeout = (element, timeoutIn = 60000) => {
+    cy.get(element, {timeout: timeoutIn}).should('be.enabled');
 };
 
-export const disabledWithTimeout = (element, timeout = 60000) => {
-    cy.get(element, {timeout: timeout}).should('be.disabled');
+export const disabledWithTimeout = (element, timeoutIn = 60000) => {
+    cy.get(element, {timeout: timeoutIn}).should('be.disabled');
 };
 
 // export const notDisabledWithTimeout = (element, timeout = 60000) => {

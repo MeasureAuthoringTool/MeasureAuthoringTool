@@ -103,7 +103,7 @@ public class CommonMeasureValidator {
 		// MAT-8602 Continous Variable measures must be patient based.
 		if ((MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(scoring) && patientBased)) {
 			MatContext.get().getMessageDelegate();
-			errorMessages.add(MessageDelegate.CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR);
+			errorMessages.add(MessageDelegate.CONTINUOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR);
 		}
 		return errorMessages;
 	}

@@ -3,6 +3,8 @@ import MeasureLibPage from './domain/pageObjects/MeasureLibPage';
 import MeasureComposerPage from './domain/pageObjects/MeasureComposerPage';
 import DeleteMeasureDialog from './domain/pageDialogs/DeleteMeasureDialog';
 
+const measureLibPage = new MeasureLibPage();
+
 export function getModelTypeLabel(isFhir) {
     if (isFhir) {
         return 'Model Type: FHIR / CQL Only';
@@ -27,23 +29,32 @@ export function getModelTypeValue(isFhir) {
     }
 }
 
-Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
-    const measureLibPage = new MeasureLibPage();
-
-    cy.url().should('include', measureLibPage.url());
+Cypress.Commands.add('findAndSelectMeasure', (measureName, isFhir) => {
+    cy.url()
+        .should('include', measureLibPage.url());
 
     helper.enterTextConfirmCypress(measureLibPage.searchFilterTextBox(), measureName);
 
-    measureLibPage.modelTypeSelect().select(getModelTypeLabel(isFhir)).should('have.value', getModelTypeValue(isFhir));
+    measureLibPage.modelTypeSelect().select(getModelTypeLabel(isFhir))
+        .should('have.value', getModelTypeValue(isFhir));
     measureLibPage.searchButton().click();
     cy.wait(2000);
 
-    measureLibPage.measureSearchCellTableTbody().find('tr').should('have.length', 2);
+    measureLibPage.measureSearchCellTableTbody().find('tr')
+        .should('have.length', 2);
     measureLibPage.measureSearchCellTableTds().contains(getCellTable(isFhir));
 
     measureLibPage.measureSearchCellTable().find('tbody').first().find('tr').first().click();
     cy.wait(100);
     measureLibPage.measureSearchCellTable().find('tbody').first().find('tr').first().dblclick();
+
+    const measureComposerPage = new MeasureComposerPage();
+    cy.url().should('include', measureComposerPage.url());
+});
+
+
+Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
+    cy.findAndSelectMeasure(measureName, isFhir);
 
     const measureComposerPage = new MeasureComposerPage();
     cy.url().should('include', measureComposerPage.url());

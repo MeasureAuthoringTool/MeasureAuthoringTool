@@ -11,6 +11,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Reads over the Data Requirements for a FHIR measure and builds a
+ * unique List of Data Requirements that do not have a backing Value Set
+ * or Direct Reference Code (DRC).
+ *
+ * A Data Requirement is considered to be without a Value Set or Code when
+ * either the Data Requirement's Code Filter is null OR its Code Filter's Value Set and Code
+ * values are both null.
+ *
+ * Based on the QMIG, the dataRequirement list should be a unique list of all retrieves with or without
+ * value set or DRC.
+ */
 public class ExportResultParser {
     private static final Log LOGGER = LogFactory.getLog(ExportResultParser.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -70,19 +82,19 @@ public class ExportResultParser {
             return;
         }
 
-        if (isTargetValid(typeNode)) {
+        if (isTargetValid(node)) {
             results.add(typeNode.asText());
         } else {
-            LOGGER.debug("ValueSet node found, not creating entry");
+            LOGGER.debug("ValueSet/Code node found, not creating entry");
         }
     }
 
-    private boolean isTargetValid(JsonNode typeNode) {
-        JsonNode codeFilter = typeNode.get("codeFilter");
+    private boolean isTargetValid(JsonNode node) {
+        JsonNode codeFilter = node.get("codeFilter");
 
         //JsonNode pathFilterNode = null; -- what to do with path do we care
 
-        return codeFilter == null || codeFilter.get("valueSet") == null;
+        return codeFilter == null || codeFilter.size() < 1 || (codeFilter.get(0).get("valueSet") == null && codeFilter.get(0).get("code") == null);
     }
 }
 

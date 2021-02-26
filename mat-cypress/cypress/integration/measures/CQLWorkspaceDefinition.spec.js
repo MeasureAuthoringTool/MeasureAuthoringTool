@@ -1,10 +1,10 @@
 import * as dataCreation from '../../support/MAT/MeasureAndCQLLibraryCreation';
 import MeasureLibPage from '../../support/domain/pageObjects/MeasureLibPage';
-import MeasureComposerPage from "../../support/domain/pageObjects/MeasureComposerPage";
-import CqlWorkspaceGeneralInformationPage from "../../support/domain/pageObjects/CqlWorkspaceGeneralInformationPage";
-import CqlWorkspaceDefinitionPage from "../../support/domain/pageObjects/CqlWorkspaceDefinitionPage";
-import InsertItemCqlEditorDialog from "../../support/domain/pageDialogs/InsertItemCqlEditorDialog";
-import InsertOptionsForAttributesDialog from "../../support/domain/pageDialogs/InsertOptionsForAttributesDialog";
+import MeasureComposerPage from '../../support/domain/pageObjects/MeasureComposerPage';
+import CqlWorkspaceGeneralInformationPage from '../../support/domain/pageObjects/CqlWorkspaceGeneralInformationPage';
+import CqlWorkspaceDefinitionPage from '../../support/domain/pageObjects/CqlWorkspaceDefinitionPage';
+import InsertItemCqlEditorDialog from '../../support/domain/pageDialogs/InsertItemCqlEditorDialog';
+import InsertOptionsForAttributesDialog from '../../support/domain/pageDialogs/InsertOptionsForAttributesDialog';
 
 describe('Verify CQL Workspace Attributes Added', () => {
     beforeEach(function () {
@@ -41,7 +41,7 @@ describe('Verify CQL Workspace Attributes Added', () => {
         const cqlWorkspaceDefinitionPage = new CqlWorkspaceDefinitionPage();
         cqlWorkspaceDefinitionPage.insertLink().click();
 
-        const insertItemCqlEditorDialog = new InsertItemCqlEditorDialog()
+        const insertItemCqlEditorDialog = new InsertItemCqlEditorDialog();
         insertItemCqlEditorDialog.itemToInsertSelect().select('Attributes');
 
         const insertOptionsForAttributesDialog = new InsertOptionsForAttributesDialog();

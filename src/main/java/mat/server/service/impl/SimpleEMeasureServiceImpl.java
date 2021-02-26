@@ -552,13 +552,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final ExportResult getHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
         MeasureExport measureExport = getMeasureExport(measureId);
 
-        List<String> dataRequirementsNoValueSet = new ArrayList<>();
+        List<String> dataRequirementsNoCodeFilter = new ArrayList<>();
         if (measureExport.isFhir()) {
             ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-            dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+            String bundleJson = zp.buildFhirMeasureJsonBundle(measureId);
+            dataRequirementsNoCodeFilter = new ExportResultParser(bundleJson).parseDataRequirement();
         }
-        String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoValueSet);
+        String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoCodeFilter);
 
         ExportResult exportResult = new ExportResult();
         exportResult.export = emeasureHTMLStr;
@@ -570,13 +570,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final ExportResult createOrGetHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
         MeasureExport measureExport = getMeasureExport(measureId);
         if (measureExport.getHumanReadable() == null) {
-            List<String> dataRequirementsNoValueSet = new ArrayList<>();
+            List<String> dataRequirementsNoCodeFilter = new ArrayList<>();
             if (measureExport.isFhir()) {
                 ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-                String measureJsonBundle = zp.buildFhirMeasureJsonBundle(measureId);
-                dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
+                String bundleJson = zp.buildFhirMeasureJsonBundle(measureId);
+                dataRequirementsNoCodeFilter = new ExportResultParser(bundleJson).parseDataRequirement();
             }
-            measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoValueSet));
+            measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, dataRequirementsNoCodeFilter));
             measureExportDAO.save(measureExport);
         }
 

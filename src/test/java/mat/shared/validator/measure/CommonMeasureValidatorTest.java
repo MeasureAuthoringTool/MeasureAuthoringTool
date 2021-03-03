@@ -24,7 +24,7 @@ public class CommonMeasureValidatorTest {
 	private void testValidateFhirLibraryName() {
 		List<String> noErrorList = Arrays.asList();
 		List<String> emptyList = Arrays.asList("A CQL Library name is required.");
-		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) and must not contain spaces or  '_' (underscores).");
+		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an upper case letter, followed by alpha-numeric character(s) and must not contain spaces, '_' (underscores), or other special characters.");
 
 		assertEquals(noErrorList, validator.validateFhirLibraryName("Hey"));
 		assertEquals(noErrorList, validator.validateFhirLibraryName("H123"));
@@ -78,7 +78,7 @@ public class CommonMeasureValidatorTest {
 	
 	private void testValidatePatientBased() {
 		List<String> noErrorList = Arrays.asList(); 
-		List<String> errorList = Arrays.asList("Continous Variable measures must not be patient based.");
+		List<String> errorList = Arrays.asList("Continuous Variable measures must not be patient based.");
 		
 		assertEquals(errorList, validator.validatePatientBased("continuous Variable", true));
 		assertEquals(noErrorList, validator.validatePatientBased("", true));

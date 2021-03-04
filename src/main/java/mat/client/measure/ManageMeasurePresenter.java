@@ -577,6 +577,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         addHandlerToGenerateCmsId();
+        addHandlerToMatchLibraryName();
         detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 
@@ -599,26 +600,35 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void addHandlerToGenerateCmsId() {
         detailDisplay.getFhirModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID and matching Library Name.");
-                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID and matching Library Name.");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID on Save.");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID on Save.");
             }
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate an eCQM ID and matching Library Name.");
-                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID and matching Library Name.");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate an eCQM ID on Save.");
+                detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID on Save.");
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                generateCmsIdAndSetLibraryName();
+                generateCmsId();
             } else {
                 detailDisplay.getCQLLibraryNameTextBox().setValue("");
             }
         });
     }
 
-    private void generateCmsIdAndSetLibraryName() {
+    private void addHandlerToMatchLibraryName() {
+        detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setEnabled(clickEvent.getValue());
+            if (!clickEvent.getValue()) {
+                detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setValue(false);
+            }
+        });
+    }
+
+    private void generateCmsId() {
         MatContext.get().getMeasureService().generateEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -628,7 +638,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onSuccess(Integer integer) {
                 currentDetails.seteMeasureId(integer);
-                detailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + integer);
             }
         });
     }

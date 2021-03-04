@@ -59,6 +59,8 @@ public interface DetailDisplay extends BaseDisplay {
 
     CheckBox getGenerateCmsIdCheckbox();
 
+    CheckBox getMatchLibraryNameToCmsIdCheckbox();
+
     RadioButton getFhirModel();
 
     RadioButton getQdmModel();

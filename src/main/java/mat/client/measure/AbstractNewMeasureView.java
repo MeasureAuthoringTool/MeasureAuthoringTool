@@ -41,7 +41,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormGroup messageFormGrp = new FormGroup();
     protected FormGroup measureNameGroup = new FormGroup();
     protected FormGroup measureModelGroup = new FormGroup();
-    protected FormGroup generateCmsIdGroup = new FormGroup();
+    protected FormGroup nameAndIdOptionGroup = new FormGroup();
     protected FormGroup cqlLibraryNameGroup = new FormGroup();
     protected FormGroup shortNameGroup = new FormGroup();
     protected FormGroup scoringGroup = new FormGroup();
@@ -53,6 +53,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     private ErrorHandler errorHandler = new ErrorHandler();
 
     protected CheckBox generateCmsIdCheckbox = new CheckBox();
+    protected CheckBox matchLibraryNameToCmsIdCheckbox = new CheckBox();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -218,6 +219,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     @Override
+    public CheckBox getMatchLibraryNameToCmsIdCheckbox() {
+        return matchLibraryNameToCmsIdCheckbox;
+    }
+
+    @Override
     public RadioButton getFhirModel() {
         return fhirModel;
     }
@@ -323,24 +329,32 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     protected void addGenerateCmsIdCheckbox() {
-        generateCmsIdCheckbox.setText("Automatically generate a CMS ID and matching Library Name.");
-        generateCmsIdCheckbox.setTitle("Click to generate a CMS ID and matching Library Name.");
+        generateCmsIdCheckbox.setText("Automatically generate a CMS ID on Save.");
+        generateCmsIdCheckbox.setTitle("Click to generate a CMS ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
-        generateCmsIdGroup.add(generateCmsIdCheckbox);
+        nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
     protected void addCompositeGenerateCmsIdCheckbox() {
-        generateCmsIdCheckbox.setText("Automatically generate an eCQM ID and matching Library Name.");
-        generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID and matching Library Name.");
+        generateCmsIdCheckbox.setText("Automatically generate an eCQM ID on Save.");
+        generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
-        generateCmsIdGroup.add(generateCmsIdCheckbox);
+        nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
-
+    protected void addMatchLibraryNameToCmsIdCheckbox(){
+        matchLibraryNameToCmsIdCheckbox.setText("Match CQL Library Name to Generated ID.");
+        matchLibraryNameToCmsIdCheckbox.setTitle("Click to match CQL Library Name to Generated ID.");
+        matchLibraryNameToCmsIdCheckbox.setId("matchLibName_CheckBox");
+        matchLibraryNameToCmsIdCheckbox.setEnabled(false);
+        ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "matchLibName_Input");
+        ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "matchLibName_Input");
+        nameAndIdOptionGroup.add(matchLibraryNameToCmsIdCheckbox);
+    }
 
     protected void buildMeasureNameTextArea() {
         measureNameTextBox.setId("MeasureNameTextArea");
@@ -483,7 +497,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         FieldSet formFieldSet = new FieldSet();
         formFieldSet.add(measureNameGroup);
         formFieldSet.add(measureModelGroup);
-        formFieldSet.add(generateCmsIdGroup);
+        formFieldSet.add(nameAndIdOptionGroup);
         formFieldSet.add(cqlLibraryNameGroup);
         formFieldSet.add(shortNameGroup);
         formFieldSet.add(scoringGroup);

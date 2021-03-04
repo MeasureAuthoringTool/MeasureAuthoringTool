@@ -113,6 +113,12 @@
         <delete tableName="QDM_ATTRIBUTES">
             <where>DATA_TYPE_ID=13 and NAME='relevantPeriod'</where>
         </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='authorDatetime'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='performer'</where>
+        </delete>
 
         <!--Encounter, Performed does not contain  negationRational-->
 
@@ -142,5 +148,16 @@
         <delete tableName="QDM_ATTRIBUTES">
             <where>DATA_TYPE_ID=63 and NAME='priority'</where>
         </delete>
+
+        <!--Remove data types-->
+        <!--Encounter, Not Performed-->
+        <delete tableName="DATA_TYPE">
+            <where>DATA_TYPE_ID=128</where>
+        </delete>
+        <!--Device Applied -->
+        <delete tableName="DATA_TYPE">
+            <where>DATA_TYPE_ID=13</where>
+        </delete>
+
     </changeSet>
 </databaseChangeLog>

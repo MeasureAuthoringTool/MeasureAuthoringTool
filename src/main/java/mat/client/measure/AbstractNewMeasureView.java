@@ -354,20 +354,18 @@ public class AbstractNewMeasureView implements DetailDisplay {
         nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
-    protected void addMatchLibraryNameToCmsIdCheckbox(){
+    protected void addMatchLibraryNameToCmsIdCheckbox() {
+        // TODO Add cy id for cypress.io testing
         matchLibraryNameToCmsIdCheckbox.setText("Match CQL Library Name to Generated ID.");
         matchLibraryNameToCmsIdCheckbox.setTitle("Click to match CQL Library Name to Generated ID.");
         matchLibraryNameToCmsIdCheckbox.setId("matchLibName_CheckBox");
         matchLibraryNameToCmsIdCheckbox.setEnabled(false);
         matchLibraryNameToCmsIdCheckbox.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
+        matchLibraryNameToCmsIdCheckbox.getElement().getStyle().setMarginLeft(15, Style.Unit.PX);
         ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "matchLibName_Input");
         ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "matchLibName_Input");
 
-        //Indent the checkbox.
-        HTMLPanel subOptions = new HTMLPanel("<ul style=\"list-style:none;padding-left:15px\"><li id=\"match_name\"></li></ul>");
-        subOptions.add(matchLibraryNameToCmsIdCheckbox, "match_name");
-
-        nameAndIdOptionGroup.add(subOptions);
+        nameAndIdOptionGroup.add(matchLibraryNameToCmsIdCheckbox);
     }
 
     protected void buildMeasureNameTextArea() {

@@ -577,8 +577,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         addHandlerToGenerateCmsId();
-        addHandlerToMatchLibraryName();
-        detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+        detailDisplay.getCQLLibraryNameTextBoxValue().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 
         MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
@@ -611,19 +610,17 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setEnabled(clickEvent.getValue());
             if (clickEvent.getValue()) {
                 generateCmsId();
-            } else {
-                detailDisplay.getCQLLibraryNameTextBox().setValue("");
+                detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setValue(false);
             }
         });
-    }
-
-    private void addHandlerToMatchLibraryName() {
-        detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
-            detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setEnabled(clickEvent.getValue());
-            if (!clickEvent.getValue()) {
-                detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setValue(false);
+        detailDisplay.getMatchLibraryNameToCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
+            detailDisplay.getCQLLibraryNameTextBox().setEnabled(!clickEvent.getValue());
+            if (clickEvent.getValue()) {
+                detailDisplay.getCQLLibraryNameTextBoxValue().setValue(null);
+                detailDisplay.getErrorHandler().clearErrors(detailDisplay.getCQLLibraryNameTextBox().getElement());
             }
         });
     }

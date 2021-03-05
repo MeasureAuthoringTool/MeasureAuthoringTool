@@ -152,7 +152,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     @Override
-    public HasValue<String> getCQLLibraryNameTextBox() {
+    public HasValue<String> getCQLLibraryNameTextBoxValue() {
+        return cqlLibraryNameTextBox;
+    }
+
+    @Override
+    public TextArea getCQLLibraryNameTextBox() {
         return cqlLibraryNameTextBox;
     }
 

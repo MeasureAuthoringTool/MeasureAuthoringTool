@@ -472,7 +472,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         ((NewCompositeMeasureView) compositeDetailDisplay).getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
-        ((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+        ((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBoxValue().addValueChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getMeasureScoringListBox().addValueChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> setIsPageDirty(true));
@@ -483,7 +483,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             if (clickEvent.getValue()) {
                 generateCompositeCmsIdAndSetLibraryName();
             } else {
-                compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("");
+                compositeDetailDisplay.getCQLLibraryNameTextBoxValue().setValue("");
             }
         });
     }
@@ -498,7 +498,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onSuccess(Integer integer) {
                 currentCompositeMeasureDetails.seteMeasureId(integer);
-                compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + integer);
+                compositeDetailDisplay.getCQLLibraryNameTextBoxValue().setValue("CMS" + integer);
             }
         });
     }
@@ -904,7 +904,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         dialogBox.getConfirmButton().addClickHandler(event -> {
             currentDetails.seteMeasureId(result.geteMeasureId());
-            detailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + result.geteMeasureId());
+            detailDisplay.getCQLLibraryNameTextBoxValue().setValue("CMS" + result.geteMeasureId());
             createNewMeasure();
             dialogBox.closeDialogBox();
         });
@@ -997,7 +997,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         detailDisplay.getMeasureNameTextBox().setValue("");
         detailDisplay.getECQMAbbreviatedTitleTextBox().setValue("");
-        detailDisplay.getCQLLibraryNameTextBox().setValue("");
+        detailDisplay.getCQLLibraryNameTextBoxValue().setValue("");
         updateSaveButtonClickHandler(event -> cloneMeasure());
         panel.setContent(detailDisplay.asWidget());
     }
@@ -2063,7 +2063,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         resetPatientBasedInput(compositeDetailDisplay);
         compositeDetailDisplay.getMeasureNameTextBox().setValue(currentCompositeMeasureDetails.getMeasureName());
         compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentCompositeMeasureDetails.getShortName());
-        compositeDetailDisplay.getCQLLibraryNameTextBox().setValue(currentCompositeMeasureDetails.getCQLLibraryName());
+        compositeDetailDisplay.getCQLLibraryNameTextBoxValue().setValue(currentCompositeMeasureDetails.getCQLLibraryName());
         ((NewCompositeMeasureView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
         compositeDetailDisplay.getMeasureScoringListBox().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
 
@@ -2086,7 +2086,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.clearFields();
         resetPatientBasedInput(detailDisplay);
         detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
-        detailDisplay.getCQLLibraryNameTextBox().setValue(currentDetails.getCQLLibraryName());
+        detailDisplay.getCQLLibraryNameTextBoxValue().setValue(currentDetails.getCQLLibraryName());
         detailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentDetails.getShortName());
         detailDisplay.getMeasureScoringListBox().setValueMetadata(currentDetails.getMeasScoring());
 
@@ -2274,7 +2274,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         currentDetails.setMeasureName(detailDisplay.getMeasureNameTextBox().getValue().trim());
         currentDetails.setShortName(detailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
         currentDetails.setMeasureModel(detailDisplay.getMeasureModelType());
-        currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBox().getValue().trim());
+        currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBoxValue().getValue().trim());
         String measureScoring = detailDisplay.getMeasureScoringValue();
 
         currentDetails.setMeasScoring(measureScoring);
@@ -2295,7 +2295,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void updateCompositeDetailsFromCompositeDetailView() {
         currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureNameTextBox().getValue().trim());
-        currentCompositeMeasureDetails.setCQLLibraryName(compositeDetailDisplay.getCQLLibraryNameTextBox().getValue().trim());
+        currentCompositeMeasureDetails.setCQLLibraryName(compositeDetailDisplay.getCQLLibraryNameTextBoxValue().getValue().trim());
         currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
         currentCompositeMeasureDetails.setCompositeScoringMethod(((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringValue());
         String measureScoring = compositeDetailDisplay.getMeasureScoringValue();
@@ -2369,7 +2369,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         dialogBox.getConfirmButton().addClickHandler(event -> {
             currentCompositeMeasureDetails.seteMeasureId(result.geteMeasureId());
-            compositeDetailDisplay.getCQLLibraryNameTextBox().setValue("CMS" + result.geteMeasureId());
+            compositeDetailDisplay.getCQLLibraryNameTextBoxValue().setValue("CMS" + result.geteMeasureId());
             createNewCompositeMeasure();
             dialogBox.closeDialogBox();
         });

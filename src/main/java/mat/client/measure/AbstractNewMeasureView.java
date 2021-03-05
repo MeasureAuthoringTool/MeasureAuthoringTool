@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -90,6 +91,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
         helpBlock.setText("");
         generateCmsIdCheckbox.setValue(false);
+        matchLibraryNameToCmsIdCheckbox.setValue(false);
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();
         warningMessageAlert.clearAlert();
@@ -337,6 +339,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         generateCmsIdCheckbox.setText("Automatically generate a CMS ID on Save.");
         generateCmsIdCheckbox.setTitle("Click to generate a CMS ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
         nameAndIdOptionGroup.add(generateCmsIdCheckbox);
@@ -356,9 +359,15 @@ public class AbstractNewMeasureView implements DetailDisplay {
         matchLibraryNameToCmsIdCheckbox.setTitle("Click to match CQL Library Name to Generated ID.");
         matchLibraryNameToCmsIdCheckbox.setId("matchLibName_CheckBox");
         matchLibraryNameToCmsIdCheckbox.setEnabled(false);
+        matchLibraryNameToCmsIdCheckbox.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "matchLibName_Input");
         ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "matchLibName_Input");
-        nameAndIdOptionGroup.add(matchLibraryNameToCmsIdCheckbox);
+
+        //Indent the checkbox.
+        HTMLPanel subOptions = new HTMLPanel("<ul style=\"list-style:none;padding-left:15px\"><li id=\"match_name\"></li></ul>");
+        subOptions.add(matchLibraryNameToCmsIdCheckbox, "match_name");
+
+        nameAndIdOptionGroup.add(subOptions);
     }
 
     protected void buildMeasureNameTextArea() {

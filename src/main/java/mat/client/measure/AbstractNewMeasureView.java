@@ -87,10 +87,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
     public void clearFields() {
         measureNameTextBox.setText("");
         eCQMAbbreviatedTitleTextBox.setText("");
+        cqlLibraryNameTextBox.setEnabled(true);
         cqlLibraryNameTextBox.setText("");
         measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
         helpBlock.setText("");
         generateCmsIdCheckbox.setValue(false);
+        matchLibraryNameToCmsIdCheckbox.setEnabled(false);
         matchLibraryNameToCmsIdCheckbox.setValue(false);
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();

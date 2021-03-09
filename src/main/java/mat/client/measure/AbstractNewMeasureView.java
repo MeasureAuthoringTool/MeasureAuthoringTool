@@ -409,16 +409,18 @@ public class AbstractNewMeasureView implements DetailDisplay {
         cqlLibraryNameTextBox.setWidth("400px");
         cqlLibraryNameTextBox.setHeight("50px");
         cqlLibraryNameTextBox.setMaxLength(500);
-        cqlLibraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(cqlLibraryNameTextBox,
-                (s) -> {
-                    String result = null;
-                    if (fhirModel.getValue()) {
-                        result = getFirst(CommonMeasureValidator.validateFhirLibraryName(s));
-                    } else {
-                        result = getFirst(CommonMeasureValidator.validateQDMName(s));
+        cqlLibraryNameTextBox.addBlurHandler(
+            errorHandler.buildBlurHandler(cqlLibraryNameTextBox,
+                (value) -> {
+                    if (cqlLibraryNameTextBox.isEnabled()) {
+                        if (fhirModel.getValue()) {
+                            return getFirst(CommonMeasureValidator.validateFhirLibraryName(value));
+                        }
+                        return getFirst(CommonMeasureValidator.validateQDMName(value));
                     }
-                    return result;
-                }));
+                    return null;
+            })
+        );
     }
 
     protected HorizontalPanel buildCQLLibraryNamePanel() {

@@ -80,7 +80,7 @@ public class MatContextServiceUtilTest {
     private void createConvertibleMeasure() {
         measure.setMeasureModel("QDM");
         measure.setReleaseVersion("v5.8");
-        measure.setQdmVersion("5.5");
+        measure.setQdmVersion("5.6");
         measure.setMeasureSet(new MeasureSet());
         measure.getMeasureSet().setId("FUBAR");
         User owner = new User();
@@ -129,7 +129,7 @@ public class MatContextServiceUtilTest {
 
         CQLLibrary cqlLibrary = new CQLLibrary();
         cqlLibrary.setLibraryModelType("QDM");
-        cqlLibrary.setQdmVersion("5.5");
+        cqlLibrary.setQdmVersion("5.6");
         cqlLibrary.setReleaseVersion("5.8");
         cqlLibrary.setOwnerId(new User());
         cqlLibrary.getOwnerId().setId(OWNER_USER_1);
@@ -143,7 +143,7 @@ public class MatContextServiceUtilTest {
 
         CQLLibraryShareDTO cqlLibrary = new CQLLibraryShareDTO();
         cqlLibrary.setLibraryModelType("QDM");
-        cqlLibrary.setQdmVersion("5.5");
+        cqlLibrary.setQdmVersion("5.6");
         cqlLibrary.setReleaseVersion("5.8");
         cqlLibrary.setOwnerUserId(OWNER_USER_1);
         cqlLibrary.setDraft(false);
@@ -158,7 +158,7 @@ public class MatContextServiceUtilTest {
     // Validation
     public void createValidationMeasure() {
         measure.setReleaseVersion("v5.8");
-        measure.setQdmVersion("5.5");
+        measure.setQdmVersion("5.6");
         measure.setDraft(true);
         measure.setMeasureModel("FHIR");
     }

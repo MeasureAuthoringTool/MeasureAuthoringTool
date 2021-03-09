@@ -35,7 +35,7 @@ describe('Cql Library: FHIR cqlLibrary Conversion: Conversion to FHIR', () => {
 
         // assert model version for QDM Library
         cy.get(cqlLibrary.cqlLibrarySearchTable).should('contain.text', 'Model Version');
-        cy.get(cqlLibrary.row1CqlLibraryModelVersion).should('contain.text', '5.5');
+        cy.get(cqlLibrary.row1CqlLibraryModelVersion).should('contain.text', '5.6');
 
         // Select the Qdm Cql library created, version it and convert
         cy.createCqlLibraryVersionAndVerify(qdmCqlLibraryName);

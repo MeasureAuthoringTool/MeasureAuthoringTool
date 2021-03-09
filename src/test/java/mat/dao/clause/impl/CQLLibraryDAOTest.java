@@ -113,7 +113,7 @@ public class CQLLibraryDAOTest {
     private CQLLibrary createLibraryWithDetails(User user, String name, String setId, String modelType) {
         CQLLibrary cqlLibrary = new CQLLibrary();
         cqlLibrary.setName(name);
-        cqlLibrary.setQdmVersion("5.5");
+        cqlLibrary.setQdmVersion("5.6");
         cqlLibrary.setSetId(setId);
         cqlLibrary.setDraft(false);
         cqlLibrary.setLibraryModelType(modelType);
@@ -123,7 +123,7 @@ public class CQLLibraryDAOTest {
 
     @Test
     public void testSearchForIncludes() {
-        MATPropertiesService.get().setQdmVersion("5.5");
+        MATPropertiesService.get().setQdmVersion("5.6");
         List<CQLLibrary> cqlLibs = cqlLibraryDAO.searchForIncludes("aadsddwwd", "alzlib1",
                 "", "QDM");
         Assertions.assertNotNull(cqlLibs);
@@ -134,7 +134,7 @@ public class CQLLibraryDAOTest {
 
     @Test
     public void testSearchForIncludesWhenModelTypeNull() {
-        MATPropertiesService.get().setQdmVersion("5.5");
+        MATPropertiesService.get().setQdmVersion("5.6");
         List<CQLLibrary> cqlLibs = cqlLibraryDAO.searchForIncludes("wqqwdsddwwd", "testlib",
                 "", null);
         Assertions.assertNotNull(cqlLibs);

@@ -2,6 +2,7 @@ export const measureName = '#MeasureNameTextArea';
 export const modelradioFHIR = '#gwt-uid-3';
 export const modelradioQDM = '#gwt-uid-4';
 export const generateCmsIdCheckbox = '#generateCmsId_Input';
+export const generateCmsIdCheckboxLabel = '#generateCmsId_CheckBox > label > span';
 export const matchLibraryNameCheckbox = '#matchLibName_Input';
 export const cqlLibraryName = '#CqlLibraryNameTextArea';
 export const shortName = '#ShortNameTextBox';

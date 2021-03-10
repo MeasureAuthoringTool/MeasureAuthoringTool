@@ -1,22 +1,22 @@
-import * as helper from '../helpers';
-import * as measureLibraryElements from '../../../elements/MeasureLibraryElements';
-import * as newMeasureElements from '../../../elements/CreateNewMeasureElements';
-import * as measureComposerElements from '../../../elements/MeasureComposerElements';
+import * as cqlComposerElements from '../../../elements/CQLComposerElements';
 import * as cqlLibraryElements from '../../../elements/CqlLibraryElements';
 import * as createNewCqlLibrary from '../../../elements/CreateNewCQLLibraryElements';
-import * as cqlComposerElements from '../../../elements/CQLComposerElements';
+import * as newMeasureElements from '../../../elements/CreateNewMeasureElements';
+import * as measureComposerElements from '../../../elements/MeasureComposerElements';
 import * as measureDetailsEleemnts from '../../../elements/MeasureDetailsElements';
+import * as measureLibraryElements from '../../../elements/MeasureLibraryElements';
+import * as helper from '../helpers';
 import * as gridRowActions from './GridRowActions';
 
 const draftMeasure = 'DraftMeasure';
 
-export const createDraftMeasure = (measure, model) => {
+export const createDraftMeasure = (measureName, model = 'QDM', generateCmsId = false, matchLibraryName = false) => {
     let name = '';
 
-    if (!measure) {
+    if (!measureName) {
         name = draftMeasure + Date.now();
     } else {
-        name = measure + Date.now();
+        name = measureName + Date.now();
     }
 
     // creating new measure
@@ -25,10 +25,17 @@ export const createDraftMeasure = (measure, model) => {
 
     cy.get(newMeasureElements.measureName).type(name, {delay: 50});
 
-    if (!model || model === 'QDM') {
+    if (model === 'QDM') {
         cy.get(newMeasureElements.modelradioQDM).click();
     } else {
         cy.get(newMeasureElements.modelradioFHIR).click();
+    }
+
+    if(generateCmsId) {
+      cy.get(newMeasureElements.generateCmsIdCheckbox).click();
+      if (matchLibraryName) {
+        cy.get(newMeasureElements.matchLibraryNameCheckbox).click();
+      }
     }
 
     cy.get(newMeasureElements.cqlLibraryName).type(name, {delay: 50});

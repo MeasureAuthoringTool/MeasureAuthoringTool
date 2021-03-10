@@ -967,6 +967,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
         currentDetails = new ManageMeasureDetailModel();
         detailDisplay.showCautionMsg(false);
+        showOptionCheckboxes();
         displayCommonDetailForAdd(detailDisplay);
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
@@ -990,6 +991,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showMeasureName(true);
         detailDisplay.showCautionMsg(true);
+        hideOptionCheckboxes();
         setDetailsToView();
 
         detailDisplay.getMeasureNameTextBox().setValue("");
@@ -1007,15 +1009,27 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showCautionMsg(true);
         detailDisplay.showMeasureName(true);
+        hideOptionCheckboxes();
         setDetailsToView();
         updateSaveButtonClickHandler(event -> draftMeasure());
         panel.setContent(detailDisplay.asWidget());
+    }
+
+    private void hideOptionCheckboxes() {
+        MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), false);
+        MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), false);
+    }
+
+    private void showOptionCheckboxes() {
+        MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), true);
+        MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), true);
     }
 
     private void displayNewCompositeMeasureWidget() {
         clearErrorMessageAlerts();
         warningConfirmationMessageAlert = compositeDetailDisplay.getWarningConfirmationMessageAlert();
         displayCommonDetailForAdd(compositeDetailDisplay);
+        showOptionCheckboxes();
         panel.setHeading("My Measures > Create New Composite Measure", COMPOSITE_MEASURE);
         setCompositeDetailsToView();
         Mat.focusSkipLists(COMPOSITE_MEASURE);

@@ -395,7 +395,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 });
     }
 
-
     private void clearErrorMessageAlerts() {
         detailDisplay.getWarningConfirmationMessageAlert().clearAlert();
         compositeDetailDisplay.getWarningConfirmationMessageAlert().clearAlert();
@@ -612,7 +611,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
             detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setEnabled(clickEvent.getValue());
             if (clickEvent.getValue()) {
-                generateCmsId();
                 detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setValue(false);
             }
         });
@@ -625,7 +623,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         });
     }
 
-    private void generateCmsId() {
+    private void applyCqlLibNameOptionsAndSave(DetailDisplay detailDisplay, ManageMeasureDetailModel currentDetails) {
+
         MatContext.get().getMeasureService().generateEmeasureIdForNewMeasure(new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -635,8 +634,59 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onSuccess(Integer integer) {
                 currentDetails.seteMeasureId(integer);
+                setCqlLibraryNameInMeasureModel(detailDisplay, currentDetails);
+                if(currentDetails instanceof ManageCompositeMeasureDetailModel) {
+                    saveNewCompositeMeasureAndRedirect();
+                } else {
+                    saveNewMeasureAndRedirect();
+                }
             }
         });
+    }
+
+    private void setCqlLibraryNameInMeasureModel(DetailDisplay detailDisplay, ManageMeasureDetailModel currentDetails) {
+        if (detailDisplay.getMatchLibraryNameToCmsIdCheckbox().isEnabled() &&
+                detailDisplay.getMatchLibraryNameToCmsIdCheckbox().getValue()) {
+            setGeneratedCqlLibraryName(currentDetails);
+        } else {
+            currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBoxValue().getValue().trim());
+        }
+    }
+
+    private void setGeneratedCqlLibraryName(ManageMeasureDetailModel currentDetails) {
+        if (ModelTypeHelper.isFhir(currentDetails.getMeasureModel())) {
+            currentDetails.setCQLLibraryName("CMS" + currentDetails.geteMeasureId() + "FHIR");
+        } else {
+            currentDetails.setCQLLibraryName("CMS" + currentDetails.geteMeasureId());
+        }
+    }
+
+    private void saveNewMeasureAndRedirect() {
+        if (isValid(currentDetails, false)) {
+            setSearchingBusy(true);
+            MatContext.get().getMeasureService().saveNewMeasure(currentDetails, new AsyncCallback<SaveMeasureResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    Mat.hideLoadingMessage();
+                    detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                }
+
+                @Override
+                public void onSuccess(SaveMeasureResult result) {
+                    Mat.hideLoadingMessage();
+                    if (result.isSuccess()) {
+                        displaySuccessAndRedirectToMeasure(result.getId());
+                    } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID ) {
+                        handleInvalidEMeasureIdGenerator(result);
+                    } else {
+                        detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
+                    }
+                }
+            });
+        } else {
+            setSearchingBusy(false);
+        }
     }
 
     private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
@@ -759,6 +809,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         }
 
         updateDetailsFromView();
+        setCqlLibraryNameInMeasureModel(detailDisplay, currentDetails);
 
         searchDisplay.resetMessageDisplay();
         MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
@@ -828,10 +879,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             return;
         }
         updateDetailsFromView();
+        setCqlLibraryNameInMeasureModel(detailDisplay, currentDetails);
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValid(currentDetails, true)) {
+            MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
             measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -856,33 +908,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         }
 
         if (detailDisplay.getErrorHandler() != null && detailDisplay.getErrorHandler().validate().isEmpty()) {
-            updateDetailsFromView();
-
-            if (isValid(currentDetails, false)) {
-                setSearchingBusy(true);
-                MatContext.get().getMeasureService().saveNewMeasure(currentDetails, new AsyncCallback<SaveMeasureResult>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        Mat.hideLoadingMessage();
-                        detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(SaveMeasureResult result) {
-                        Mat.hideLoadingMessage();
-                        if (result.isSuccess()) {
-                            displaySuccessAndRedirectToMeasure(result.getId());
-                        } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID ) {
-                            handleInvalidEMeasureIdGenerator(result);
-                        } else {
-                            detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
-                        }
-                    }
-                });
-            } else {
-                setSearchingBusy(false);
-            }
+            saveNewMeasure();
         }
     }
 
@@ -2278,17 +2304,22 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         displayTransferView(transferDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE);
     }
 
-    /**
-     * Update details from view.
-     */
+    private void saveNewMeasure() {
+        updateDetailsFromView();
+        if (detailDisplay.getGenerateCmsIdCheckbox().isVisible() &&
+                detailDisplay.getGenerateCmsIdCheckbox().getValue()) {
+            applyCqlLibNameOptionsAndSave(detailDisplay, currentDetails);
+        } else {
+            setCqlLibraryNameInMeasureModel(detailDisplay, currentDetails);
+            saveNewMeasureAndRedirect();
+        }
+    }
+
     private void updateDetailsFromView() {
         currentDetails.setMeasureName(detailDisplay.getMeasureNameTextBox().getValue().trim());
         currentDetails.setShortName(detailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
         currentDetails.setMeasureModel(detailDisplay.getMeasureModelType());
-        currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBoxValue().getValue().trim());
-        String measureScoring = detailDisplay.getMeasureScoringValue();
-
-        currentDetails.setMeasScoring(measureScoring);
+        currentDetails.setMeasScoring(detailDisplay.getMeasureScoringValue());
 
         if (detailDisplay.getPatientBasedListBox().getItemText(detailDisplay.getPatientBasedListBox().getSelectedIndex()).equalsIgnoreCase("Yes")) {
             currentDetails.setIsPatientBased(true);

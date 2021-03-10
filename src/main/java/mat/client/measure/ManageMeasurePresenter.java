@@ -477,14 +477,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         ((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> setIsPageDirty(true));
         ((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
 
-
-        compositeDetailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
-            if (clickEvent.getValue()) {
-                generateCompositeCmsIdAndSetLibraryName();
-            } else {
-                compositeDetailDisplay.getCQLLibraryNameTextBoxValue().setValue("");
-            }
-        });
+        addCheckboxHandlers(compositeDetailDisplay);
     }
 
     private void generateCompositeCmsIdAndSetLibraryName() {
@@ -512,7 +505,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay);
     }
 
-
     private void updateCompositeDetailsOnContinueButton() {
         compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
         boolean isEdit = false;
@@ -525,34 +517,42 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         }
 
         updateCompositeDetailsFromCompositeDetailView();
+        if (compositeDetailDisplay.getGenerateCmsIdCheckbox().isVisible() &&
+                compositeDetailDisplay.getGenerateCmsIdCheckbox().getValue()) {
+            applyCqlLibNameOptionsAndSave(compositeDetailDisplay, currentCompositeMeasureDetails);
+        } else {
+            setCqlLibraryNameInMeasureModel(compositeDetailDisplay, currentCompositeMeasureDetails);
+            saveNewCompositeMeasureAndRedirect();
+        }
+    }
 
+    private void saveNewCompositeMeasureAndRedirect() {
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
             MatContext.get().getMeasureService().checkIfLibraryNameExists(currentCompositeMeasureDetails.getCQLLibraryName(),
-                    currentCompositeMeasureDetails.getMeasureSetId(), new AsyncCallback<Boolean>() {
+                currentCompositeMeasureDetails.getMeasureSetId(), new AsyncCallback<Boolean>() {
 
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                            componentMeasureDisplay.setComponentBusy(false);
-                        }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                        componentMeasureDisplay.setComponentBusy(false);
+                    }
 
-                        @Override
-                        public void onSuccess(Boolean result) {
-                            if (result) {
-                                compositeDetailDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        if (result) {
+                            compositeDetailDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+                        } else {
+                            String panelHeading = "";
+                            if (StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
+                                panelHeading = "My Measures > Create New Composite Measure > Component Measures";
                             } else {
-                                String panelHeading = "";
-                                if (StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
-                                    panelHeading = "My Measures > Create New Composite Measure > Component Measures";
-                                } else {
-                                    panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
-                                }
-                                displayComponentDetails(panelHeading);
+                                panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
                             }
+                            displayComponentDetails(panelHeading);
                         }
-                    });
+                    }
+                });
         }
-
     }
 
     private void showConfirmationDialog(final String message) {
@@ -575,7 +575,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 
         detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
-        addHandlerToGenerateCmsId();
+        addCheckboxHandlers(detailDisplay);
         detailDisplay.getCQLLibraryNameTextBoxValue().addValueChangeHandler(event -> setIsPageDirty(true));
         detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 
@@ -595,7 +595,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
     }
 
-    private void addHandlerToGenerateCmsId() {
+    private void addCheckboxHandlers(DetailDisplay detailDisplay) {
         detailDisplay.getFhirModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
                 detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID on Save.");
@@ -993,7 +993,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
         currentDetails = new ManageMeasureDetailModel();
         detailDisplay.showCautionMsg(false);
-        showOptionCheckboxes();
+        showOptionCheckboxes(detailDisplay);
         displayCommonDetailForAdd(detailDisplay);
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
@@ -1017,7 +1017,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showMeasureName(true);
         detailDisplay.showCautionMsg(true);
-        hideOptionCheckboxes();
+        hideOptionCheckboxes(detailDisplay);
         setDetailsToView();
 
         detailDisplay.getMeasureNameTextBox().setValue("");
@@ -1035,18 +1035,18 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showCautionMsg(true);
         detailDisplay.showMeasureName(true);
-        hideOptionCheckboxes();
+        hideOptionCheckboxes(detailDisplay);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> draftMeasure());
         panel.setContent(detailDisplay.asWidget());
     }
 
-    private void hideOptionCheckboxes() {
+    private void hideOptionCheckboxes(DetailDisplay detailDisplay) {
         MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), false);
         MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), false);
     }
 
-    private void showOptionCheckboxes() {
+    private void showOptionCheckboxes(DetailDisplay detailDisplay) {
         MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), true);
         MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), true);
     }
@@ -1055,7 +1055,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         clearErrorMessageAlerts();
         warningConfirmationMessageAlert = compositeDetailDisplay.getWarningConfirmationMessageAlert();
         displayCommonDetailForAdd(compositeDetailDisplay);
-        showOptionCheckboxes();
+        showOptionCheckboxes(compositeDetailDisplay);
         panel.setHeading("My Measures > Create New Composite Measure", COMPOSITE_MEASURE);
         setCompositeDetailsToView();
         Mat.focusSkipLists(COMPOSITE_MEASURE);
@@ -1071,6 +1071,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         compositeDetailDisplay.setMeasureModelType(currentCompositeMeasureDetails.getMeasureModel());
         compositeDetailDisplay.showCautionMsg(true);
         compositeDetailDisplay.showMeasureName(true);
+        hideOptionCheckboxes(compositeDetailDisplay);
         setCompositeDetailsToView();
         Mat.focusSkipLists(COMPOSITE_MEASURE);
         updateCompositeSaveButtonClickHandler(event -> draftCompositeMeasure());
@@ -2337,7 +2338,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void updateCompositeDetailsFromCompositeDetailView() {
         currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureNameTextBox().getValue().trim());
-        currentCompositeMeasureDetails.setCQLLibraryName(compositeDetailDisplay.getCQLLibraryNameTextBoxValue().getValue().trim());
         currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
         currentCompositeMeasureDetails.setCompositeScoringMethod(((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringValue());
         String measureScoring = compositeDetailDisplay.getMeasureScoringValue();

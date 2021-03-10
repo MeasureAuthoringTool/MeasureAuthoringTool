@@ -338,6 +338,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     protected void addGenerateCmsIdCheckbox() {
+        // Default label should state 'CMS ID' as long as FHIR is the default model type.
         generateCmsIdCheckbox.setText("Automatically generate a CMS ID on Save.");
         generateCmsIdCheckbox.setTitle("Click to generate a CMS ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
@@ -348,16 +349,17 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     protected void addCompositeGenerateCmsIdCheckbox() {
+        // Default label should state 'eCQM' since composite measures are QDM only.
         generateCmsIdCheckbox.setText("Automatically generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
         nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
     protected void addMatchLibraryNameToCmsIdCheckbox() {
-        // TODO Add cy id for cypress.io testing
         matchLibraryNameToCmsIdCheckbox.setText("Match CQL Library Name to Generated ID.");
         matchLibraryNameToCmsIdCheckbox.setTitle("Click to match CQL Library Name to Generated ID.");
         matchLibraryNameToCmsIdCheckbox.setId("matchLibName_CheckBox");

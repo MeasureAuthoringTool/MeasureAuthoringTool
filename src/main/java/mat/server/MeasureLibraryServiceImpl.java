@@ -1963,12 +1963,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
         }
 
-        if (!m.isFhirMeasure()) {
+        if (m.isFhirMeasure()) {
+            removeUnusedFhirElements(measureXmlModel, cqlResult.getUnusedCqlElements());
+        } else {
             removeUnusedQDMLibraries(measureXmlModel, cqlResult);
             removeUnusedQDMComponents(measureXmlModel, m);
-        } else {
-            removeUnusedFhirElements(measureXmlModel, cqlResult.getUnusedCqlElements());
-            return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
         }
 
         return updateVersionAndExports(isMajor, version, m);
@@ -1980,7 +1979,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(measureXml, unusedCqlElements);
 
         measureXmlModel.setXml(updatedMeasureXml);
-       // measurePackageService.saveMeasureXml(measureXmlModel);
+        measurePackageService.saveMeasureXml(measureXmlModel);
     }
 
     private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {

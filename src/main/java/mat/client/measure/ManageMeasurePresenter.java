@@ -598,13 +598,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void addCheckboxHandlers(DetailDisplay detailDisplay) {
         detailDisplay.getFhirModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate a CMS ID on Save.");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate a CMS ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID on Save.");
             }
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
-                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically generate an eCQM ID on Save.");
+                detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate an eCQM ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID on Save.");
             }
         });

@@ -339,8 +339,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void addGenerateCmsIdCheckbox() {
         // Default label should state 'CMS ID' as long as FHIR is the default model type.
-        generateCmsIdCheckbox.setText("Automatically generate a CMS ID on Save.");
-        generateCmsIdCheckbox.setTitle("Click to generate a CMS ID on Save.");
+        generateCmsIdCheckbox.setText("Automatically Generate a CMS ID on Save.");
+        generateCmsIdCheckbox.setTitle("Click to enerate a CMS ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
         generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
@@ -350,7 +350,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected void addCompositeGenerateCmsIdCheckbox() {
         // Default label should state 'eCQM' since composite measures are QDM only.
-        generateCmsIdCheckbox.setText("Automatically generate an eCQM ID on Save.");
+        generateCmsIdCheckbox.setText("Automatically Generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
         generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);

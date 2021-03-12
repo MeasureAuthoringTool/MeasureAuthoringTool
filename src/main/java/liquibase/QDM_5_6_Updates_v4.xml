@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <!--Diagnostic Study, Performed-->
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(1) FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID=22 and NAME='relatedTo'
+            </sqlCheck>
+            <!--Device Applied-->
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(1) FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID=13 and NAME='anatomicalLocationSite'
+            </sqlCheck>
+        </preConditions>
+
+        <!--Diagnostic Study, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="19"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Encounter, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="22"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Intervention, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="31"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Laboratory Test, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="36"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Medication, Order-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="44"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Medication, Dispensed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="42"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Physical Exam, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="57"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Procedure, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="relatedTo"/>
+            <column name="DATA_TYPE_ID" value="63"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+
+        <!--Encounter, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="class"/>
+            <column name="DATA_TYPE_ID" value="22"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+
+        <!--Assessment, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="interpretation"/>
+            <column name="DATA_TYPE_ID" value="113"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Diagnostic Study, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="interpretation"/>
+            <column name="DATA_TYPE_ID" value="19"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+        <!--Laboratory Test, Performed-->
+        <insert tableName="QDM_ATTRIBUTES">
+            <column name="NAME" value="interpretation"/>
+            <column name="DATA_TYPE_ID" value="36"/>
+            <column name="QDM_ATTRIBUTE_TYPE" value="Data Type"/>
+        </insert>
+
+        <!--Device Applied -->
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='anatomicalLocationSite'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='code'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='id'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='patientId'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='reason'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='relevantDatetime'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='relevantPeriod'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='authorDatetime'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=13 and NAME='performer'</where>
+        </delete>
+
+        <!--Encounter, Performed does not contain  negationRational-->
+
+        <!--Encounter, Not Performed-->
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=128 and NAME='authorDatetime'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=128 and NAME='code'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=128 and NAME='id'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=128 and NAME='negationRationale'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=128 and NAME='patientId'</where>
+        </delete>
+
+        <!--Participation-->
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=151 and NAME='recorder'</where>
+        </delete>
+
+        <!--Procedure, Performed-->
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=63 and NAME='priority'</where>
+        </delete>
+
+        <!--Remove data types-->
+        <!--Encounter, Not Performed-->
+        <delete tableName="DATA_TYPE">
+            <where>DATA_TYPE_ID=128</where>
+        </delete>
+        <!--Device Applied -->
+        <delete tableName="DATA_TYPE">
+            <where>DATA_TYPE_ID=13</where>
+        </delete>
+
+    </changeSet>
+</databaseChangeLog>

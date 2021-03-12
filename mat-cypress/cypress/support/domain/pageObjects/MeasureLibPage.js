@@ -52,6 +52,10 @@ class MeasureLibPage {
     alertSuccess() {
         return cy.get('.gwt-HTML > b');
     }
+
+    measureLibraryTab() {
+        return cy.get('#Measure\\ Library > .gwt-HTML');
+    }
 }
 
 export default MeasureLibPage;

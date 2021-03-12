@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.measure.measuredetails.views.GeneralInformationView;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.MatConstants;
@@ -63,9 +64,10 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
     }
 
     public void setPatientBasedIndicatorBasedOnScoringChoice() {
-        List<String> patientBasedIndicatorOptions = MatContext.get().getPatientBasedIndicatorOptions(generalMeasureInformationView.getMeasureScoringInput().getItemText(generalMeasureInformationView.getMeasureScoringInput().getSelectedIndex()));
+        ListBoxMVP measureScoringInput = generalMeasureInformationView.getMeasureScoringInput();
+        List<String> patientBasedIndicatorOptions = MatContext.get().getPatientBasedIndicatorOptions(measureScoringInput.getItemText(measureScoringInput.getSelectedIndex()));
         generalMeasureInformationView.setPatientBasedInputOptions(patientBasedIndicatorOptions);
-        if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(generalMeasureInformationView.getMeasureScoringInput().getItemText(generalMeasureInformationView.getMeasureScoringInput().getSelectedIndex()))) {
+        if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringInput.getItemText(measureScoringInput.getSelectedIndex()))) {
             generalMeasureInformationView.getPatientBasedInput().setSelectedIndex(0);
             generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to no.");
         } else {

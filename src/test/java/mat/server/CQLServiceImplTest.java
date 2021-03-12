@@ -55,10 +55,10 @@ public class CQLServiceImplTest {
 
     @Test
     public void testGetCQLDataQdm() {
-        String xml = "<cqlLookUp><usingModel>QDM</usingModel><usingModelVersion>5.5</usingModelVersion></cqlLookUp>";
+        String xml = "<cqlLookUp><usingModel>QDM</usingModel><usingModelVersion>5.6</usingModelVersion></cqlLookUp>";
         SaveUpdateCQLResult result = cqlService.getCQLData("12345",true,xml);
         assertEquals("QDM", result.getCqlModel().getUsingModel());
-        assertEquals("5.5", result.getCqlModel().getUsingModelVersion());
+        assertEquals("5.6", result.getCqlModel().getUsingModelVersion());
         assertFalse(result.isSuccess());
     }
 

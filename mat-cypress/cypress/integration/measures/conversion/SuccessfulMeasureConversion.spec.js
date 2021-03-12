@@ -43,7 +43,7 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
 
         //assert model version for QDM Measure
         cy.get(measureLibrary.measureSearchTable).should('contain.text', 'Model Version');
-        cy.get(measureLibrary.row1MeasureModelVersion).should('contain.text', '5.5');
+        cy.get(measureLibrary.row1MeasureModelVersion).should('contain.text', '5.6');
 
         cy.wait(5000);
         measureLibPage.measureSearchResultCheckBox().click({force: true});

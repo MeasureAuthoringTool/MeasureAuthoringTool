@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MEASURE"/>
+            <tableExists tableName="CQL_LIBRARY"/>
+        </preConditions>
+        <update tableName="MEASURE">
+            <column name="QDM_VERSION" value="5.6" />
+            <where>QDM_VERSION = '5.5' AND DRAFT = 1 </where>
+        </update>
+        <update tableName="CQL_LIBRARY">
+            <column name="QDM_VERSION" value="5.6" />
+            <where>QDM_VERSION = '5.5' AND DRAFT = 1 </where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

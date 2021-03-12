@@ -3,6 +3,7 @@ package mat.server.hqmf.qdm_5_5;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.service.impl.XMLUtility;
+import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 import org.w3c.dom.Node;
@@ -34,7 +35,7 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 			 return simpleXML;
 		 }
 		
-		 releaseVersion = getQDMVersion();
+		 releaseVersion = MATPropertiesService.get().getQdmVersion();
 		 int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
 		 if(measureDetailsTagIndex > -1){
 			 simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""+releaseVersion + "\"/>" + simpleXML.substring(measureDetailsTagIndex);
@@ -42,11 +43,6 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 	    
 		 return simpleXML;
 	 }
-	
-	private String getQDMVersion(){
-		return "5.5";
-		
-	}
 	
 	/**
 	 * Increment end dateby one.

@@ -82,7 +82,7 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		adminContentWidget.clear();
 		adminContentWidget.add(fp);
 		tabLayout.selectTab(presenterList.indexOf(manageUsersPresenter));
-		manageUsersPresenter.beforeDisplay();
+		manageUsersPresenter.init();
 	}
 
 	@Override

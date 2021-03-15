@@ -1533,10 +1533,8 @@ public class MatContext implements IsSerializable {
         patientBasedList.add("No");
         if (!ModelTypeHelper.isFhir(getCurrentMeasureModel())) {
             patientBasedList.add("Yes");
-        } else {
-            if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+        } else if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
                 patientBasedList.add("Yes");
-            }
         }
         return patientBasedList;
     }

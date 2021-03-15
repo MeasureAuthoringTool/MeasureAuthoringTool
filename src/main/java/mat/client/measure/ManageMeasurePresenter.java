@@ -636,18 +636,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
 
         if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasureScoringListBox().getItemText(detailDisplay.getMeasureScoringListBox().getSelectedIndex()))) {
-            if (detailDisplay.getPatientBasedListBox().getItemCount() > 1) {
+            if (detailDisplay.getFhirModel().getValue()) {
                 // yes is the second element in the list, so the 1 index.
                 detailDisplay.getPatientBasedListBox().removeItem(1);
             }
             detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
-
         } else {
             resetPatientBasedInput(detailDisplay);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
         }
-
         detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
         detailDisplay.getHelpBlock().setColor("transparent");
     }

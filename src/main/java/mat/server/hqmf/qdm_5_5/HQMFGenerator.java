@@ -7,6 +7,9 @@ import mat.server.logging.LogFactory;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.logging.Log;
 
+import java.time.Duration;
+import java.time.Instant;
+
 /**
  * The Class CQLbasedHQMFGenerator.
  *
@@ -26,29 +29,36 @@ public class HQMFGenerator implements Generator {
 	 */
 	@Override
 	public String generate(MeasureExport me) {
-		
+		Instant start = Instant.now();
 		String hqmfXML = "";
 		try {
 
 			// MAT 6911: Export CQL based HQMF w/ Meta Data Section
 			String eMeasureDetailsXML = new HQMFMeasureDetailsGenerator().generate(me);
+			logger.info("HQMF::measure details generate duration::" + Duration.between(start, Instant.now()).toMillis());
+
 			// Inline comments are added after the end of last componentOf tag.
 			// This is removed in this method
 			eMeasureDetailsXML = replaceInlineCommentFromEnd(eMeasureDetailsXML);
 			hqmfXML += eMeasureDetailsXML;
+			logger.info("HQMF::cleanup measure details::" + Duration.between(start, Instant.now()).toMillis());
 
 			String dataCriteriaXML = new HQMFDataCriteriaGenerator().generate(me);
 			hqmfXML= appendToHQMF(dataCriteriaXML, hqmfXML);
+			logger.info("HQMF::data criteria duration::" + Duration.between(start, Instant.now()).toMillis());
 			
 			XmlProcessor hqmfProcessor = new XmlProcessor(hqmfXML);
 			me.setHQMFXmlProcessor(hqmfProcessor);
+			logger.info("HQMF::hqmf processor::" + Duration.between(start, Instant.now()).toMillis());
 			
 			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
+			logger.info("HQMF::clean up::" + Duration.between(start, Instant.now()).toMillis());
 		} catch (Exception e) {
 			logger.error("Unable to generate HQMF for QDM v5.5. Exception Stack Strace is as followed : ");
 			e.printStackTrace();
 		}
+		logger.info("HQMF::generate duration::" + Duration.between(start, Instant.now()).toMillis());
 		return hqmfXML;
 	}
 

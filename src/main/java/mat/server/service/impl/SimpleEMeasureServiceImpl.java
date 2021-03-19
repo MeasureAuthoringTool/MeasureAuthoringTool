@@ -408,9 +408,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 result.includedCQLExports.add(includeResult);
             }
         }
-
     }
-
 
     @Override
     public final ExportResult getELMFile(final String measureId) throws Exception {
@@ -854,7 +852,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, List<String> dataRequirementsNoValueSet) {
         return humanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO, dataRequirementsNoValueSet);
     }
-
 
     public ExportResult getHQMF(String measureId) {
         MeasureExport measureExport = getMeasureExport(measureId);

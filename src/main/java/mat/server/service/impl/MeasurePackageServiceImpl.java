@@ -1,7 +1,5 @@
 package mat.server.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.FhirMeasurePackageResult;
@@ -68,6 +66,8 @@ import org.springframework.stereotype.Service;
 import mat.vsacmodel.ValueSet;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -245,6 +245,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     public List<FhirValidationResult> createPackageArtifacts(Measure measure, MeasureExport export) {
         String measureId = measure.getId();
         String releaseVersion = measure.getReleaseVersion();
+        Instant createArtifactsStart = Instant.now();
         export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
 
         if (measure.isFhirMeasure()) {
@@ -279,6 +280,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
             export.setElmXml(MeasureArtifactGenerator.getELMArtifact(measureId));
             export.setMeasureJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
+            long execDuration = Duration.between(createArtifactsStart, Instant.now()).toMillis();
+            logger.info("createPackageArtifacts::QDM::create artifacts duration::" + execDuration);
         }
         measureExportDAO.save(export);
         return null;

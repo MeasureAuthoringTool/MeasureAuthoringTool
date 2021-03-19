@@ -9,7 +9,7 @@ export const switchMATUserLabel = '.dropdown-menu > [title="Switch MAT account"]
 export const firstMATUser = '.dropdown-menu > [title="Administrator @ SemanticBits"]';
 export const secondMATUser = '.dropdown-menu > [title="Top Level User @ SemanticBits"]';
 
-//UMLS
+// UMLS
 export const UMLS = ':nth-child(1) > .loginSpacer > :nth-child(1) > .btn > span';
 export const UMLSTitle = 'strong';
 export const API_KEY = '#inputPwd';

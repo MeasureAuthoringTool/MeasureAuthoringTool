@@ -610,8 +610,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
             detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setEnabled(clickEvent.getValue());
-            if (clickEvent.getValue()) {
+            if (!clickEvent.getValue()) {
                 detailDisplay.getMatchLibraryNameToCmsIdCheckbox().setValue(false);
+                detailDisplay.getCQLLibraryNameTextBox().setEnabled(true);
             }
         });
         detailDisplay.getMatchLibraryNameToCmsIdCheckbox().addValueChangeHandler(clickEvent -> {

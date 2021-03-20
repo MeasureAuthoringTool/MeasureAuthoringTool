@@ -46,7 +46,7 @@ war/WEB-INF/jetty-env.xml
 /mat-cypress/.idea/
 /mat-cypress/cypress/screenshots/
 /mat-cypress/cypress/videos/
-mat-cypress/node_modules/*
+/mat-cypress/node_modules/
 /mat-cypress/*_env.sh
 /mat-cypress/mochawesome-report/
 /mat-cypress/cypress/results/

@@ -19,9 +19,6 @@ import './CqlLibraryGridCommands';
 import './loginCommands';
 import './measureCommands';
 
-
-
-
 Cypress.Cookies.defaults({
   preserve: (cookie) => {
     // implement your own logic here

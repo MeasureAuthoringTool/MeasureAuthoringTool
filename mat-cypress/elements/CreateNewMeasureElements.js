@@ -11,5 +11,5 @@ export const patientBasedMeasureListBox = '#patientBasedMeasure_listbox';
 export const saveAndContinueBtn = '#SaveAndContinueButton_measureDetail';
 export const cancelBtn = '#CancelButton_measureDetail';
 
-//dialog
+// dialog
 export const confirmationContinueBtn = '#yes_Button';

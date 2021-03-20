@@ -25,6 +25,6 @@ Cypress.Cookies.defaults({
     // if the function returns truthy
     // then the cookie will not be cleared
     // before each test runs
-    return true;
+    return cookie;
   }
-})
+});

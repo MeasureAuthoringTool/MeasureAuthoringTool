@@ -1,0 +1,29 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "mocha": true,
+        "jasmine": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "rules": {
+      "semi": ["error", "always"],
+      "space-before-function-paren": ["error", {
+          "anonymous": "always",
+          "named": "never",
+          "asyncArrow": "always"
+        }]
+    },
+    "globals": {
+      "cy": "readonly",
+      "Cypress": "readonly",
+      "env": "readonly",
+      "downloadFolder": "readonly"
+    }
+}

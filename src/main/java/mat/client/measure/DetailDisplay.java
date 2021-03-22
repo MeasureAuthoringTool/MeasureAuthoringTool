@@ -11,6 +11,7 @@ import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextArea;
 
 import java.util.List;
 
@@ -29,7 +30,9 @@ public interface DetailDisplay extends BaseDisplay {
 
 	HasValue<String> getMeasureNameTextBox();
 	
-	HasValue<String> getCQLLibraryNameTextBox();
+	HasValue<String> getCQLLibraryNameTextBoxValue();
+
+	TextArea getCQLLibraryNameTextBox();
 
 	HasClickHandlers getSaveButton();
 
@@ -58,6 +61,8 @@ public interface DetailDisplay extends BaseDisplay {
 	WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
 
     CheckBox getGenerateCmsIdCheckbox();
+
+    CheckBox getMatchLibraryNameToCmsIdCheckbox();
 
     RadioButton getFhirModel();
 

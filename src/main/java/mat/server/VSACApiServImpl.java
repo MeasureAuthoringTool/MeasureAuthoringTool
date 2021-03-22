@@ -493,7 +493,12 @@ public class VSACApiServImpl implements VSACApiService {
                                                           final String release,
                                                           final String expansionId,
                                                           final String sessionId) {
-        Callable<VsacApiResult> getValuesetTask = () -> getMostRecentValuesetByOID(oid, release, expansionId, sessionId);
+        Callable<VsacApiResult> getValuesetTask = new Callable<VsacApiResult>() {
+            @Override
+            public VsacApiResult call() {
+                return getMostRecentValuesetByOID(oid, release, expansionId, sessionId);
+            }
+        };
 
         return taskExecutor(getValuesetTask);
     }

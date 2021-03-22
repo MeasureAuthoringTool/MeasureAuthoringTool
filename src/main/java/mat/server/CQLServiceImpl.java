@@ -1715,7 +1715,7 @@ public class CQLServiceImpl implements CQLService {
     private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
         ValueSet ValueSet = valueSetTransferObject.getValueSet();
-        qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " "));
+        qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " ")); //replacing NBSP (U+00A0) with a space
         qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
         qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
         qds.setDataType("");

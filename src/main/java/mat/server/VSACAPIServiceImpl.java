@@ -57,7 +57,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.getTicketGrantingTicket(sessionId);
 	}
-
+	
+	
+	/**
+	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
+	 *@param userName - String.
+	 *@param password - String.
+	 *@return Boolean.
+	 * **/
 	@Override
 	public final boolean validateVsacUser(final String apiKey) {
 		String sessionId = getThreadLocalRequest().getSession().getId();

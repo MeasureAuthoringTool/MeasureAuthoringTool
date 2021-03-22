@@ -4640,6 +4640,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
         SaveUpdateCQLResult result = null;
+        // replacing NBSP (U+00A0) with a space
         cql = cql.replace("\u00a0", " ");
         try {
             if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {

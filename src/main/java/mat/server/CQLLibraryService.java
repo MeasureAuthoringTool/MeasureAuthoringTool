@@ -1,11 +1,8 @@
 package mat.server;
 
 import lombok.extern.slf4j.Slf4j;
-import mat.client.measure.service.CQLService;
-import mat.client.measure.service.CheckForConversionResult;
-import mat.client.measure.service.FhirConvertResultResponse;
-import mat.client.measure.service.FhirLibraryPackageResult;
-import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.measure.service.*;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
@@ -64,6 +61,7 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.server.util.fhirxmlclean.XmlUnusedFhirCleaner;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -461,6 +459,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             return result;
         }
 
+
         boolean isFhir = ModelTypeHelper.isFhir(cqlResult.getCqlModel().getUsingModel());
         if (!isFhir) {
             List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
@@ -474,6 +473,18 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 } else {
                     removeUnusedLibraries(cqlLibrary, cqlResult);
                 }
+            }
+        } else {
+            if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+                result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
+                return result;
+            } else {
+                String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+
+                String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(cqlLibraryXml, cqlResult.getUnusedCqlElements());
+                cqlLibrary.setCQLByteArray(updatedMeasureXml.getBytes());
+                save(cqlLibrary);
+                cqlLibraryDAO.refresh(cqlLibrary);
             }
         }
 

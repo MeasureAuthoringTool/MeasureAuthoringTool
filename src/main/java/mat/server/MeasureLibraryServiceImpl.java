@@ -4640,7 +4640,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
         SaveUpdateCQLResult result = null;
-
+        cql = cql.replace("\u00a0", " ");
         try {
             if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
                 MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);

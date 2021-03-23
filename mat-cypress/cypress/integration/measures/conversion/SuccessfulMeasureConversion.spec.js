@@ -1,7 +1,7 @@
 import * as helper from '../../../support/helpers';
 import * as measureLibrary from '../../../../elements/MeasureLibraryElements';
 import * as dataCreation from '../../../support/MAT/MeasureAndCQLLibraryCreation';
-import MeasureLibPage from '../../../support/domain/pageObjects/MeasureLibPage';
+import MeasureLibraryPage from '../../../support/domain/pageObjects/MeasureLibraryPage';
 import CreateMeasureVersionDraftPage from '../../../support/domain/pageObjects/CreateMeasureVersionDraftPage';
 
 
@@ -24,7 +24,7 @@ describe('Measure Library: FHIR Measure Conversion: Conversion to FHIR', () => {
 
     it('Convert QDM measure to FHIR successfully, verify measure history', () => {
 
-        const measureLibPage = new MeasureLibPage();
+        const measureLibPage = new MeasureLibraryPage();
 
         const cqlMeasureName = dataCreation.createDraftMeasure('QdmCqlMeasure', 'QDM');
         const fhirMeasureName = cqlMeasureName + 'FHIR';

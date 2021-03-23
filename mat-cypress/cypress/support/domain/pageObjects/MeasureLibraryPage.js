@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-class MeasureLibPage {
+class MeasureLibraryPage {
     url() {
         return '/MeasureAuthoringTool/Mat.html#mainTab0';
     }
@@ -52,6 +52,10 @@ class MeasureLibPage {
     alertSuccess() {
         return cy.get('.gwt-HTML > b');
     }
+
+    cqlLibraryTab() {
+        return cy.get('#CQL\\ Library > .gwt-HTML');
+    }
 }
 
-export default MeasureLibPage;
+export default MeasureLibraryPage;

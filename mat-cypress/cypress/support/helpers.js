@@ -36,20 +36,9 @@ export const logoutUserwithMultipleMAT = () => {
         win.sessionStorage.clear();
     });
 };
-// general
-export const get = (element) => {
-    cy.get(element);
-};
-export const navigateToURL = (url) => {
-    cy.visit(url);
-    // cy.visit(url,  { timeout: 30000 })  //use this if for capping the timeout of page navigation
-};
-export const click = (element) => {
-    cy.get(element).click();
-};
-export const clickForce = (element) => {
-    cy.get(element).click({force: true});
-};
+
+
+
 export const clickPosition = (element, position) => {
     cy.get(element).click(position);
 };
@@ -138,9 +127,7 @@ export const elementContains = (element, text) => {
 export const elementNotContains = (element, text) => {
     cy.get(element).should('not.contain', text);
 };
-export const sleep = (milliseconds) => {
-    cy.wait(milliseconds);
-};
+
 export const shouldContainClick = (element, text) => {
     cy.get(element).should('contain', text).click();
 };
@@ -186,21 +173,7 @@ export const getDropdownOption = (element, label) => {
 export const clickDropdownOption = (element, text) => {
     cy.get(element).contains(text).click({force: true});
 };
-export const log = (val) => {
-    cy.log(val);
-};
-export const takeScreenshot = (screenshotName) => {
-    cy.screenshot(screenshotName, {capture: 'viewport'});
-};
-export const takeScreenshotFullPage = (screenshotName) => {
-    cy.screenshot(screenshotName, {capture: 'fullPage'});
-};
-export const takeScreenshotRunner = (screenshotName) => {
-    cy.screenshot(screenshotName, {capture: 'runner'});
-};
-export const stopRun = () => {
-    Cypress.runner.stop();
-};
+
 export const disabled = (el) => {
     cy.get(el).should('be.disabled');
 };

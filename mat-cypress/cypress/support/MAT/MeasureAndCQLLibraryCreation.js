@@ -10,7 +10,7 @@ import * as gridRowActions from './GridRowActions';
 
 const draftMeasure = 'DraftMeasure';
 
-export const createDraftMeasure = (measure, model) => {
+export const createDraftMeasure = (measure, model, generateCmsId = false, matchLibraryName = false) => {
   let name = '';
 
   if (!measure) {
@@ -29,6 +29,13 @@ export const createDraftMeasure = (measure, model) => {
     cy.get(newMeasureElements.modelradioQDM).click();
   } else {
     cy.get(newMeasureElements.modelradioFHIR).click();
+  }
+
+  if(generateCmsId) {
+    cy.get(newMeasureElements.generateCmsIdCheckbox).check();
+    if (matchLibraryName) {
+      cy.get(newMeasureElements.matchLibraryNameCheckbox).check();
+    }
   }
 
   cy.get(newMeasureElements.cqlLibraryName).type(name, { delay: 50 });

@@ -78,7 +78,6 @@ public class ManageUsersPresenter implements MatPresenter {
         searchDisplay = sDisplayArg;
         detailDisplay = dDisplayArg;
         historyDisplay = hDisplayArg;
-        displaySearch("");
 
         if (historyDisplay != null) {
             historyDisplayHandlers(historyDisplay);
@@ -104,7 +103,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
         detailDisplay.getSaveButton().addClickHandler(event -> onSaveButtonClicked());
 
-        detailDisplay.getCancelButton().addClickHandler(event -> displaySearch(lastSearchKey));
+        detailDisplay.getCancelButton().addClickHandler(event -> displaySearch());
 
         detailDisplay.getReactivateAccountButton().addClickHandler(
                 event -> {
@@ -155,15 +154,21 @@ public class ManageUsersPresenter implements MatPresenter {
         searchDisplay.getSuccessMessageDisplay().clearAlert();
     }
 
-    /**
-     * Display search.
-     */
-    private void displaySearch(String name) {
+    public void init() {
         panel.setContent(searchDisplay.asWidget());
         panel.setHeading("", "");
         searchDisplay.setTitle("");
         searchDisplay.getSuccessMessageDisplay().clearAlert();
-        search(name);
+    }
+
+    /**
+     * Display search.
+     */
+    private void displaySearch() {
+        panel.setContent(searchDisplay.asWidget());
+        panel.setHeading("", "");
+        searchDisplay.setTitle("");
+        searchDisplay.getSuccessMessageDisplay().clearAlert();
     }
 
     /**
@@ -365,7 +370,7 @@ public class ManageUsersPresenter implements MatPresenter {
             detailDisplay.getHarpId().setValue(currentDetails.getHarpId());
             detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
             detailDisplay.getOid().setValue(currentDetails.getOid());
-            displaySearch(lastSearchKey);
+            displaySearch();
             searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
         } else {
             List<String> messages = getAlertMessages(result);
@@ -411,7 +416,7 @@ public class ManageUsersPresenter implements MatPresenter {
             public void onSuccess(ManageUsersDetailModel result) {
                 logger.log(Level.INFO, "AdminService::getUserByEmail -> onSuccess");
                 currentDetails = result;
-                displaySearch(lastSearchKey);
+                displaySearch();
                 searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
 
                 List<String> event = new ArrayList<String>();
@@ -576,7 +581,7 @@ public class ManageUsersPresenter implements MatPresenter {
      */
     @Override
     public void beforeDisplay() {
-        displaySearch("");
+        displaySearch();
         Mat.focusSkipLists("Manage Users");
     }
 
@@ -698,7 +703,7 @@ public class ManageUsersPresenter implements MatPresenter {
         historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                displaySearch(lastSearchKey);
+                displaySearch();
             }
         });
     }

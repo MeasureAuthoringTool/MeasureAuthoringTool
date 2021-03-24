@@ -139,7 +139,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	public ManageOrganizationPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
-		displaySearch("");
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -179,7 +178,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				isOrgDetailsModified = false;
 				searchDisplay.getErrorMessageDisplay().clearAlert();
 				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				displaySearch(lastSearchKey);
+				displaySearch();
 			}
 		});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
@@ -216,7 +215,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		displaySearch("");
+		displaySearch();
 		Mat.focusSkipLists("Manage Organizations");
 	}
 	/** Creates the new. */
@@ -234,13 +233,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		Mat.focusSkipLists("Manage Organizations");
 	}
 	/** Display search. */
-	private void displaySearch(String organization) {
+	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		searchDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		searchDisplay.setTitle("");
-		search(organization);
 	}
 	/** Edits the.
 	 * @param key the key */
@@ -352,7 +350,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					}
 					@Override
 					public void onSuccess(Void res) {
-						displaySearch(lastSearchKey);
+						displaySearch();
 						searchDisplay.getSuccessMessageDisplay().createAlert(result.getOrgName()+" successfully deleted.");
 					}
 				});
@@ -404,7 +402,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						isOrgDetailsModified = false;
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
-						displaySearch(lastSearchKey);
+						displaySearch();
 						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_MODIFIED_SUCCESS_MESSAGE());
 					} else {
@@ -434,7 +432,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						isOrgDetailsModified = false;
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
-						displaySearch(lastSearchKey);
+						displaySearch();
 						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 					} else {

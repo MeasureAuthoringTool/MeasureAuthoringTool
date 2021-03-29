@@ -9,6 +9,7 @@ import mat.client.shared.MatRuntimeException;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -166,6 +167,9 @@ public class CQLServiceImpl implements CQLService {
 
     @Autowired
     private FhirCqlParser fhirCqlParser;
+
+    @Autowired
+    private MeasureDAO measureDao;
 
     @Override
     public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String xml, String libraryName, String libraryComment) {
@@ -1715,7 +1719,12 @@ public class CQLServiceImpl implements CQLService {
     private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
         ValueSet ValueSet = valueSetTransferObject.getValueSet();
-        qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " ")); //replacing NBSP (U+00A0) with a space
+        if (measureDao.find(valueSetTransferObject.getMeasureId()).isFhirMeasure()) {
+            qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " ")); //replacing NBSP (U+00A0) with a space
+        } else {
+            // QDM is unaffected by the nbsp char.
+            qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName());
+        }
         qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
         qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
         qds.setDataType("");

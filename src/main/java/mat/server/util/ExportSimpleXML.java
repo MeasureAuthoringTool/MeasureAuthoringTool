@@ -452,14 +452,22 @@ public class ExportSimpleXML {
             originalDoc.importNode(elementLookUpNode, true);
             parentNode.appendChild(elementLookUpNode);
         }
-        // resolve all value-sets
-        resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
 
-        // resolve all codes (direct reference codes)
-        resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
+        resolveValueSets(originalDoc, result, cqlModel, elementLookUpNode);
+        resolveDirectReferenceCodes(originalDoc, result, cqlModel, elementLookUpNode);
 
         CQLUtil.removeUnusedValuesets(originalDoc, result.getUsedCQLArtifacts().getUsedCQLValueSets());
         CQLUtil.removeUnusedCodes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLcodes());
+    }
+
+    private static void resolveValueSets(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel,
+                                            Node elementLookUpNode) throws XPathExpressionException {
+        resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
+    }
+
+    private static void resolveDirectReferenceCodes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel,
+                                                       Node elementLookUpNode) throws XPathExpressionException {
+        resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
     }
 
     private static void resolveValueSets_Codes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel,

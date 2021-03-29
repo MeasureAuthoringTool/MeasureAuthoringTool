@@ -1708,13 +1708,11 @@ public class CQLServiceImpl implements CQLService {
 
         model.getValueSetList().add(qds);
 
-
         result.setSuccess(true);
         result.setCqlAppliedQDMList(sortQualityDataSetList(model.getValueSetList()));
         result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
         return result;
     }
-
 
     private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();

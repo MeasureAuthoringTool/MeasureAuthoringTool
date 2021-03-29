@@ -44,7 +44,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 		if(this.cqlCode != null){
 			if ((this.cqlCode.getCodeIdentifier() != null) && !this.cqlCode.getCodeIdentifier().isEmpty()) {
 				String noMarkupText = this.cqlCode.getCodeIdentifier().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeIdentifier:" + noMarkupText);
 				if (this.cqlCode.getCodeIdentifier().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setCodeIdentifier(noMarkupText);
 				}
@@ -52,7 +51,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getName() != null) && !this.cqlCode.getName().isEmpty()) {
 				String noMarkupText = this.cqlCode.getName().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeName:" + noMarkupText);
 				if (this.cqlCode.getName().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setName(noMarkupText);
 				}
@@ -60,7 +58,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getCodeOID() != null) && !this.cqlCode.getCodeOID().isEmpty()) {
 				String noMarkupText = this.cqlCode.getCodeOID().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeOID:" + noMarkupText);
 				if (this.cqlCode.getCodeOID().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setCodeOID(noMarkupText);
 				}
@@ -68,7 +65,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getCodeSystemName() != null) && !this.cqlCode.getCodeSystemName().isEmpty()) {
 				String noMarkupText = this.cqlCode.getCodeSystemName().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeSystemName:" + noMarkupText);
 				if (this.cqlCode.getCodeSystemName().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setCodeSystemName(noMarkupText);
 				}
@@ -76,7 +72,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getCodeSystemOID() != null) && !this.cqlCode.getCodeSystemOID().isEmpty()) {
 				String noMarkupText = this.cqlCode.getCodeSystemOID().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeSystemOID:" + noMarkupText);
 				if (this.cqlCode.getCodeSystemOID().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setCodeSystemOID(noMarkupText);
 				}
@@ -84,7 +79,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getCodeSystemVersion() != null) && !this.cqlCode.getCodeSystemVersion().isEmpty()) {
 				String noMarkupText = this.cqlCode.getCodeSystemVersion().trim().replaceAll(markupRegExp, "");
-				System.out.println("getCodeSystemVersion:" + noMarkupText);
 				if (this.cqlCode.getCodeSystemVersion().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setCodeSystemVersion(noMarkupText);
 				}
@@ -92,7 +86,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getDisplayName() != null) && !this.cqlCode.getDisplayName().isEmpty()) {
 				String noMarkupText = this.cqlCode.getDisplayName().trim().replaceAll(markupRegExp, "");
-				System.out.println("getDisplayName:" + noMarkupText);
 				if (this.cqlCode.getDisplayName().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setDisplayName(noMarkupText);
 				}
@@ -100,7 +93,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 			
 			if ((this.cqlCode.getSuffix() != null) && !this.cqlCode.getSuffix().isEmpty()) {
 				String noMarkupText = this.cqlCode.getSuffix().trim().replaceAll(markupRegExp, "");
-				System.out.println("getSuffix:" + noMarkupText);
 				if (this.cqlCode.getSuffix().trim().length() > noMarkupText.length()) {
 					this.cqlCode.setSuffix(noMarkupText);
 				}
@@ -108,7 +100,6 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 		}
 		
 	}
-	
 	
 	public boolean isValidModel(){
 		boolean isValid = true;

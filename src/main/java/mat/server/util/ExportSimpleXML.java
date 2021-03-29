@@ -452,11 +452,9 @@ public class ExportSimpleXML {
             originalDoc.importNode(elementLookUpNode, true);
             parentNode.appendChild(elementLookUpNode);
         }
-        System.out.println("resolveValueSets_Codes true");
         // resolve all value-sets
         resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
 
-        System.out.println("resolveValueSets_Codes false");
         // resolve all codes (direct reference codes)
         resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
 
@@ -533,7 +531,6 @@ public class ExportSimpleXML {
 
                 if (definitionNode != null) {
                     String supplementalDefinitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
-                    System.out.println("Supplemental Definition Name:" + supplementalDefinitionName);
                     usedDefinitions.add(supplementalDefinitionName);
                 }
             }
@@ -578,9 +575,7 @@ public class ExportSimpleXML {
                     } else {
                         usedValueSetMap = expressionObject.getCodeDataTypeMap();
                     }
-                    System.out.println(definitionName + " usedValueSetMap:" + usedValueSetMap);
                     CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, usedValueSetMap);
-                    System.out.println("mergedValueSetMap:" + dataCriteriaValueSetMap);
                     break;
                 }
             }

@@ -9,7 +9,6 @@ import mat.client.shared.FhirAttribute;
 import mat.client.shared.FhirDataType;
 import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.client.shared.MatContext;
-import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
@@ -172,7 +171,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
                     cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
-        cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
+        cqlConstantContainer.setFhirCqlDataTypeList(mappingService.getFhirTypes());
 
         List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociations = mappingService.fhirDatatypeAttributeAssociation();
 
@@ -209,8 +208,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             logger.warn(e.getMessage(), e);
         }
 
-
-
         return Arrays.asList(signatureArray);
     }
 
@@ -222,8 +219,17 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         versionedIdentifier.setId("System");
 
         ModelInfo modelInfo = systemModelInfoProvider.load(versionedIdentifier);
-
         Map<String, List<String>> typeToTypeAttributeMap = new HashMap<>();
+
+        buildTypeToTypeAttributeMap(modelInfo, typeToTypeAttributeMap);
+
+        updateTypeToTypeAttributeMap(typeToTypeAttributeMap);
+
+        cqlTypeContainer.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
+        return cqlTypeContainer;
+    }
+
+    private void buildTypeToTypeAttributeMap(ModelInfo modelInfo, Map<String, List<String>> typeToTypeAttributeMap) {
         for (TypeInfo typeInfo : modelInfo.getTypeInfo()) {
             if (typeInfo instanceof ClassInfo) {
                 ClassInfo currentClassInfo = (ClassInfo) typeInfo;
@@ -237,7 +243,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
                 }
             }
         }
+    }
 
+    private void updateTypeToTypeAttributeMap(Map<String, List<String>> typeToTypeAttributeMap) {
         // TODO: Find a better way to do this instead of hardcoding.
         typeToTypeAttributeMap.remove("System.Code");
         typeToTypeAttributeMap.remove("list<System.Code");
@@ -257,13 +265,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         typeToTypeAttributeMap.put("QDM.Practitioner", Arrays.asList(ID, IDENTIFIER, ROLE, SPECIALTY, QUALIFICATION));
         typeToTypeAttributeMap.put("QDM.Organization", Arrays.asList(ID, IDENTIFIER, TYPE));
         typeToTypeAttributeMap.put("QDM.Identifier", Arrays.asList(NAMING_SYSTEM, VALUE));
-
-        cqlTypeContainer.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
-        return cqlTypeContainer;
-    }
-
-    private List<String> getAllFhirTypes() {
-        return mappingService.getFhirTypes();
     }
 
 }

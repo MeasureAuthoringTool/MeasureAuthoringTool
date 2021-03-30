@@ -215,12 +215,13 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     }
 
     private CQLTypeContainer getCQLTypeInformation() {
-        CQLTypeContainer container = new CQLTypeContainer();
-
+        CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
         SystemModelInfoProvider systemModelInfoProvider = new SystemModelInfoProvider();
-        VersionedIdentifier identifier = new VersionedIdentifier();
-        identifier.setId("QDM");
-        ModelInfo modelInfo = systemModelInfoProvider.load(identifier);
+
+        VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
+        versionedIdentifier.setId("System");
+
+        ModelInfo modelInfo = systemModelInfoProvider.load(versionedIdentifier);
 
         Map<String, List<String>> typeToTypeAttributeMap = new HashMap<>();
         for (TypeInfo typeInfo : modelInfo.getTypeInfo()) {
@@ -257,8 +258,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         typeToTypeAttributeMap.put("QDM.Organization", Arrays.asList(ID, IDENTIFIER, TYPE));
         typeToTypeAttributeMap.put("QDM.Identifier", Arrays.asList(NAMING_SYSTEM, VALUE));
 
-        container.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
-        return container;
+        cqlTypeContainer.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
+        return cqlTypeContainer;
     }
 
     private List<String> getAllFhirTypes() {

@@ -12,6 +12,6 @@ import mat.client.shared.CQLConstantContainer;
 @RemoteServiceRelativePath("cqlConstantService")
 public interface CQLConstantService extends RemoteService {
 	
-	CQLConstantContainer getAllCQLConstants(boolean isFhirEnabled);
+	CQLConstantContainer getAllCQLConstants();
 
 }

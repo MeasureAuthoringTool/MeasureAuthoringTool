@@ -1717,8 +1717,10 @@ public class CQLServiceImpl implements CQLService {
     private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
         ValueSet ValueSet = valueSetTransferObject.getValueSet();
-        if (measureDao.find(valueSetTransferObject.getMeasureId()).isFhirMeasure()) {
-            qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " ")); //replacing NBSP (U+00A0) with a space
+        // replace NBSP (U+00A0) with a space in FHIR Measures/Libraries
+        if ((valueSetTransferObject.getMeasureId() != null && measureDao.find(valueSetTransferObject.getMeasureId()).isFhirMeasure())
+                || (valueSetTransferObject.getCqlLibraryId() != null && cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId()).isFhirLibrary())) {
+            qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " "));
         } else {
             // QDM is unaffected by the nbsp char.
             qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName());
@@ -1797,7 +1799,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem) {
-        logger.error("::: CQLServiceImpl saveCQLCodeSystem Start :::");
+        logger.debug("::: CQLServiceImpl saveCQLCodeSystem Start :::");
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
 

@@ -63,6 +63,7 @@ import mat.dto.UserPreferenceDTO;
 import mat.dto.VSACCodeSystemDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
@@ -1511,8 +1512,10 @@ public class MatContext implements IsSerializable {
     public List<String> getPatientBasedIndicatorOptions(String measureScoringMethod) {
         List<String> patientBasedList = new ArrayList<>();
         patientBasedList.add("No");
-        if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+        if (!ModelTypeHelper.isFhir(getCurrentMeasureModel())) {
             patientBasedList.add("Yes");
+        } else if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+                patientBasedList.add("Yes");
         }
         return patientBasedList;
     }

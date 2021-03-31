@@ -102,15 +102,20 @@ public class FhirCqlParserService implements FhirCqlParser {
         resultBuilder.cqlModel(cqlModel);
         resultBuilder.cqlObject(fhirResponse.getCqlObject());
         resultBuilder.libraryErrors(fhirResponse.getErrors());
+        resultBuilder.setUnusedCqlElements(fhirResponse.getUnusedCqlElements());
+
         return resultBuilder.buildFromLibraryErrors();
     }
 
     @Override
-    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, MatXmlResponse matXmlResponse, ValidationRequest validationRequest) {
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel,
+                                                            MatXmlResponse matXmlResponse,
+                                                            ValidationRequest validationRequest) {
         CqlValidationResultBuilder resultBuilder = new CqlValidationResultBuilder();
         resultBuilder.cqlModel(cqlModel);
         resultBuilder.libraryErrors(matXmlResponse.getErrors());
         resultBuilder.cqlObject(matXmlResponse.getCqlObject());
+        resultBuilder.setUnusedCqlElements(matXmlResponse.getUnusedCqlElements());
         return resultBuilder.buildFromLibraryErrors();
     }
 

@@ -56,99 +56,63 @@ import org.hl7.elm.r1.Tuple;
 import org.hl7.elm.r1.TupleElement;
 import org.hl7.elm.r1.UnaryExpression;
 import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ProfileInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
-*
-*/
 public class CQLFilter {
 
-	/**
-	 * The cql library
-	 */
 	private Library library;
 
 	private CQLModel cqlModel;
 
-	/**
-	 * The lists of populations that are included in MAT
-	 */
 	private List<String> populationList;
 
-	/**
-	 * The used expressions list
-	 */
-	private List<String> usedExpressions = new ArrayList<String>();
+	private List<String> usedExpressions;
 
-	/**
-	 * The used functions list
-	 */
-	private List<String> usedFunctions = new ArrayList<String>();
+	private List<String> usedFunctions;
 
-	/**
-	 * The used cql valuesets
-	 */
-	private List<String> usedValuesets = new ArrayList<String>();
+	private List<String> usedValuesets;
 
-	/**
-	 * THe used parameters list
-	 */
-	private List<String> usedParameters = new ArrayList<String>();
+	private List<String> usedParameters;
 
-	/**
-	 * The used code systems list
-	 */
-	private List<String> usedCodeSystems = new ArrayList<String>();
+	private List<String> usedCodeSystems;
 
 	private String currentDefinitionName = "";
 	private String currentFunctionName = "";
 	private String currentParameterName = "";
 
-	private Map<String, List<String>> definitionToDefinitionMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> definitionToDefinitionMap = new HashMap<>();
 
-	private Map<String, List<String>> definitionToFunctionMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> definitionToFunctionMap = new HashMap<>();
 
-	private Map<String, List<String>> functionToDefinitionMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> functionToDefinitionMap = new HashMap<>();
 
-	private Map<String, List<String>> functionToFunctionMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> functionToFunctionMap = new HashMap<>();
 
-	/**
-	 * The used codes list
-	 */
-	private List<String> usedCodes = new ArrayList<String>();
+	private List<String> usedCodes;
 
 	private Map<String, List<String>> valueSetDataTypeMap;
 
 	private Map<String, List<String>> codeDataTypeMap;
 
-	/**
-	 * Map for included Library objects
-	 */
 	private Map<String, LibraryInfoHolder> includedLibraries;
 
 	private LibraryInfoHolder currentLibraryHolder;
 
-	private static Map<String, String> qdmTypeInfoMap = new HashMap<String, String>();
+	private static Map<String, String> qdmTypeInfoMap = new HashMap<>();
 
 	private CQLObject cqlObject = new CQLObject();
 
 	private Map<String, LibraryHolder> libraryHolderMapping;
 
-	/**
-	 * The cql filter
-	 * 
-	 * @param library
-	 *            the library of the CQL
-	 * @param populationList
-	 *            the lists of populations that are included in MAT
-	 */
 	public CQLFilter(Library library, List<String> populationList,
 					 Map<String, LibraryHolder> map, CQLModel cqlModel) {
 
@@ -157,15 +121,15 @@ public class CQLFilter {
 		this.cqlModel = cqlModel;
 		this.currentLibraryHolder = new LibraryInfoHolder(this.library, "", "", "");
 		this.populationList = populationList;
-		this.usedExpressions = new ArrayList<String>();
-		this.usedFunctions = new ArrayList<String>();
-		this.usedValuesets = new ArrayList<String>();
-		this.usedParameters = new ArrayList<String>();
-		this.usedCodeSystems = new ArrayList<String>();
-		this.usedCodes = new ArrayList<String>();
-		this.includedLibraries = new HashMap<String, LibraryInfoHolder>();
-		this.valueSetDataTypeMap = new HashMap<String, List<String>>();
-		this.codeDataTypeMap = new HashMap<String, List<String>>();
+		this.usedExpressions = new ArrayList<>();
+		this.usedFunctions = new ArrayList<>();
+		this.usedValuesets = new ArrayList<>();
+		this.usedParameters = new ArrayList<>();
+		this.usedCodeSystems = new ArrayList<>();
+		this.usedCodes = new ArrayList<>();
+		this.includedLibraries = new HashMap<>();
+		this.valueSetDataTypeMap = new HashMap<>();
+		this.codeDataTypeMap = new HashMap<>();
 	}
 
 	/**
@@ -315,8 +279,7 @@ public class CQLFilter {
 		// check for parameters
 		else if (expression.getClass().equals(ParameterDef.class)) {
 			CQLExpressionObject paramObject = new CQLExpressionObject("Parameter", expression.getName());
-			paramObject
-					.setReturnType((expression.getResultType() == null) ? "" : expression.getResultType().toString());
+			paramObject.setReturnType((expression.getResultType() == null) ? "" : expression.getResultType().toString());
 			paramObject.getUsedCodes().addAll(this.getUsedCodes());
 			paramObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
 			paramObject.getUsedExpressions().addAll(this.getUsedExpressions());
@@ -733,12 +696,11 @@ public class CQLFilter {
 	 */
 	private void checkForInValuesets(Expression expression) {
 		InValueSet inValueSet = (InValueSet) expression;
-		// System.out.println("\t" + inValueSet.getValueset().getName());
-		String name = inValueSet.getValueset().getName();
+//		String name = inValueSet.getValueset().getName();
 
-		
-		String libraryAlias = inValueSet.getValueset().getLibraryName();
-
+//		String libraryAlias = inValueSet.getValueset().getLibraryName();
+        String libraryAlias = " ";
+        String name = " ";
 		if (libraryAlias != null) {
 			LibraryInfoHolder libHolder = getIncludedLibrary(libraryAlias);
 			name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
@@ -746,14 +708,6 @@ public class CQLFilter {
 			name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion()
 					+ "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
 		}
-		
-		/*if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
-			// name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-			name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 
-					"|" + this.currentLibraryHolder.getLibraryAlias() + "|"
-					+ name;
-		}*/
-
 		this.addUsedValueset(name);
 	}
 
@@ -822,14 +776,14 @@ public class CQLFilter {
 	private void checkForInCodeSystem(Expression expression) {
 		InCodeSystem inCodeSystem = (InCodeSystem) expression;
 		
-		String name = inCodeSystem.getCodesystem().getName();
+//		String name = inCodeSystem.getCodesystem().getName();
+		String name = " ";
 
 		if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
 			name =  this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 
 					"|" + this.currentLibraryHolder.getLibraryAlias() + "|"
 					+ name;
 		}
-
 		this.addUsedCodeSystem(name);
 	}
 
@@ -1332,9 +1286,7 @@ public class CQLFilter {
 			}
 			
 			for (ExpressionDef expressionDef : expressionDefs) {
-				// System.out.println(expressionDef.getName());
 				if (expressionDef.getName().equals(expressionName)) {
-					// return expressionDef.getExpression();
 					return expressionDef;
 				}
 			}
@@ -1550,22 +1502,21 @@ public class CQLFilter {
 	}
 
 	public static String getDataTypeName(String dataTypeIdentifier) {
-		// load qdm info if blank
-		if (qdmTypeInfoMap.size() == 0) {
+		if (CollectionUtils.isEmpty(qdmTypeInfoMap)) {
 			QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
-			ModelInfo info = qdmModelInfoProvider.load();
+            VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
+            versionedIdentifier.setId("QDM");
+			ModelInfo info = qdmModelInfoProvider.load(versionedIdentifier);
 
-			List<TypeInfo> typeInfos = info.getTypeInfo();
-			for (TypeInfo typeInfo : typeInfos) {
+			List<TypeInfo> typeInfoList = info.getTypeInfo();
+			for (TypeInfo typeInfo : typeInfoList) {
 				if (typeInfo instanceof ProfileInfo) {
 					ProfileInfo profileInfo = (ProfileInfo) typeInfo;
 					qdmTypeInfoMap.put(profileInfo.getIdentifier(), profileInfo.getLabel());
 				}
 			}
 		}
-
-		String dataTypeName = qdmTypeInfoMap.get(dataTypeIdentifier);
-		return dataTypeName;
+        return qdmTypeInfoMap.get(dataTypeIdentifier);
 	}
 
 	public Map<String, List<String>> getFunctionToFunctionMap() {

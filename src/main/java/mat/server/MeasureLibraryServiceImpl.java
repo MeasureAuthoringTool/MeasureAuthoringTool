@@ -4568,59 +4568,62 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
-        SaveUpdateCQLResult result = null;
-        // replacing NBSP (U+00A0) with a space
-        cql = cql.replace("\u00a0", " ");
+        SaveUpdateCQLResult result;
+        if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+            return null;
+        }
         try {
-            if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-                MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-                Measure measure = measureDAO.find(measureId);
+            Measure measure = measureDAO.find(measureId);
+            // QDM Measures are unaffected by NBSP char.
+            if (measure.isFhirMeasure()) {
+                // replacing NBSP (U+00A0) with a space
+                cql = cql.replace("\u00a0", " ");
+            }
+            MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+            CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
 
-                CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
+            CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
+                    MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
+                    ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
 
-                CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
-                        MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-                        ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
+            config.setPreviousCQLModel(previousModel);
 
-                config.setPreviousCQLModel(previousModel);
+            result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
 
-                result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
-
-                if (!result.isSevereError()) {
-                    XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-                    processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
-                    measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-
-                    if (result.isSuccess()) {
-                        // need to clean definitions from populations and groupings.
-                        // go through all of the definitions in the previous model and check if they are in the new model
-                        // if the old definition is not in the new model, clean the groupings
-                        for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
-                            Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
-                            if (!previousDefinitionInNewModel.isPresent()) {
-                                cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
-                            }
-                        }
-
-                        // do the same thing for functions
-                        for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
-                            Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
-                            if (!previousFunctionInNewModel.isPresent()) {
-                                cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
-                            }
-                        }
-                    }
-                    measurePackageService.saveMeasureXml(measureXMLModel);
-                }
+            if (!result.isSevereError()) {
+                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
+                measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
 
                 if (result.isSuccess()) {
-                    measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
-
-                    if (result.getCqlModel().isFhir()) {
-                        result = handleSaveFhirSevereErrors(result, measure, cql);
+                    // need to clean definitions from populations and groupings.
+                    // go through all of the definitions in the previous model and check if they are in the new model
+                    // if the old definition is not in the new model, clean the groupings
+                    for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
+                        Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
+                        if (!previousDefinitionInNewModel.isPresent()) {
+                            cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
+                        }
                     }
-                    measureDAO.save(measure);
+
+                    // do the same thing for functions
+                    for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
+                        Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
+                        if (!previousFunctionInNewModel.isPresent()) {
+                            cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
+                        }
+                    }
                 }
+                measurePackageService.saveMeasureXml(measureXMLModel);
+            }
+
+            if (result.isSuccess()) {
+                measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
+
+                if (result.getCqlModel().isFhir()) {
+                    result = handleSaveFhirSevereErrors(result, measure, cql);
+                }
+                measureDAO.save(measure);
             }
         } catch (Exception e) {
             log.error("MeasureLibraryServiceImpl::saveCQLFile " + e.getMessage(), e);

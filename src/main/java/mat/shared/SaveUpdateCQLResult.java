@@ -105,6 +105,8 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public static final int MEASURE_NAME_INVALID = 16;
 
+    public static final int INVALID_EMEASUREID = 17;
+
     List<CQLQualityDataSetDTO> cqlAppliedQDMList;
 
     CQLQualityDataSetDTO cqlQualityDataSetDTO;

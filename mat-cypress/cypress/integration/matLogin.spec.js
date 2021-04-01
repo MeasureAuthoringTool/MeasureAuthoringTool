@@ -1,43 +1,42 @@
 /// <reference types="Cypress" />
 
-
-const BAD_PASSWORD = "bad__Password_";
-const BAD_USER_NAME = "bad__User__Name_";
-const OKTA_ERROR_ELEMENT = '.okta-form-infobox-error';
+import LoginPage from '../support/domain/pageObjects/LoginPage';
+const BAD_PASSWORD = 'bad__Password_';
+const BAD_USER_NAME = 'bad__User__Name_';
 
 describe('Test Login functionality', function () {
+  before(function () {
+    cy.fixture('mat').then(function (data) {
+      this.data = data;
+      cy.loadCredentials(this.data);
+    });
+  });
 
+  after(() => {
+    cy.matLogout();
+  });
 
-    before(function () {
-        cy.fixture('mat').then(function (data) {
-            this.data = data;
-            cy.loadCredentials(this.data)
-        })
-    })
+  it('Mat login logout', function () {
+    const loginPage = new LoginPage();
 
-    afterEach(() => {
-        cy.matLogout()
-    })
+    cy.matLogin(BAD_USER_NAME, BAD_PASSWORD);
 
-    it('Mat login logout', function () {
+    loginPage.infoBoxError().contains('Sign in failed!');
 
-        cy.matLogin(BAD_USER_NAME, BAD_PASSWORD)
+    cy.matLogin(this.data.userName, BAD_PASSWORD);
 
-        cy.get(OKTA_ERROR_ELEMENT).contains("Sign in failed!")
+    loginPage.infoBoxError().contains('Sign in failed!');
 
-        cy.matLogin(this.data.userName, BAD_PASSWORD)
+    cy.matLogin(this.data.userName, this.data.password, false); // false/flag wont check checkBox
 
-        cy.get(OKTA_ERROR_ELEMENT).contains("Sign in failed!")
+    loginPage.submitButton().should('be.disabled');
 
-        cy.matLogin(this.data.userName, this.data.password, false) // wont check checkBox
-        cy.get('#okta-signin-submit').should('be.disabled')
+    cy.matLogin(this.data.userName, this.data.password);
 
-        cy.matLogin(this.data.userName, this.data.password)
+    cy.umlsLogin('2572222-1111-aaaa-yyyy-XXXXXXXXXX', ''); // MT string wont close or check for 'UMLS Active'
 
-        cy.umlsLogin("2572222-1111-aaaa-yyyy-XXXXXXXXXX", '') // MT string wont close or check for 'UMLS Active'
-
-        cy.get('.help-block').contains('Login failed. Please sign in again.')
-        cy.get('.close').click()
-        cy.umlsLogin(this.data.umlsApiKey);
-    })
-})
+    cy.get('.help-block').contains('Login failed. Please sign in again.');
+    cy.get('.close').click();
+    cy.umlsLogin(this.data.umlsApiKey);
+  });
+});

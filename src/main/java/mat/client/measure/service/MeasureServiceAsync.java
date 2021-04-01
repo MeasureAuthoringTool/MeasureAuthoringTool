@@ -668,6 +668,8 @@ public interface MeasureServiceAsync {
 
 	void generateAndSaveMaxEmeasureId(boolean isEditable, String measureId, AsyncCallback<Integer> asyncCallback);
 
+	void generateEmeasureIdForNewMeasure(AsyncCallback<Integer> asyncCallback);
+
 	void getHumanReadableForMeasureDetails(String currentMeasureId, String measureModel, AsyncCallback<String> asyncCallback);
 	
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);

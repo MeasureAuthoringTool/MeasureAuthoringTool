@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
@@ -361,7 +362,11 @@ public class CQLtoELM {
                 identifier.setId(include.getPath());
                 identifier.setVersion(include.getVersion());
                 try {
-                    TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier, new ArrayList<>());
+                    TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier,
+                            CqlTranslatorException.ErrorSeverity.Info,
+                            LibraryBuilder.SignatureLevel.None,
+                            new CqlTranslator.Options[0],
+                            new ArrayList<>());
                     fetchTranslatedLibraries(childLibrary);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());

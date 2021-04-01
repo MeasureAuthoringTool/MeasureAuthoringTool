@@ -352,6 +352,16 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     }
 
     @Override
+    public int generateEMeasureId() {
+        try {
+            return measureDAO.getMaxEMeasureId() + 1;
+        } catch (RuntimeException re) {
+            logger.error("MeasurePackageServiceImpl::returnMaxEMeasureId -> Error retrieving MaxEMeasureId", re);
+            throw re;
+        }
+    }
+
+    @Override
     public void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
         MeasureXML measureXML = measureXMLDAO.findForMeasure(measureXmlModel.getMeasureId());
         if (measureXML != null) {

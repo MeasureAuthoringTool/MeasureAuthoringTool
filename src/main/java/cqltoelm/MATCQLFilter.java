@@ -29,9 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by jmeyer on 1/5/2018.
- */
 public class MATCQLFilter {
 
     private String parentLibraryString;
@@ -135,6 +132,7 @@ public class MATCQLFilter {
         MATCQL2ELMListener listener = new MATCQL2ELMListener(graph, library, translatedLibraryMap, childrenLibraries);
         ParseTree tree = parser.library();
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.setTokenStream(tokens);
         preprocessor.visit(tree);
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(listener, tree);

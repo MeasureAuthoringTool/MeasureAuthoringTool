@@ -462,6 +462,7 @@ public class MATCQL2ELMListener extends cqlBaseListener {
         cqltoelm.parsers.MATCQL2ELMListener listener = new cqltoelm.parsers.MATCQL2ELMListener(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier() + "|", graph, childLibrary, translatedLibraryMap, childrenLibraries);
         ParseTree tree = parser.library();
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.setTokenStream(tokens);
         preprocessor.visit(tree);
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(listener, tree);

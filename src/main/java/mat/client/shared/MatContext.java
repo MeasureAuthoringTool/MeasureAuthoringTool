@@ -35,7 +35,6 @@ import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
-import mat.client.login.LoginModel;
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.HarpService;
 import mat.client.login.service.HarpServiceAsync;
@@ -58,7 +57,6 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.client.util.FeatureFlagConstant;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.OperatorDTO;
 import mat.dto.UserPreferenceDTO;
@@ -277,29 +275,12 @@ public class MatContext implements IsSerializable {
     protected MatContext() {
         eventBus = new HandlerManager(null);
 
-        eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
-            @Override
-            public void onMeasureSelected(MeasureSelectedEvent event) {
-                currentMeasureInfo = event;
-            }
-        });
+        eventBus.addHandler(MeasureSelectedEvent.TYPE, event -> currentMeasureInfo = event);
 
-        eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
-
-            @Override
-            public void onLibrarySelected(CQLLibrarySelectedEvent event) {
-                currentLibraryInfo = event;
-
-            }
-        });
+        eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, event -> currentLibraryInfo = event);
 
         // US 439. Start the timeout timer when the user clicked the forgotten password link
-        eventBus.addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
-            @Override
-            public void onForgottenPassword(ForgottenPasswordEvent event) {
-                getTimeoutManager().startActivityTimers(ConstantMessages.LOGIN_MODULE);
-            }
-        });
+        eventBus.addHandler(ForgottenPasswordEvent.TYPE, event -> getTimeoutManager().startActivityTimers(ConstantMessages.LOGIN_MODULE));
     }
 
     public HandlerManager getEventBus() {
@@ -1314,7 +1295,7 @@ public class MatContext implements IsSerializable {
     public void getCQLConstants() {
         CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 
-        cqlConstantService.getAllCQLConstants(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR), new AsyncCallback<CQLConstantContainer>() {
+        cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
 
             @Override
             public void onFailure(Throwable caught) {

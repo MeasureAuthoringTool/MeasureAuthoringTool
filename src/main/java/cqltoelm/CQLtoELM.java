@@ -362,7 +362,6 @@ public class CQLtoELM {
                 identifier.setId(include.getPath());
                 identifier.setVersion(include.getVersion());
                 try {
-                    // Todo Rohit test this before merge
                     TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier,
                             new CqlTranslatorOptions(),
                             new ArrayList<>());

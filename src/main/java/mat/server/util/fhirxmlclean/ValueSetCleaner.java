@@ -9,7 +9,7 @@ class ValueSetCleaner extends FhirCleanerBase<CQLQualityDataSetDTO> {
     }
 
     @Override
-    String createXpath(CQLQualityDataSetDTO valueSet) {
+    protected String createXpath(CQLQualityDataSetDTO valueSet) {
         String nameXpath = "[@name='" + valueSet.getName() + "']";
         return "//cqlLookUp/valuesets/valueset" + nameXpath;
     }

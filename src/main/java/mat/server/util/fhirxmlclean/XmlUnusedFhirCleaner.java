@@ -4,7 +4,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.cql.model.UnusedCqlElements;
 
 public class XmlUnusedFhirCleaner {
-    XmlProcessor xmlProcessor;
+    private XmlProcessor xmlProcessor;
 
     public String clean(String xml, UnusedCqlElements unusedCqlElements) {
         xmlProcessor = new XmlProcessor(xml);

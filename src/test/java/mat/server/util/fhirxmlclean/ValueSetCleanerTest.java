@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ValueSetCleanerTest implements FhirCleanerTestHelper {
     private static final String valueSetName = "Race";
-    static final String tag = "valuesets";
-    static final String stringElementToFind = "name=\"" + valueSetName + '"';
+    protected static final String tag = "valuesets";
+    protected static final String stringElementToFind = "name=\"" + valueSetName + '"';
 
     private ValueSetCleaner cleaner;
     private XmlProcessor xmlProcessor;
@@ -43,7 +43,7 @@ class ValueSetCleanerTest implements FhirCleanerTestHelper {
         assertFalse(xmlContainsOnlyOneDataElement(convertXmlToString(xmlProcessor), tag, stringElementToFind));
     }
 
-    static List<CQLQualityDataSetDTO> createUnused() {
+    protected static List<CQLQualityDataSetDTO> createUnused() {
         CQLQualityDataSetDTO cqlQualityDataSetDTO = new CQLQualityDataSetDTO();
         cqlQualityDataSetDTO.setName(valueSetName);
         return List.of(cqlQualityDataSetDTO);

@@ -4,12 +4,8 @@ import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.measure.ManageCompositeMeasureDetailModel;
-import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.*;
 import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -21,62 +17,13 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
 import mat.client.umls.service.VsacApiResult;
-import mat.dao.DataTypeDAO;
-import mat.dao.MeasureTypeDAO;
-import mat.dao.OrganizationDAO;
-import mat.dao.RecentMSRActivityLogDAO;
-import mat.dao.UserDAO;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.dao.clause.ComponentMeasuresDAO;
-import mat.dao.clause.MeasureDAO;
-import mat.dao.clause.MeasureDetailsReferenceDAO;
-import mat.dao.clause.MeasureDeveloperDAO;
-import mat.dao.clause.MeasureExportDAO;
-import mat.dao.clause.MeasureXMLDAO;
-import mat.dao.clause.OperatorDAO;
-import mat.dao.clause.QDSAttributesDAO;
+import mat.dao.*;
+import mat.dao.clause.*;
 import mat.dto.MeasureTypeDTO;
 import mat.dto.OperatorDTO;
-import mat.model.Author;
-import mat.model.CQLValueSetTransferObject;
-import mat.model.ComponentMeasureTabObject;
-import mat.model.DataType;
-import mat.model.LockedUserInfo;
-import mat.model.MatCodeTransferObject;
-import mat.server.service.cql.FhirCqlParser;
-import mat.vsacmodel.ValueSet;
-import mat.model.MeasureOwnerReportDTO;
-import mat.model.MeasureSteward;
-import mat.model.MeasureType;
-import mat.model.Organization;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.RecentMSRActivityLog;
-import mat.model.SecurityRole;
-import mat.model.User;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.ComponentMeasure;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureDetails;
-import mat.model.clause.MeasureDeveloperAssociation;
-import mat.model.clause.MeasureExport;
-import mat.model.clause.MeasureSet;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.MeasureTypeAssociation;
-import mat.model.clause.MeasureXML;
-import mat.model.clause.ModelTypeHelper;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCodeSystem;
-import mat.model.cql.CQLCodeWrapper;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
+import mat.model.*;
+import mat.model.clause.*;
+import mat.model.cql.*;
 import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
@@ -84,37 +31,23 @@ import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
-import mat.server.service.InvalidValueSetDateException;
-import mat.server.service.MeasureDetailsService;
-import mat.server.service.MeasureLibraryService;
-import mat.server.service.MeasurePackageService;
-import mat.server.service.UserService;
+import mat.server.service.*;
 import mat.server.service.cql.ValidationRequest;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
 import mat.server.service.impl.XMLMarshalUtil;
-import mat.server.util.CQLUtil;
-import mat.server.util.CQLValidationUtil;
-import mat.server.util.ExportSimpleXML;
-import mat.server.util.MATPropertiesService;
-import mat.server.util.ManageMeasureDetailModelConversions;
-import mat.server.util.MeasureUtility;
-import mat.server.util.XmlProcessor;
+import mat.server.util.*;
+import mat.server.util.fhirxmlclean.XmlUnusedFhirCleaner;
 import mat.server.validator.measure.CompositeMeasureValidator;
-import mat.shared.CompositeMeasureValidationResult;
-import mat.shared.ConstantMessages;
-import mat.shared.DateStringValidator;
-import mat.shared.DateUtility;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MeasureSearchModel;
-import mat.shared.SaveUpdateCQLResult;
-import mat.shared.StringUtility;
+import mat.shared.*;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.cql.model.UnusedCqlElements;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
+import mat.vsacmodel.ValueSet;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -131,12 +64,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.xpath.XPathConstants;
@@ -150,23 +78,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -1151,7 +1064,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() &&
                 !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-                || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
+                        || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
@@ -1937,7 +1850,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
+    private void removeUnusedQDMLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
         String measureXml = measureXmlModel.getXml();
         XmlProcessor processor = new XmlProcessor(measureXml);
         try {
@@ -1951,7 +1864,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         measurePackageService.saveMeasureXml(measureXmlModel);
     }
 
-    private void removeUnusedComponents(MeasureXmlModel measureXmlModel, Measure measure) {
+    private void removeUnusedQDMComponents(MeasureXmlModel measureXmlModel, Measure measure) {
         XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
         log.debug("Remove Unused Component Measures");
 
@@ -2026,6 +1939,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         // return error if there are unused libraries in the measure
         MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
         String measureXml = measureXmlModel.getXml();
+
         if (!m.isFhirMeasure() &&
                 !ignoreUnusedLibraries &&
                 CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
@@ -2033,6 +1947,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
             log.debug("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
             return saveMeasureResult;
+        } else {
+            if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+                return returnFailureReason(saveMeasureResult, SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+            }
         }
 
         if (shouldPackage) {
@@ -2045,12 +1963,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
         }
 
-        if (!m.isFhirMeasure()) {
-            removeUnusedLibraries(measureXmlModel, cqlResult);
-            removeUnusedComponents(measureXmlModel, m);
+        if (m.isFhirMeasure()) {
+            removeUnusedFhirElements(measureXmlModel, cqlResult.getUnusedCqlElements());
+        } else {
+            removeUnusedQDMLibraries(measureXmlModel, cqlResult);
+            removeUnusedQDMComponents(measureXmlModel, m);
         }
 
         return updateVersionAndExports(isMajor, version, m);
+    }
+
+    private void removeUnusedFhirElements(MeasureXmlModel measureXmlModel, UnusedCqlElements unusedCqlElements) {
+        String measureXml = measureXmlModel.getXml();
+
+        String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(measureXml, unusedCqlElements);
+
+        measureXmlModel.setXml(updatedMeasureXml);
+        measurePackageService.saveMeasureXml(measureXmlModel);
     }
 
     private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {

@@ -18,12 +18,12 @@ class MeasurePackageServiceImplTest {
     private MeasureDAO measureDAO;
 
     @InjectMocks
-    private MeasurePackageService measurePackageService;
+    private MeasurePackageServiceImpl measurePackageServiceImpl;
 
     @Test
     void testReturnMaxEMeasureId() {
         Mockito.when(measureDAO.getMaxEMeasureId()).thenReturn(1024);
-        int maxId = measurePackageService.getMaxEMeasureId();
-        assertEquals(1025 , maxId);
+        int maxId = measurePackageServiceImpl.getMaxEMeasureId();
+        assertEquals(1024 , maxId);
     }
 }

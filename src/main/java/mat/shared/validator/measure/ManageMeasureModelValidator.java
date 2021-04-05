@@ -13,25 +13,24 @@ import java.util.logging.Logger;
 public class ManageMeasureModelValidator {
 	private final Logger logger = Logger.getLogger("ManageMeasureModelValidator");
 
-	public List<String> validateMeasure(ManageMeasureDetailModel model){
+	public List<String> validateMeasure(ManageMeasureDetailModel model) {
 		List<String> message = performCommonMeasureValidation(model);
 		message.addAll(validateNQF(model));
 		return message;
 	}
-	
 
 	public List<String> validateMeasureWithClone(ManageMeasureDetailModel model, boolean isClone) {
 		List<String> message = performCommonMeasureValidation(model);
-		if(!isClone) {
+		if (!isClone) {
 			message.addAll(validateNQF(model));
 		}
 		return message;
 	}
 	
 	protected List<String> validateNQF(ManageMeasureDetailModel model) {
-		List<String> message = new ArrayList<String>();
-		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
-			if(StringUtility.isEmptyOrNull(model.getNqfId())) {
+		List<String> message = new ArrayList<>();
+		if (Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) {
+			if (StringUtility.isEmptyOrNull(model.getNqfId())) {
 				message.add(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR);
 			}
 		}
@@ -39,18 +38,25 @@ public class ManageMeasureModelValidator {
 	}
 	
 	private List<String> performCommonMeasureValidation(ManageMeasureDetailModel model) {
-		List<String> message = new ArrayList<String>();
+		List<String> message = new ArrayList<>();
+
 		String libName = model.getCQLLibraryName();
-		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
-		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirMeasureName(model.getMeasureName()) :
-                commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+        String scoring = model.getMeasScoring();
+
+        if (model.isFhir()) {
+            message.addAll(CommonMeasureValidator.validateFhirMeasureName(model.getMeasureName()));
+            message.addAll(CommonMeasureValidator.validateFhirLibraryName(libName));
+            message.addAll(CommonMeasureValidator.validatePatientBased(scoring, model.isPatientBased()));
+        } else {
+            message.addAll(CommonMeasureValidator.validateMeasureName(model.getMeasureName()));
+            message.addAll(CommonMeasureValidator.validateQDMName(libName));
+        }
+
+        message.addAll(CommonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
+        message.addAll(CommonMeasureValidator.validateMeasureScore(scoring));
+
 		logger.log(Level.INFO,"performCommonMeasureValidation isFhir=" + model.isFhir() + " " + libName);
-		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirLibraryName(libName):
-				commonMeasureValidator.validateQDMName(libName));
-		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
-		String scoring = model.getMeasScoring();
-		message.addAll(commonMeasureValidator.validateMeasureScore(scoring));
-		message.addAll(commonMeasureValidator.validatePatientBased(scoring, model.isPatientBased()));
+
 		return message;
 	}
 }

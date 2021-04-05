@@ -26,6 +26,7 @@ import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.MatXmlResponse;
 import mat.shared.CQLObject;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.model.UnusedCqlElements;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -177,7 +178,9 @@ public class FhirMeasureServiceImplTest {
         Mockito.when(measureXMLDAO.findForMeasure(any())).thenReturn(measureXML);
 
 
-        Mockito.when(cqlParser.parse(Mockito.anyString(), any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text", new CQLObject()));
+        Mockito.when(cqlParser.parse(Mockito.anyString(), any(CQLModel.class)))
+                .thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text",
+                        new CQLObject(), new UnusedCqlElements()));
 
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);

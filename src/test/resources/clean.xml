@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<measure>
+    <populations displayName="Populations">
+        <initialPopulations displayName="Initial Populations">
+            <clause displayName="Initial Population 1" type="initialPopulation"
+                    uuid="7D3EFD67-14E4-4C6F-A552-B715D29D5E44">
+                <cqldefinition displayName="Initial Population" uuid="1ded96b2-9a5c-41c6-a0ca-0957203cf264"/>
+            </clause>
+        </initialPopulations>
+    </populations>
+    <strata displayName="Stratification">
+        <stratification displayName="Stratification 1" type="stratificat ion"
+                        uuid="2790E296-E248-47F6-994F-A6261CF69F7C">
+            <clause displayName="Stratum 1" type="stratum" uuid="8982964C-00C9-482D-9C23-E85EF400F7E0"/>
+        </stratification>
+    </strata>
+    <cqlLookUp>
+        <library>Confused2</library>
+        <version>0.1.004</version>
+        <usingModel>FHIR</usingModel>
+        <usingModelVersion>4.0.1</usingModelVersion>
+        <cqlContext>Patient</cqlContext>
+        <codeSystems>
+            <codeSystem codeSystem="http://loinc.org" codeSystemName="LOINC" id="24a5522c-ef20-4cab-bb18-f2711aade7c4"/>
+        </codeSystems>
+        <valuesets>
+            <valueset id="0b9f1fd9-861c-4c65-87a6-b46f18d17038" isValidatedWithVsac="VALID" name="Race"
+                      oid="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.836" originalName="Race"
+                      suppDataElement="false" taxonomy="Grouping" uuid="80b284e3-cab8-4800-b4aa-8fd623e4824a"/>
+        </valuesets>
+        <codes>
+            <code codeIdentifier="CODE:/CodeSystem/LOINC/Version/2.69/Code/21112-8/Info" codeName="Birth date"
+                  codeOID="21112-8" codeSystemName="LOINC" codeSystemOID="http://loinc.org"
+                  displayName="Birth date Display" id="b3105a36-f72c-4957-9d22-6137665a7624"
+                  isCodeSystemVersionIncluded="false" isValidatedWithVsac="VALID" readOnly="false"/>
+        </codes>
+        <parameters>
+            <parameter id="92cac3cb-429c-4000-b7d3-88f1cc7f438d" name="Measurement Period" readOnly="true">
+                <comment/>
+                <logic>Interval&lt;DateTime&gt;</logic>
+            </parameter>
+        </parameters>
+        <definitions>
+            <definition context="Patient" id="ebd39ef3-3965-49e1-a92b-6840fa7b227a" name="SDE Ethnicity"
+                        popDefinition="false" supplDataElement="false">
+                <logic>SDE."SDE Ethnicity"</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="68bbe9d8-8395-48f8-a93c-cd0be26ac685" name="SDE Payer"
+                        popDefinition="false" supplDataElement="false">
+                <logic>SDE."SDE Payer"</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="e6db0abf-f16a-443e-8bf4-1272fc7ee784" name="SDE Race"
+                        popDefinition="false" supplDataElement="false">
+                <logic>SDE."SDE Race"</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="e13833a2-4b08-45c1-b6a9-1d7e5a71e871" name="SDE Sex" popDefinition="false"
+                        supplDataElement="false">
+                <logic>SDE."SDE Sex"</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="1ded96b2-9a5c-41c6-a0ca-0957203cf264" name="Initial Population"
+                        popDefinition="false" supplDataElement="false">
+                <logic>true</logic>
+                <comment/>
+            </definition>
+        </definitions>
+        <functions>
+            <function context="Patient" id="c3570aa3-3779-462f-8443-0d4a8c64de26" name="ToString">
+                <logic>value.value + SDE."SDE Race"</logic>
+                <comment/>
+                <arguments>
+                    <argument argumentName="value" id="1c929ed3-4003-4835-a29e-50dc87c47086" qdmDataType="string"
+                              type="FHIR Datatype"/>
+                </arguments>
+            </function>
+        </functions>
+        <includeLibrarys>
+            <includeLibrary cqlLibRefId="33b6e38e5e0543ada0e8942b91d42795" cqlLibRefName="FHIRHelpers"
+                            cqlVersion="4.0.001" id="f3d99339-7b9a-4c2c-a4b3-3a5fc67ccd6c" name="FHIRHelpers"
+                            qdmVersion="4.0.1"/>
+            <includeLibrary cqlLibRefId="747a00aa82d340f29f257d848c125742" cqlLibRefName="SupplementalDataElementsFHIR4"
+                            cqlVersion="2.0.000" id="aa71af11-82f5-42e5-bc17-2ba0c567f23e" name="SDE"
+                            qdmVersion="4.0.1"/>
+            <includeLibrary cqlLibRefId="1b9d3281e08c4053a24a9f6b911d680e" cqlLibRefName="MATGlobalCommonFunctionsFHIR4"
+                            cqlVersion="5.0.000" id="bbdecaa2-60c2-41df-9640-4497115fedb5" name="Global"
+                            qdmVersion="4.0.1"/>
+        </includeLibrarys>
+    </cqlLookUp>
+    <supplementalDataElements/>
+    <riskAdjustmentVariables/>
+    <measureGrouping>
+        <group sequence="1">
+            <packageClause isInGrouping="false" name="Initial Population 1" type="initialPopulation"
+                           uuid="7D3EFD67-14E4-4C6F-A552-B715D29D5E44"/>
+        </group>
+    </measureGrouping>
+    <subTreeLookUp/>
+    <elementLookUp/>
+</measure>

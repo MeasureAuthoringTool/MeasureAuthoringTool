@@ -253,7 +253,7 @@ public class FhirCQLLinter extends CQLLinter  {
             return;
         }
 
-        String model = ctx.modelIdentifier().getText();
+        String model = ctx.qualifiedIdentifier().getText();
         String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
         if (!StringUtils.equals(model, config.getModelIdentifier()) || !StringUtils.equals(version, config.getModelVersion())) {
             hasInvalidEdits = true;

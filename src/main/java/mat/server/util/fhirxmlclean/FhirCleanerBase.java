@@ -1,7 +1,6 @@
 package mat.server.util.fhirxmlclean;
 
 import lombok.SneakyThrows;
-import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.collections.CollectionUtils;
 import org.w3c.dom.Node;
@@ -12,9 +11,9 @@ import javax.xml.xpath.XPathFactory;
 import java.util.List;
 
 public abstract class FhirCleanerBase<T> {
-    static final javax.xml.xpath.XPath xPathEngine = XPathFactory.newInstance().newXPath();
+    private static final javax.xml.xpath.XPath xPathEngine = XPathFactory.newInstance().newXPath();
 
-    final XmlProcessor processor;
+    private final XmlProcessor processor;
 
     protected FhirCleanerBase(XmlProcessor processor) {
         this.processor = processor;
@@ -26,7 +25,7 @@ public abstract class FhirCleanerBase<T> {
         }
     }
 
-    abstract String createXpath(T fhirType);
+    protected abstract String createXpath(T fhirType);
 
     private void cleanElement(T fhirType) {
         String xpath = createXpath(fhirType);

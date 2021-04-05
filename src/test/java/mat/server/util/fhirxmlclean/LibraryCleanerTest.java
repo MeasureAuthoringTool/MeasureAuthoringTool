@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryCleanerTest implements FhirCleanerTestHelper {
     private final static String libraryAliasName1 = "SDE";
-    final static String stringElementToFind1 = "name=\"" + libraryAliasName1 + '"';
-    final static String tag = "includeLibrarys";
+    protected final static String stringElementToFind1 = "name=\"" + libraryAliasName1 + '"';
+    protected final static String tag = "includeLibrarys";
 
     private final static String libraryAliasName2 = "Global";
-    final static String stringElementToFind2 = "name=\"" + libraryAliasName2 + '"';
+    private final static String stringElementToFind2 = "name=\"" + libraryAliasName2 + '"';
 
     private LibraryCleaner cleaner;
     private XmlProcessor processor;
@@ -51,7 +51,7 @@ class LibraryCleanerTest implements FhirCleanerTestHelper {
         assertFalse(xmlContainsOnlyOneDataElement(cleanedXml, tag, stringElementToFind2));
     }
 
-    static List<CQLIncludeLibrary> createUnused() {
+    protected static List<CQLIncludeLibrary> createUnused() {
         CQLIncludeLibrary library1 = new CQLIncludeLibrary();
         library1.setAliasName(libraryAliasName1);
 

@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -41,7 +42,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected FormGroup messageFormGrp = new FormGroup();
     protected FormGroup measureNameGroup = new FormGroup();
     protected FormGroup measureModelGroup = new FormGroup();
-    protected FormGroup generateCmsIdGroup = new FormGroup();
+    protected FormGroup nameAndIdOptionGroup = new FormGroup();
     protected FormGroup cqlLibraryNameGroup = new FormGroup();
     protected FormGroup shortNameGroup = new FormGroup();
     protected FormGroup scoringGroup = new FormGroup();
@@ -53,6 +54,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     private ErrorHandler errorHandler = new ErrorHandler();
 
     protected CheckBox generateCmsIdCheckbox = new CheckBox();
+    protected CheckBox matchLibraryNameToCmsIdCheckbox = new CheckBox();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -85,10 +87,13 @@ public class AbstractNewMeasureView implements DetailDisplay {
     public void clearFields() {
         measureNameTextBox.setText("");
         eCQMAbbreviatedTitleTextBox.setText("");
+        cqlLibraryNameTextBox.setEnabled(true);
         cqlLibraryNameTextBox.setText("");
         measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
         helpBlock.setText("");
         generateCmsIdCheckbox.setValue(false);
+        matchLibraryNameToCmsIdCheckbox.setEnabled(false);
+        matchLibraryNameToCmsIdCheckbox.setValue(false);
         messageFormGrp.setValidationState(ValidationState.NONE);
         getErrorMessageDisplay().clearAlert();
         warningMessageAlert.clearAlert();
@@ -151,7 +156,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     @Override
-    public HasValue<String> getCQLLibraryNameTextBox() {
+    public HasValue<String> getCQLLibraryNameTextBoxValue() {
+        return cqlLibraryNameTextBox;
+    }
+
+    @Override
+    public TextArea getCQLLibraryNameTextBox() {
         return cqlLibraryNameTextBox;
     }
 
@@ -215,6 +225,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
     @Override
     public CheckBox getGenerateCmsIdCheckbox() {
         return generateCmsIdCheckbox;
+    }
+
+    @Override
+    public CheckBox getMatchLibraryNameToCmsIdCheckbox() {
+        return matchLibraryNameToCmsIdCheckbox;
     }
 
     @Override
@@ -323,24 +338,39 @@ public class AbstractNewMeasureView implements DetailDisplay {
     }
 
     protected void addGenerateCmsIdCheckbox() {
-        generateCmsIdCheckbox.setText("Automatically generate a CMS ID and matching Library Name.");
-        generateCmsIdCheckbox.setTitle("Click to generate a CMS ID and matching Library Name.");
+        // Default label should state 'CMS ID' as long as FHIR is the default model type.
+        generateCmsIdCheckbox.setText("Automatically Generate a CMS ID on Save.");
+        generateCmsIdCheckbox.setTitle("Click to enerate a CMS ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
-        generateCmsIdGroup.add(generateCmsIdCheckbox);
+        nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
     protected void addCompositeGenerateCmsIdCheckbox() {
-        generateCmsIdCheckbox.setText("Automatically generate an eCQM ID and matching Library Name.");
-        generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID and matching Library Name.");
+        // Default label should state 'eCQM' since composite measures are QDM only.
+        generateCmsIdCheckbox.setText("Automatically Generate an eCQM ID on Save.");
+        generateCmsIdCheckbox.setTitle("Click to generate an eCQM ID on Save.");
         generateCmsIdCheckbox.setId("generateCmsId_CheckBox");
+        generateCmsIdCheckbox.getElement().getStyle().setMarginBottom(0, Style.Unit.EM);
         ((Element) generateCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "generateCmsId_Input");
         ((Element) generateCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "generateCmsId_Input");
-        generateCmsIdGroup.add(generateCmsIdCheckbox);
+        nameAndIdOptionGroup.add(generateCmsIdCheckbox);
     }
 
+    protected void addMatchLibraryNameToCmsIdCheckbox() {
+        matchLibraryNameToCmsIdCheckbox.setText("Match CQL Library Name to Generated ID.");
+        matchLibraryNameToCmsIdCheckbox.setTitle("Click to match CQL Library Name to Generated ID.");
+        matchLibraryNameToCmsIdCheckbox.setId("matchLibName_CheckBox");
+        matchLibraryNameToCmsIdCheckbox.setEnabled(false);
+        matchLibraryNameToCmsIdCheckbox.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
+        matchLibraryNameToCmsIdCheckbox.getElement().getStyle().setMarginLeft(15, Style.Unit.PX);
+        ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0)).setAttribute("for", "matchLibName_Input");
+        ((Element) matchLibraryNameToCmsIdCheckbox.getElement().getChild(0).getChild(0)).setAttribute("id", "matchLibName_Input");
 
+        nameAndIdOptionGroup.add(matchLibraryNameToCmsIdCheckbox);
+    }
 
     protected void buildMeasureNameTextArea() {
         measureNameTextBox.setId("MeasureNameTextArea");
@@ -381,16 +411,18 @@ public class AbstractNewMeasureView implements DetailDisplay {
         cqlLibraryNameTextBox.setWidth("400px");
         cqlLibraryNameTextBox.setHeight("50px");
         cqlLibraryNameTextBox.setMaxLength(500);
-        cqlLibraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(cqlLibraryNameTextBox,
-                (s) -> {
-                    String result = null;
-                    if (fhirModel.getValue()) {
-                        result = getFirst(CommonMeasureValidator.validateFhirLibraryName(s));
-                    } else {
-                        result = getFirst(CommonMeasureValidator.validateQDMName(s));
+        cqlLibraryNameTextBox.addBlurHandler(
+            errorHandler.buildBlurHandler(cqlLibraryNameTextBox,
+                (value) -> {
+                    if (cqlLibraryNameTextBox.isEnabled()) {
+                        if (fhirModel.getValue()) {
+                            return getFirst(CommonMeasureValidator.validateFhirLibraryName(value));
+                        }
+                        return getFirst(CommonMeasureValidator.validateQDMName(value));
                     }
-                    return result;
-                }));
+                    return null;
+            })
+        );
     }
 
     protected HorizontalPanel buildCQLLibraryNamePanel() {
@@ -483,7 +515,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         FieldSet formFieldSet = new FieldSet();
         formFieldSet.add(measureNameGroup);
         formFieldSet.add(measureModelGroup);
-        formFieldSet.add(generateCmsIdGroup);
+        formFieldSet.add(nameAndIdOptionGroup);
         formFieldSet.add(cqlLibraryNameGroup);
         formFieldSet.add(shortNameGroup);
         formFieldSet.add(scoringGroup);

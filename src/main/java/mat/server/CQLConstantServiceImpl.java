@@ -9,7 +9,6 @@ import mat.client.shared.FhirAttribute;
 import mat.client.shared.FhirDataType;
 import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.client.shared.MatContext;
-import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
@@ -24,6 +23,7 @@ import mat.shared.cql.model.FunctionSignature;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -97,11 +97,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     private MappingSpreadsheetService mappingService;
 
     @Override
-    public CQLConstantContainer getAllCQLConstants(boolean isFhirEnabled) {
+    public CQLConstantContainer getAllCQLConstants() {
         final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
         try {
-            // get the unit dto list
             final List<UnitDTO> unitDTOList = codeListService.getAllUnits();
             cqlConstantContainer.setCqlUnitDTOList(unitDTOList);
 
@@ -113,15 +112,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             }
             cqlConstantContainer.setCqlUnitMap(unitMap);
 
-            if (isFhirEnabled) {
-                loadFhirAttributes(cqlConstantContainer);
-            }
+            loadFhirAttributes(cqlConstantContainer);
 
-            // get all qdm attributes
-            final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
-            cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
+            cqlConstantContainer.setCqlAttributeList(qDSAttributesDAO.getAllAttributes());
 
-            // get the datatypes
             final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
             final List<String> datatypeList = new ArrayList<>();
             for (int i = 0; i < dataTypeListBoxList.size(); i++) {
@@ -136,11 +130,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             cqlConstantContainer.setCqlDatatypeList(datatypeList);
             cqlConstantContainer.setQdmDatatypeList(qdmDatatypeList);
 
-            // get keywords
             final CQLKeywords keywordList = measureLibraryService.getCQLKeywordsLists();
             cqlConstantContainer.setCqlKeywordList(keywordList);
 
-            // get timings
             final List<String> timings = keywordList.getCqlTimingList();
             Collections.sort(timings);
             cqlConstantContainer.setCqlTimingList(timings);
@@ -149,7 +141,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             cqlConstantContainer.setCurrentFhirVersion(MATPropertiesService.get().getFhirVersion());
             cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 
-            cqlConstantContainer.setQdmContainer(getQDMInformation());
+            cqlConstantContainer.setQdmContainer(QDMUtil.getQDMContainer());
             cqlConstantContainer.setCqlTypeContainer(getCQLTypeInformation());
 
             cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
@@ -179,7 +171,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
                     cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
-        cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
+        cqlConstantContainer.setFhirCqlDataTypeList(mappingService.getFhirTypes());
 
         List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociations = mappingService.fhirDatatypeAttributeAssociation();
 
@@ -216,18 +208,28 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             logger.warn(e.getMessage(), e);
         }
 
-
-
         return Arrays.asList(signatureArray);
     }
 
     private CQLTypeContainer getCQLTypeInformation() {
-        CQLTypeContainer container = new CQLTypeContainer();
-
+        CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
         SystemModelInfoProvider systemModelInfoProvider = new SystemModelInfoProvider();
-        ModelInfo modelInfo = systemModelInfoProvider.load();
 
+        VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
+        versionedIdentifier.setId("System");
+
+        ModelInfo modelInfo = systemModelInfoProvider.load(versionedIdentifier);
         Map<String, List<String>> typeToTypeAttributeMap = new HashMap<>();
+
+        buildTypeToTypeAttributeMap(modelInfo, typeToTypeAttributeMap);
+
+        updateTypeToTypeAttributeMap(typeToTypeAttributeMap);
+
+        cqlTypeContainer.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
+        return cqlTypeContainer;
+    }
+
+    private void buildTypeToTypeAttributeMap(ModelInfo modelInfo, Map<String, List<String>> typeToTypeAttributeMap) {
         for (TypeInfo typeInfo : modelInfo.getTypeInfo()) {
             if (typeInfo instanceof ClassInfo) {
                 ClassInfo currentClassInfo = (ClassInfo) typeInfo;
@@ -241,7 +243,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
                 }
             }
         }
+    }
 
+    private void updateTypeToTypeAttributeMap(Map<String, List<String>> typeToTypeAttributeMap) {
         // TODO: Find a better way to do this instead of hardcoding.
         typeToTypeAttributeMap.remove("System.Code");
         typeToTypeAttributeMap.remove("list<System.Code");
@@ -261,17 +265,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         typeToTypeAttributeMap.put("QDM.Practitioner", Arrays.asList(ID, IDENTIFIER, ROLE, SPECIALTY, QUALIFICATION));
         typeToTypeAttributeMap.put("QDM.Organization", Arrays.asList(ID, IDENTIFIER, TYPE));
         typeToTypeAttributeMap.put("QDM.Identifier", Arrays.asList(NAMING_SYSTEM, VALUE));
-
-        container.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
-        return container;
-    }
-
-    private QDMContainer getQDMInformation() {
-        return QDMUtil.getQDMContainer();
-    }
-
-    private List<String> getAllFhirTypes() {
-        return mappingService.getFhirTypes();
     }
 
 }

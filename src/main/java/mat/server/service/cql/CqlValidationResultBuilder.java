@@ -4,15 +4,10 @@ import mat.model.cql.CQLModel;
 import mat.shared.CQLError;
 import mat.shared.CQLObject;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.model.UnusedCqlElements;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CqlValidationResultBuilder {
     private final SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
@@ -25,6 +20,12 @@ public class CqlValidationResultBuilder {
     private String parentLibraryName;
 
     private List<LibraryErrors> libraryErrors = Collections.emptyList();
+
+    private UnusedCqlElements unusedCqlElements;
+
+    public void setUnusedCqlElements(UnusedCqlElements unusedCqlElements) {
+        this.unusedCqlElements = unusedCqlElements;
+    }
 
     public void cqlModel(CQLModel cqlModel) {
         this.cqlModel = cqlModel;
@@ -54,9 +55,10 @@ public class CqlValidationResultBuilder {
         parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
         parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
         parsedCQL.setIncludeLibrariesWithErrors(includeLibrariesWithErrors);
+        parsedCQL.setUnusedCqlElements(unusedCqlElements);
 
         for (CQLError e : parsedCQL.getCqlErrors()) {
-            if (StringUtils.equalsIgnoreCase("SEVERE",e.getSeverity())) {
+            if (StringUtils.equalsIgnoreCase("SEVERE", e.getSeverity())) {
                 parsedCQL.setSevereError(true);
                 break;
             }

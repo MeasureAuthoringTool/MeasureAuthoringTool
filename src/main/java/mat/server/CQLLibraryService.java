@@ -1070,6 +1070,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         try {
             if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
                 CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+                if (cqlLibrary.isFhirLibrary()) {
+                    // replacing NBSP (U+00A0) with a space
+                    cql = cql.replace("\u00a0", " ");
+                }
+
                 String cqlXml = getCQLLibraryXml(cqlLibrary);
 
                 boolean isFhir = cqlLibrary.isFhirLibrary();

@@ -7,7 +7,7 @@ public class MessageDelegate {
     public static final String DEFAULT_SECURITY_QUESTION_VALUE = "********";
     public static final String EMPTY_VALUE = "";
     public static final String CQL_FUNCTION_ARGUMENT_NAME_ERROR = "Invalid argument name. Must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-    public static final String CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continous Variable measures must not be patient based.";
+    public static final String CONTINUOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continuous Variable measures must not be patient based.";
     public static final String s_ERR_RETRIEVE_SCORING_CHOICES = "Problem while retrieving measure scoring choices.";
     public static final String NQF_NUMBER_REQUIRED_ERROR = "NQF Number is required when a measure is Endorsed by NQF.";
     public static final String SECURITY_QUESTION_ANSWERS_MUST_CONTAIN_AT_LEAST_THREE_CHARACTERS = "Security question answers must contain at least three characters.";
@@ -16,7 +16,7 @@ public class MessageDelegate {
     public static final String DUPLICATE_LIBRARY_NAME = "The CQL library name is used by one or more CQL libraries within the MAT. Please edit the CQL library name.";
     public static final String DUPLICATE_LIBRARY_NAME_SAVE = "The MAT was unable to save the change to the CQL library name. All CQL library names must be unique within the MAT.";
     public static final String VERSION_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the measure. The CQL Library name associated with this measure is not unique. Please edit the CQL Library name before versioning.";
-    public static final String VERSION_STANDALONE_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the Library. The CQL Library name is not unique. Please edit the CQL Library name before versioning.";
+    public static final String VERSION_STANDALONE_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the Library. The CQL Library name is not unique. Please edit the CQL Library name before versioning.";
     public static final String VSAC_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. Please log in to UMLS again to re-establish a connection.";
 
     private static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
@@ -31,7 +31,7 @@ public class MessageDelegate {
     private static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
     public static final String LIBRARY_NAME_IS_CQL_KEYWORD_ERROR = "The CQL Library Name can not be the same as a CQL Keyword.";
     public static final String QDM_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-    public static final String FHIR_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) and must not contain spaces or  '_' (underscores).";
+    public static final String FHIR_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an upper case letter, followed by alpha-numeric character(s) and must not contain spaces, '_' (underscores), or other special characters.";
     private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
     private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
     private static final String HARP_ID_IS_REQUIRED = "HARP ID is required.";
@@ -51,13 +51,13 @@ public class MessageDelegate {
     private static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected." + " Please enter a date to continue.";
     private static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, " + " Numerator and Denominator must contain one association.";
     private static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
-    private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
+    private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same value set name.";
     private static final String CQL_LIBRARY_LIMIT_WARNING = "You have reached the maximum number of selected CQL Libraries (10).";
     private static final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to value sets.";
     private static final String DEFAULT_EXPANSION_PROFILE_REMOVED = "Successfully removed VSAC Expansion Profile from value sets.";
     private static final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully applied VSAC Expansion Profile to value sets.";
     private static final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " + "Please validate your measure logic in both Population Workspace and Clause Workspace.";
-    private static final String WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT = "Unable to create measure package. " + "Please validate that Risk Adjustment Vairable clauses do not contain a datetimediff function or a QDM Variable.";
+    private static final String WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT = "Unable to create measure package. " + "Please validate that Risk Adjustment Variable clauses do not contain a datetimediff function or a QDM Variable.";
     private static final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
     private static final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " + "to the selected Version and/or Expansion Identifier.";
     private static final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
@@ -114,7 +114,7 @@ public class MessageDelegate {
     private static final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
     private static final String MODIFY_QDM_ATTRIBUTE_VALIDATION = "A value set with an Attribute category must be used for this data element.";
     private static final String MODIFY_QDM_NON_ATTRIBUTE_VALIDATION = "A value set with a non-Attribute category must be used for this data element.";
-    private static final String MODIFY_VALUE_SET_SELECT_ATLEAST_ONE = "Please select atleast one applied value set to modify.";
+    private static final String MODIFY_VALUE_SET_SELECT_ATLEAST_ONE = "Please select at least one applied value set to modify.";
     private static final String MUST_CONTAIN_LOWER = "Must contain a lowercase letter.";
     private static final String MUST_CONTAIN_NUMBER = "Must contain a number.";
     private static final String MUST_CONTAIN_SPECIAL = "Must contain a special character.";

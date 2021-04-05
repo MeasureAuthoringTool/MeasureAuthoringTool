@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLObject;
+import mat.shared.cql.model.UnusedCqlElements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
 @Getter
 @Setter
 public class MatXmlResponse {
-
     private List<LibraryErrors> errors = new ArrayList<>();
     private CQLModel cqlModel;
     private String cql;
     private CQLObject cqlObject;
 
+    private UnusedCqlElements unusedCqlElements;
 }

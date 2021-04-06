@@ -135,11 +135,7 @@ public class CQLPopulationLeftNavBarPanelView {
 			navPills.add(measureObservations);			
 		} else if("RATIO".equalsIgnoreCase(scoringIdAttributeValue)){			
 			addNumDenoNavPills(navPills);
-			//Measure Observations are not available 
-			//for Patient based Ratio Measures
-			if (!isPatientBasedMeasure) {
-				navPills.add(measureObservations);
-			}
+			navPills.add(measureObservations);
 		} else if("COHORT".equalsIgnoreCase(scoringIdAttributeValue)) {
 			navPills.add(stratifications);
 		}

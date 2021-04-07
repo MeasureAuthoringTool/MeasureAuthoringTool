@@ -36,16 +36,17 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		setPopulationDataModel(populationDataModel);
 		setPopulationsObject(populationDataModel.getMeasureObservationsObject());
 
-		addMissingPopClauseIfEmptyList(populationType,populationsObject.getPopulationClauseObjectList());
+		addMissingPopClauseIfEmptyList(populationsObject.getPopulationClauseObjectList());
 	}
 
-	private void addMissingPopClauseIfEmptyList(String populationType, List<PopulationClauseObject> popClauses) {
+	private void addMissingPopClauseIfEmptyList( List<PopulationClauseObject> popClauses) {
 		if(popClauses.isEmpty()) {
 			PopulationClauseObject popClause = new PopulationClauseObject(UUIDUtilClient.uuid());
-			popClause.setType(populationType);
+			popClause.setType("measureObservation");
 			String displayName = "Measure Observation" + " " + (1);
 			popClause.setDisplayName(displayName);
 			popClause.setSequenceNumber(1);
+			popClause.setCqlExpressionType("cqlfunction");
 			popClauses.add(popClause);
 		}
 	}

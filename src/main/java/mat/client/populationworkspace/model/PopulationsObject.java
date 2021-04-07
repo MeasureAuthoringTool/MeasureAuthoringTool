@@ -172,7 +172,15 @@ public class PopulationsObject {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<").append(populationsObject.getPopulationName());
 		sb.append(" displayName=").append("\"");
-		sb.append(populationsObject.getDisplayName());
+
+        String displayName = populationsObject.getDisplayName();
+
+        if (displayName == null || displayName.length() == 0) {
+            displayName = "Measure Observations";
+        }
+
+        sb.append(displayName);
+
 		sb.append("\"").append(">");
 	
 		for(PopulationClauseObject pco : populationsObject.getPopulationClauseObjectList()) {

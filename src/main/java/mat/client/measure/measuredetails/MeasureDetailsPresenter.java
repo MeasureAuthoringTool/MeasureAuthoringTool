@@ -520,7 +520,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
                     measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
                     break;
                 case MeasureDetailsConstants.RATIO:
-                    measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
                     measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
                     measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
                     measureDetailsModel.setDenominatorExceptionsModel(new DenominatorExceptionsModel());

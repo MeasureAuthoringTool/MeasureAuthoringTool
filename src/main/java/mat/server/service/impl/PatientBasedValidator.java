@@ -192,11 +192,6 @@ public class PatientBasedValidator {
                 if (messages.size() > 0) {
                     errorMessages.addAll(messages);
                 }
-                //Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
-                if (msrObsFunctionList.size() > 0 && scoringType.equalsIgnoreCase(SCORING_RATIO)) {
-                    String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
-                    errorMessages.add(message);
-                }
             } else {
                 //Check for MAT-8608 validations.
                 List<String> messages = checkSimilarReturnTypes(expressionsToBeChecked, expressionPopMap, measure);

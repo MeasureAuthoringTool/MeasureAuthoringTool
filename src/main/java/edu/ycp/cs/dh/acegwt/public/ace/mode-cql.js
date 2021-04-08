@@ -48,7 +48,10 @@ var SqlHighlightRules = function() {
 	        'activeDatetime|admissionSource|anatomicalLocationSite|authorDatetime|birthDatetime|category|cause|code|components|daysSupplied|denominator|diagnoses|dischargeDisposition|dispenser|dosage|expiredDatetime|' +
 	        'facilityLocation|facilityLocations|frequency|high|id|identifier|incisionDatetime|lengthOfStay|linkedPatientId|locationPeriod|low|medium|method|namingSystem|negationRationale|numerator|participationPeriod|patientId|performer|presentOnAdmissionIndicator|prevalencePeriod|' +
 	        'priority|prescriber|qualification|rank|reason|recipient|receivedDatetime|recorder|referenceRange|refills|relatedTo|relationship|relevantDatetime|relevantPeriod|result|resultDatetime|requester|role|route|sender|specialty|statusDate|sentDatetime|setting|severity|status|supply|targetOutcome|type|' + 
-	        'unit|value|Entity|PatientEntity|Organization|participant|Practitioner|CarePartner'
+	        'unit|value|Entity|PatientEntity|Organization|participant|Practitioner|CarePartner|' +
+
+            //new attributes for QDM 5.6
+            'class|interpretation'
 	    );
 	    
     var keywordMapper = this.createKeywordMapper({

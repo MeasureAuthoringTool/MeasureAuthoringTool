@@ -3,14 +3,17 @@ package mat.shared;
 import lombok.ToString;
 import mat.client.shared.GenericResult;
 import mat.model.MeasureSteward;
-import mat.model.cql.*;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.cql.model.UnusedCqlElements;
 
 import java.util.*;
 
-/**
- * The Class SaveUpdateCQLResult.
- */
 @ToString
 public class SaveUpdateCQLResult extends GenericResult {
 

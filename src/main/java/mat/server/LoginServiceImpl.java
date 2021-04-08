@@ -1,6 +1,5 @@
 package mat.server;
 
-import mat.client.login.LoginModel;
 import mat.client.login.service.HarpService;
 import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;

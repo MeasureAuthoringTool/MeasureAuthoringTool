@@ -24,7 +24,7 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>1.4.8</cqframework.version>
+        <cqframework.version>1.5.2</cqframework.version>
         <axis.version>1.7.9</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -111,6 +111,17 @@
             <groupId>info.cqframework</groupId>
             <artifactId>cql-to-elm</artifactId>
             <version>${cqframework.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.5.1</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
@@ -205,6 +216,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

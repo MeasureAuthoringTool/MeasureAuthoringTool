@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class FhirCleanerBase<T> {
     static final private javax.xml.xpath.XPath xPathEngine = XPathFactory.newInstance().newXPath();
 
-    final XmlProcessor processor;
+    private final XmlProcessor processor;
 
     protected FhirCleanerBase(XmlProcessor processor) {
         this.processor = processor;
@@ -25,7 +25,7 @@ public abstract class FhirCleanerBase<T> {
         }
     }
 
-    abstract String createXpath(T fhirType);
+    protected abstract String createXpath(T fhirType);
 
     private void cleanElement(T fhirType) {
         String xpath = createXpath(fhirType);

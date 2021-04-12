@@ -68,12 +68,6 @@ public class MeasureDetailsNavigation {
 			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();		
 			for(String applicableScoringType : applicableScoringTypes) {
 				if(applicableScoringType.equalsIgnoreCase(scoringType)) {
-					
-					// don't add measure observation for ratio && patient based measures
-					if(populationDetail.equals(PopulationItems.MEASURE_OBSERVATIONS) && this.isPatientBased && this.scoringType.equalsIgnoreCase(RATIO)) {
-						continue; 
-					}
-					
 					MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsAnchorListItem(populationDetail.abbreviatedName());
 					anchorListItem.setTitle(populationDetail.abbreviatedName());
 					anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);

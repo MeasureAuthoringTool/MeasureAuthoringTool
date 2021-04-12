@@ -84,7 +84,5 @@ public class CommonMeasureValidatorTest {
 		assertEquals(noErrorList, validator.validatePatientBased("", true));
 		assertEquals(noErrorList, validator.validatePatientBased("continuous Variable", false));
 		assertEquals(noErrorList, validator.validatePatientBased("", false));
-
 	}
-
 }

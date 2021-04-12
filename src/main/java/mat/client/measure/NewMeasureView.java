@@ -22,6 +22,7 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		addMeasureModelType();
 
 		addGenerateCmsIdCheckbox();
+		addMatchLibraryNameToCmsIdCheckbox();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);

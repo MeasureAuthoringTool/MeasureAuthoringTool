@@ -2,9 +2,11 @@ package mat.server.util;
 
 import mat.client.shared.QDMContainer;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ChoiceTypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
+import org.hl7.elm_modelinfo.r1.ListTypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.NamedTypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ProfileInfo;
@@ -18,7 +20,7 @@ import java.util.Map;
 
 public class QDMUtil {
 
-    private static QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
+    private static final QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
 
     private QDMUtil() {
         throw new IllegalStateException();
@@ -26,33 +28,16 @@ public class QDMUtil {
 
     public static QDMContainer getQDMContainer() {
 
-        QDMContainer container = new QDMContainer();
-        ModelInfo modelInfo = qdmModelInfoProvider.load();
+        QDMContainer qdmContainer = new QDMContainer();
+        VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
+        versionedIdentifier.setId("QDM");
+        ModelInfo modelInfo = qdmModelInfoProvider.load(versionedIdentifier);
 
         Map<String, TypeInfo> nameToProfileInfoMap = new HashMap<>();
         Map<String, ClassInfo> nameToClassInfoMap = new HashMap<>();
 
         // pre-process this information to be more efficient
-        List<TypeInfo> typeInfos = modelInfo.getTypeInfo();
-        for (TypeInfo typeInfo : typeInfos) {
-
-            if (typeInfo instanceof ProfileInfo) {
-                ProfileInfo currentProfileInfo = (ProfileInfo) typeInfo;
-                nameToProfileInfoMap.put(currentProfileInfo.getName(), currentProfileInfo);
-            }
-        }
-
-        for (TypeInfo typeInfo : typeInfos) {
-            if (typeInfo instanceof ClassInfo) {
-                ClassInfo currentClassInfo = (ClassInfo) typeInfo;
-                nameToClassInfoMap.put(currentClassInfo.getName(), currentClassInfo);
-
-                if (currentClassInfo.getLabel() != null) {
-                    nameToProfileInfoMap.put(currentClassInfo.getName(), currentClassInfo);
-                }
-
-            }
-        }
+        buildProfileAndClassInfoMaps(modelInfo, nameToProfileInfoMap, nameToClassInfoMap);
 
         Map<String, List<String>> dataTypeToAttributeMap = new HashMap<>();
         Map<String, List<String>> attributeToCQLTypeMap = new HashMap<>();
@@ -91,9 +76,30 @@ public class QDMUtil {
             }
         });
 
-        container.setDatatypeToAttributesMap(dataTypeToAttributeMap);
-        container.setQdmAttributeToTypeMap(attributeToCQLTypeMap);
-        return container;
+        qdmContainer.setDatatypeToAttributesMap(dataTypeToAttributeMap);
+        qdmContainer.setQdmAttributeToTypeMap(attributeToCQLTypeMap);
+        return qdmContainer;
+    }
+
+    private static void buildProfileAndClassInfoMaps(ModelInfo modelInfo, Map<String, TypeInfo> nameToProfileInfoMap,
+                                                     Map<String, ClassInfo> nameToClassInfoMap) {
+        List<TypeInfo> typeInfoList = modelInfo.getTypeInfo();
+        for (TypeInfo typeInfo : typeInfoList) {
+
+            if (typeInfo instanceof ProfileInfo) {
+                ProfileInfo currentProfileInfo = (ProfileInfo) typeInfo;
+                nameToProfileInfoMap.put(currentProfileInfo.getName(), currentProfileInfo);
+            }
+
+            if (typeInfo instanceof ClassInfo) {
+                ClassInfo currentClassInfo = (ClassInfo) typeInfo;
+                nameToClassInfoMap.put(currentClassInfo.getName(), currentClassInfo);
+
+                if (currentClassInfo.getLabel() != null) {
+                    nameToProfileInfoMap.put(currentClassInfo.getName(), currentClassInfo);
+                }
+            }
+        }
     }
 
     private static void collectAttributeTypeInformation(Map<String, List<String>> attributeToCQLTypeMap, String label,
@@ -102,29 +108,36 @@ public class QDMUtil {
             attributeToCQLTypeMap.put(attribute.getName(), new ArrayList<>());
         }
 
-        // handles the case where the attribute has a type of choice type specifier
         if (attribute.getTypeSpecifier() != null) {
+            // handles the case where the attribute has a type of choice type specifier
             getAttributesFromChoiceTypeSpecifier(attributeToCQLTypeMap, attribute);
-        }
-
-        // handle the case where it is a normal attribute
-        else {
-
+        } else {
+            // handle the case where it is a normal attribute
             // we shouldn't put clarifying attributes for System.Code
             attributeToCQLTypeMap.get(attribute.getName()).add(attribute.getType());
-
         }
     }
 
     private static void getAttributesFromChoiceTypeSpecifier(Map<String, List<String>> attributeToCQLTypeMap,
                                                              ClassInfoElement attribute) {
-        ChoiceTypeSpecifier specifier = (ChoiceTypeSpecifier) attribute.getTypeSpecifier();
-        for (TypeSpecifier choice : specifier.getChoice()) {
-            NamedTypeSpecifier type = (NamedTypeSpecifier) choice;
-            String formattedType = type.getModelName() + "." + type.getName();
+
+        ChoiceTypeSpecifier choiceTypeSpecifier = getChoiceTypeSpecifier(attribute);
+        for (TypeSpecifier typeSpecifier : choiceTypeSpecifier.getChoice()) {
+            NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier) typeSpecifier;
+            String formattedType = namedTypeSpecifier.getModelName() + "." + namedTypeSpecifier.getName();
 
             // we shouldn't put clarifying attributes for System.Code
             attributeToCQLTypeMap.get(attribute.getName()).add(formattedType);
+        }
+    }
+
+    private static ChoiceTypeSpecifier getChoiceTypeSpecifier(ClassInfoElement attribute) {
+
+        if (attribute.getTypeSpecifier() instanceof ListTypeSpecifier) {
+            ListTypeSpecifier listTypeSpecifier = (ListTypeSpecifier) attribute.getTypeSpecifier();
+            return (ChoiceTypeSpecifier) listTypeSpecifier.getElementTypeSpecifier();
+        } else {
+            return (ChoiceTypeSpecifier) attribute.getTypeSpecifier();
         }
     }
 }

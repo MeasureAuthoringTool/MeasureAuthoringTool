@@ -75,12 +75,7 @@ public class ErrorHandler {
     }
 
     public ValidationInfo getValidations(Element field) {
-        ValidationInfo result = validations.get(field);
-        if (result == null) {
-            result = new ValidationInfo();
-            validations.put(field, result);
-        }
-        return result;
+        return validations.computeIfAbsent(field, f -> new ValidationInfo());
     }
 
     public BlurHandler buildRequiredBlurHandler(Widget field) {

@@ -43,14 +43,11 @@ war/WEB-INF/jetty-env.xml
 
 /temp/
 
-/mat_cypress/.idea/
-/mat_cypress/cypress/screenshots/
-/mat_cypress/cypress/videos/
-/mat_cypress/node_modules/
-/mat_cypress/*_env.sh
-/mat_cypress/mochawesome-report/
-/mat_cypress/cypress/results/
-**/.DS_Store
-/mat-cypress/node_modules/
 /mat-cypress/.idea/
-/mat-cypress/local_env.sh
+/mat-cypress/cypress/screenshots/
+/mat-cypress/cypress/videos/
+/mat-cypress/node_modules/
+/mat-cypress/*_env.sh
+/mat-cypress/mochawesome-report/
+/mat-cypress/cypress/results/
+**/.DS_Store

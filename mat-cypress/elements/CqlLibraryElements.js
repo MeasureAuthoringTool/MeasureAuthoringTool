@@ -1,20 +1,20 @@
 export const newLibraryBtn = '#newLibrary_button';
 export const title = '.contentWithHeadingHeader > h1';
 
-//Search
+// Search
 export const filterByMyLibrariesChkBox = '#SearchFilterWidget_HorizontalPanel_forCqlLibrary > tbody > tr > :nth-child(1) > .searchWidgetCheckBox > .customCheckBox';
 export const searchBtn = '#SearchWidgetButton_forCqlLibrary';
 export const searchInputBox = '#SearchFilterWidget_SearchInputHPanel_forCqlLibrary > tbody > tr > td > .form-control';
 export const modelTypeListBox = '#SearchFilterWidget_verticalPanel_forCqlLibrary #modelType';
 
-//Recent Activity Table
+// Recent Activity Table
 export const row1RecentActivity = '#searchPanel_VerticalPanel [__gwt_row="0"]';
 
 export const row1RecentActivityCheckbox = ':nth-child(3) > .GB-MJYKBPC > .GB-MJYKBBD > div > input';
 export const row2RecentActivity = '#searchPanel_VerticalPanel [__gwt_row="1"]';
 export const row2RecentActivityCheckbox = ':nth-child(3) > .GB-MJYKBPD > .GB-MJYKBBD > div > input';
 
-//Library Search Table
+// Library Search Table
 export const row1CqlLibrarySearch = '#CQLLibrarySearchCellTable [__gwt_row="0"]';
 export const row2CqlLibrarySearch = '#CQLLibrarySearchCellTable [__gwt_row="1"]';
 export const row3CqlLibrarySearch = '#CQLLibrarySearchCellTable [__gwt_row="2"]';
@@ -25,7 +25,7 @@ export const row2CqlLibraryName = '#CQLLibrarySearchCellTable [__gwt_row="1"] #d
 export const row1Models = '#CQLLibrarySearchCellTable [__gwt_row="0"] > .GB-MJYKBGJ';
 export const row2Models = '#CQLLibrarySearchCellTable [__gwt_row="1"] > .GB-MJYKBGJ';
 
-//Recent Activity Button Bar
+// Recent Activity Button Bar
 export const recentActivityButtonBar = '#recentActivitySummary_gridToolbar > [type="button"]';
 
 export const createVersionDraftRecentActivityBtn = '#recentActivitySummary_gridToolbar > [title="Click to create version or draft"]';
@@ -37,13 +37,13 @@ export const deleteRecentActivityBtn = '#recentActivitySummary_gridToolbar > [ti
 export const createVersionRecentActivityBtn = '#recentActivitySummary_gridToolbar > [title="Click to create version"]';
 export const createDraftRecentActivityBtn = '#recentActivitySummary_gridToolbar > [title="Click to create draft"]';
 
-//Library search columns
+// Library search columns
 export const cqlLibrarySearchTable = '#cqlCellTablePanel_VerticalPanel > .cellTablePanel > :nth-child(1) > :nth-child(7) > [align="left"]';
 export const row1CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(1) > :nth-child(3)';
 export const row2CqlLibraryModelVersion = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(3)';
 export const row2CqlLibraryVersionColumn = '#CQLLibrarySearchCellTable > :nth-child(3) > :nth-child(2) > :nth-child(4)';
 
-//All CQL Libraries Button Bar
+// All CQL Libraries Button Bar
 export const createVersionDraftCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to create version or draft"]';
 export const historyCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [aria-label="Search History View History"]';
 export const viewCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Read-Only"]';
@@ -56,23 +56,23 @@ export const createVersionCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridTool
 export const createDraftCqllibrariesBtn = '#cqlLibrarySearchCellTable_gridToolbar > [title="Click to create draft"]';
 export const convertToFhirLibrarySearchBtn = '#cqlLibrarySearchCellTable_gridToolbar > [aria-label="Search History Convert"]';
 
-//Draft Version
+// Draft Version
 export const majorVersionTypeRadio = '#cqlmajorRadio_RadioButton';
 export const minorVersionTypeRadio = '#cqlminorRadio_RadioButton';
 export const versionSaveAndContinueBtn = '#SaveAndContinueButton_cqlVersion';
 export const cancelBtn = '#CancelButton_cqlVersion';
 export const draftCancelBtn = '#CancelButton_cqlDetail';
 
-//Draft CQL Library
+// Draft CQL Library
 export const draftSaveAndContinueBtn = '#SaveAndContinueButton_cqlDetail';
 
-//Draft Confirmation
+// Draft Confirmation
 export const confirmationContinue = '#yes_Button';
 
-//return to CQL Library
+// return to CQL Library
 export const returnToCqlLibrary = ':nth-child(6) > td > .gwt-Anchor';
 
-//modal dialog
+// modal dialog
 export const modal = '.modal-dialog';
 export const modalCloseBtn = '.close';
 

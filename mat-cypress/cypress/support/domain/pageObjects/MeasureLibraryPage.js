@@ -58,4 +58,4 @@ class MeasureLibraryPage {
     }
 }
 
-export default MeasureLibraryPage;
+export default MeasureLibPage;

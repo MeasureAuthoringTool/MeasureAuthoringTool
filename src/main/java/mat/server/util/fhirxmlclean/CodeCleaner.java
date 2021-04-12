@@ -15,7 +15,7 @@ class CodeCleaner extends FhirCleanerBase<CQLCode> {
     }
 
     @Override
-    String createXpath(CQLCode cqlCode) {
+    protected String createXpath(CQLCode cqlCode) {
         String nameXpath = "[@codeName='" + cqlCode.getCodeName() + "']";
         return ALL_CODES_XPATH + nameXpath;
     }

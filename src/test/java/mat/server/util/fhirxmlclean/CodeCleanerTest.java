@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CodeCleanerTest implements FhirCleanerTestHelper {
     private final static String codeName = "Birth date";
-    final static String tag = "codes";
-    final static String stringElementToFind = "codeName=\"" + codeName + '"';
+    protected final static String tag = "codes";
+    protected final static String stringElementToFind = "codeName=\"" + codeName + '"';
 
     private CodeCleaner cleaner;
     private XmlProcessor processor;
@@ -44,7 +46,7 @@ class CodeCleanerTest implements FhirCleanerTestHelper {
         assertFalse(xmlContainsOnlyOneDataElement(convertXmlToString(processor), tag, stringElementToFind));
     }
 
-    static List<CQLCode> createUnused() {
+    protected static List<CQLCode> createUnused() {
         CQLCode cqlCode = new CQLCode();
         cqlCode.setCodeName(codeName);
         return List.of(cqlCode);

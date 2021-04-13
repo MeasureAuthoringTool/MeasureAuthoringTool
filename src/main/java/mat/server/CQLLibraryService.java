@@ -1,8 +1,6 @@
 package mat.server;
 
-import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.service.CQLService;
-import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirLibraryPackageResult;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -101,7 +99,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")

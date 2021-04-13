@@ -51,7 +51,7 @@ var SqlHighlightRules = function() {
 	        'unit|value|Entity|PatientEntity|Organization|participant|Practitioner|CarePartner|' +
 
             //new attributes for QDM 5.6
-            'class|interpretation'
+            'class|interpretation|organizationType'
 	    );
 	    
     var keywordMapper = this.createKeywordMapper({

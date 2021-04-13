@@ -24,7 +24,7 @@ class CodeCleaner extends FhirCleanerBase<CQLCode> {
     public void cleanUnusedCodeSystems() {
         NodeList nodeList = evaluateXpath(ALL_CODE_SYSTEMS_XPATH);
 
-        if (nodeList != null || nodeList.getLength() > 0) {
+        if (nodeList != null && nodeList.getLength() > 0) {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 String codeSystemName = findCodeSystemName(nodeList.item(i));
                 if (!containsCodeSystem(codeSystemName)) {

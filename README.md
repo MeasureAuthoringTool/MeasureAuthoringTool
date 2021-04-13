@@ -24,7 +24,6 @@ Windows:
 OSX: 
 *   `brew install maven` or if already installed  `brew update maven`
 
-
 ### Create MAT Database
 Currently in production MAT uses MySQL Community Version 5.7.
 [Here](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21) are some instructions for installing it using brew.

@@ -135,7 +135,7 @@ export const elementNotContains = (element, text) => {
   cy.get(element).should('not.contain', text);
 };
 export const sleep = (milliseconds) => {
-  cy.wait(milliseconds);
+    cy.wait(milliseconds);
 };
 export const shouldContainClick = (element, text) => {
   cy.get(element).should('contain', text).click();
@@ -183,19 +183,19 @@ export const clickDropdownOption = (element, text) => {
   cy.get(element).contains(text).click({ force: true });
 };
 export const log = (val) => {
-  cy.log(val);
+    cy.log(val);
 };
 export const takeScreenshot = (screenshotName) => {
-  cy.screenshot(screenshotName, { capture: 'viewport' });
+    cy.screenshot(screenshotName, {capture: 'viewport'});
 };
 export const takeScreenshotFullPage = (screenshotName) => {
-  cy.screenshot(screenshotName, { capture: 'fullPage' });
+    cy.screenshot(screenshotName, {capture: 'fullPage'});
 };
 export const takeScreenshotRunner = (screenshotName) => {
-  cy.screenshot(screenshotName, { capture: 'runner' });
+    cy.screenshot(screenshotName, {capture: 'runner'});
 };
 export const stopRun = () => {
-  Cypress.runner.stop();
+    Cypress.runner.stop();
 };
 export const disabled = (el) => {
   cy.get(el).should('be.disabled');

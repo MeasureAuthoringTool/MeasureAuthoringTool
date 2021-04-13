@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <!--Device Not Applied-->
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(1) FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID=121 and NAME='code'
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(1) FROM DATA_TYPE WHERE DATA_TYPE_ID=121 and DESCRIPTION='Device, Not Applied'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=121 and NAME='code'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=121 and NAME='negationRationale'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=121 and NAME='id'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=121 and NAME='authorDatetime'</where>
+        </delete>
+        <delete tableName="QDM_ATTRIBUTES">
+            <where>DATA_TYPE_ID=121 and NAME='patientId'</where>
+        </delete>
+
+        <delete tableName="DATA_TYPE">
+            <where>DATA_TYPE_ID=121</where>
+        </delete>
+    </changeSet>
+</databaseChangeLog>

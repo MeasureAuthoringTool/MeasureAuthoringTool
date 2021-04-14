@@ -34,6 +34,7 @@
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
+        <jackson.version>2.12.3</jackson.version>
 
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
@@ -128,12 +129,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.12.3</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.12.3</version>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
@@ -256,6 +262,7 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
+                <!-- exclude jackson-databind in favor of newer version -->
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>

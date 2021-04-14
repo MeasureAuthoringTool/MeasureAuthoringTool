@@ -476,6 +476,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 }
             }
         } else {
+            cqlResult.getUnusedCqlElements().clearUnusedNotProcessedForStandAlone();
+
             if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
                 result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
                 return result;

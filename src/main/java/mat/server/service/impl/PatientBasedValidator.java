@@ -192,11 +192,6 @@ public class PatientBasedValidator {
                 if (messages.size() > 0) {
                     errorMessages.addAll(messages);
                 }
-                //Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
-                if (msrObsFunctionList.size() > 0 && scoringType.equalsIgnoreCase(SCORING_RATIO)) {
-                    String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
-                    errorMessages.add(message);
-                }
             } else {
                 //Check for MAT-8608 validations.
                 List<String> messages = checkSimilarReturnTypes(expressionsToBeChecked, expressionPopMap, measure);
@@ -216,19 +211,34 @@ public class PatientBasedValidator {
                         functionsToBeChecked.add(cqlExpressionObject);
                     }
                 }
-                //MAT-8624 Single Argument Required for Measure Observation User-defined Function .
-                List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked, expressionsToBeCheckedForMO, expressionPopMap, assoExpressionPopMap);
-                if (moArgumentMessage.size() > 0) {
-                    errorMessages.addAll(moArgumentMessage);
-                }
 
-                List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC, expressionPopMap, measure);
-                if (messages.size() > 0) {
-                    errorMessages.addAll(messages);
+                if (isPatientBasedIndicator) {
+					checkFunctionHaveNoArguments(errorMessages, functionsToBeChecked);
+				} else {
+
+                    //MAT-8624 Single Argument Required for Measure Observation User-defined Function .
+                    List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked, expressionsToBeCheckedForMO, expressionPopMap, assoExpressionPopMap);
+                    if (moArgumentMessage.size() > 0) {
+                        errorMessages.addAll(moArgumentMessage);
+                    }
+
+                    List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC, expressionPopMap, measure);
+                    if (messages.size() > 0) {
+                        errorMessages.addAll(messages);
+                    }
                 }
             }
         }
 		return errorMessages;
+	}
+
+	private void checkFunctionHaveNoArguments(List<String> errorMessages, List<CQLExpressionObject> functionsToBeChecked) {
+		for(CQLExpressionObject cqlExpressionObject : functionsToBeChecked) {
+			List<CQLExpressionOprandObject> argumentList = cqlExpressionObject.getOprandList();
+			if (!argumentList.isEmpty()) {
+				errorMessages.add("Must have no parameters");
+			}
+		}
 	}
 
 	private static void createExpressionsToBeCheckedData(Map<String, List<String>> expressionPopMap,
@@ -265,7 +275,7 @@ public class PatientBasedValidator {
 			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
 			if(argumentList.isEmpty() || argumentList.size() > 1){
 				if(!expressionAlreadyEval.contains(cqlExpressionObject.getName())){
-					
+
 					List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE());
 					returnMessages.addAll(generatedMessages);
 				}

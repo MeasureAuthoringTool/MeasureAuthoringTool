@@ -11,6 +11,7 @@ import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject
 import mat.client.populationworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
+import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -34,6 +35,20 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		setPopulationDataModel(populationDataModel);
 		setPopulationsObject(populationDataModel.getMeasureObservationsObject());
+
+		addMissingPopClauseIfEmptyList(populationsObject.getPopulationClauseObjectList());
+	}
+
+	private void addMissingPopClauseIfEmptyList( List<PopulationClauseObject> popClauses) {
+		if(popClauses.isEmpty()) {
+			PopulationClauseObject popClause = new PopulationClauseObject(UUIDUtilClient.uuid());
+			popClause.setType("measureObservation");
+			String displayName = "Measure Observation" + " " + (1);
+			popClause.setDisplayName(displayName);
+			popClause.setSequenceNumber(1);
+			popClause.setCqlExpressionType("cqlfunction");
+			popClauses.add(popClause);
+		}
 	}
 
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
@@ -97,27 +112,27 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		isViewDirty = true;
 		observer.onAddNewClick(populationGrid, populationsObject);
 	}
-	
+
 	private void onSavePopulationClickHandler(Grid populationGrid, PopulationsObject populationsObject) {
 		PopulationsObject newPopulationObject = buildPopulationsObjectFromGrid(populationGrid, populationsObject);
 		observer.onSaveClick(newPopulationObject);
 	}
-	
-	private PopulationsObject buildPopulationsObjectFromGrid(Grid populationGrid, PopulationsObject originalObject) {		
-		
+
+	private PopulationsObject buildPopulationsObjectFromGrid(Grid populationGrid, PopulationsObject originalObject) {
+
 		List<PopulationClauseObject> popClauses = new ArrayList<>();
-		
+
 		for(int i = 0; i<populationGrid.getRowCount(); i++) {
 			PopulationClauseObject popClause = originalObject.getPopulationClauseObjectList().get(i);
-			
+
 			ListBox aggFunctionListBox = (ListBox)populationGrid.getWidget(i, 1);
 			if(aggFunctionListBox.getSelectedValue().isEmpty()) {
 				popClause.setAggFunctionName("");
 			}else {
-				popClause.setAggFunctionName(aggFunctionListBox.getSelectedValue());	
+				popClause.setAggFunctionName(aggFunctionListBox.getSelectedValue());
 			}
-			
-			
+
+
 			ListBox functionListBox = (ListBox)populationGrid.getWidget(i, 2);
 			if(functionListBox.getSelectedValue().isEmpty()) {
 				popClause.setCqlExpressionDisplayName("");
@@ -128,13 +143,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				popClause.setCqlExpressionUUID(functionListBox.getSelectedValue());
 				popClause.setCqlExpressionType("cqlfunction");
 			}
-			
+
 			popClauses.add(popClause);
 		}
-		
+
 		originalObject.getPopulationClauseObjectList().clear();
 		originalObject.getPopulationClauseObjectList().addAll(popClauses);
-		
+
 		return originalObject;
 	}
 
@@ -242,9 +257,9 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		viewHRButton.setColor("black");
 		populationGrid.setWidget(i, 4, viewHRButton);
 		addChangeHandlerEvent(aggFuncListBox, functionListBox);
-		
+
 	}
-	
+
 	public void viewHumanReadableEventHanddler(PopulationClauseObject populationClauseObject, ListBox functionListBox, ListBox aggFuncListBox) {
 		PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
 
@@ -266,7 +281,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		observer.onViewHRClick(population);
 	}
-	
+
 	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
 		if (populationsObject.getPopulationClauseObjectList().size() == 1) {
 			event.stopPropagation();
@@ -281,11 +296,11 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	 * @param aggFuncListBox
 	 * @param functionListBox
 	 */
-	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {		
+	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {
 		functionListBox.addChangeHandler(event -> onListBoxChange());
 		aggFuncListBox.addChangeHandler(event -> onListBoxChange());
 	}
-	
+
 	private void onListBoxChange() {
 		observer.clearMessagesOnDropdown();
 		setIsDirty(true);
@@ -324,14 +339,14 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	public void setIsDirty(boolean isViewDirty) {
 		this.isViewDirty = isViewDirty;
 	}
-	
+
 	private String getSelectedName(String selectedUuid) {
 		for(ExpressionObject o : this.populationDataModel.getFunctionNameList()) {
 			if(o.getUuid().equals(selectedUuid)) {
 				return o.getName();
 			}
 		}
-		
+
 		return "";
 	}
 }

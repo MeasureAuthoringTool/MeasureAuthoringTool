@@ -226,16 +226,22 @@ public class PopulationDataModel {
 					
 					Node expressionNode = expressionsNodeList.item(i);
 					if(expressionNode.getNodeName().equals(expressionNodeName)) {
-						
-						/**
-						 * Ignore CQL Functions with arguments not equal to 1.
-						 */
+
+						boolean patientBased = MatContext.get().getCurrentMeasureInfo().isPatientBased();
+
 						if(TAGNAME_FUNCTION.equals(expressionNodeName)) {
-							if(getFunctionArgumentCount(expressionNode) != 1) {
-								continue;
+							if (patientBased) {
+								if(getFunctionArgumentCount(expressionNode) != 0) {
+									continue;
+								}
+							} else {
+								if(getFunctionArgumentCount(expressionNode) != 1) {
+									continue;
+								}
 							}
 						}
-						
+
+
 						String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
 						String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
 						

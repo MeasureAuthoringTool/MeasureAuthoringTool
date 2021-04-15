@@ -271,7 +271,6 @@
                 </td>
             </tr>
         </#if>
-        <#if model.measureInformation.measureScoring?lower_case == "continuous variable" || (model.measureInformation.measureScoring?lower_case == "ratio" && model.measureInformation.patientBased == false)>
             <tr>
                 <th scope="row" class="row-header"><span class="td_label">Measure Observations</span></th>
                 <td style="width:80%" colspan="3">
@@ -280,7 +279,6 @@
                     </div>
                 </td>
             </tr>
-        </#if>
         <#if model.measureInformation.measureScoring?lower_case == "proportion" || model.measureInformation.measureScoring?lower_case == "ratio">
             <tr>
                 <th scope="row" class="row-header"><span class="td_label">Numerator</span></th>

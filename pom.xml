@@ -24,7 +24,7 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>1.5.3-SNAPSHOT</cqframework.version>
+        <cqframework.version>1.5.3</cqframework.version>
         <axis.version>1.7.9</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -46,13 +46,6 @@
     </properties>
 
     <repositories>
-        <repository>
-            <id>oss-sonatype</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2/</url>

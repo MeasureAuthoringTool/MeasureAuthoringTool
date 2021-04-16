@@ -966,6 +966,13 @@ public class MessageDelegate {
         return "You have included libraries that are unused. In order to version " + name + ", these must be removed. Select Continue to have the MAT remove these included libraries or Cancel to stop the version process.";
     }
 
+    public String getUnusedFhirElementsWarning(String name) {
+        return "You have included libraries, codes or value sets that are unused. " +
+                "In order to version " + name + ", " +
+                "these must be removed. Select Continue to have the MAT remove these unused elements or Cancel " +
+                "to stop the version process.";
+    }
+
     public static String getMeasureSuccessfullyShared(String measureName) {
         return measureName + SUCCESSFULLY_SHARED;
     }

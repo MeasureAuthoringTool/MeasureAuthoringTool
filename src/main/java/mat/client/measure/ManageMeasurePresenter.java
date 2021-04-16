@@ -1342,7 +1342,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void displayUnusedLibraryDialog(String measureId, String measureName, boolean isMajor, String version, boolean shouldPackage) {
         ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(
-                MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(measureName), CONTINUE,
+                MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName), CONTINUE,
                 "Cancel", null, false);
         confirmationDialogBox.setObserver(new ConfirmationObserver() {
 

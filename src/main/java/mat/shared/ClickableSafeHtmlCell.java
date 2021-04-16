@@ -6,6 +6,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 public class ClickableSafeHtmlCell extends AbstractCell<SafeHtml> {
 	/**
 	 * Construct a new ClickableSafeHtmlCell.

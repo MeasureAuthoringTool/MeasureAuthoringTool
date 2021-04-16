@@ -967,7 +967,7 @@ public class MessageDelegate {
     }
 
     public String getUnusedFhirElementsWarning(String name) {
-        return "You have included libraries, codes and value sets that are unused. " +
+        return "You have included libraries, codes or value sets that are unused. " +
                 "In order to version " + name + ", " +
                 "these must be removed. Select Continue to have the MAT remove these unused elements or Cancel " +
                 "to stop the version process.";

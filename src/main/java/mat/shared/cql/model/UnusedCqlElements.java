@@ -48,5 +48,9 @@ public class UnusedCqlElements implements IsSerializable {
                 (codes != null && !codes.isEmpty());
     }
 
+   public void clearUnusedNotProcessedForStandAlone() {
+        valueSets = null;
+        codes = null;
+    }
 }
 

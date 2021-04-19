@@ -9,6 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -18,6 +19,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -36,6 +38,7 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.client.validator.ErrorHandler;
 import mat.model.cql.CQLFunctionArgument;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -59,38 +62,34 @@ public class CQLFunctionsView {
 
     private static final String FUNCTION = "function";
 
-    public static interface Observer {
+    private Observer observer;
+    private final FocusPanel mainFunctionVerticalPanel = new FocusPanel();
+    private final MatTextBox funcNameTxtArea = new MatTextBox();
+    private final Button addNewArgumentButton = new Button();
+    private final DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar(FUNCTION);
+    private final CQLAddNewButton addNewButtonBar = new CQLAddNewButton(FUNCTION);
+    private final List<CQLFunctionArgument> functionArgumentList = new ArrayList<>();
+    private final VerticalPanel cellTablePanel = new VerticalPanel();
+    private static final int TABLE_ROW_COUNT = 2;
+    private final Map<String, CQLFunctionArgument> functionArgNameMap = new HashMap<>();
+    private boolean isEditable = false;
+    private final TextArea funcCommentTextArea = new TextArea();
+    private FormGroup funcNameGroup = new FormGroup();
+    private FormGroup funcCommentGroup = new FormGroup();
+    private final FormGroup funcContextGroup = new FormGroup();
+    private final TextBox returnTypeTextBox = new TextBox();
+    private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
+    private final HTML heading = new HTML();
+    private final InAppHelp inAppHelp = new InAppHelp("");
+    private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
+    private final CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
+    private final ErrorHandler errorHandler = new ErrorHandler();
+
+    public interface Observer {
         void onModifyClicked(CQLFunctionArgument result);
 
         void onDeleteClicked(CQLFunctionArgument result, int index);
     }
-
-    private Observer observer;
-    private FocusPanel mainFunctionVerticalPanel = new FocusPanel();
-    private MatTextBox funcNameTxtArea = new MatTextBox();
-    private Button addNewArgumentButton = new Button();
-    private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar(FUNCTION);
-    private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(FUNCTION);
-    private List<CQLFunctionArgument> functionArgumentList = new ArrayList<>();
-    private VerticalPanel cellTablePanel = new VerticalPanel();
-    private static final int TABLE_ROW_COUNT = 2;
-    private CellTable<CQLFunctionArgument> argumentListTable;
-    private ListDataProvider<CQLFunctionArgument> listDataProvider;
-    private MatSimplePager spager;
-    private Map<String, CQLFunctionArgument> functionArgNameMap = new HashMap<>();
-    private boolean isEditable = false;
-    private TextArea funcCommentTextArea = new TextArea();
-    private FormGroup funcNameGroup = new FormGroup();
-    private FormGroup funcCommentGroup = new FormGroup();
-    private FormGroup funcContextGroup = new FormGroup();
-    private TextBox returnTypeTextBox = new TextBox();
-    private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
-    private HTML heading = new HTML();
-    private InAppHelp inAppHelp = new InAppHelp("");
-    private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
-    private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
-    private ErrorHandler errorHandler = new ErrorHandler();
-
 
     public CQLFunctionsView() {
         mainFunctionVerticalPanel.clear();
@@ -161,7 +160,7 @@ public class CQLFunctionsView {
         mainFunctionVerticalPanel.add(funcFP);
     }
 
-    private Button buildAddNewArgumentButton() {
+    private void buildAddNewArgumentButton() {
         addNewArgumentButton.setType(ButtonType.LINK);
         addNewArgumentButton.getElement().setId("addArgument_Button");
 
@@ -172,7 +171,6 @@ public class CQLFunctionsView {
         addNewArgumentButton.setSize(ButtonSize.SMALL);
         addNewArgumentButton.setMarginLeft(600.00);
         addNewArgumentButton.setMarginBottom(-10.00);
-        return addNewArgumentButton;
     }
 
     private FormGroup buildReturnTypeAndButtonPanelGroup() {
@@ -289,7 +287,7 @@ public class CQLFunctionsView {
 
         if ((argumentList != null) && (argumentList.size() > 0)) {
             updateFunctionArgumentNameMap(argumentList);
-            argumentListTable = new CellTable<>();
+            CellTable<CQLFunctionArgument> argumentListTable = new CellTable<>();
             argumentListTable.setStriped(true);
             argumentListTable.setCondensed(true);
             argumentListTable.setBordered(true);
@@ -297,16 +295,16 @@ public class CQLFunctionsView {
 
             argumentListTable.setPageSize(TABLE_ROW_COUNT);
             argumentListTable.redraw();
-            listDataProvider = new ListDataProvider<>();
+            ListDataProvider<CQLFunctionArgument> listDataProvider = new ListDataProvider<>();
             listDataProvider.refresh();
             listDataProvider.getList().addAll(argumentList);
             ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<>(
                     listDataProvider.getList());
             argumentListTable.addColumnSortHandler(sortHandler);
-            argumentListTable = addColumnToTable(argumentListTable, sortHandler);
+            addColumnToTable(argumentListTable);
             listDataProvider.addDataDisplay(argumentListTable);
             CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-            spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources,
+            MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources,
                     false, 0,
                     true, "cqlFunctionArg");
             spager.setDisplay(argumentListTable);
@@ -314,8 +312,7 @@ public class CQLFunctionsView {
             cellTablePanel.add(argumentListTable);
             cellTablePanel.add(spager);
         } else {
-            com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label(
-                    "Added Arguments List");
+            Label tableHeader = new Label ("Added Arguments List");
             tableHeader.getElement().setId("tableHeader_Label");
             tableHeader.setStyleName("CqlWorkSpaceTableHeader");
             tableHeader.getElement().setAttribute("tabIndex", "-1");
@@ -327,7 +324,6 @@ public class CQLFunctionsView {
 
     }
 
-
     private void updateFunctionArgumentNameMap(List<CQLFunctionArgument> argumentList) {
         functionArgNameMap.clear();
         if (argumentList != null) {
@@ -337,20 +333,21 @@ public class CQLFunctionsView {
         }
     }
 
-    private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
-                                                            ListHandler<CQLFunctionArgument> sortHandler) {
-        if (table.getColumnCount() != TABLE_ROW_COUNT) {
-            com.google.gwt.user.client.ui.Label searchHeader = new com.google.gwt.user.client.ui.Label(
-                    "Added Arguments List");
+    private void addColumnToTable(CellTable<CQLFunctionArgument> argumentListTable) {
+
+        if (argumentListTable.getColumnCount() != TABLE_ROW_COUNT) {
+
+            Label searchHeader = new Label("Added Arguments List");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("measureGroupingTableHeader");
             searchHeader.getElement().setAttribute("tabIndex", "-1");
-            com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+
+            TableElement elem = argumentListTable.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());
 
             MultiSelectionModel<CQLFunctionArgument> selectionModel = new MultiSelectionModel<>();
-            table.setSelectionModel(selectionModel);
+            argumentListTable.setSelectionModel(selectionModel);
             Column<CQLFunctionArgument, SafeHtml> nameColumn = new Column<CQLFunctionArgument, SafeHtml>(
                     new SafeHtmlCell()) {
 
@@ -359,13 +356,13 @@ public class CQLFunctionsView {
                     StringBuilder title = new StringBuilder();
                     StringBuilder value = new StringBuilder(object.getArgumentName());
 
-                    title = title.append("Name : ").append(value);
+                    title.append("Name : ").append(value);
 
                     return getDataTypeColumnToolTip(value.toString(), title, object.isValid());
                 }
 
             };
-            table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
+            argumentListTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 
             Column<CQLFunctionArgument, SafeHtml> dataTypeColumn = new Column<CQLFunctionArgument, SafeHtml>(
                     new SafeHtmlCell()) {
@@ -375,23 +372,23 @@ public class CQLFunctionsView {
                     StringBuilder value = new StringBuilder(object.getArgumentType());
                     if (value.toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE) ||
                             value.toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
-                        value = value.append(":").append(object.getQdmDataType());
+                        value.append(":").append(object.getQdmDataType());
                         if (object.getAttributeName() != null) {
-                            value = value.append(".").append(object.getAttributeName());
+                            value.append(".").append(object.getAttributeName());
                         }
                     } else if (value.toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-                        value = value.append(":").append(object.getOtherType());
+                        value.append(":").append(object.getOtherType());
                     }
-                    title = title.append("Datatype : ").append(value);
+                    title.append("Datatype : ").append(value);
                     return CellTableUtility.getColumnToolTip(value.toString(), title.toString());
                 }
             };
-            table.addColumn(dataTypeColumn,
+            argumentListTable.addColumn(dataTypeColumn,
                     SafeHtmlUtils.fromSafeConstant("<span title=\"Datatype\">" + "Datatype" + "</span>"));
 
             String colName = "Modify";
 
-            table.addColumn(
+            argumentListTable.addColumn(
                     new Column<CQLFunctionArgument, CQLFunctionArgument>(getCompositeCellForFuncArguModifyAndDelete()) {
                         @Override
                         public CQLFunctionArgument getValue(CQLFunctionArgument object) {
@@ -399,13 +396,11 @@ public class CQLFunctionsView {
                         }
                     }, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
-            table.setColumnWidth(0, 25.0, Unit.PCT);
-            table.setColumnWidth(1, 35.0, Unit.PCT);
-            table.setColumnWidth(2, 10.0, Unit.PCT);
+            argumentListTable.setColumnWidth(0, 25.0, Unit.PCT);
+            argumentListTable.setColumnWidth(1, 35.0, Unit.PCT);
+            argumentListTable.setColumnWidth(2, 10.0, Unit.PCT);
         }
-        return table;
     }
-
 
     private CompositeCell<CQLFunctionArgument> getCompositeCellForFuncArguModifyAndDelete() {
         final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<>();
@@ -414,7 +409,7 @@ public class CQLFunctionsView {
             cells.add(getDeleteQDMButtonCell());
         }
 
-        CompositeCell<CQLFunctionArgument> cell = new CompositeCell<CQLFunctionArgument>(cells) {
+        return new CompositeCell<CQLFunctionArgument>(cells) {
             @Override
             public void render(Context context, CQLFunctionArgument object, SafeHtmlBuilder sb) {
                 sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
@@ -427,10 +422,10 @@ public class CQLFunctionsView {
             @Override
             protected <X> void render(Context context, CQLFunctionArgument object, SafeHtmlBuilder sb,
                                       HasCell<CQLFunctionArgument, X> hasCell) {
-                Cell<X> cell = hasCell.getCell();
+                Cell<X> cell1 = hasCell.getCell();
                 sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
-                    cell.render(context, hasCell.getValue(object), sb);
+                    cell1.render(context, hasCell.getValue(object), sb);
                 } else {
                     sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
                 }
@@ -442,28 +437,27 @@ public class CQLFunctionsView {
                 return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
             }
         };
-        return cell;
     }
 
     private SafeHtml getDataTypeColumnToolTip(String columnText, StringBuilder title, boolean hasImage) {
+        String htmlConstant;
         if (hasImage) {
-            String htmlConstant = "<html>"
+            htmlConstant = "<html>"
                     + "<head> </head> <body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
                     + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
-            return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         } else {
-            String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"-1\" title='" + title + "'>"
+            htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
-            return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         }
+        return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
     }
 
     private HasCell<CQLFunctionArgument, SafeHtml> getModifyQDMButtonCell() {
 
-        HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
+        return new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            SafeHtmlCell modifyButonCell = new SafeHtmlCell();
+            final ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -473,12 +467,9 @@ public class CQLFunctionsView {
             @Override
             public FieldUpdater<CQLFunctionArgument, SafeHtml> getFieldUpdater() {
 
-                return new FieldUpdater<CQLFunctionArgument, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLFunctionArgument object, SafeHtml value) {
-                        if ((object != null)) {
-                            observer.onModifyClicked(object);
-                        }
+                return (index, object, value) -> {
+                    if ((object != null)) {
+                        observer.onModifyClicked(object);
                     }
                 };
             }
@@ -496,34 +487,26 @@ public class CQLFunctionsView {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
                             + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
                 }
-
                 return sb.toSafeHtml();
             }
         };
-
-        return hasCell;
     }
 
     private HasCell<CQLFunctionArgument, SafeHtml> getDeleteQDMButtonCell() {
 
-        HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
+        return new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            SafeHtmlCell deleteButonCell = new SafeHtmlCell();
+            final ClickableSafeHtmlCell deleteButtonCell = new ClickableSafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
-                return deleteButonCell;
+                return deleteButtonCell;
             }
 
             @Override
             public FieldUpdater<CQLFunctionArgument, SafeHtml> getFieldUpdater() {
 
-                return new FieldUpdater<CQLFunctionArgument, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLFunctionArgument object, SafeHtml value) {
-                        observer.onDeleteClicked(object, index);
-                    }
-                };
+                return (index, object, value) -> observer.onDeleteClicked(object, index);
             }
 
             @Override
@@ -544,8 +527,6 @@ public class CQLFunctionsView {
                 return sb.toSafeHtml();
             }
         };
-
-        return hasCell;
     }
 
     public void setWidgetReadOnly(boolean isEditable) {
@@ -639,10 +620,6 @@ public class CQLFunctionsView {
 
     public FormGroup getFuncCommentGroup() {
         return funcCommentGroup;
-    }
-
-    public FormGroup getFuncContextGroup() {
-        return funcContextGroup;
     }
 
     public TextBox getReturnTypeTextBox() {

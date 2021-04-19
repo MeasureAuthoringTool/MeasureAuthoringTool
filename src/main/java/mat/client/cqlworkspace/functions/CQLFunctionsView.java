@@ -62,12 +62,6 @@ public class CQLFunctionsView {
 
     private static final String FUNCTION = "function";
 
-    public interface Observer {
-        void onModifyClicked(CQLFunctionArgument result);
-
-        void onDeleteClicked(CQLFunctionArgument result, int index);
-    }
-
     private Observer observer;
     private final FocusPanel mainFunctionVerticalPanel = new FocusPanel();
     private final MatTextBox funcNameTxtArea = new MatTextBox();
@@ -91,6 +85,11 @@ public class CQLFunctionsView {
     private final CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
     private final ErrorHandler errorHandler = new ErrorHandler();
 
+    public interface Observer {
+        void onModifyClicked(CQLFunctionArgument result);
+
+        void onDeleteClicked(CQLFunctionArgument result, int index);
+    }
 
     public CQLFunctionsView() {
         mainFunctionVerticalPanel.clear();

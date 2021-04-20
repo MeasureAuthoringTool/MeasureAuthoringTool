@@ -12,6 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * @deprecated
+ */
 public class HQMFMeasureDetailsGenerator implements Generator  {
 	
 	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_4_measure_details.xsl"; 

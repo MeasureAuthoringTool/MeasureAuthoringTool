@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_4;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -21,12 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @deprecated
- */
 public class HQMFDataCriteriaElementGenerator implements Generator {
 	
-	private static final String DATA_CRITERIA_EXTENSION = "2018-05-01";
+	private static final String DATA_CRITERIA_EXTENSION = "2021-02-01";
 	
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
@@ -336,7 +333,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		
-		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.4);
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.6);
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {
@@ -378,7 +375,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String oidValue = templateNode.getAttributes().getNamedItem(OID).getNodeValue();
 		String classCodeValue = templateNode.getAttributes().getNamedItem(CLASS).getNodeValue();
 		String moodValue = templateNode.getAttributes().getNamedItem(MOOD).getNodeValue();
-		String statusValue = templateNode.getAttributes().getNamedItem("status").getNodeValue();
+		
+		Node statusNode= templateNode.getAttributes().getNamedItem("status");
+		String statusValue = statusNode != null ? statusNode.getNodeValue() : "";
 		String rootValue = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
@@ -450,9 +449,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TITLE);
 			titleElem.setAttribute(VALUE, dataType);
 			dataCriteriaElem.appendChild(titleElem);
-			Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement("statusCode");
-			statusCodeElem.setAttribute(CODE, statusValue);
-			dataCriteriaElem.appendChild(statusCodeElem);
+			
+			if(StringUtils.isNotEmpty(statusValue)) {
+				Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement("statusCode");
+				statusCodeElem.setAttribute(CODE, statusValue);
+				dataCriteriaElem.appendChild(statusCodeElem);
+			}
+			
 			// Add value tag in entry element.
 			String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
 			if ("true".equalsIgnoreCase(addValueSetElement)) {
@@ -531,8 +534,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			simpleXmlprocessor) {
 		Node refNode = occurrenceMap.get(occurString);
 		
-		logger.info("In generateOutboundForOccur()..refNode:"+refNode);
-		logger.info("----------Occurance map:"+occurrenceMap);
+		logger.debug("In generateOutboundForOccur()..refNode:"+refNode);
+		logger.debug("----------Occurance map:"+occurrenceMap);
 		
 		if(refNode != null){
 			

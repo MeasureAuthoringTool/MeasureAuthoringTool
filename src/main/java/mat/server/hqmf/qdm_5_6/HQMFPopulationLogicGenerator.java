@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 // TODO: Auto-generated Javadoc
+
 /**
- * @deprecated The Class HQMFPopulationLogicGenerator.
+ * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	

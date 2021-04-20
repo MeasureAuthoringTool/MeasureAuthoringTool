@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -13,12 +13,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * @deprecated
- */
 public class HQMFMeasureDetailsGenerator implements Generator  {
 	
-	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_5_measure_details.xsl"; 
+	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_6_measure_details.xsl";
 
 	@Override
 	public String generate(MeasureExport me) {

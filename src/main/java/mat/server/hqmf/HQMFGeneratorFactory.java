@@ -17,13 +17,16 @@ public class HQMFGeneratorFactory {
 	public Generator getHQMFGenerator(String matVersionNumber) {
 		matVersionNumber = matVersionNumber.replace("v", "");
 		double matVersion = Double.parseDouble(matVersionNumber);
-		if(matVersion >= 5.8) {
+		if (matVersion >= 6.05) {
+			logger.debug("HQMF Generator Factory selected QDM v5.6 HQMF Generator");
+			return new mat.server.hqmf.qdm_5_6.HQMFGenerator();
+		} else if (matVersion >= 5.8) {
 			logger.debug("HQMF Generator Factory selected QDM v5.5 HQMF Generator");
 			return new mat.server.hqmf.qdm_5_5.HQMFGenerator();
-		} else if(matVersion == 5.6 || matVersion == 5.7) {
+		} else if (matVersion == 5.6 || matVersion == 5.7) {
 			logger.debug("HQMF Generator Factory selected QDM v5.4 HQMF Generator");
 			return new mat.server.hqmf.qdm_5_4.HQMFGenerator();
-		} else if(matVersion >= 5.0 && matVersion < 5.6) {
+		} else if (matVersion >= 5.0 && matVersion < 5.6) {
 			logger.debug("HQMF Generator Factory selected QDM v5.3 HQMF Generator");
 			return new mat.server.hqmf.qdm_5_3.HQMFGenerator();
 		} else {

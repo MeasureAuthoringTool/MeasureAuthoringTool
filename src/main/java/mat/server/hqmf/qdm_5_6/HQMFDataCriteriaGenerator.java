@@ -1,12 +1,11 @@
-package mat.server.hqmf.qdm_5_4;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 
 /**
- *
- * @deprecated The Class HQMFDataCriteriaGenerator.
+ * The Class HQMFDataCriteriaGenerator.
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	

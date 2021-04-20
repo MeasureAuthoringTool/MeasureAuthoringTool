@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * @deprecated
+ */
 public class HQMFClauseLogicGenerator implements Generator {
 	private static final String GROUPER_CRITERIA = "grouperCriteria";
 	private static final String CONJUNCTION_CODE = "conjunctionCode";

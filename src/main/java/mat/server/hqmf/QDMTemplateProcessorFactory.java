@@ -18,6 +18,8 @@ public class QDMTemplateProcessorFactory {
 			fileName = "templates/hqmf/qdm_v5_4_datatype_templates.xml";
 		} else if(qdmVersion == 5.5) {
 			fileName = "templates/hqmf/qdm_v5_5_datatype_templates.xml";
+		} else if(qdmVersion == 5.6) {
+			fileName = "templates/hqmf/qdm_v5_6_datatype_templates.xml";
 		} else {
 			fileName = "templates/hqmf/qdm_v4_x_datatype_templates.xml";
 		}

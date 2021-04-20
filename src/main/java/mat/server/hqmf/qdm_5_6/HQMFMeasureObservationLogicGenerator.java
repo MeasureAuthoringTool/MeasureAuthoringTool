@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.QDMTemplateProcessorFactory;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @deprecated The Class HQMFPopulationLogicGenerator.
+ * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final String MEASURE_OBSERVATION_EXTENSION_VALUE = "2018-05-01";
@@ -93,7 +93,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName)
 			throws XPathExpressionException {
-		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.5);
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.6);
 		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {

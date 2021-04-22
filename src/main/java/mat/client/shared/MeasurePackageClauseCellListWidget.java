@@ -5,19 +5,15 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
@@ -35,12 +31,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MeasurePackageClauseCellListWidget {
 	private static final String STRATIFICATION = "stratification";
@@ -49,7 +40,7 @@ public class MeasurePackageClauseCellListWidget {
 
 	private static final String RATIO_ASSOCIATION_WARNING_MSG = "Changing populations in a measure grouping when there are associations assigned "
 			+ "will clear all associations in that measure grouping. Do you wish to continue?";
-	
+
 	interface Templates extends SafeHtmlTemplates {
 		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;\">{1}</div>")
 		SafeHtml cell(String title, SafeHtml value);
@@ -106,25 +97,38 @@ public class MeasurePackageClauseCellListWidget {
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<>();
 
 	private SimplePanel clearButtonPanel = new SimplePanel();
-	
-	private MeasurePackagerAssociations associations = new MeasurePackagerAssociations();
-	
-	private PanelHeader packageGroupingPanelHeader = new PanelHeader(); 
 
-	public CellList<MeasurePackageClauseDetail> getRightCellList() {
-		CellList<MeasurePackageClauseDetail> rightCellList = new CellList<>(new RightClauseCell());
-		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider = new ListDataProvider<>(groupingPopulationList);
-		rightCellListDataProvider.addDataDisplay(rightCellList);
-		//Clear the map and re -populate it with current clauses in Grouping List.
-		groupingClausesMap.clear();
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			rightCellList.setSelectionModel(rightCellListSelectionModel
-					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
-			groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
-		} else {
-			rightCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
-					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+	private MeasurePackagerAssociations associations = new MeasurePackagerAssociations();
+
+	private PanelHeader packageGroupingPanelHeader = new PanelHeader();
+
+    private String currentUcum;
+    private TextBox ucumTextBox;
+    private Label ucumLabel;
+    private TableCaptionElement detailCaptionElement;
+
+    public TextBox getUcumTextBox() {
+        return ucumTextBox;
+    }
+
+    public void setCurrentUcum(String ucumIn) {
+        this.currentUcum = ucumIn;
+    }
+
+    public CellList<MeasurePackageClauseDetail> getRightCellList() {
+        CellList<MeasurePackageClauseDetail> rightCellList = new CellList<>(new RightClauseCell());
+        rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+        ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider = new ListDataProvider<>(groupingPopulationList);
+        rightCellListDataProvider.addDataDisplay(rightCellList);
+        //Clear the map and re -populate it with current clauses in Grouping List.
+        groupingClausesMap.clear();
+        if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+            rightCellList.setSelectionModel(rightCellListSelectionModel
+                    , DefaultSelectionEventManager.<MeasurePackageClauseDetail>createDefaultManager());
+            groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
+        } else {
+            rightCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
+                    , DefaultSelectionEventManager.<MeasurePackageClauseDetail>createDefaultManager());
 
 		}
 
@@ -157,7 +161,7 @@ public class MeasurePackageClauseCellListWidget {
 		mainFlowPanel.getElement().setAttribute("id", "MeasurePackageClauseWidget_FlowPanel");
 		return mainFlowPanel;
 	}
-	
+
 	private Widget buildAddAssociationWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
 		associations.buildAddAssociationWidget(populationList);
 		addAssocationsWidget.add(associations.asWidget());
@@ -166,10 +170,10 @@ public class MeasurePackageClauseCellListWidget {
 
 	public MeasurePackageClauseCellListWidget() {
 
-		Panel packageGroupingPanel = new Panel(); 
+		Panel packageGroupingPanel = new Panel();
 		packageGroupingPanel.setType(PanelType.PRIMARY);
-		
-		packageGroupingPanelHeader = new PanelHeader(); 
+
+		packageGroupingPanelHeader = new PanelHeader();
 		packageGroupingPanelHeader.setText("Package Grouping");
 		packageGroupingPanelHeader.setTitle("Package Grouping");
 
@@ -178,7 +182,7 @@ public class MeasurePackageClauseCellListWidget {
 		packageGroupingPanelBody.add(successMessages);
 		packageGroupingPanel.add(packageGroupingPanelHeader);
 		packageGroupingPanel.add(packageGroupingPanelBody);
-		
+
 		addAssocationsWidget.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_DisclosurePanel");
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setDisplay(getLeftCellList());
@@ -226,8 +230,6 @@ public class MeasurePackageClauseCellListWidget {
 		}
 	}
 
-	
-
 	private void getClearButtonPanel() {
 		clearButtonPanel.clear();
 		SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
@@ -237,14 +239,14 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	private Button buildSaveButton(IconType icon, String text) {
-		Button button = new Button(); 
+		Button button = new Button();
 		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
 		button.setType(ButtonType.PRIMARY);
 		button.setIcon(icon);
 		button.setText(text);
 		button.setTitle("Click to " + text);
 
-		return button; 
+		return button;
 	}
 
 	private Button buildAddButton(IconType icon , String id) {
@@ -315,7 +317,7 @@ public class MeasurePackageClauseCellListWidget {
 			clearAlerts();
 			if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
 				boolean isPopulationMoveAffectingAssociation = isPopulationAffectingAssociation(rightCellListSelectionModel.getSelectedObject());
-				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) 
+				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType())
 						&& isPopulationMoveAffectingAssociation && shouldRequireAssociations(groupingPopulationList)) {
 					displayWarningMessage(false, isPopulationMoveAffectingAssociation);
 				} else {
@@ -325,14 +327,14 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		}
 	}
-	
+
 	private boolean isPopulationAffectingAssociation(MeasurePackageClauseDetail selectedPopulation) {
 		return ConstantMessages.POPULATION_CONTEXT_ID.equalsIgnoreCase(selectedPopulation.getType()) ||
 		MatConstants.MEASURE_OBSERVATION_POPULATION.equalsIgnoreCase(selectedPopulation.getType()) ||
 		MatConstants.DENOMINATOR.equalsIgnoreCase(selectedPopulation.getType()) ||
 		MatConstants.NUMERATOR.equalsIgnoreCase(selectedPopulation.getType());
 	}
-	
+
 	private void sortListAndSetPanelOnAddClick() {
 		Collections.sort(groupingPopulationList);
 		Collections.sort(clausesPopulationList);
@@ -346,7 +348,7 @@ public class MeasurePackageClauseCellListWidget {
 			groupingClausesMap.put(detail.getName(), detail);
 		}
 	}
-	
+
 	private void addAllClauseRight() {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			clearAlerts();
@@ -370,7 +372,7 @@ public class MeasurePackageClauseCellListWidget {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			clearAlerts();
 			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
-				displayWarningMessage(true, true);			
+				displayWarningMessage(true, true);
 			} else {
 				moveAllPopulationsFromRightToLeft();
 				checkAssociations();
@@ -387,7 +389,7 @@ public class MeasurePackageClauseCellListWidget {
 			@Override
 			public void onYesButtonClicked() {
 				if (isAllPopulations) {
-					moveAllPopulationsFromRightToLeft();	
+					moveAllPopulationsFromRightToLeft();
 				} else {
 					moveSelectedPopulationFromRightToLeft(isPopulationMoveAffectingAssociation);
 				}
@@ -403,7 +405,7 @@ public class MeasurePackageClauseCellListWidget {
 		});
 		confirmationDialogBox.show();
 	}
-	
+
 	private void moveSelectedPopulationFromRightToLeft(boolean isPopulationMoveAffectingAssociation) {
 		if(isPopulationMoveAffectingAssociation) {
 			groupingPopulationList.forEach(detail -> clearAssociations(detail));
@@ -415,7 +417,7 @@ public class MeasurePackageClauseCellListWidget {
 		rightCellListSelectionModel.clear();
 		checkAssociations();
 	}
-	
+
 	private void moveAllPopulationsFromRightToLeft() {
 		if (!groupingPopulationList.isEmpty()) {
 			for (MeasurePackageClauseDetail detail : groupingPopulationList) {
@@ -436,7 +438,7 @@ public class MeasurePackageClauseCellListWidget {
 		getRightPagerPanel().setDisplay(getRightCellList());
 		getLeftPagerPanel().setDisplay(getLeftCellList());
 	}
-	
+
 	private void clearAlerts() {
 		errorMessages.clearAlert();
 		successMessages.clearAlert();
@@ -521,7 +523,7 @@ public class MeasurePackageClauseCellListWidget {
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
 		}
-		
+
 		@Override
 		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value) {
@@ -585,54 +587,105 @@ public class MeasurePackageClauseCellListWidget {
 		}
 	}
 
-	public void checkAssociations() {
-		leftCellListSelectionModel.clear();
-		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		//Show Association only for Ratio Measures.
-		if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
-				clearButtonPanel.clear();
-				// If More than one Populations are added in Grouping, Add Association Widget is shown
-				if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
-						// else if any measure observations are added in Grouping, Add association widget is shown
-						(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)){
-					buildAddAssociationWidget(groupingPopulationList);
-					addAssocationsWidget.setVisible(true);
-					associations.makeAssociationsIsEditable(MatContext.get().getMeasureLockService().checkForEditPermission());
-				}
-				else  {
-					addAssocationsWidget.setVisible(false);
-				}
-		} else {
-			addAssocationsWidget.setVisible(false);
-			associatedPopulationList.clear();
-		}
-	}
-	
-	private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList, String buttonType) {
-		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
-		List<String> messages = validator.isValidClauseMove(validatGroupingList);
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(STRATIFICATION))
-				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
-			checkForNumberOfStratification(validatGroupingList, messages);
-		}
-		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION_POPULATION))
-				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
-			checkForNumberOfMeasureObs(validatGroupingList, messages , scoring);
-		}
-		if (!messages.isEmpty()) {
-			errorMessages.createAlert(messages);
-		} else {
-			clearAlerts();
-		}
-		return messages.isEmpty();
-	}
+    public void checkAssociations() {
+        leftCellListSelectionModel.clear();
+
+        createCaptionElement();
+        createUcumLabel();
+        createUcumTextBox();
+
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            addAssocationsWidget.setVisible(false);
+            ucumTextBox.setText(null);
+            return;
+        } else {
+            addAssocationsWidget.setVisible(true);
+            ucumTextBox.setText(currentUcum);
+        }
+
+        String scoring = MatContext.get().getCurrentMeasureScoringType();
+        //Show Association only for Ratio Measures.
+        if (!MatContext.get().isCurrentModelTypeFhir() &&ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
+            clearButtonPanel.clear();
+            // If More than one Populations are added in Grouping, Add Association Widget is shown
+            if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
+                    // else if any measure observations are added in Grouping, Add association widget is shown
+                    (countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)) {
+                buildAddAssociationWidget(groupingPopulationList);
+                addAssocationsWidget.setVisible(true);
+                associations.makeAssociationsIsEditable(MatContext.get().getMeasureLockService().checkForEditPermission());
+            } else {
+                removeAssociationsWidget();
+            }
+        } else {
+            removeAssociationsWidget();
+        }
+    }
+
+    private void removeAssociationsWidget() {
+        if (addAssocationsWidget.getWidgetCount() > 2) {
+            addAssocationsWidget.remove(addAssocationsWidget.getWidgetCount() - 1);
+        }
+    }
+
+    private void createUcumLabel() {
+        if (ucumLabel == null) {
+            ucumLabel = new Label("Score Unit");
+            addAssocationsWidget.getElement().setAttribute("style", "padding:10px;border:1px solid #D3D3D3;");
+            addAssocationsWidget.add(ucumLabel);
+        }
+    }
+
+    private void createCaptionElement() {
+        if (detailCaptionElement == null) {
+            Element domCaption = DOM.createCaption();
+            detailCaptionElement = TableCaptionElement.as(domCaption);
+            detailCaptionElement.setInnerHTML("Grouping Details");
+            detailCaptionElement.setAttribute("style", "font-weight:bold;color:black;padding:2px;");
+            addAssocationsWidget.getElement().appendChild(detailCaptionElement);
+        }
+    }
+
+    private void createUcumTextBox() {
+        if (ucumTextBox == null) {
+            ucumTextBox = new TextBox();
+            ucumTextBox.setWidth("175px");
+            ucumTextBox.getElement().setId("ucum");
+            ucumTextBox.getElement().setClassName("search_field");
+            ucumTextBox.getElement().setAttribute("placeholder", "UCUM code or name");
+            ucumTextBox.getElement().setAttribute("autocomplete", "off");
+            ucumTextBox.getElement().setAttribute("onfocus", "setUpUcum()");
+            ucumTextBox.getElement().setAttribute("onblur", "ucumBlur()");
+
+            addAssocationsWidget.add(ucumTextBox);
+        }
+    }
+
+    private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList, String buttonType) {
+        MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
+        List<String> messages = validator.isValidClauseMove(validatGroupingList);
+        if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(STRATIFICATION))
+                || buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
+            checkForNumberOfStratification(validatGroupingList, messages);
+        }
+        String scoring = MatContext.get().getCurrentMeasureScoringType();
+        if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION_POPULATION))
+                || buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
+            checkForNumberOfMeasureObs(validatGroupingList, messages, scoring);
+        }
+        if (!messages.isEmpty()) {
+            errorMessages.createAlert(messages);
+        } else {
+            clearAlerts();
+        }
+        return messages.isEmpty();
+    }
 
 	private boolean shouldRequireAssociations(ArrayList<MeasurePackageClauseDetail> validatGroupingList) {
 		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
 		return validator.canMovingPopulationFromRightToLeftAffectAssociations(validatGroupingList);
 	}
-	
+
 	public List<MeasurePackageClauseDetail> getGroupingPopulationList() {
 		return groupingPopulationList;
 	}

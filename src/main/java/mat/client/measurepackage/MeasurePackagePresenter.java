@@ -527,6 +527,13 @@ public class MeasurePackagePresenter implements MatPresenter {
         currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
         currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
         currentDetail.setToComparePackageClauses(dbPackageClauses);
+
+        if( view.getPackageGroupingWidget().getUcumTextBox() != null) {
+            currentDetail.setUcum(view.getPackageGroupingWidget().getUcumTextBox().getText());
+        } else {
+            currentDetail.setUcum(null);
+        }
+
         currentDetail.setValueSetDate(null);
     }
 
@@ -725,7 +732,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                     handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplayOnEdit(), null);
 
                 } else {
-                    currentDetail = new MeasurePackageDetail();
+                   // currentDetail = new MeasurePackageDetail();
                     currentDetail = detail;
                     setMeasurePackageDetailsOnView();
                     getAssociationListFromView(currentDetail.getPackageClauses());
@@ -917,6 +924,7 @@ public class MeasurePackagePresenter implements MatPresenter {
         List<MeasurePackageClauseDetail> packageClauses = new ArrayList<>(currentDetail.getPackageClauses());
         List<MeasurePackageClauseDetail> remainingClauses = removeClauses(packageOverview.getClauses(), packageClauses);
         view.setPackageName(currentDetail.getPackageName());
+        view.setCurrentUcum( currentDetail.getUcum());
         view.setClausesInPackage(packageClauses);
         view.getPackageGroupingWidget().setPackageGroupingHeader("Package Grouping (Measure Grouping " + currentDetail.getSequence() + ")");
         view.setClauses(remainingClauses);
@@ -1200,5 +1208,7 @@ public class MeasurePackagePresenter implements MatPresenter {
         void setCellTablePanel(Panel cellTablePanel);
 
         void clearPackageGroupingsAndSDEAndRAVs();
+
+        void setCurrentUcum( String ucum);
     }
 }

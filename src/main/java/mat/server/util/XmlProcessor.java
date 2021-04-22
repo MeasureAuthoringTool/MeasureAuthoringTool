@@ -402,13 +402,13 @@ public class XmlProcessor {
      *
      * @return the string
      */
-    public String checkForScoringType(String releaseVersion, String scoringType) {
+    public String checkForScoringType(String scoringType) {
         if (originalDoc == null) {
             return "";
         }
         try {
             removeNodesBasedOnScoring(scoringType);
-            createNewNodesBasedOnScoring(scoringType, releaseVersion);
+            createNewNodesBasedOnScoring(scoringType);
         } catch (XPathExpressionException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -566,10 +566,9 @@ public class XmlProcessor {
      * on the value of Scoring Type.
      *
      * @param scoringType    the scoring type
-     * @param releaseVersion
      * @throws XPathExpressionException the x path expression exception
      */
-    public void createNewNodesBasedOnScoring(String scoringType, String releaseVersion)
+    public void createNewNodesBasedOnScoring(String scoringType)
             throws XPathExpressionException {
         List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
         Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
@@ -641,11 +640,7 @@ public class XmlProcessor {
             measureElement.removeChild(measureStratificationsNode);
         }
         // Create supplementalDataElements node
-        releaseVersion = releaseVersion.replaceAll("Draft ", "").trim();
-        if (releaseVersion.startsWith("v")) {
-            releaseVersion = releaseVersion.substring(1);
-        }
-        createSupplementalDataElementNode(measureStratificationsNode, releaseVersion);
+        createSupplementalDataElementNode(measureStratificationsNode);
         /*
          * All the adding and removing can put the children of 'populations' in
          * a random order. Arrange the population nodes in correct order.*/
@@ -703,11 +698,9 @@ public class XmlProcessor {
      * Creates the Supplemental Data Element Node.
      *
      * @param measureStratificationsNode stratifications Node for the measure
-     * @param releaseVersion
      * @throws XPathExpressionException the x path expression exception
      */
-    private void createSupplementalDataElementNode(
-            Node measureStratificationsNode, String releaseVersion) throws XPathExpressionException {
+    private void createSupplementalDataElementNode(Node measureStratificationsNode) throws XPathExpressionException {
         Node supplementaDataElementsElement = findNode(originalDoc,
                 XPATH_MEASURE_SD_ELEMENTS);
         if (supplementaDataElementsElement == null) {

@@ -354,7 +354,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             } catch (XPathExpressionException e) {
                 throw new MatException(e);
             }
-            createNewNodesBasedOnScoring(xmlProcessor, clonedMeasure, scoringTypeId);
+            createNewNodesBasedOnScoring(xmlProcessor, scoringTypeId);
         }
     }
 
@@ -563,7 +563,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         String scoringTypeId = clonedMeasure.getMeasureScoring();
 
-        createNewNodesBasedOnScoring(xmlProcessor, clonedMeasure, scoringTypeId);
+        createNewNodesBasedOnScoring(xmlProcessor, scoringTypeId);
 
         generateCqlLookupTag(xmlProcessor, clonedMeasure, creatingFhir);
 
@@ -597,9 +597,9 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
     }
 
-    private void createNewNodesBasedOnScoring(XmlProcessor xmlProcessor, Measure clonedMeasure, String scoringTypeId) throws MatException {
+    private void createNewNodesBasedOnScoring(XmlProcessor xmlProcessor, String scoringTypeId) throws MatException {
         try {
-            xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, propertiesService.getQdmVersion());
+            xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId);
         } catch (XPathExpressionException e) {
             throw new MatException(e);
         }

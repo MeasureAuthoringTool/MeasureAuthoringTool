@@ -350,7 +350,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
             String scoringTypeId = clonedMeasure.getMeasureScoring();
             try {
-                xmlProcessor.removeNodesBasedOnScoring(scoringTypeId, currentDetails.isPatientBased());
+                xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
             } catch (XPathExpressionException e) {
                 throw new MatException(e);
             }
@@ -599,7 +599,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     private void createNewNodesBasedOnScoring(XmlProcessor xmlProcessor, Measure clonedMeasure, String scoringTypeId) throws MatException {
         try {
-            xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, propertiesService.getQdmVersion(), clonedMeasure.getPatientBased());
+            xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, propertiesService.getQdmVersion());
         } catch (XPathExpressionException e) {
             throw new MatException(e);
         }

@@ -2275,7 +2275,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
         XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
-        xmlProcessor.checkForScoringType(propertiesService.getQdmVersion(), model.getMeasScoring(), model.isPatientBased());
+        xmlProcessor.checkForScoringType(propertiesService.getQdmVersion(), model.getMeasScoring());
         if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring()) || (model.getPopulationBasis() != null && !model.getPopulationBasis().equalsIgnoreCase(existingMeasurePopulationBasis))) {
             deleteExistingGroupings(xmlProcessor);
             MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());

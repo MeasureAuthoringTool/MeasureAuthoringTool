@@ -1,6 +1,5 @@
 package mat.client.shared;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -32,9 +31,8 @@ public class MeasurePackagerAssociations {
 	
 	public Widget buildAddAssociationWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
 		addAssocationsWidget.clear();
-		addAssocationsWidget.setWidth("220px");
-		addAssocationsWidget.setHeight("200px");
-		addAssocationsWidget.add(new HTML("<b style='margin-left:15px;'> Add Associations </b>"));
+		addAssocationsWidget.setWidth("160px");
+		addAssocationsWidget.setHeight("140px");
 		addAssocationsWidget.add(getAssociatedPopulationWidget(populationList));
 		createOnChangeHandlers();
 		return addAssocationsWidget;
@@ -62,14 +60,10 @@ public class MeasurePackagerAssociations {
 		}
 		if(initialPopulations.size() >= 2) {
 			for(MeasurePackageClauseDetail detail : denominatorAndNumerators) {
-				HorizontalPanel denominatorAndNumeratorPanel= new HorizontalPanel();
-				Label denominatorAndNumeratorLabel = new Label(detail.getName());
-				denominatorAndNumeratorLabel.setWidth("150px");
-				denominatorAndNumeratorPanel.add(denominatorAndNumeratorLabel);
-				ListBoxMVP denominatorAndNumeratorListBox = new ListBoxMVP();
-				denominatorAndNumeratorListBox.setTitle("Select association for " + detail.getName());
-				denominatorAndNumeratorListBox.setWidth("175px");
-				denominatorAndNumeratorListBox.insertItem("--Select--", "0", "Select");
+				VerticalPanel denominatorAndNumeratorPanel= new VerticalPanel();
+
+				ListBoxMVP denominatorAndNumeratorListBox = createAssociationListBox(detail, denominatorAndNumeratorPanel);
+
 				Map<String, Integer> denomHashMap = new HashMap<>();
 				createListBoxes(initialPopulations, denominatorAndNumeratorListBox, denomHashMap);
 				denominatorAndNumeratorListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : denomHashMap.get(detail.getAssociatedPopulationUUID()));
@@ -88,14 +82,10 @@ public class MeasurePackagerAssociations {
 		}
 		int measureObservationCount = 0;
 		for(MeasurePackageClauseDetail detail : measureObservations) {
-			HorizontalPanel measureObservationPanel= new HorizontalPanel();
-			Label measureObservationLabel = new Label(detail.getName());
-			measureObservationLabel.setWidth("150px");
-			measureObservationPanel.add(measureObservationLabel);
-			ListBoxMVP measureObservationListBox = new ListBoxMVP();
-			measureObservationListBox.setTitle("Select association for " + detail.getName());
-			measureObservationListBox.setWidth("175px");
-			measureObservationListBox.insertItem("--Select--", "0", "Select");
+			VerticalPanel measureObservationPanel= new VerticalPanel ();
+
+			ListBoxMVP measureObservationListBox = createAssociationListBox(detail, measureObservationPanel);
+
 			Map<String, Integer> measureObservationHashMap = new HashMap<>();
 			createListBoxes(denominatorAndNumerators, measureObservationListBox, measureObservationHashMap);
 			measureObservationListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : measureObservationHashMap.get(detail.getAssociatedPopulationUUID()));
@@ -119,6 +109,18 @@ public class MeasurePackagerAssociations {
 		associateWidgetButtonPanel.addStyleName("floatRightButtonPanel");
 		vPanel.add(associateWidgetButtonPanel);
 		return vPanel;
+	}
+
+	private ListBoxMVP createAssociationListBox(MeasurePackageClauseDetail measurePackageClauseDetail,
+												VerticalPanel verticalPanel) {
+		Label measureObservationLabel = new Label(measurePackageClauseDetail.getName());
+		// measureObservationLabel.setWidth("150px");
+		verticalPanel.add(measureObservationLabel);
+		ListBoxMVP measureObservationListBox = new ListBoxMVP();
+		measureObservationListBox.setTitle("Select association for " + measurePackageClauseDetail.getName());
+		// measureObservationListBox.setWidth("175px");
+		measureObservationListBox.insertItem("--Select--", "0", "Select");
+		return measureObservationListBox;
 	}
 
 	private void createListBoxes(ArrayList<MeasurePackageClauseDetail> populations, ListBoxMVP populationListBox, Map<String, Integer> populationCountMap) {

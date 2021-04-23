@@ -92,6 +92,40 @@
         in order for this application to display correctly.
     </div>
 </noscript>
+
+
+<!-- Begin ucum -->
+<link href="https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.css"
+      rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.js"></script>
+
+<script type="text/javascript">
+    var autoObject;
+
+    function ucumBlur() {
+        document.getElementById("searchResults").style.display = "none";
+    }
+
+    function setUpUcum() {
+        if(!autoObject) {
+            autoObject = new Def.Autocompleter.Search("ucum", 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search',
+                {tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name']});
+        }
+    }
+</script>
+<div>
+    <div id="searchResults" class="form_auto_complete">
+        <div id="completionOptionsScroller"><span class="auto_complete" id="completionOptions"
+                                                  style="display: block;"></span></div>
+        <div id="moreResults" style="display: none;">See more items (Ctl Ret)</div>
+        <div id="searchCount" style="display: none;">Search Results</div>
+        <div id="searchHint">Search Hint</div>
+    </div>
+</div>
+<!-- end ucum -->
+
+
 <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-31005711-1']);

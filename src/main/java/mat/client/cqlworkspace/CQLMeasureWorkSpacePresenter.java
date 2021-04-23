@@ -962,8 +962,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                 cqlLibraryComment = result.getCqlModel().getLibraryComment();
                 String measureVersion = getCurrentMeasureVersion();
-                ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, result.getCqlModel().getUsingModelVersion(),
-                        result.getCqlModel().getUsingModelVersion(), MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentMeasureModel()), cqlLibraryComment);
+
+                ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView()
+                        .setGeneralInfoOfLibrary(cqlLibraryName,
+                                result.getCqlModel().getUsingModelVersion(),
+                                measureVersion,
+                                MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentMeasureModel()),
+                                cqlLibraryComment);
             }
 
             List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = result.getCqlModel().getAllValueSetAndCodeList();
@@ -1525,7 +1530,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         cqlWorkspaceView.getCodesView().getSelectAllButton().addClickHandler(event -> selectAllCodes());
         cqlWorkspaceView.getCodesView().getClearButton().addClickHandler(event -> codesViewClearButtonClicked());
         cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(event -> {
-            if(cqlWorkspaceView.getCodesView().getErrorHandler().validate().isEmpty())
+            if (cqlWorkspaceView.getCodesView().getErrorHandler().validate().isEmpty())
                 codesViewRetrieveFromVSACButtonClicked();
         });
         cqlWorkspaceView.getCodesView().getApplyButton().addClickHandler(event -> codesViewSaveButtonClicked());

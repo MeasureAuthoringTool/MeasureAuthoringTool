@@ -157,8 +157,7 @@ public class PackagerServiceImpl implements PackagerService {
                         boolean isChildNodeAdded = checkIfStratificationIsValid(measureClauses.item(i));
                         if (isChildNodeAdded) {
                             clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                    displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID,
-                                    qdmSelectedList));
+                                    displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID));
                         } else {
                             continue;
                         }
@@ -167,8 +166,7 @@ public class PackagerServiceImpl implements PackagerService {
                         boolean isUserDefineFuncAdded = checkIfMeasureObeservationIsValid(measureClauses.item(i));
                         if (isUserDefineFuncAdded) {
                             clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                    displayNameNode.getNodeValue(), MEASURE_OBSERVATION, associatedClauseUUID,
-                                    qdmSelectedList));
+                                    displayNameNode.getNodeValue(), MEASURE_OBSERVATION, associatedClauseUUID));
                         }
 
                     } else if (allowedPopulationsInPackage.contains(typeNode.getNodeValue())) {// filter
@@ -177,8 +175,7 @@ public class PackagerServiceImpl implements PackagerService {
                         // in
                         // package
                         clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                displayNameNode.getNodeValue(), typeNode.getNodeValue(), associatedClauseUUID,
-                                qdmSelectedList));
+                                displayNameNode.getNodeValue(), typeNode.getNodeValue(), associatedClauseUUID));
                     }
                     // adding all Clause type uuid's
                     xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
@@ -273,8 +270,7 @@ public class PackagerServiceImpl implements PackagerService {
                                         pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue(),
                                         pkgClauseMap.getNamedItem("name").getNodeValue(),
                                         pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.TYPE).getNodeValue(),
-                                        associatedClauseNodeUuid,
-                                        qdmSelectedList));
+                                        associatedClauseNodeUuid));
                     }
                 }
             }
@@ -380,8 +376,7 @@ public class PackagerServiceImpl implements PackagerService {
     private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id,
                                                                         String name,
                                                                         String type,
-                                                                        String associatedPopulationUUID,
-                                                                        List<QualityDataSetDTO> itemCountList) {
+                                                                        String associatedPopulationUUID) {
         MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
         detail.setId(id);
         detail.setName(name);

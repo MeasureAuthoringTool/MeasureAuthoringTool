@@ -53,6 +53,11 @@ public class MeasurePackageClauseCellListWidget {
 	private static final String RATIO_ASSOCIATION_WARNING_MSG = "Changing populations in a measure grouping when there are associations assigned "
 			+ "will clear all associations in that measure grouping. Do you wish to continue?";
 
+	private String currentUcum;
+	private TextBox ucumTextBox;
+	private Label ucumLabel;
+	private TableCaptionElement detailCaptionElement;
+
 	interface Templates extends SafeHtmlTemplates {
 		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;\">{1}</div>")
 		SafeHtml cell(String title, SafeHtml value);
@@ -113,11 +118,6 @@ public class MeasurePackageClauseCellListWidget {
 	private MeasurePackagerAssociations associations = new MeasurePackagerAssociations();
 
 	private PanelHeader packageGroupingPanelHeader = new PanelHeader();
-
-    private String currentUcum;
-    private TextBox ucumTextBox;
-    private Label ucumLabel;
-    private TableCaptionElement detailCaptionElement;
 
     public TextBox getUcumTextBox() {
         return ucumTextBox;

@@ -9,4 +9,5 @@
     <include file="classpath:/liquibase/QDM_5_6_Updates_v4.xml"/>
     <include file="classpath:/liquibase/Qdm_5_6_versionUpdate_v2.xml"/>
     <include file="classpath:/liquibase/QDM_5_6_DataType_Update_v2.xml"/>
+    <include file="classpath:/liquibase/QDM_5_6_MeasureXmlUpdate_v2.xml"/>
 </databaseChangeLog>

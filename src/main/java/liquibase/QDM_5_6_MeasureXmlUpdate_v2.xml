@@ -6,10 +6,15 @@
     <changeSet author="mat_dev_user" id="1" context="prod">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="MEASURE_XML"/>
+            <tableExists tableName="CQL_LIBRARY"/>
         </preConditions>
         <update tableName="MEASURE_XML">
             <column name="MEASURE_XML" valueComputed="REPLACE(MEASURE_XML, '&lt;usingModelVersion&gt;5.5&lt;/usingModelVersion&gt;', '&lt;usingModelVersion&gt;5.6&lt;/usingModelVersion&gt;')"/>
             <where>MEASURE_ID IN (SELECT m.ID FROM MEASURE m WHERE m.MEASURE_MODEL = 'QDM' AND m.QDM_VERSION = '5.6' AND m.DRAFT = 1)</where>
+        </update>
+        <update tableName="CQL_LIBRARY">
+            <column name="CQL_XML" valueComputed="REPLACE(CQL_XML, '&lt;usingModelVersion&gt;5.5&lt;/usingModelVersion&gt;', '&lt;usingModelVersion&gt;5.6&lt;/usingModelVersion&gt;')"/>
+                <where>LIBRARY_MODEL = 'QDM' AND QDM_VERSION = '5.6' AND DRAFT = 1</where>
         </update>
     </changeSet>
 </databaseChangeLog>

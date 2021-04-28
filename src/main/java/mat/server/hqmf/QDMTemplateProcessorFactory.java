@@ -12,14 +12,10 @@ public class QDMTemplateProcessorFactory {
 	public static XmlProcessor getTemplateProcessor(double qdmVersion) {
 		String fileName;
 
-		if(qdmVersion == 5.3) {
-			fileName = "templates/hqmf/qdm_v5_3_datatype_templates.xml";
-		} else if(qdmVersion == 5.4) {
-			fileName = "templates/hqmf/qdm_v5_4_datatype_templates.xml";
-		} else if(qdmVersion == 5.5) {
-			fileName = "templates/hqmf/qdm_v5_5_datatype_templates.xml";
+		if(qdmVersion == 5.6) {
+			fileName = "templates/hqmf/qdm_v5_6_datatype_templates.xml";
 		} else {
-			fileName = "templates/hqmf/qdm_v4_x_datatype_templates.xml";
+			throw new IllegalArgumentException("Unsupported QDM version: " + qdmVersion);
 		}
 		
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);

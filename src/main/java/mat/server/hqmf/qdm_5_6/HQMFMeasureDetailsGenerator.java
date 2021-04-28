@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 public class HQMFMeasureDetailsGenerator implements Generator  {
 	
-	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_5_measure_details.xsl"; 
+	private static final String CONVERSION_FILE_FOR_CQL_BASED_HQMF_HEADER = "xsl/qdm_v5_6_measure_details.xsl";
 
 	@Override
 	public String generate(MeasureExport me) {
@@ -24,7 +24,7 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 		
 		simpleXML = addReleaseVersionToSimpleXML(simpleXML,releaseVersion);
 		
-		String measureDetailsHQMF_XML = XMLUtility.getInstance().applyXSL(simpleXML, XMLUtility.getInstance().getXMLResource(conversionFileForCQLbasedHQMF_Header));
+		String measureDetailsHQMF_XML = XMLUtility.getInstance().applyXSL(simpleXML, XMLUtility.getInstance().getXMLResource(CONVERSION_FILE_FOR_CQL_BASED_HQMF_HEADER));
 		measureDetailsHQMF_XML = incrementEndDatebyOne(measureDetailsHQMF_XML);
 		return measureDetailsHQMF_XML.replaceAll("xmlns=\"\"", "");
 	}
@@ -98,13 +98,11 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 	 * @return the low value
 	 */
 	private String getLowValue(String lowValue){
-		String lowDate = "";
-		String year = lowValue.substring(0,4);
 		String mm = lowValue.substring(4,6);
 		String dd = lowValue.substring(6,8);
-		year = getCurrentYear();
-		lowDate = year + mm + dd;
-	return lowDate;
+		String year = getCurrentYear();
+		// Low date
+		return year + mm + dd;
 	}
 	
 	/**

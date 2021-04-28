@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;

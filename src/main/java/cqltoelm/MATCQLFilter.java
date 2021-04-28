@@ -68,7 +68,7 @@ public class MATCQLFilter {
      */
     private List<String> parentExpressions = new ArrayList<>();
 
-    private HashMap<String, String> qdmTypeInfoMap = new HashMap<>();
+    private Map<String, String> qdmTypeInfoMap = new HashMap<>();
 
     private Map<String, TranslatedLibrary> translatedLibraryMap;
 

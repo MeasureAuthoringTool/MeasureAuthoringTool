@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -16,8 +16,6 @@ public class HQMFGenerator implements Generator {
 	
 	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
 
-	
-
 	/**
 	 * Generate hqmf for CQL Based measures (QDM version 5.5)
 	 *
@@ -25,17 +23,13 @@ public class HQMFGenerator implements Generator {
 	 * @return the string
 	 */
 	@Override
-	public String generate(MeasureExport me) {
-		
-		String hqmfXML = "";
+	public String generate(MeasureExport me) throws Exception {
 		try {
-
 			// MAT 6911: Export CQL based HQMF w/ Meta Data Section
-			String eMeasureDetailsXML = new HQMFMeasureDetailsGenerator().generate(me);
+			String hqmfXML = new HQMFMeasureDetailsGenerator().generate(me);
 			// Inline comments are added after the end of last componentOf tag.
 			// This is removed in this method
-			eMeasureDetailsXML = replaceInlineCommentFromEnd(eMeasureDetailsXML);
-			hqmfXML += eMeasureDetailsXML;
+			hqmfXML = replaceInlineCommentFromEnd(hqmfXML);
 
 			String dataCriteriaXML = new HQMFDataCriteriaGenerator().generate(me);
 			hqmfXML= appendToHQMF(dataCriteriaXML, hqmfXML);
@@ -44,12 +38,11 @@ public class HQMFGenerator implements Generator {
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
 			//generateNarrative(me);
-			hqmfXML = finalCleanUp(me);
+			return finalCleanUp(me);
 		} catch (Exception e) {
-			logger.error("Unable to generate HQMF for QDM v5.5. Exception Stack Strace is as followed : ");
-			e.printStackTrace();
+			logger.error("Unable to generate HQMF for QDM v5.6. Exception Stack Strace is as followed : ");
+			throw e;
 		}
-		return hqmfXML;
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class XMLUtility {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		result = new String(outStream.toByteArray());
+		result = outStream.toString();
 		return result;
 	}
 	

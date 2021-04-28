@@ -13,7 +13,6 @@
 	<template oid="2.16.840.1.113883.10.20.28.4.130" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true" codeSystem="2.16.840.1.113883.5.4" code="ASSERTION" valueType="CD" specificExtensionValue="2021-02-01">participation</template>
 
 	<!-- care goal -->
-	<!-- Done -->
 	<template oid="2.16.840.1.113883.10.20.28.4.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" specificExtensionValue = "2021-02-01">care goal</template>
 
 	<!-- care experience -->
@@ -155,7 +154,6 @@
 	<!-- Negative Device -->
 	<template oid="2.16.840.1.113883.10.20.28.4.15" class="SPLY" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy" typeOrder="true" includeOtherSubTemplate="order-dateTime" specificExtensionValue="2021-02-01">device, not ordered</template>
 	<template oid="2.16.840.1.113883.10.20.28.4.16" class="SPLY" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy" specificExtensionValue="2021-02-01">device, not recommended</template>
-
 
 	<!-- Negative Diagnostic -->
 	<template oid="2.16.840.1.113883.10.20.28.4.22" class="OBS" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" specificExtensionValue="2021-02-01" includeOtherSubTemplate="order-dateTime">diagnostic study, not ordered</template>

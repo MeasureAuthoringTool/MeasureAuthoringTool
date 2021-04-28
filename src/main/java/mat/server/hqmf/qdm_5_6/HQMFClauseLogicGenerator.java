@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -44,7 +44,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 	private static final String DATA_CRITERIA_SECTION = "dataCriteriaSection";
 
-	private Map<String, Node> subTreeNodeMap = new HashMap<String, Node>();
+	private Map<String, Node> subTreeNodeMap = new HashMap<>();
 
 	public MeasureExport measureExport;
 
@@ -53,12 +53,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * MAP of Functional Ops NON Subset Type.
 	 */
-	private static final Map<String, String> FUNCTIONAL_OPS_NON_SUBSET = new TreeMap<String, String>(
+	private static final Map<String, String> FUNCTIONAL_OPS_NON_SUBSET = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 	/**
 	 * MAP of Functional Ops Subset Type.
 	 */
-	private static final Map<String, String> FUNCTIONAL_OPS_SUBSET = new TreeMap<String, String>(
+	private static final Map<String, String> FUNCTIONAL_OPS_SUBSET = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 	static {
 		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.FIRST, "1");
@@ -78,7 +78,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 
 	/** The Constant populations. */
-	private static final List<String> POPULATION_NAME_LIST = new ArrayList<String>();
+	private static final List<String> POPULATION_NAME_LIST = new ArrayList<>();
 
 	static {
 		POPULATION_NAME_LIST.add("initialPopulation");
@@ -93,20 +93,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 
 	/** The sub tree node in mo map. */
-	Map<String, Node> subTreeNodeInMOMap = new HashMap<String, Node>();
+	Map<String, Node> subTreeNodeInMOMap = new HashMap<>();
 
 	/** The sub tree node in pop map. */
-	Map<String, Node> subTreeNodeInPOPMap = new HashMap<String, Node>();
+	Map<String, Node> subTreeNodeInPOPMap = new HashMap<>();
 
 	/** The sub tree node in RA map. */
-	Map<String, Node> subTreeNodeInRAMap = new HashMap<String, Node>();
+	Map<String, Node> subTreeNodeInRAMap = new HashMap<>();
 
 	/** The Constant FUNCTIONAL_OP_RULES_IN_POP. */
-	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_POP = new TreeMap<String, List<String>>(
+	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_POP = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 
 	/** The Constant FUNCTIONAL_OP_RULES_IN_MO. */
-	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_MO = new TreeMap<String, List<String>>(
+	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_MO = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 
 	static {
@@ -155,7 +155,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node subTreeNode = subTreeNodeList.item(i);
 			subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			String uuid = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
-			if ((subTreeNodeInPOPMap.containsKey(uuid) && subTreeNodeInMOMap.containsKey(uuid))
+			if (subTreeNodeInPOPMap.containsKey(uuid) && subTreeNodeInMOMap.containsKey(uuid)
 					|| subTreeNodeInPOPMap.containsKey(uuid) || subTreeNodeInRAMap.containsKey(uuid)) {
 				generateSubTreeXML(subTreeNode, false);
 			}
@@ -183,17 +183,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 	protected Node generateSubTreeXML(Node subTreeNode, boolean msrObsDateTimeDiffSubTree)
 			throws XPathExpressionException {
 
-		/**
-		 * If this is an empty or NULL clause, return right now.
-		 */
-		if ((subTreeNode == null) || !subTreeNode.hasChildNodes()) {
+		// If this is an empty or NULL clause, return right now.
+		if (subTreeNode == null || !subTreeNode.hasChildNodes()) {
 			return null;
 		}
 
-		/**
-		 * If this is a Occurrence clause then we need to find the base clause and
-		 * generate HQMF for the base clause. Then we need to generate Occurrence HQMF
-		 * for the occurrence clause.
+		/*
+		  If this is a Occurrence clause then we need to find the base clause and
+		  generate HQMF for the base clause. Then we need to generate Occurrence HQMF
+		  for the occurrence clause.
 		 */
 		if (subTreeNode.getAttributes().getNamedItem(INSTANCE_OF) != null) {
 			String baseClauseUUID = subTreeNode.getAttributes().getNamedItem(INSTANCE_OF).getNodeValue();
@@ -206,10 +204,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 		String subTreeUUID = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-		Boolean isRAV = isRiskAdjustmentVariable(subTreeUUID, clauseName);
-		/**
-		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
-		 */
+		Boolean isRav = isRiskAdjustmentVariable(subTreeUUID, clauseName);
+
+		// Check the 'subTreeNodeMap' to make sure the clause isn't already generated.
 		if (subTreeNodeMap.containsKey(subTreeUUID) && !msrObsDateTimeDiffSubTree) {
 			logger.debug("HQMF for Clause " + clauseName + " is already generated. Skipping.");
 			return null;
@@ -224,9 +221,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc()
 				.getElementsByTagName(DATA_CRITERIA_SECTION).item(0);
 
-		if (isRAV) {
-			Comment RAComment = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
-			dataCriteriaSectionElem.appendChild(RAComment);
+		if (isRav) {
+			Comment riskAdjustmentVariable = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
+			dataCriteriaSectionElem.appendChild(riskAdjustmentVariable);
 		}
 		Node entryElement = null;
 		switch (firstChildName) {
@@ -249,14 +246,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 			// Dont do anything
 			break;
 		}
-		if (isRAV) {
+		if (isRav) {
 			Node temp = hqmfXmlProcessor.getOriginalDoc().createAttribute(RAV);
 			temp.setNodeValue("true");
 			entryElement.getAttributes().setNamedItem(temp);
 		}
-		/**
-		 * The clause is generated now. Make an entry in the 'subTreeNodeMap' to keep
-		 * track of its generation.
+		/*
+		  The clause is generated now. Make an entry in the 'subTreeNodeMap' to keep
+		  track of its generation.
 		 */
 		subTreeNodeMap.put(subTreeUUID, subTreeNode);
 		return entryElement;
@@ -276,17 +273,17 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private Boolean isRiskAdjustmentVariable(String subTreeUUID, String clauseName) {
 		String xPath = "/measure/riskAdjustmentVariables/subTreeRef[@displayName=\"" + clauseName + "\" and @id='"
 				+ subTreeUUID + "']";
-		boolean RAV = false;
+		boolean isRiskAdjustmentVariable = false;
 		try {
-			Node RA = measureExport.getSimpleXMLProcessor()
+			Node riskAdjVarNode = measureExport.getSimpleXMLProcessor()
 					.findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xPath);
-			if (RA != null) {
-				RAV = true;
+			if (riskAdjVarNode != null) {
+				isRiskAdjustmentVariable = true;
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return RAV;
+		return isRiskAdjustmentVariable;
 	}
 
 	/**
@@ -298,10 +295,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 *             the x path expression exception
 	 */
 	private void generateOccHQMF(Node subTreeNode) throws XPathExpressionException {
-		/**
-		 * If this is an empty or NULL clause, return right now.
-		 */
-		if ((subTreeNode == null) || (subTreeNode.getAttributes().getNamedItem(INSTANCE_OF) == null)) {
+		// If this is an empty or NULL clause, return right now.
+		if (subTreeNode == null || subTreeNode.getAttributes().getNamedItem(INSTANCE_OF) == null) {
 			return;
 		}
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
@@ -309,10 +304,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String qdmVariableSubTreeUUID = subTreeNode.getAttributes().getNamedItem(INSTANCE_OF).getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		Boolean isRAV = isRiskAdjustmentVariable(qdmVariableSubTreeUUID, clauseName);
-		/**
-		 * Check the 'subTreeNodeMap' to make sure the occ clause isnt already
-		 * generated.
-		 */
+		// Check the 'subTreeNodeMap' to make sure the occ clause isn't already generated.
 		if (subTreeNodeMap.containsKey(occSubTreeUUID)) {
 			logger.debug("HQMF for Occ Clause " + clauseName + " is already generated. Skipping.");
 			return;
@@ -345,29 +337,26 @@ public class HQMFClauseLogicGenerator implements Generator {
 			baseExt += "_" + baseFirstChild.getAttributes().getNamedItem(UUID).getNodeValue();
 		}
 
-		if (FUNCTIONAL_OP.equals(firstChildName)) {
-			if (firstChild.getFirstChild() != null) {
-				Node functionChild = firstChild.getFirstChild();
-				Node baseFunctionChild = baseFirstChild.getFirstChild();
+		if (FUNCTIONAL_OP.equals(firstChildName) && firstChild.getFirstChild() != null) {
+			Node functionChild = firstChild.getFirstChild();
+			Node baseFunctionChild = baseFirstChild.getFirstChild();
 
-				if (functionChild != null) {
-					if (functionChild.getNodeName().equalsIgnoreCase(SUB_TREE_REF)) {
-						ext = functionChild.getAttributes().getNamedItem(ID).getNodeValue();
-						baseExt = baseFunctionChild.getAttributes().getNamedItem(ID).getNodeValue();
-					} else if (functionChild.getNodeName().equalsIgnoreCase(ELEMENT_REF)) {
-						ext = getElementRefExt(functionChild, measureExport.getSimpleXMLProcessor());
-						baseExt = getElementRefExt(baseFunctionChild, measureExport.getSimpleXMLProcessor());
-					} else {
-						ext = (StringUtils
-								.deleteWhitespace(
-										functionChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
-												+ functionChild.getAttributes().getNamedItem(UUID).getNodeValue())
-								.replaceAll(":", "_"));
-						baseExt = (StringUtils.deleteWhitespace(
-								baseFunctionChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
-										+ baseFunctionChild.getAttributes().getNamedItem(UUID).getNodeValue())
-								.replaceAll(":", "_"));
-					}
+			if (functionChild != null) {
+				if (functionChild.getNodeName().equalsIgnoreCase(SUB_TREE_REF)) {
+					ext = functionChild.getAttributes().getNamedItem(ID).getNodeValue();
+					baseExt = baseFunctionChild.getAttributes().getNamedItem(ID).getNodeValue();
+				} else if (functionChild.getNodeName().equalsIgnoreCase(ELEMENT_REF)) {
+					ext = getElementRefExt(functionChild, measureExport.getSimpleXMLProcessor());
+					baseExt = getElementRefExt(baseFunctionChild, measureExport.getSimpleXMLProcessor());
+				} else {
+					ext = StringUtils.deleteWhitespace(
+							functionChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
+									+ functionChild.getAttributes().getNamedItem(UUID).getNodeValue())
+							.replaceAll(":", "_");
+					baseExt = StringUtils.deleteWhitespace(
+							baseFunctionChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
+									+ baseFunctionChild.getAttributes().getNamedItem(UUID).getNodeValue())
+							.replaceAll(":", "_");
 				}
 			}
 		}
@@ -489,21 +478,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 			localVarName = localVarName.replace("$", "");
 			Node parentNode = functionalNode.getParentNode();
-			if (parentNode != null) {
-				if (parentNode.getNodeName().equalsIgnoreCase("subTree")) {
-					if (parentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
-						String isQdmVariable = parentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
-						if (TRUE.equalsIgnoreCase(isQdmVariable)) {
-							localVarName = localVarName.replace("$", "");
-							localVarName = "qdm_var_" + localVarName;
-						}
+			if (parentNode != null && parentNode.getNodeName().equalsIgnoreCase("subTree")) {
+				if (parentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
+					String isQdmVariable = parentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
+					if (TRUE.equalsIgnoreCase(isQdmVariable)) {
+						localVarName = localVarName.replace("$", "");
+						localVarName = "qdm_var_" + localVarName;
 					}
-					localVarName = localVarName + "_" + UUIDUtilClient.uuid(5);
-					localVarName = StringUtils.deleteWhitespace(localVarName);
-					updateLocalVar(node, localVarName);
 				}
+				localVarName = localVarName + "_" + UUIDUtilClient.uuid(5);
+				localVarName = StringUtils.deleteWhitespace(localVarName);
+				updateLocalVar(node, localVarName);
 			}
-
 		}
 		return node;
 
@@ -592,7 +578,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 			String idroot = "0";
 			Node parNode = elementRefNode.getParentNode();
-			if ((parNode != null) && SUB_TREE.equals(parNode.getNodeName())) {
+			if (parNode != null && SUB_TREE.equals(parNode.getNodeName())) {
 				idroot = parNode.getAttributes().getNamedItem(UUID).getNodeValue();
 				// Added logic to show qdm_variable in extension if clause is of qdm variable
 				// type.
@@ -652,7 +638,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 				Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
 				NodeList idChildNodeList = ((Element) clonedEntryNodeForElementRef).getElementsByTagName(ID);
-				if ((idChildNodeList != null) && (idChildNodeList.getLength() > 0)) {
+				if (idChildNodeList != null && idChildNodeList.getLength() > 0) {
 					Node idChildNode = idChildNodeList.item(0);
 					idChildNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
 					idChildNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
@@ -707,7 +693,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 		String subTreeUUID = subTreeRefNode.getAttributes().getNamedItem(ID).getNodeValue();
 
-		/**
+		/*
 		 * Check if the Clause has already been generated. If it is not generated yet,
 		 * then generate it by calling the 'generateSubTreeXML' method.
 		 */
@@ -761,7 +747,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		conjunctionCodeElem.setAttribute(CODE, "OR");
 
 		outboundRelElem.appendChild(conjunctionCodeElem);
-		generateCritRefForNode(outboundRelElem, subTreeRefNode, clauseName);
+		generateCritRefForNode(outboundRelElem, subTreeRefNode);
 
 		grouperElem.appendChild(outboundRelElem);
 
@@ -863,7 +849,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 			outboundRelElem.appendChild(conjunctionCodeElem);
 			if (ELEMENT_REF.equals(childName) || SUB_TREE_REF.equals(childName)) {
-				generateCritRefForNode(outboundRelElem, childNode, clauseName);
+				generateCritRefForNode(outboundRelElem, childNode);
 			} else {
 				switch (childName) {
 				case SET_OP:
@@ -923,7 +909,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element dataCriteriaSectionElem = (Element) measureExport.getHQMFXmlProcessor().getOriginalDoc()
 				.getElementsByTagName(DATA_CRITERIA_SECTION).item(0);
 		Node entryNode = generateFunctionalOpHQMF(childNode, dataCriteriaSectionElem, clauseName);
-		if ((entryNode != null) && entryNode.getNodeName().equals(ENTRY)) {
+		if (entryNode != null && entryNode.getNodeName().equals(ENTRY)) {
 			Node fChild = entryNode.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(fChild.getNodeName())) {
 				fChild = fChild.getNextSibling();
@@ -1010,13 +996,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String localVarName = clauseName;
 			Node parentNode = relOpNode.getParentNode();
 			if (parentNode != null) {
-				if (parentNode.getNodeName().equalsIgnoreCase("subTree")) {
-					if (parentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
-						String isQdmVariable = parentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
-						if (TRUE.equalsIgnoreCase(isQdmVariable)) {
-							localVarName = localVarName.replace("$", "");
-							localVarName = "qdm_var_" + localVarName;
-						}
+				if (parentNode.getNodeName().equalsIgnoreCase("subTree") &&
+						parentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
+					String isQdmVariable = parentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
+					if (TRUE.equalsIgnoreCase(isQdmVariable)) {
+						localVarName = localVarName.replace("$", "");
+						localVarName = "qdm_var_" + localVarName;
 					}
 				}
 			}
@@ -1132,112 +1117,107 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		entryElem.appendChild(grouperElem);
 
-		if (entryElem != null) {
-			Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
-			Node idNode = findNode(entryElem, "ID");
-			if ((idNode != null) && (subTreeParentNode != null)) {
-				String idExtension = idNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
-				String idRoot = idNode.getAttributes().getNamedItem(ROOT).getNodeValue();
-				root = subTreeParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
-				ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()
-						+ "_" + relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
-				if (subTreeParentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
-					String isQdmVariable = subTreeParentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
-					if (TRUE.equalsIgnoreCase(isQdmVariable)) {
-						String occText = null;
-						// Handled Occurrence Of QDM Variable.
-						if (subTreeParentNode.getAttributes().getNamedItem(INSTANCE_OF) != null) {
-							occText = "occ" + subTreeParentNode.getAttributes().getNamedItem(INSTANCE).getNodeValue()
-									+ "of_";
-						}
-						if (occText != null) {
-							ext = occText + "qdm_var_" + ext;
-						} else {
-							ext = "qdm_var_" + ext;
-						}
+		Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
+		Node idNode = findNode(entryElem, "ID");
+		if (idNode != null && subTreeParentNode != null) {
+			String idExtension = idNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
+			String idRoot = idNode.getAttributes().getNamedItem(ROOT).getNodeValue();
+			root = subTreeParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
+			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()
+					+ "_" + relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
+			if (subTreeParentNode.getAttributes().getNamedItem(QDM_VARIABLE) != null) {
+				String isQdmVariable = subTreeParentNode.getAttributes().getNamedItem(QDM_VARIABLE).getNodeValue();
+				if (TRUE.equalsIgnoreCase(isQdmVariable)) {
+					String occText = null;
+					// Handled Occurrence Of QDM Variable.
+					if (subTreeParentNode.getAttributes().getNamedItem(INSTANCE_OF) != null) {
+						occText = "occ" + subTreeParentNode.getAttributes().getNamedItem(INSTANCE).getNodeValue()
+								+ "of_";
+					}
+					if (occText != null) {
+						ext = occText + "qdm_var_" + ext;
+					} else {
+						ext = "qdm_var_" + ext;
 					}
 				}
-				idNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
-				idNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
-				// Updated Excerpt tag idNode root and extension.
-				// String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
-				Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
-						measureExport.getHQMFXmlProcessor().getOriginalDoc(),
-						"//entry/*/excerpt/*/id[@root='" + idRoot + "'][@extension=\"" + idExtension + "\"]");
-				if (idNodeExcerpt != null) {
-					idNodeExcerpt.getAttributes().getNamedItem(ROOT).setNodeValue(root);
-					idNodeExcerpt.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
-				}
-
+			}
+			idNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
+			idNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
+			// Updated Excerpt tag idNode root and extension.
+			// String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
+			Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
+					measureExport.getHQMFXmlProcessor().getOriginalDoc(),
+					"//entry/*/excerpt/*/id[@root='" + idRoot + "'][@extension=\"" + idExtension + "\"]");
+			if (idNodeExcerpt != null) {
+				idNodeExcerpt.getAttributes().getNamedItem(ROOT).setNodeValue(root);
+				idNodeExcerpt.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
 			}
 
-			// Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode,
-			// measureExport.getHQMFXmlProcessor());
-			Element temporallyRelatedInfoNode = null;
-			if (!FULFILLS.equalsIgnoreCase(relOpNode.getAttributes().getNamedItem(TYPE).getNodeValue())) {
-				temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
-			} else {
-				temporallyRelatedInfoNode = measureExport.getHQMFXmlProcessor().getOriginalDoc()
-						.createElement(OUTBOUND_RELATIONSHIP);
-				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
-			}
-			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
-			Node firstChild = entryElem.getFirstChild();
-			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
-				firstChild = firstChild.getNextSibling();
-			}
-			NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-			if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
-				Node outBound = outBoundList.item(0);
-				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
-			} else {
-				NodeList excerptList = ((Element) firstChild).getElementsByTagName(EXCERPT);
-				if ((excerptList != null) && (excerptList.getLength() > 0)) {
-					Node excerptNode = excerptList.item(0);
-					firstChild.insertBefore(temporallyRelatedInfoNode, excerptNode);
-				} else {
-					firstChild.appendChild(temporallyRelatedInfoNode);
-				}
-			}
-
-			// Add a outBound Relationship for the 'functionEntryNode' passed above.
-			Element outBoundForFunction = measureExport.getHQMFXmlProcessor().getOriginalDoc()
-					.createElement(OUTBOUND_RELATIONSHIP);
-			outBoundForFunction.setAttribute(TYPE_CODE, "COMP");
-			Node idNodeForFunctionEntryNode = findNode(functionEntryNode, "ID");
-			Node excerptNodeForFunctionEntryNode = findNode(functionEntryNode, "excerpt");
-			Node idNodeInExcerptNode = findNode(excerptNodeForFunctionEntryNode, "id");
-			String newExtension = StringUtils.deleteWhitespace(clauseName) + "_"
-					+ idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
-
-			idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
-			idNodeInExcerptNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
-
-			if (idNodeForFunctionEntryNode != null) {
-
-				Node firstChildOfFunctionEntryElem = functionEntryNode.getFirstChild();
-				if (LOCAL_VARIABLE_NAME.equals(firstChildOfFunctionEntryElem.getNodeName())) {
-					firstChildOfFunctionEntryElem = firstChildOfFunctionEntryElem.getNextSibling();
-				}
-				NamedNodeMap criteriaNodeAttributeMap = firstChildOfFunctionEntryElem.getAttributes();
-				if ((criteriaNodeAttributeMap.getNamedItem(CLASS_CODE) != null)
-						&& (criteriaNodeAttributeMap.getNamedItem(MOOD_CODE) != null)) {
-					// create criteriaRef
-					Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement(CRITERIA_REFERENCE);
-					criteriaReference.setAttribute(CLASS_CODE,
-							criteriaNodeAttributeMap.getNamedItem(CLASS_CODE).getNodeValue());
-					criteriaReference.setAttribute(MOOD_CODE,
-							criteriaNodeAttributeMap.getNamedItem(MOOD_CODE).getNodeValue());
-
-					Node idNodeForFunctionEntryNode_Clone = idNodeForFunctionEntryNode.cloneNode(true);
-					criteriaReference.appendChild(idNodeForFunctionEntryNode_Clone);
-
-					outBoundForFunction.appendChild(criteriaReference);
-					grouperElem.appendChild(outBoundForFunction);
-				}
-			}
-			dataCriteriaSectionElem.appendChild(entryElem);
 		}
+
+		// Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode,
+		// measureExport.getHQMFXmlProcessor());
+		Element temporallyRelatedInfoNode = null;
+		if (!FULFILLS.equalsIgnoreCase(relOpNode.getAttributes().getNamedItem(TYPE).getNodeValue())) {
+			temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+		} else {
+			temporallyRelatedInfoNode = measureExport.getHQMFXmlProcessor().getOriginalDoc()
+					.createElement(OUTBOUND_RELATIONSHIP);
+			temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
+		}
+		handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
+		Node firstChild = entryElem.getFirstChild();
+		if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
+			firstChild = firstChild.getNextSibling();
+		}
+		NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
+		if (outBoundList != null && outBoundList.getLength() > 0) {
+			Node outBound = outBoundList.item(0);
+			firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
+		} else {
+			NodeList excerptList = ((Element) firstChild).getElementsByTagName(EXCERPT);
+			if (excerptList != null && excerptList.getLength() > 0) {
+				Node excerptNode = excerptList.item(0);
+				firstChild.insertBefore(temporallyRelatedInfoNode, excerptNode);
+			} else {
+				firstChild.appendChild(temporallyRelatedInfoNode);
+			}
+		}
+
+		// Add a outBound Relationship for the 'functionEntryNode' passed above.
+		Element outBoundForFunction = measureExport.getHQMFXmlProcessor().getOriginalDoc()
+				.createElement(OUTBOUND_RELATIONSHIP);
+		outBoundForFunction.setAttribute(TYPE_CODE, "COMP");
+		Node idNodeForFunctionEntryNode = findNode(functionEntryNode, "ID");
+		Node excerptNodeForFunctionEntryNode = findNode(functionEntryNode, "excerpt");
+		Node idNodeInExcerptNode = findNode(excerptNodeForFunctionEntryNode, "id");
+		String newExtension = StringUtils.deleteWhitespace(clauseName) + "_"
+				+ idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
+
+		idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
+		idNodeInExcerptNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
+
+		Node firstChildOfFunctionEntryElem = functionEntryNode.getFirstChild();
+		if (LOCAL_VARIABLE_NAME.equals(firstChildOfFunctionEntryElem.getNodeName())) {
+			firstChildOfFunctionEntryElem = firstChildOfFunctionEntryElem.getNextSibling();
+		}
+		NamedNodeMap criteriaNodeAttributeMap = firstChildOfFunctionEntryElem.getAttributes();
+		if (criteriaNodeAttributeMap.getNamedItem(CLASS_CODE) != null
+				&& criteriaNodeAttributeMap.getNamedItem(MOOD_CODE) != null) {
+			// create criteriaRef
+			Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement(CRITERIA_REFERENCE);
+			criteriaReference.setAttribute(CLASS_CODE,
+					criteriaNodeAttributeMap.getNamedItem(CLASS_CODE).getNodeValue());
+			criteriaReference.setAttribute(MOOD_CODE,
+					criteriaNodeAttributeMap.getNamedItem(MOOD_CODE).getNodeValue());
+
+			Node idNodeForFunctionEntryNode_Clone = idNodeForFunctionEntryNode.cloneNode(true);
+			criteriaReference.appendChild(idNodeForFunctionEntryNode_Clone);
+
+			outBoundForFunction.appendChild(criteriaReference);
+			grouperElem.appendChild(outBoundForFunction);
+		}
+		dataCriteriaSectionElem.appendChild(entryElem);
 		return entryElem;
 	}
 
@@ -1307,7 +1287,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if (entryNode != null) {
 			Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
 			Node idNode = findNode(entryNode, "ID");
-			if ((idNode != null) && (subTreeParentNode != null)) {
+			if (idNode != null && subTreeParentNode != null) {
 				String idExtension = idNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
 				String idRoot = idNode.getAttributes().getNamedItem(ROOT).getNodeValue();
 				String root = subTreeParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
@@ -1354,18 +1334,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 						.createElement(OUTBOUND_RELATIONSHIP);
 				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 			}
-			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
+			handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
 			Node firstChild = entryNode.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
 				firstChild = firstChild.getNextSibling();
 			}
 			NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-			if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
+			if (outBoundList != null && outBoundList.getLength() > 0) {
 				Node outBound = outBoundList.item(0);
 				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			} else {
 				NodeList excerptList = ((Element) firstChild).getElementsByTagName(EXCERPT);
-				if ((excerptList != null) && (excerptList.getLength() > 0)) {
+				if (excerptList != null && excerptList.getLength() > 0) {
 					Node excerptNode = excerptList.item(0);
 					firstChild.insertBefore(temporallyRelatedInfoNode, excerptNode);
 				} else {
@@ -1470,11 +1450,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 							} else if (functionChild.getNodeName().equalsIgnoreCase(ELEMENT_REF)) {
 								ext = getElementRefExt(functionChild, measureExport.getSimpleXMLProcessor());
 							} else {
-								ext = (StringUtils
+								ext = StringUtils
 										.deleteWhitespace(functionChild.getAttributes().getNamedItem(DISPLAY_NAME)
 												.getNodeValue() + "_"
 												+ functionChild.getAttributes().getNamedItem(UUID).getNodeValue())
-										.replaceAll(":", "_"));
+										.replaceAll(":", "_");
 							}
 						}
 					}
@@ -1499,7 +1479,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					String newExt = StringUtils
 							.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
 									+ relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
-					if ((relOpParentNode != null) && SUB_TREE.equals(relOpParentNode.getNodeName())) {
+					if (relOpParentNode != null && SUB_TREE.equals(relOpParentNode.getNodeName())) {
 						root = relOpParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
 						Node qdmVarNode = relOpParentNode.getAttributes().getNamedItem(QDM_VARIABLE);
 						if (qdmVarNode != null) {
@@ -1530,7 +1510,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					Node isOcc = subTreeNode.getAttributes().getNamedItem(INSTANCE_OF);
 					Node newEntryNode = null;
 
-					if (TRUE.equals(isQdmVariable) && (isOcc == null)) {
+					if (TRUE.equals(isQdmVariable) && isOcc == null) {
 						XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 						// creating Entry Tag
 						Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
@@ -1570,7 +1550,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 						newEntryNode = entryNodeForSubTree.cloneNode(true);
 
 						NodeList idChildNodeList = ((Element) newEntryNode).getElementsByTagName(ID);
-						if ((idChildNodeList != null) && (idChildNodeList.getLength() > 0)) {
+						if (idChildNodeList != null && idChildNodeList.getLength() > 0) {
 							Node idChildNode = idChildNodeList.item(0);
 							idChildNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExt);
 							idChildNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
@@ -1589,14 +1569,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 						temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 					}
 
-					handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
+					handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
 
 					Node firstNode = newEntryNode.getFirstChild();
 					if (LOCAL_VARIABLE_NAME.equals(firstNode.getNodeName())) {
 						firstNode = firstNode.getNextSibling();
 					}
 					NodeList outBoundList = ((Element) firstNode).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-					if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
+					if (outBoundList != null && outBoundList.getLength() > 0) {
 						Node outBound = outBoundList.item(0);
 						firstNode.insertBefore(temporallyRelatedInfoNode, outBound);
 					} else {
@@ -1656,9 +1636,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 			// Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode,
 			// hqmfXmlProcessor);
 			Node relOpParentNode = checkIfSubTree(relOpNode.getParentNode());
-			if ((relOpParentNode != null)) {
+			if (relOpParentNode != null) {
 				NodeList idChildNodeList = ((Element) setOpEntryNode).getElementsByTagName(ID);
-				if ((idChildNodeList != null) && (idChildNodeList.getLength() > 0)) {
+				if (idChildNodeList != null && idChildNodeList.getLength() > 0) {
 					Node idChildNode = idChildNodeList.item(0);
 					String root = relOpParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
 					String ext = StringUtils
@@ -1693,14 +1673,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 				temporallyRelatedInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement(OUTBOUND_RELATIONSHIP);
 				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 			}
-			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
+			handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
 
 			Node firstChild = setOpEntryNode.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
 				firstChild = firstChild.getNextSibling();
 			}
 			NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-			if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
+			if (outBoundList != null && outBoundList.getLength() > 0) {
 				Node outBound = outBoundList.item(0);
 				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			} else {
@@ -1753,10 +1733,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 			Node relOpParentNode = checkIfSubTree(relOpNode.getParentNode());
 
-			if ((relOpParentNode != null)) {
+			if (relOpParentNode != null) {
 				NodeList idChildNodeList = ((Element) relOpEntryNode).getElementsByTagName(ID);
 
-				if ((idChildNodeList != null) && (idChildNodeList.getLength() > 0)) {
+				if (idChildNodeList != null && idChildNodeList.getLength() > 0) {
 					Node idChildNode = idChildNodeList.item(0);
 					String root = relOpParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
 					String ext = StringUtils
@@ -1792,14 +1772,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 			}
 
-			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
+			handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
 
 			Node firstChild = relOpEntryNode.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
 				firstChild = firstChild.getNextSibling();
 			}
 			NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-			if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
+			if (outBoundList != null && outBoundList.getLength() > 0) {
 				Node outBound = outBoundList.item(0);
 				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			} else {
@@ -1847,7 +1827,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(),
 				"//entry/*/id[@root='" + root + "'][@extension=\"" + ext + "\"]");
 
-		if ((relOpParentNode != null) && (idNodeQDM != null)) {
+		if (relOpParentNode != null && idNodeQDM != null) {
 			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_"
 					+ relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
 			Node subTreeParentNode = checkIfSubTree(relOpParentNode);
@@ -1881,7 +1861,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			 */
 			NodeList idChildNodeList = ((Element) clonedEntryNodeForElementRef).getElementsByTagName(ID);
 			updateLocalVar(clonedEntryNodeForElementRef, ext);
-			if ((idChildNodeList != null) && (idChildNodeList.getLength() > 0)) {
+			if (idChildNodeList != null && idChildNodeList.getLength() > 0) {
 				Node idChildNode = idChildNodeList.item(0);
 				idChildNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
 				idChildNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
@@ -1902,13 +1882,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 				temporallyRelatedInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement(OUTBOUND_RELATIONSHIP);
 				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 			}
-			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode, clauseName);
+			handleRelOpRHS(rhsNode, temporallyRelatedInfoNode, clauseName);
 			Node firstChild = clonedEntryNodeForElementRef.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
 				firstChild = firstChild.getNextSibling();
 			}
 			NodeList outBoundList = ((Element) firstChild).getElementsByTagName(OUTBOUND_RELATIONSHIP);
-			if ((outBoundList != null) && (outBoundList.getLength() > 0)) {
+			if (outBoundList != null && outBoundList.getLength() > 0) {
 				Node outBound = outBoundList.item(0);
 				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			} else {
@@ -1935,8 +1915,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Handle rel op rhs.
 	 *
-	 * @param dataCriteriaSectionElem
-	 *            the data criteria section elem
 	 * @param rhsNode
 	 *            the rhs node
 	 * @param temporallyRelatedInfoNode
@@ -1946,8 +1924,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private void handleRelOpRHS(Node dataCriteriaSectionElem, Node rhsNode, Element temporallyRelatedInfoNode,
-			String clauseName) throws XPathExpressionException {
+	private void handleRelOpRHS(Node rhsNode, Element temporallyRelatedInfoNode, String clauseName) throws XPathExpressionException {
 
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		String rhsName = rhsNode.getNodeName();
@@ -1959,7 +1936,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					measureExport.getHQMFXmlProcessor());
 			generateTemporalAttribute(hqmfXmlProcessor, rhsNode, temporallyRelatedInfoNode, entryNode, false);
 		} else if (SUB_TREE_REF.equals(rhsName)) {
-			generateCritRefForNode(temporallyRelatedInfoNode, rhsNode, clauseName);
+			generateCritRefForNode(temporallyRelatedInfoNode, rhsNode);
 		} else {
 			switch (rhsName) {
 			case SET_OP:
@@ -2003,7 +1980,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 					NodeList childTemporalNodeList = ((Element) criteriaNode)
 							.getElementsByTagName("temporallyRelatedInformation");
-					if ((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)) {
+					if (childTemporalNodeList != null && childTemporalNodeList.getLength() > 0) {
 						Node childTemporalNode = childTemporalNodeList.item(0);
 						Node temporalInfoNode = childTemporalNode.getFirstChild();
 						// find sourceAttribute
@@ -2023,7 +2000,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				break;
 			case FUNCTIONAL_OP:
 				Node entryNode = generateFunctionalOpHQMF(rhsNode, (Element) dataCritSectionNode, clauseName);
-				if ((entryNode != null) && entryNode.getNodeName().equals(ENTRY)) {
+				if (entryNode != null && entryNode.getNodeName().equals(ENTRY)) {
 					Node fChild = entryNode.getFirstChild();
 					if (LOCAL_VARIABLE_NAME.equals(fChild.getNodeName())) {
 						fChild = fChild.getNextSibling();
@@ -2085,7 +2062,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 
 				String value = child.getAttributes().getNamedItem(NAME).getNodeValue();
-				List<String> validAttribNames = new ArrayList<String>();
+				List<String> validAttribNames = new ArrayList<>();
 				validAttribNames.add("incision datetime");
 				validAttribNames.add("facility location arrival datetime");
 				validAttribNames.add("facility location departure datetime");
@@ -2114,14 +2091,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 				if ("incision datetime".equals(value)) {
 					NodeList nodeList = entryElement.getElementsByTagName(OUTBOUND_RELATIONSHIP);
-					if ((nodeList != null) && (nodeList.getLength() > 0)) {
+					if (nodeList != null && nodeList.getLength() > 0) {
 						// Always get the last outBoundRelationShip tag, because this is the one
 						// which will represent the
 						Node outBoundNode = nodeList.item(nodeList.getLength() - 1);
 						Node criteriaNode = outBoundNode.getFirstChild();
 
 						NodeList idNodeList = ((Element) criteriaNode).getElementsByTagName(ID);
-						if ((idNodeList != null) && (idNodeList.getLength() > 0)) {
+						if (idNodeList != null && idNodeList.getLength() > 0) {
 							Node idNode = idNodeList.item(0);
 							Element qdmId = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:id");
 							qdmId.setAttribute(ROOT, idNode.getAttributes().getNamedItem(ROOT).getNodeValue());
@@ -2132,13 +2109,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 					}
 				} else {
 					NodeList nodeList = entryElement.getElementsByTagName(PARTICIPATION);
-					if ((nodeList != null) && (nodeList.getLength() > 0)) {
+					if (nodeList != null && nodeList.getLength() > 0) {
 						// Always get the last outBoundRelationShip tag, because this is the one
 						// which will represent the
 						Node participationNode = nodeList.item(nodeList.getLength() - 1);
 						Node roleNode = ((Element) participationNode).getElementsByTagName(ROLE).item(0);
 						NodeList idNodeList = ((Element) roleNode).getElementsByTagName(ID);
-						if ((idNodeList != null) && (idNodeList.getLength() > 0)) {
+						if (idNodeList != null && idNodeList.getLength() > 0) {
 							Node idNode = idNodeList.item(0);
 							Node itemNode = idNode.getFirstChild();
 							Element qdmId = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:id");
@@ -2228,14 +2205,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 					excerptElement.appendChild(qdmSubSetElement);
 					excerptElement.appendChild(criteriaElement);
 				} else {
-					if ((attributeMap.getNamedItem(OPERATOR_TYPE) != null) && (lhsNode != null)) {
+					if (attributeMap.getNamedItem(OPERATOR_TYPE) != null && lhsNode != null) {
 						String lhsNodeType = lhsNode.getNodeName();
 						if (ELEMENT_REF.equalsIgnoreCase(lhsNodeType)) {
 							String qdmUUID = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
 							String xPath = "/measure/elementLookUp/qdm[@uuid ='" + qdmUUID + "']";
 							Node node = measureExport.getSimpleXMLProcessor()
 									.findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xPath);
-							if ((node != null) && lhsNode.hasChildNodes()) {
+							if (node != null && lhsNode.hasChildNodes()) {
 								Node qdmNode = node.cloneNode(true);
 								Node attributeNode = lhsNode.getFirstChild().cloneNode(true);
 								attributeNode.setUserData(ATTRIBUTE_NAME,
@@ -2606,12 +2583,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 *            the outbound rel elem
 	 * @param childNode
 	 *            the child node
-	 * @param clauseName
-	 *            the clause name
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private void generateCritRefForNode(Node outboundRelElem, Node childNode, String clauseName)
+	private void generateCritRefForNode(Node outboundRelElem, Node childNode)
 			throws XPathExpressionException {
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		String childName = childNode.getNodeName();
@@ -2913,12 +2888,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node firstChild = entryElem.getFirstChild();
 			if (LOCAL_VARIABLE_NAME.equals(firstChild.getNodeName())) {
 				NodeList nodeList = ((Element) firstChild.getNextSibling()).getElementsByTagName(tagName);
-				if ((nodeList != null) && (nodeList.getLength() > 0)) {
+				if (nodeList != null && nodeList.getLength() > 0) {
 					return nodeList.item(0);
 				}
 			} else {
 				NodeList nodeList = ((Element) firstChild).getElementsByTagName(tagName);
-				if ((nodeList != null) && (nodeList.getLength() > 0)) {
+				if (nodeList != null && nodeList.getLength() > 0) {
 					return nodeList.item(0);
 				}
 			}
@@ -2956,7 +2931,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @return the firt child list
 	 */
 	public static List<String> getFunctionalOpFirstChild(String function) {
-		List<String> childList = new ArrayList<String>();
+		List<String> childList = new ArrayList<>();
 		if (AGE_AT.equalsIgnoreCase(function)) {
 			childList.add(SUB_TREE_REF);
 			childList.add(RELATIONAL_OP);
@@ -2979,7 +2954,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @return the aggregate and instance function childs
 	 */
 	public static List<String> getAggregateAndInstanceFunctionChilds(String typeChild) {
-		List<String> aggregateList = new ArrayList<String>();
+		List<String> aggregateList = new ArrayList<>();
 		aggregateList.add("FIRST");
 		aggregateList.add("SECOND");
 		aggregateList.add("THIRD");
@@ -3000,7 +2975,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @return the functional op first child in mo
 	 */
 	public static List<String> getFunctionalOpFirstChildInMO(String function) {
-		List<String> childList = new ArrayList<String>();
+		List<String> childList = new ArrayList<>();
 		if ("DATETIMEDIFF".equalsIgnoreCase(function)) {
 			childList.add(ELEMENT_REF);
 			childList.add(SUB_TREE_REF);
@@ -3021,9 +2996,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 		XmlProcessor simpleXmlProcessor = measureExport.getSimpleXMLProcessor();
 		String typeXpathString = "";
-		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
-		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
-		List<String> usedSubTreeRefIDsRA = new ArrayList<String>();
+		List<String> usedSubTreeRefIdsPop = new ArrayList<>();
+		List<String> usedSubTreeRefIdsMO = new ArrayList<>();
+		List<String> usedSubTreeRefIDsRA = new ArrayList<>();
 		for (String typeString : POPULATION_NAME_LIST) {
 			typeXpathString += "@type = '" + typeString + "' or";
 		}
@@ -3116,7 +3091,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 */
 	private List<String> checkUnUsedSubTreeRef(XmlProcessor xmlProcessor, List<String> usedSubTreeRefIds) {
 
-		List<String> allSubTreeRefIds = new ArrayList<String>();
+		List<String> allSubTreeRefIds = new ArrayList<>();
 		NodeList subTreeRefIdsNodeList;
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
@@ -3200,7 +3175,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			return;
 		}
 		NodeList localVarNodeList = ((Element) node).getElementsByTagName(LOCAL_VARIABLE_NAME);
-		if ((localVarNodeList != null) && (localVarNodeList.getLength() > 0)) {
+		if (localVarNodeList != null && localVarNodeList.getLength() > 0) {
 			Element localVar = (Element) localVarNodeList.item(0);
 			localVar.setAttribute(VALUE, localVarName);
 		}

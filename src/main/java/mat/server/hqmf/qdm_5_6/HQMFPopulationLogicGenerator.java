@@ -1,4 +1,4 @@
-package mat.server.hqmf.qdm_5_5;
+package mat.server.hqmf.qdm_5_6;
 
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
@@ -18,12 +18,13 @@ import java.util.List;
 import java.util.TreeMap;
 
 // TODO: Auto-generated Javadoc
+
 /**
  * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	
-	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
+	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<>();
 	
 	/** The scoring type. */
 	private String scoringType;
@@ -36,7 +37,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
-		/**1. Fetch all Clause Logic HQMF in MAP.
+		/*1. Fetch all Clause Logic HQMF in MAP.
 		   2. Fetch all groupings.
 		   3. For Each Grouping :
 		      1.Generate component tag.
@@ -55,7 +56,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
                  6. Generate precondition tag typeCode="PRCN".
                  7. Based on top AND/OR/ANDNOT/ORNOT generate "AllTrue", "AllFalse", "AtLeastOneTrue" tag. Generate id empty tag inside it.
                  8. Generate precondition tag typeCode="PRCN" for all children inside top Logical Op and add criteriaRef to it with id and extension.
-		 **/
+		 */
 		measureExport = me;
 		getMeasureScoringType(me);
 		getAllMeasureGroupings(me);
@@ -164,12 +165,11 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @param me - MeasureExport
 	 * @param criteriaTagName - String.
 	 * @param criteriaTagCodeName - String code value.
-	 * @param topLogicalOpName - top Logical op type.
 	 * @throws XPathExpressionException - Exception
 	 */
 	private void generatePopulationTypeCriteria(Node item, Node populationCriteriaComponentElement
 			, MeasureExport me, String criteriaTagName, String criteriaTagCodeName) throws XPathExpressionException {
-		String idExtenstion = "";
+		String idExtension;
 		/*String displayValue = "";*/
 		Document doc = populationCriteriaComponentElement.getOwnerDocument();
 		Element populationCriteriaElement = (Element) populationCriteriaComponentElement.getFirstChild();
@@ -178,17 +178,17 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		Element initialPopCriteriaElement = doc.createElement(criteriaTagName);
 		
 		if(criteriaTagName.equalsIgnoreCase("stratifierCriteria")){
-			idExtenstion = "Stratifiers";
+			idExtension = "Stratifiers";
 		//	displayValue = "Stratification";
 		} else {
 			initialPopCriteriaElement.setAttribute(CLASS_CODE, "OBS");
 			initialPopCriteriaElement.setAttribute(MOOD_CODE, "EVN");
-			idExtenstion = StringUtils.deleteWhitespace(item.getAttributes().getNamedItem(TYPE).getNodeValue());
+			idExtension = StringUtils.deleteWhitespace(item.getAttributes().getNamedItem(TYPE).getNodeValue());
 			//displayValue = item.getAttributes().getNamedItem(TYPE).getNodeValue();
 		}
 		Element idElement = doc.createElement(ID);
 		idElement.setAttribute(ROOT, item.getAttributes().getNamedItem(UUID).getNodeValue());
-		idElement.setAttribute("extension", idExtenstion);
+		idElement.setAttribute("extension", idExtension);
 		initialPopCriteriaElement.appendChild(idElement);
 		Element codeElem = doc.createElement(CODE);
 		codeElem.setAttribute(CODE, criteriaTagCodeName);
@@ -251,14 +251,13 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	/**
 	 * Method to generate tags for logic used inside population.
 	 * @param populationTypeCriteriaElement - Element.
-	 * @param item - Node.
 	 * @param me - MeasureExport.
 	 * @throws XPathExpressionException - Exception.
 	 */
 	private void generatePopulationLogic(Element populationTypeCriteriaElement
 			, Node childNode, MeasureExport me) throws XPathExpressionException {
 		
-				String nodeType = null;
+				String nodeType;
 				if (childNode.getAttributes().getNamedItem(TYPE) != null) {
 					nodeType = childNode.getAttributes().getNamedItem(TYPE).getNodeValue();
 				} else {
@@ -369,7 +368,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @return the required clauses
 	 */
 	private static List<String> getRequiredClauses(String type){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if("Cohort".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
 		}else if("Continuous Variable".equalsIgnoreCase(type)){
@@ -398,7 +397,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		boolean isRequiredClause = false;
 		Node scoringType = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(),
 				"/measure/measureDetails/scoring");
-		List<String> clauseList = new ArrayList<String>();
+		List<String> clauseList = new ArrayList<>();
 		clauseList = getRequiredClauses(scoringType.getTextContent());
 		if(clauseList.contains(popType)){
 			isRequiredClause = true;
@@ -474,8 +473,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	/**
 	 * Creates the component for a risk adjustment variable in the hqmf document
 	 * @param me the measure export
-	 * @param riskAdjustmentUUID the risk adjustment variable uuid
-	 * @param cqlUUID the cql file uuid 
+	 * @param cqlUUID the cql file uuid
 	 * @param libraryName the cql library name
 	 * @param riskAdjustmentDefName the risk adjustment definition name
 	 * @return the component element
@@ -552,20 +550,19 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		String cqlUUID = cqluuidNode.getTextContent(); 
 		
 		
-		if ((supplementalDataElements == null)
-				|| (supplementalDataElements.getLength() < 1)) {
+		if (supplementalDataElements == null || supplementalDataElements.getLength() < 1) {
 			return;
 		}
-		List<String> supplementalElemenRefIds = new ArrayList<String>();
+		List<String> supplementalElementRefIds = new ArrayList<>();
 		for (int i = 0; i < supplementalDataElements.getLength(); i++) {
-			supplementalElemenRefIds.add(supplementalDataElements.item(i).getNodeValue());
+			supplementalElementRefIds.add(supplementalDataElements.item(i).getNodeValue());
 		}
 		
-		String uuidXPathString = "";
-		for (String uuidString: supplementalElemenRefIds) {
-			uuidXPathString += "@id = '" + uuidString + "' or ";
+		StringBuilder uuidXPathString = new StringBuilder();
+		for (String uuidString: supplementalElementRefIds) {
+			uuidXPathString.append("@id = '").append(uuidString).append("' or ");
 		}
-		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or "));
+		uuidXPathString = new StringBuilder(uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or ")));
 		String xpathforOtherSupplementalDataElements = "/measure/cqlLookUp/definitions/definition[" + uuidXPathString + "]";
 		NodeList supplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathforOtherSupplementalDataElements);

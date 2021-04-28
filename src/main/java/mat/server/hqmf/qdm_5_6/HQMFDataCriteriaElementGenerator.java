@@ -26,7 +26,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private static final String DATA_CRITERIA_EXTENSION = "2021-02-01";
 	
 	/** The occurrence map. */
-	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
+	private Map<String, Node> occurrenceMap = new HashMap<>();
 	
 	protected String extensionValue = null;
 	
@@ -38,31 +38,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 *
 	 * @param me            the me
 	 * @return the string
-	 * @throws Exception the exception
 	 */
 	@Override
-	public String generate(MeasureExport me) throws Exception {
-		String dataCriteria = "";
-		dataCriteria = getHQMFXmlString(me);
-		return dataCriteria;
-	}
-	/**
-	 * Gets the HQMF xml string.
-	 * 
-	 * @param me
-	 *            the me
-	 * @return the HQMF xml string
-	 * @throws Exception 
-	 */
-	private String getHQMFXmlString(MeasureExport me) throws Exception {
+	public String generate(MeasureExport me) {
 		getExtensionValueBasedOnVersion(me);
-		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
+		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate();
 		me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
-		
+
 		String simpleXMLStr = me.getSimpleXML();
 		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
 		me.setSimpleXMLProcessor(simpleXmlprocessor);
-				
+
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
@@ -71,11 +57,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	/**
 	 * Creates the date criteria template.
 	 * 
-	 * @param me
-	 *            the me
 	 * @return the string
 	 */
-	private XmlProcessor createDateCriteriaTemplate(MeasureExport me) {
+	private XmlProcessor createDateCriteriaTemplate() {
 		XmlProcessor outputProcessor = new XmlProcessor(
 				"<root><component><dataCriteriaSection></dataCriteriaSection></component></root>");
 		
@@ -109,7 +93,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		return outputProcessor;
 	}
 	
-	private String getDataCriteriaExtValueBasedOnVersion(MeasureExport me) {
+	private String getDataCriteriaExtValueBasedOnVersion() {
 		return VERSION_5_0_ID; 
 	}
 	/**
@@ -118,10 +102,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param me            the me
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @return the string
-	 * @throws Exception 
 	 */
-	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) throws Exception {
+	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype and @code ='false']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		String xpathForMeasureGroupingItemCount = "/measure//itemCount/elementRef/@id";
@@ -152,7 +134,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	protected void getExtensionValueBasedOnVersion(MeasureExport me) {
 		if(me!=null){
-			extensionValue = getDataCriteriaExtValueBasedOnVersion(me);
+			extensionValue = getDataCriteriaExtValueBasedOnVersion();
 		}
 	}
 	
@@ -168,8 +150,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			NodeList measureGroupingItemCountList) throws XPathExpressionException {
 		
-		if((measureGroupingItemCountList==null)  ||
-				(measureGroupingItemCountList.getLength()<1)){
+		if(measureGroupingItemCountList==null ||
+				measureGroupingItemCountList.getLength()<1){
 			return;
 		}
 		List<String> itemCountIDList = new ArrayList<String>();
@@ -195,8 +177,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void generateOtherSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
 			NodeList supplementalDataElements ) throws XPathExpressionException{
-		if ((supplementalDataElements == null) ||
-				(supplementalDataElements.getLength()<1)) {
+		if (supplementalDataElements == null ||
+				supplementalDataElements.getLength()<1) {
 			return;
 		}
 		List<String> supplementalElemenRefIds = new ArrayList<String>();
@@ -316,7 +298,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 		NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
-		if(forceGenerate || (elementRefList.getLength() > 0)){
+		if(forceGenerate || elementRefList.getLength() > 0){
 			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor);
 		}
 	}
@@ -327,7 +309,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param qdmNode            the qdm node
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @param attributeQDMNode the attribute qdm node
 	 * @return void
 	 */
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
@@ -366,7 +347,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param templateXMLProcessor - templateXmlProcessor
-	 * @param attributeQDMNode - Attribute QDM Node.
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createDataCriteriaElementTag(String actNodeStr, Node templateNode,
@@ -469,7 +449,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
 				Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
 				Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
-				if ((valueCode != null) && (valueCodeSystem != null)) {
+				if (valueCode != null && valueCodeSystem != null) {
 					valueElem.setAttribute("code", valueCode.getNodeValue());
 					valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
 					if (valueCodeSystemName != null) {
@@ -503,10 +483,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param valueElem the value elem
 	 */
 	protected void addValueSetVersion(Node qdmNode, Element valueElem) {
-		/**
-		 * This is to be commented until we start getting value set versions from
-		 * VSAC.
-		 */
+		// This is to be commented until we start getting value set versions from VSAC.
 		boolean addVersionToValueTag = false;
 			String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 
@@ -599,12 +576,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		// attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		boolean isAddValueSetInCodeTrue = templateNode.getAttributes().getNamedItem("addValueSetInCode") != null;
-		boolean isIntervention = ("Intervention, Order".equalsIgnoreCase(dataType)
+		boolean isIntervention = "Intervention, Order".equalsIgnoreCase(dataType)
 				|| "Intervention, Performed".equalsIgnoreCase(dataType)
 				|| "Intervention, Recommended".equalsIgnoreCase(dataType)
 				|| "Intervention, Not Ordered".equalsIgnoreCase(dataType)
 				|| "Intervention, Not Performed".equalsIgnoreCase(dataType)
-				|| "Intervention, Not Recommended".equalsIgnoreCase(dataType));
+				|| "Intervention, Not Recommended".equalsIgnoreCase(dataType);
 		if (isAddValueSetInCodeTrue) {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(CODE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -764,8 +741,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Node codeSystemNameAttr = templateNode.getAttributes().getNamedItem(CODE_SYSTEM_NAME);
 		Node codeDisplayNameAttr = templateNode.getAttributes().getNamedItem(CODE_SYSTEM_DISPLAY_NAME);
 		Element codeElement = null;
-		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr != null)
-				|| (codeDisplayNameAttr != null)) {
+		if (codeAttr != null || codeSystemAttr != null || codeSystemNameAttr != null
+				|| codeDisplayNameAttr != null) {
 			codeElement = dataCriteriaXMLProcessor.getOriginalDoc().createElement(CODE);
 			if (codeAttr != null) {
 				codeElement.setAttribute(CODE, codeAttr.getNodeValue());

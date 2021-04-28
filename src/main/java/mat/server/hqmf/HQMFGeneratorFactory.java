@@ -1,5 +1,6 @@
 package mat.server.hqmf;
 
+import mat.server.hqmf.qdm_5_6.HQMFGenerator;
 import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class HQMFGeneratorFactory {
 		double matVersion = Double.parseDouble(matVersionNumber);
 		if (matVersion >= 6.05) {
 			logger.debug("HQMF Generator Factory selected QDM v5.6 HQMF Generator");
-			return new mat.server.hqmf.qdm_5_6.HQMFGenerator();
+			return new HQMFGenerator();
 		}
 		throw new IllegalArgumentException("Unknown MAT Version: " + matVersionNumber);
 	}

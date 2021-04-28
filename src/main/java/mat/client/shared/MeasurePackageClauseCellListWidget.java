@@ -607,23 +607,26 @@ public class MeasurePackageClauseCellListWidget {
         createUcumTextBox();
 
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            addAssocationsWidget.setVisible(false);
             ucumTextBox.setText(null);
-            return;
+            ucumLabel.setVisible(false);
+			ucumTextBox.setVisible(false);
         } else {
+			ucumLabel.setVisible(true);
+			ucumTextBox.setVisible(true);
             addAssocationsWidget.setVisible(true);
             ucumTextBox.setText(currentUcum);
         }
 
         String scoring = MatContext.get().getCurrentMeasureScoringType();
         //Show Association only for Ratio Measures.
-        if (!MatContext.get().isCurrentModelTypeFhir() &&ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
+        if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
             clearButtonPanel.clear();
             // If More than one Populations are added in Grouping, Add Association Widget is shown
             if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
                     // else if any measure observations are added in Grouping, Add association widget is shown
                     (countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)) {
-                buildAddAssociationWidget(groupingPopulationList);
+				addAssocationsWidget.getElement().setAttribute("style", "padding:10px;border:1px solid #D3D3D3;");
+            	buildAddAssociationWidget(groupingPopulationList);
                 addAssocationsWidget.setVisible(true);
                 associations.makeAssociationsIsEditable(MatContext.get().getMeasureLockService().checkForEditPermission());
             } else {
@@ -638,6 +641,10 @@ public class MeasurePackageClauseCellListWidget {
         if (addAssocationsWidget.getWidgetCount() > 2) {
             addAssocationsWidget.remove(addAssocationsWidget.getWidgetCount() - 1);
         }
+
+		if (MatContext.get().isCurrentModelTypeFhir()) {
+			addAssocationsWidget.getElement().setAttribute("style", "display: none;");
+		}
     }
 
     private void createUcumLabel() {

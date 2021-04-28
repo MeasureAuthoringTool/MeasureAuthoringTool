@@ -6,8 +6,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -39,7 +37,6 @@ import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
 import mat.client.event.UmlsActivatedEvent;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
@@ -609,7 +606,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             public void onDraftOrVersionClick(CQLLibraryDataSetObject object) {
                 if (!isLoading && object.isDraftable()) {
                     CQLLibraryDataSetObject selectedLibrary = object;
-                    if (((selectedLibrary != null) && (selectedLibrary.getId() != null))) {
+                    if (selectedLibrary != null && selectedLibrary.getId() != null) {
                         displayDraftCQLLibraryWidget(selectedLibrary);
                     }
                 } else if (!isLoading && object.isVersionable()) {
@@ -649,31 +646,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         };
     }
 
-    private void confirmAndConvertFhir(CQLLibraryDataSetObject object) {
-        ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this Cql Library again? The existing FHIR Library will be overwritten.", "Yes", "No", null, false);
-        confirmationDialogBox.getNoButton().setVisible(true);
-        confirmationDialogBox.setObserver(new ConfirmationObserver() {
-
-            @Override
-            public void onYesButtonClicked() {
-                convertCqlLibraryFhir(object);
-            }
-
-            @Override
-            public void onNoButtonClicked() {
-                // Just skip any conversion
-            }
-
-            @Override
-            public void onClose() {
-                // Just skip any conversion
-            }
-        });
-
-        showSearchingBusy(false);
-        confirmationDialogBox.show();
-    }
-
     private boolean showAlertAndReturnIfNotUMLSLoggedIn() {
         if (!MatContext.get().isUMLSLoggedIn()) {
             cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
@@ -689,7 +661,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     private void convertCqlLibraryFhir(CQLLibraryDataSetObject object) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) {
-            logger.log(Level.WARNING, "User is not logged in UMSL");
+            logger.log(Level.WARNING, "User is not logged in UMLS");
             return;
         }
 
@@ -744,6 +716,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onNoButtonClicked() {
+                // Do nothing.
             }
 
             @Override
@@ -762,75 +735,56 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     private void addShareDisplayViewHandlers() {
 
-        shareDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+        shareDisplay.getSaveButton().addClickHandler(event -> MatContext.get().getCQLLibraryService().updateUsersShare(saveCQLLibraryResult, new AsyncCallback<Void>() {
 
             @Override
-            public void onClick(ClickEvent event) {
-                MatContext.get().getCQLLibraryService().updateUsersShare(saveCQLLibraryResult, new AsyncCallback<Void>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        shareDisplay
-                                .getErrorMessageDisplay()
-                                .createAlert(
-                                        MatContext
-                                                .get()
-                                                .getMessageDelegate()
-                                                .getGenericErrorMessage());
-                        MatContext
-                                .get()
-                                .recordTransactionEvent(
-                                        null,
-                                        null,
-                                        null,
-                                        "Unhandled Exception: "
-                                                + caught.getLocalizedMessage(),
-                                        0);
-
-                    }
-
-                    @Override
-                    public void onSuccess(Void result) {
-                        shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
-                        cqlLibraryView.resetMessageDisplay();
-                        cqlLibraryShared = saveCQLLibraryResult.getCqlLibraryShareDTOs().stream().anyMatch(sd -> (sd.getShareLevel() != null && !(sd.getShareLevel().equals(""))));
-                        if (cqlLibraryShared) {
-                            cqlLibraryShareMessage = MessageDelegate.getLibrarySuccessfullyShared(saveCQLLibraryResult.getCqlLibraryName());
-                        }
-                        displaySearch();
-                    }
-                });
+            public void onFailure(Throwable caught) {
+                shareDisplay
+                        .getErrorMessageDisplay()
+                        .createAlert(
+                                MatContext
+                                        .get()
+                                        .getMessageDelegate()
+                                        .getGenericErrorMessage());
+                MatContext
+                        .get()
+                        .recordTransactionEvent(
+                                null,
+                                null,
+                                null,
+                                "Unhandled Exception: "
+                                        + caught.getLocalizedMessage(),
+                                0);
 
             }
-        });
-
-
-        shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void onSuccess(Void result) {
                 shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
+                cqlLibraryView.resetMessageDisplay();
+                cqlLibraryShared = saveCQLLibraryResult.getCqlLibraryShareDTOs().stream().anyMatch(sd -> sd.getShareLevel() != null && !sd.getShareLevel().equals(""));
+                if (cqlLibraryShared) {
+                    cqlLibraryShareMessage = MessageDelegate.getLibrarySuccessfullyShared(saveCQLLibraryResult.getCqlLibraryName());
+                }
                 displaySearch();
             }
+        }));
+
+
+        shareDisplay.getCancelButton().addClickHandler(event -> {
+            shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
+            displaySearch();
         });
 
-        shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if (shareDisplay.getErrorHandler().validate().isEmpty()) {
-                    displayShareWidget();
-                }
+        shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(event -> {
+            if (shareDisplay.getErrorHandler().validate().isEmpty()) {
+                displayShareWidget();
             }
         });
 
-        shareDisplay.getSearchWidgetFocusPanel().addKeyDownHandler(new KeyDownHandler() {
-
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    ((Button) shareDisplay.getSearchWidgetBootStrap().getGo()).click();
-                }
+        shareDisplay.getSearchWidgetFocusPanel().addKeyDownHandler(event -> {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                ((Button) shareDisplay.getSearchWidgetBootStrap().getGo()).click();
             }
         });
 
@@ -880,12 +834,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
                     @Override
                     public void onFailure(Throwable caught) {
-
+                        // Fire and forget audit event. Result can be ignored.
                     }
 
                     @Override
                     public void onSuccess(Boolean result) {
-
+                        // Fire and forget audit event. Result can be ignored.
                     }
                 });
 
@@ -1040,7 +994,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 cqlLibraryShared = false;
                 versionDisplay.getErrorMessages().clearAlert();
                 CQLLibraryDataSetObject selectedLibrary = versionDisplay.getSelectedLibrary();
-                if (((selectedLibrary != null) && (selectedLibrary.getId() != null))
+                if (selectedLibrary != null && selectedLibrary.getId() != null
                         && (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
                         .getMinorRadio().getValue())) {
                     saveFinalizedVersion(selectedLibrary.getId(), selectedLibrary.getCqlName(),
@@ -1065,12 +1019,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
                     @Override
                     public void onFailure(Throwable caught) {
-
+                        // Fire and forget audit event. Result can be ignored.
                     }
 
                     @Override
                     public void onSuccess(Boolean result) {
-
+                        // Fire and forget audit event. Result can be ignored.
                     }
                 });
     }
@@ -1148,12 +1102,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onNoButtonClicked() {
-
+                // Do nothing.
             }
 
             @Override
             public void onClose() {
-
+                // Do nothing.
             }
         });
         confirmationDialogBox.show();
@@ -1333,7 +1287,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         isCqlLibraryVersioned = false;
         cqlLibraryView.resetMessageDisplay();
         int filter = cqlLibraryView.getSelectedFilter();
-        search(cqlLibraryView.getSearchString().getValue(), filter, startIndex, Integer.MAX_VALUE);
+        search(cqlLibraryView.getSearchString().getValue(), filter, startIndex);
     }
 
     /**
@@ -1395,7 +1349,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     }
 
     private void displayHistoryWidget(String cqlLibraryId, int startIndex, int pageSize) {
-        List<String> filterList = new ArrayList<String>();
+        List<String> filterList = new ArrayList<>();
         showSearchingBusy(true);
         MatContext.get().getAuditService().executeSearch(cqlLibraryId, startIndex, pageSize, filterList,
                 new AsyncCallback<SearchHistoryDTO>() {
@@ -1419,7 +1373,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     private void displayShareWidget() {
         setIsPageDirty(false);
         String searchText = shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue();
-        final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+        final String lastSearchText = searchText != null ? searchText.trim() : null;
         shareDisplay.resetMessageDisplay();
         showSearchingBusy(true);
         ((Button) shareDisplay.getSaveButton()).setEnabled(false);
@@ -1430,8 +1384,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
                     @Override
                     public void onSuccess(SaveCQLLibraryResult result) {
-                        if ((result.getResultsTotal() == 0)
-                                && !lastSearchText.isEmpty()) {
+                        if (result.getResultsTotal() == 0 && lastSearchText != null && !lastSearchText.isEmpty()) {
                             shareDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
                         }
                         saveCQLLibraryResult = result;
@@ -1510,7 +1463,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         fp.getElement().setId("fp_FlowPanel_CQL");
 
         int filter = cqlLibraryView.getSelectedFilter();
-        search(cqlLibraryView.getSearchString().getValue(), filter, 1, Integer.MAX_VALUE);
+        search(cqlLibraryView.getSearchString().getValue(), filter, 1);
         searchRecentLibraries();
 
         buildCreateLibrary();
@@ -1534,14 +1487,14 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         panel.getButtonPanel().add(cqlLibraryView.getCreateNewLibraryButton());
     }
 
-    private void search(final String searchText, final int filter, int startIndex, int pageSize) {
-        final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-        pageSize = 25;
+    private void search(final String searchText, final int filter, int startIndex) {
+        final String lastSearchText = searchText != null ? searchText.trim() : null;
+        int pageSizeLimit = 25;
         showSearchingBusy(true);
         cqlLibraryView.resetMessageDisplay();
         boolean isMatOnFhir = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
 
-        LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, isMatOnFhir);
+        LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSizeLimit, lastSearchText, isMatOnFhir);
         if (!MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
             buildAdvancedSearchModel(searchModel);
             cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
@@ -1710,7 +1663,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     private void showSearchingBusy(boolean busy) {
         isLoading = busy;
         ((Button) cqlLibraryView.getSearchButton()).setEnabled(!busy);
-        ((TextBox) (cqlLibraryView.getSearchString())).setEnabled(!busy);
+        ((TextBox) cqlLibraryView.getSearchString()).setEnabled(!busy);
         cqlLibraryView.getCreateNewLibraryButton().setEnabled(!busy);
         cqlLibraryView.getCustomFilterCheckBox().setEnabled(!busy);
         cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
@@ -1781,6 +1734,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     @Override
     public void updateOnBeforeSelection() {
+        // Do nothing.
     }
 
     @Override

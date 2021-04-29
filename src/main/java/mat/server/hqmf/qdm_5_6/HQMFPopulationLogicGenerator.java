@@ -17,6 +17,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 // TODO: Auto-generated Javadoc
@@ -25,15 +26,8 @@ import java.util.TreeMap;
  * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
-	@Data
-	@Builder
-	static class MeasureGroup {
-		private NodeList packageClauses;
-		private String scoreUnit;
-		private int sequence;
-	}
-	
-	private TreeMap<Integer, MeasureGroup> measureGroupingMap = new TreeMap<>();
+
+	private Map<Integer, MeasureGroup> measureGroupingMap = new TreeMap<>();
 	
 	/** The scoring type. */
 	private String scoringType;
@@ -620,5 +614,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		}
 		
 	}
-	
+
+	@Data
+	@Builder
+	static class MeasureGroup {
+		private NodeList packageClauses;
+		private String scoreUnit;
+		private int sequence;
+	}
 }

@@ -679,7 +679,7 @@
             </xsl:call-template>
         </xsl:if>
         <xsl:if
-                test="(($scoring_value = 'Ratio' and $patient_based_indicator = 'false') or $scoring_value ='Continuous Variable')">
+                test="($scoring_value = 'Ratio' or $scoring_value ='Continuous Variable')">
             <!-- Measure Observations Description -->
             <xsl:call-template name="subjOfOrigText">
                 <xsl:with-param name="origText">

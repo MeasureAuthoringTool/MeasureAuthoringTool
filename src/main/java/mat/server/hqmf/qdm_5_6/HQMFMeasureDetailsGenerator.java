@@ -45,7 +45,7 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 	 }
 	
 	/**
-	 * Increment end dateby one.
+	 * Increment end date by one.
 	 *
 	 * @param measureDetailsHQMF_XML the measure details hqm f_ xml
 	 * @return the string

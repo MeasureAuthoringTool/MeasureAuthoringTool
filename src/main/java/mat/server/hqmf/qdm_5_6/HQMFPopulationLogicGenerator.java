@@ -1,5 +1,7 @@
 package mat.server.hqmf.qdm_5_6;
 
+import lombok.Builder;
+import lombok.Data;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
@@ -23,8 +25,15 @@ import java.util.TreeMap;
  * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
+	@Data
+	@Builder
+	static class MeasureGroup {
+		private NodeList packageClauses;
+		private String scoreUnit;
+		private int sequence;
+	}
 	
-	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<>();
+	private TreeMap<Integer, MeasureGroup> measureGroupingMap = new TreeMap<>();
 	
 	/** The scoring type. */
 	private String scoringType;
@@ -72,7 +81,8 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	private void generatePopulationCriteria(MeasureExport me) throws XPathExpressionException {
 		for (Integer key : measureGroupingMap.keySet()) {
 			Node populationCriteriaComponentElement = createPopulationCriteriaSection(key.toString() , me.getHQMFXmlProcessor());
-			NodeList groupingChildList = measureGroupingMap.get(key);
+			NodeList groupingChildList = measureGroupingMap.get(key).getPackageClauses();
+
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				String popType = groupingChildList.item(i).getAttributes().getNamedItem(TYPE).getNodeValue();
 				switch(popType) {
@@ -149,15 +159,38 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 						break;
 				}
 			}
-			//for creating SupplementalDataElements Criteria Section
+			// for creating SupplementalDataElements Criteria Section
 			createSupplementalDataElmStratifier(me,populationCriteriaComponentElement.getFirstChild());
 			createRiskAdjustmentStratifier(me, populationCriteriaComponentElement.getFirstChild());
+			createScoreUnit(me, populationCriteriaComponentElement.getFirstChild(), measureGroupingMap.get(key).getScoreUnit());
 		}
-		
-		
 	}
-	
-	
+
+	private void createScoreUnit(MeasureExport me, Node populationCriteriaSection, String scoreUnit) {
+		if (scoreUnit == null) {
+			// No Score Unit provided in measure group
+			return;
+		}
+		Document doc = me.getHQMFXmlProcessor().getOriginalDoc();
+
+		Element componentElement = doc.createElement("component");
+		componentElement.setAttribute(TYPE_CODE, "COMP");
+		Attr qdmNameSpaceAttr = doc.createAttribute("xmlns:cql-ext");
+		qdmNameSpaceAttr.setNodeValue("urn:hhs-cql:hqmf-n1-extensions:v1");
+		componentElement.setAttributeNodeNS(qdmNameSpaceAttr);
+
+		Element scoreUnitElement = doc.createElement("cql-ext:scoreUnit");
+		scoreUnitElement.setAttribute("nullFlavor","DER");
+		scoreUnitElement.setAttribute("xsi:type","PQ");
+
+		Element unit = doc.createElement("unit");
+		unit.setAttribute("value", scoreUnit);
+
+		scoreUnitElement.appendChild(unit);
+		componentElement.appendChild(scoreUnitElement);
+		populationCriteriaSection.appendChild(componentElement);
+	}
+
 	/**
 	 * Method to generate default criteriaTag for all population types included in measure grouping.
 	 * @param item - Node
@@ -341,8 +374,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		scoringType = (String) xPath.evaluate(xPathScoringType, me.getSimpleXMLProcessor().getOriginalDoc(), XPathConstants.STRING);
 	}
-	
-	
+
 	/**
 	 * Method to populate all measure groupings in measureGroupingMap.
 	 *
@@ -354,13 +386,22 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		String xPath = "/measure/measureGrouping/group";
 		NodeList measureGroupings = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xPath);
 		for (int i = 0; i < measureGroupings.getLength(); i++) {
-			String measureGroupingSequence = measureGroupings.item(i).getAttributes().getNamedItem("sequence").getNodeValue();
+			int measureGroupingSequence = Integer.parseInt(measureGroupings.item(i).getAttributes().getNamedItem("sequence").getNodeValue());
 			NodeList childNodeList = measureGroupings.item(i).getChildNodes();
-			measureGroupingMap.put(Integer.parseInt(measureGroupingSequence), childNodeList);
+
+			MeasureGroup measureGroup = MeasureGroup.builder()
+					.sequence(measureGroupingSequence)
+					.packageClauses(childNodeList)
+					.build();
+
+			if (measureGroupings.item(i).getAttributes().getNamedItem("ucum") != null) {
+				measureGroup.setScoreUnit(measureGroupings.item(i).getAttributes().getNamedItem("ucum").getNodeValue());
+			}
+
+			measureGroupingMap.put(measureGroupingSequence, measureGroup);
 		}
 	}
-	
-	
+
 	/**
 	 * Gets the required clauses.
 	 *
@@ -383,7 +424,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Check for required clause by scoring.
 	 *
@@ -406,8 +447,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		}
 		return isRequiredClause;
 	}
-	
-	
+
 	/**
 	 * Check for package clause logic.
 	 *
@@ -482,7 +522,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		XmlProcessor processor = me.getHQMFXmlProcessor(); 
 		
 		Element component = processor.getOriginalDoc().createElement("component"); 
-		component.setAttribute("typeCode", "COMP");
+		component.setAttribute(TYPE_CODE, "COMP");
 		
 		Attr qdmNameSpaceAttr = processor.getOriginalDoc().createAttribute("xmlns:cql-ext");
 		qdmNameSpaceAttr.setNodeValue("urn:hhs-cql:hqmf-n1-extensions:v1");

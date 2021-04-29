@@ -414,8 +414,8 @@ public class CQLLibrary {
 
     @Transient
     public String getMatVersion() {
-        String version = getVersion().toString();
-        String revision = getRevisionNumber().toString();
+        String version = getVersion();
+        String revision = getRevisionNumber();
 
         String[] split = version.split("\\.");
 

@@ -22,8 +22,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.CustomPager;
 import mat.client.buttons.CancelButton;
@@ -156,24 +154,22 @@ public class EditIncludedLibraryDialogBox {
 		showDialogBox();
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
-	//	Mat.showLoadingMessage();
-		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId,
-				new AsyncCallback<SaveCQLLibraryResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						cellTablePanel.remove(progress);
+		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId, new AsyncCallback<>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                cellTablePanel.remove(progress);
 
-					}
-					@Override
-					public void onSuccess(SaveCQLLibraryResult result) {
-						currentLibraryId = currentId; 
-						libraries = result.getCqlLibraryDataSetObjects();
-						cellTablePanel.remove(progress);
-						buildIncludeLibraryCellTable();
-					}
+            }
+            @Override
+            public void onSuccess(SaveCQLLibraryResult result) {
+                currentLibraryId = currentId;
+                libraries = result.getCqlLibraryDataSetObjects();
+                cellTablePanel.remove(progress);
+                buildIncludeLibraryCellTable();
+            }
 
-				});
+        });
 	}
 
 	private void buildIncludeLibraryCellTable() {
@@ -189,7 +185,7 @@ public class EditIncludedLibraryDialogBox {
 		HTML searchHeaderText = new HTML("<strong>Available Libraries</strong>");
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
-		selectedList = new ArrayList<CQLLibraryDataSetObject>();
+		selectedList = new ArrayList<>();
 		selectedObject = null;
 		
 		List<CQLLibraryDataSetObject> tempLibraries = new ArrayList<>();
@@ -215,7 +211,7 @@ public class EditIncludedLibraryDialogBox {
 			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
-			selectionModel = new SingleSelectionModel<CQLLibraryDataSetObject>();
+			selectionModel = new SingleSelectionModel<>();
 			table.setSelectionModel(selectionModel);
 			table = addColumnToTable(table, sortHandler);
 			listDataProvider.addDataDisplay(table);
@@ -302,25 +298,21 @@ public class EditIncludedLibraryDialogBox {
 	}
 
 	private void addSelectionHandler() {
-		selectionModel.addSelectionChangeHandler(new Handler() {
+		selectionModel.addSelectionChangeHandler(event -> {
+            errorMessageAlert.clearAlert();
+            CQLLibraryDataSetObject selectedObject = selectionModel.getSelectedObject();
+            if (selectedObject != null) {
+                for (CQLLibraryDataSetObject obj : listDataProvider.getList()) {
+                    if (!obj.getId().equals(selectedObject.getId())) {
+                        obj.setSelected(false);
+                        selectionModel.setSelected(obj, false);
+                    }
+                }
 
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				errorMessageAlert.clearAlert();
-				CQLLibraryDataSetObject selectedObject = selectionModel.getSelectedObject();
-				if (selectedObject != null) {
-					for (CQLLibraryDataSetObject obj : listDataProvider.getList()) {
-						if (!obj.getId().equals(selectedObject.getId())) {
-							obj.setSelected(false);
-							selectionModel.setSelected(obj, false);
-						}
-					}
+                listDataProvider.refresh();
+            }
 
-					listDataProvider.refresh();
-				}
-
-			}
-		});
+        });
 
 	}
 
@@ -377,78 +369,76 @@ public class EditIncludedLibraryDialogBox {
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed) {
 		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
 
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
+            private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 
-			@Override
-			public Cell<Boolean> getCell() {
-				return cell;
-			}
+            @Override
+            public Cell<Boolean> getCell() {
+                return cell;
+            }
 
-			@Override
-			public Boolean getValue(CQLLibraryDataSetObject object) {
-				boolean isSelected = false;
-				if (selectedList.size() > 0) {
-					for (int i = 0; i < selectedList.size(); i++) {
-						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							selectionModel.setSelected(object, isSelected);
-							selectedList.get(i).setSelected(true);
-							break;
-						}
-					}
-				}
+            @Override
+            public Boolean getValue(CQLLibraryDataSetObject object) {
+                boolean isSelected = false;
+                if (selectedList.size() > 0) {
+                    for (int i = 0; i < selectedList.size(); i++) {
+                        if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+                            isSelected = true;
+                            selectionModel.setSelected(object, isSelected);
+                            selectedList.get(i).setSelected(true);
+                            break;
+                        }
+                    }
+                } else {
+                    if (selectedObject != null && object.getId().equals(selectedObject)) {
+                        isSelected = true;
+                    } else {
+                        isSelected = false;
+                    }
 
-				else {
-					if (selectedObject != null && object.getId().equals(selectedObject)) {
-						isSelected = true;
-					} else {
-						isSelected = false;
-					}
+                    selectionModel.setSelected(object, isSelected);
+                }
 
-					selectionModel.setSelected(object, isSelected);
-				}
-				
-				if(isSelected) {
-					cell.setTitle("Click to unselect " + object.getCqlName());
-				} else {
-					cell.setTitle("Click to select " + object.getCqlName());
-				}
-				
-				return isSelected;
+                if (isSelected) {
+                    cell.setTitle("Click to unselect " + object.getCqlName());
+                } else {
+                    cell.setTitle("Click to select " + object.getCqlName());
+                }
 
-			}
+                return isSelected;
 
-			@Override
-			public FieldUpdater<CQLLibraryDataSetObject, Boolean> getFieldUpdater() {
-				return new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
-					@Override
-					public void update(int index, CQLLibraryDataSetObject object, Boolean isCBChecked) {
-						if (isCBChecked) {
-							for (int i = 0; i < selectedList.size(); i++) {
-								selectionModel.setSelected(selectedList.get(i), false);
-							}
-							selectedList.clear();
-							selectedList.add(object);
-						} else {
-							for (int i = 0; i < selectedList.size(); i++) {
-								if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-									selectedList.remove(i);
-									break;
-								}
-							}
-						}
-						
-						if(isCBChecked) {
-							cell.setTitle("Click to unselect " + object.getCqlName());
-						} else {
-							cell.setTitle("Click to select " + object.getCqlName());
-						}
-						
-						selectionModel.setSelected(object, isCBChecked);
-					}
-				};
-			}
-		};
+            }
+
+            @Override
+            public FieldUpdater<CQLLibraryDataSetObject, Boolean> getFieldUpdater() {
+                return new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
+                    @Override
+                    public void update(int index, CQLLibraryDataSetObject object, Boolean isCBChecked) {
+                        if (isCBChecked) {
+                            for (int i = 0; i < selectedList.size(); i++) {
+                                selectionModel.setSelected(selectedList.get(i), false);
+                            }
+                            selectedList.clear();
+                            selectedList.add(object);
+                        } else {
+                            for (int i = 0; i < selectedList.size(); i++) {
+                                if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+                                    selectedList.remove(i);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (isCBChecked) {
+                            cell.setTitle("Click to unselect " + object.getCqlName());
+                        } else {
+                            cell.setTitle("Click to select " + object.getCqlName());
+                        }
+
+                        selectionModel.setSelected(object, isCBChecked);
+                    }
+                };
+            }
+        };
 		return hasCell;
 	}
 	

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<measure>
+    <populations displayName="Populations">
+        <initialPopulations displayName="Initial Populations">
+            <clause displayName="Initial Population 1" type="initialPopulation"
+                    uuid="E19F1F50-34BA-4D85-9D6C-D22EC238082D">
+                <cqldefinition displayName="init_pop_int" uuid="5d5c370d-98c9-3f54-be09-2d924fc3a4a1"/>
+            </clause>
+            <clause displayName="Initial Population 2" type="initialPopulation"
+                    uuid="7E400095-AE8E-4696-AA44-8BF05CD79D3E">
+                <cqldefinition displayName="init_pop_bool" uuid="dd1c37ae-5aed-33d0-8f43-4c7a18b936e4"/>
+            </clause>
+            <clause displayName="Initial Population 3" type="initialPopulation"
+                    uuid="2E329D4F-8CCA-4974-87DF-5F63D90884FF">
+                <cqldefinition displayName="init_pop_bool" uuid="dd1c37ae-5aed-33d0-8f43-4c7a18b936e4"/>
+            </clause>
+            <clause displayName="Initial Population 4" type="initialPopulation"
+                    uuid="0FD60815-1D1B-4D4B-AEF4-0625FBF04DBF">
+                <cqldefinition displayName="init_pop_bool" uuid="dd1c37ae-5aed-33d0-8f43-4c7a18b936e4"/>
+            </clause>
+        </initialPopulations>
+        <numerators displayName="Numerators">
+            <clause displayName="Numerator 1" type="numerator" uuid="7DDEA83B-93D0-4C28-A97B-FC3A7A9F5D35">
+                <cqldefinition displayName="numerator" uuid="0b5670f8-0da5-3efe-891e-2ef863953612"/>
+            </clause>
+        </numerators>
+        <numeratorExclusions displayName="Numerator Exclusions">
+            <clause displayName="Numerator Exclusions 1" type="numeratorExclusions"
+                    uuid="E8F71213-D609-4A4F-97B9-5456F7D397B3"/>
+        </numeratorExclusions>
+        <denominators displayName="Denominators">
+            <clause displayName="Denominator 1" type="denominator" uuid="1471671D-6B8C-418E-955B-9A84018E14AC">
+                <cqldefinition displayName="init_pop_bool" uuid="dd1c37ae-5aed-33d0-8f43-4c7a18b936e4"/>
+            </clause>
+        </denominators>
+        <denominatorExclusions displayName="Denominator Exclusions">
+            <clause displayName="Denominator Exclusions 1" type="denominatorExclusions"
+                    uuid="353624C3-E3D4-4C32-B328-3836803CC9FE"/>
+        </denominatorExclusions>
+    </populations>
+    <measureObservations displayName="Measure Observations">
+        <clause displayName="Measure Observation 1" type="measureObservation"
+                uuid="88FFCEBA-7444-4B03-91E3-182A93B83F12">
+            <cqlaggfunction displayName="Count">
+                <cqlfunction displayName="funcNoParamBool" uuid="e24a7aa9-60b6-32bc-ba8e-4b57cb2861a0"/>
+            </cqlaggfunction>
+        </clause>
+    </measureObservations>
+    <cqlLookUp>
+        <library>CMS1056</library>
+        <version>0.0.004</version>
+        <usingModel>QDM</usingModel>
+        <usingModelVersion>5.6</usingModelVersion>
+        <cqlContext>Patient</cqlContext>
+        <valuesets>
+            <valueset datatype="Patient Characteristic Ethnicity" id="3f5243e3-bd0b-44a5-9e6e-4d8aa0a762f0"
+                      isValidatedWithVsac="VALID" name="Ethnicity" oid="2.16.840.1.114222.4.11.837"
+                      originalName="Ethnicity" program="" release="" suffix="" suppDataElement="false" taxonomy="CDC"
+                      type="Extensional" uuid="8b84486a-a14c-4031-aeab-f4d097702498" version=""/>
+            <valueset datatype="Patient Characteristic Sex" id="13e76865-7c7b-4583-9842-3d470d34dc2e"
+                      isValidatedWithVsac="VALID" name="ONC Administrative Sex" oid="2.16.840.1.113762.1.4.1"
+                      originalName="ONC Administrative Sex" program="" release="" suffix="" suppDataElement="false"
+                      taxonomy="Administrative Sex" type="Extensional" uuid="a3837d7b-f6a1-4bb8-8c96-d002d3a5ad57"
+                      version=""/>
+            <valueset datatype="Patient Characteristic Payer" id="a95887b8-c8fb-4e0c-91ce-9a54bff28c0a"
+                      isValidatedWithVsac="VALID" name="Payer" oid="2.16.840.1.114222.4.11.3591" originalName="Payer"
+                      program="" release="" suffix="" suppDataElement="false" taxonomy="Source of Payment Typology"
+                      type="Extensional" uuid="38580332-6fa6-4c10-b40e-3f2810bbd4fd" version=""/>
+            <valueset datatype="Patient Characteristic Race" id="5ebf659d-7be6-428b-8c17-40aa3b2752c1"
+                      isValidatedWithVsac="VALID" name="Race" oid="2.16.840.1.114222.4.11.836" originalName="Race"
+                      program="" release="" suffix="" suppDataElement="false" taxonomy="CDC" type="Extensional"
+                      uuid="4c60d022-a138-4491-bc64-693373329a12" version=""/>
+        </valuesets>
+        <parameters>
+            <parameter id="0d57bf8e-4438-4a91-abfc-e58e3fdf0bb3" name="Measurement Period" readOnly="true">
+                <comment/>
+                <logic>Interval&lt;DateTime&gt;</logic>
+            </parameter>
+        </parameters>
+        <definitions>
+            <definition context="Patient" id="1055a856-e570-4974-bfaa-27eaab2cda49" name="SDE Ethnicity"
+                        popDefinition="false" supplDataElement="true">
+                <logic>["Patient Characteristic Ethnicity": "Ethnicity"]</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="e2ee36ac-b95c-491d-8850-2364bd91273b" name="SDE Payer"
+                        popDefinition="false" supplDataElement="true">
+                <logic>["Patient Characteristic Payer": "Payer"]</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="759ce355-84d1-4b88-b9c3-acd62ffd2206" name="SDE Race"
+                        popDefinition="false" supplDataElement="true">
+                <logic>["Patient Characteristic Race": "Race"]</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="fbb7be32-3bd8-4457-a695-ff957a29dadf" name="SDE Sex" popDefinition="false"
+                        supplDataElement="true">
+                <logic>["Patient Characteristic Sex": "ONC Administrative Sex"]</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="5d5c370d-98c9-3f54-be09-2d924fc3a4a1" name="init_pop_int"
+                        popDefinition="false" supplDataElement="false">
+                <logic>14</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="dd1c37ae-5aed-33d0-8f43-4c7a18b936e4" name="init_pop_bool"
+                        popDefinition="false" supplDataElement="false">
+                <logic>true</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="0b5670f8-0da5-3efe-891e-2ef863953612" name="numerator"
+                        popDefinition="false" supplDataElement="false">
+                <logic>true</logic>
+                <comment/>
+            </definition>
+            <definition context="Patient" id="73fdad1a-e6c8-3a04-84ed-41cce953d90f" name="denomerator"
+                        popDefinition="false" supplDataElement="false">
+                <logic>true</logic>
+                <comment/>
+            </definition>
+        </definitions>
+        <functions>
+            <function context="Patient" id="e24a7aa9-60b6-32bc-ba8e-4b57cb2861a0" name="funcNoParamBool">
+                <logic>true</logic>
+                <comment/>
+            </function>
+            <function context="Patient" id="c9fcf864-76e2-3c67-b4b1-dde0fc4733d0" name="funcOneParamSum">
+                <logic>Sum((collapse Intervals)X
+                    return all duration in days of X
+                    )
+                </logic>
+                <comment/>
+                <arguments>
+                    <argument argumentName="Intervals" id="92a8282e-cbe5-3c30-ba0c-1be4905a6c03"
+                              otherType="List&lt;Interval&lt;DateTime&gt;&gt;" type="Others"/>
+                </arguments>
+            </function>
+            <function context="Patient" id="781a793d-d8a1-30ac-896e-0150aadb56e1" name="funcNoParamInt">
+                <logic>13</logic>
+                <comment/>
+            </function>
+        </functions>
+    </cqlLookUp>
+    <supplementalDataElements>
+        <cqldefinition displayName="SDE Ethnicity" uuid="1055a856-e570-4974-bfaa-27eaab2cda49"/>
+        <cqldefinition displayName="SDE Payer" uuid="e2ee36ac-b95c-491d-8850-2364bd91273b"/>
+        <cqldefinition displayName="SDE Race" uuid="759ce355-84d1-4b88-b9c3-acd62ffd2206"/>
+        <cqldefinition displayName="SDE Sex" uuid="fbb7be32-3bd8-4457-a695-ff957a29dadf"/>
+    </supplementalDataElements>
+    <riskAdjustmentVariables/>
+    <measureGrouping>
+        <group sequence="1" ucum="K">
+            <packageClause isInGrouping="false" name="Initial Population 2" type="initialPopulation"
+                           uuid="7E400095-AE8E-4696-AA44-8BF05CD79D3E"/>
+            <packageClause isInGrouping="false" name="Initial Population 4" type="initialPopulation"
+                           uuid="0FD60815-1D1B-4D4B-AEF4-0625FBF04DBF"/>
+            <packageClause associatedPopulationUUID="7E400095-AE8E-4696-AA44-8BF05CD79D3E" isInGrouping="false"
+                           name="Denominator 1" type="denominator" uuid="1471671D-6B8C-418E-955B-9A84018E14AC"/>
+            <packageClause associatedPopulationUUID="0FD60815-1D1B-4D4B-AEF4-0625FBF04DBF" isInGrouping="false"
+                           name="Numerator 1" type="numerator" uuid="7DDEA83B-93D0-4C28-A97B-FC3A7A9F5D35"/>
+        </group>
+        <group sequence="3" ucum="kat">
+            <packageClause isInGrouping="false" name="Initial Population 2" type="initialPopulation"
+                           uuid="7E400095-AE8E-4696-AA44-8BF05CD79D3E"/>
+            <packageClause isInGrouping="false" name="Initial Population 3" type="initialPopulation"
+                           uuid="2E329D4F-8CCA-4974-87DF-5F63D90884FF"/>
+            <packageClause associatedPopulationUUID="7E400095-AE8E-4696-AA44-8BF05CD79D3E" isInGrouping="false"
+                           name="Denominator 1" type="denominator" uuid="1471671D-6B8C-418E-955B-9A84018E14AC"/>
+            <packageClause associatedPopulationUUID="2E329D4F-8CCA-4974-87DF-5F63D90884FF" isInGrouping="false"
+                           name="Numerator 1" type="numerator" uuid="7DDEA83B-93D0-4C28-A97B-FC3A7A9F5D35"/>
+        </group>
+        <group sequence="2" ucum="[anti'Xa'U]">
+            <packageClause isInGrouping="false" name="Initial Population 2" type="initialPopulation"
+                           uuid="7E400095-AE8E-4696-AA44-8BF05CD79D3E"/>
+            <packageClause isInGrouping="false" name="Initial Population 3" type="initialPopulation"
+                           uuid="2E329D4F-8CCA-4974-87DF-5F63D90884FF"/>
+            <packageClause associatedPopulationUUID="2E329D4F-8CCA-4974-87DF-5F63D90884FF" isInGrouping="false"
+                           name="Denominator 1" type="denominator" uuid="1471671D-6B8C-418E-955B-9A84018E14AC"/>
+            <packageClause associatedPopulationUUID="7E400095-AE8E-4696-AA44-8BF05CD79D3E" isInGrouping="false"
+                           name="Numerator 1" type="numerator" uuid="7DDEA83B-93D0-4C28-A97B-FC3A7A9F5D35"/>
+        </group>
+    </measureGrouping>
+    <subTreeLookUp/>
+    <elementLookUp/>
+</measure>

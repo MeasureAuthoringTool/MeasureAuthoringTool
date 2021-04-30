@@ -249,7 +249,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataSetObject.setReleaseVersion(cqlLibrary.getReleaseVersion());
         dataSetObject.setQdmVersion(cqlLibrary.getQdmVersion());
         dataSetObject.setFhirVersion(cqlLibrary.getFhirVersion());
-        if (cqlLibrary.getRevisionNumber() == null) {
+        if (cqlLibrary.getRevisionNumber() == null || cqlLibrary.getRevisionNumber().equalsIgnoreCase("0")) {
             dataSetObject.setRevisionNumber("000");
         } else {
             dataSetObject.setRevisionNumber(cqlLibrary.getRevisionNumber());

@@ -654,13 +654,17 @@ public class HumanReadableGenerator {
             populations = sortPopulations(populations);
 
             String displayName = "Population Criteria " + populationCriteriaNumber;
-            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber);
+            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue();
+            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber, scoreUnit);
             groups.add(populationCriteria);
         }
 
-
         groups.sort(Comparator.comparing(HumanReadablePopulationCriteriaModel::getSequence));
         return groups;
+    }
+
+    private String getScoreUnit(Node group) {
+        return group.getAttributes().getNamedItem("ucum").getNodeValue();
     }
 
     private void countSimilarPopulationsInGroup(int groupNo, String popTyp, XmlProcessor processor) {
@@ -738,7 +742,7 @@ public class HumanReadableGenerator {
 
     private String getPopulationNameByTypeAndNum(String type) {
         int total = populationCountMap.get(type);
-        int count = popCountMultipleMap.containsKey(type) ? popCountMultipleMap.get(type) : 0;
+        int count = popCountMultipleMap.getOrDefault(type, 0);
 
         if (total > count) {
             count++;
@@ -800,8 +804,8 @@ public class HumanReadableGenerator {
         String type = populationNode.getAttributes().getNamedItem("type").getNodeValue();
         if (populationName.contains("Measure Observation")) {
 
-            Node functionNode = null;
-            Node aggregationNode = null;
+            Node functionNode;
+            Node aggregationNode;
             if (populationNode.getFirstChild() != null) {
                 if ("cqlaggfunction".equals(populationNode.getFirstChild().getNodeName())) {
                     aggregationNode = populationNode.getFirstChild();
@@ -841,8 +845,7 @@ public class HumanReadableGenerator {
         }
 
         populationNode.getAttributes().getNamedItem("displayName").setNodeValue(populationName);
-        HumanReadablePopulationModel population = new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup, type);
-        return population;
+        return new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup, type);
     }
 
     private void resetPopulationMaps() {

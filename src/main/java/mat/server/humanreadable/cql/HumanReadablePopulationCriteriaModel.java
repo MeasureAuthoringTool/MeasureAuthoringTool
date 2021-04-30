@@ -8,11 +8,13 @@ public class HumanReadablePopulationCriteriaModel {
 	private String id; 
 	private int sequence; 
 	private List<HumanReadablePopulationModel> populations;
+	private String scoreUnit;
 	
-	public HumanReadablePopulationCriteriaModel(String name, List<HumanReadablePopulationModel> nameLogicModel, int sequence) {
+	public HumanReadablePopulationCriteriaModel(String name, List<HumanReadablePopulationModel> nameLogicModel, int sequence, String scoreUnit) {
 		this.populations = nameLogicModel;
 		this.name = name; 
-		this.sequence = sequence; 
+		this.sequence = sequence;
+		this.scoreUnit = scoreUnit;
 		this.id = this.name.replaceAll(" ", "_") + "_" + Math.abs(new Random().nextInt());
 	}
 
@@ -42,5 +44,13 @@ public class HumanReadablePopulationCriteriaModel {
 
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
+	}
+
+	public String getScoreUnit() {
+		return scoreUnit;
+	}
+
+	public void setScoreUnit(String scoreUnit) {
+		this.scoreUnit = scoreUnit;
 	}
 }

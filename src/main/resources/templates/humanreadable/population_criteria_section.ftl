@@ -6,6 +6,33 @@
   	-->
 	<#if model.numberOfGroups == 1>
 	    <#assign pc = model.populationCriterias?first>
+        <!-- Score Unit -->
+        <#if pc.scoreUnit?length != 0>
+            <ul>
+                <li class="list-unstyled" style="list-style:none;padding-left:0px;">
+                    <div class="treeview hover p-l-10">
+                        <ul class="list-unstyled">
+                            <li class="list-unstyled"><input type="checkbox" id="${pc.id}-scoreUnit"/>
+                                <label for="${pc.id}-scoreUnit" class="list-header"><strong>Score Unit</strong></label>
+                                <ul class="code">
+                                    <li class="list-unstyled">
+                                        <div class="treeview hover p-l-10">
+                                            <ul>
+                                                <li style="padding-left: 0px;">
+                                                    <div>
+                                                        <pre class="cql-definition-body">${pc.scoreUnit}</pre>
+                                                    </div>
+                                                </li>
+                                            </ul>&nbsp;
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </#if>
         <#list pc.populations as population>
             <ul>
             <#include "population.ftl">

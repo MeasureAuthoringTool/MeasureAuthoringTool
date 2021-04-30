@@ -18,7 +18,7 @@ public class HQMFGeneratorFactory {
 	public Generator getHQMFGenerator(String matVersionNumber) {
 		matVersionNumber = matVersionNumber.replace("v", "");
 		double matVersion = Double.parseDouble(matVersionNumber);
-		if (matVersion >= 6.05) {
+		if (matVersion >= 6.10) {
 			logger.debug("HQMF Generator Factory selected QDM v5.6 HQMF Generator");
 			return new HQMFGenerator();
 		}

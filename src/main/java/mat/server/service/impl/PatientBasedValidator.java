@@ -150,7 +150,8 @@ public class PatientBasedValidator {
 		}
 
 		if( scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE) && measureObservationCount > 1) {
-			errorMessages.add(SCORING_CONTINUOUS_VARIABLE +  " measures can only have one measure observation.");
+			errorMessages.add(SCORING_CONTINUOUS_VARIABLE +  " measures can only have one Measure Observation per Measure Grouping.");
+
 		}
 
 		if (errorMessages.isEmpty()) {

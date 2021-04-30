@@ -32,7 +32,7 @@ import java.util.Map;
 @Component
 public class PatientBasedValidator {
 	
-		private static final String SCORING_CONTINUOUS_VARIABLE = "Continuous Variable";
+	private static final String SCORING_CONTINUOUS_VARIABLE = "Continuous Variable";
 
 	private static final String SCORING_RATIO = "Ratio";
 
@@ -78,6 +78,7 @@ public class PatientBasedValidator {
 		List<String> msrObsFunctionList = new ArrayList<>();
 		List<String> moAssociatedPopUsedExpression = new ArrayList<>();
 		List<MeasurePackageClauseDetail> packageClauses =  detail.getPackageClauses();
+		int measureObservationCount = 0;
 		
 		for (MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses) {
 			String populationUUID = measurePackageClauseDetail.getId();
@@ -99,6 +100,8 @@ public class PatientBasedValidator {
 					createExpressionsToBeCheckedData(expressionPopMap, exprList, name + " - " + stratumName, definitionName);
 				}
 			} else if (type.equals(MEASURE_OBSERVATION)) {
+				measureObservationCount++;
+
 				//find the cqlfunction here
 				Node firstChildNode = clauseNode.getFirstChild();
 				if (firstChildNode.getNodeName().equals(CQLAGGFUNCTION) || firstChildNode.getNodeName().equals(CQLFUNCTION)) {
@@ -145,7 +148,11 @@ public class PatientBasedValidator {
 				createExpressionsToBeCheckedData(expressionPopMap, exprList, name, definitionName);
 			}
 		}
-		
+
+		if( scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE) && measureObservationCount > 1) {
+			errorMessages.add(SCORING_CONTINUOUS_VARIABLE +  " measures can only have one measure observation.");
+		}
+
 		if (errorMessages.isEmpty()) {
 
             SaveUpdateCQLResult cqlResult = null;

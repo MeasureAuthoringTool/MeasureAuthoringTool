@@ -1,5 +1,4 @@
-<!--- Provide the JIRA ticket number and a general summary of your changes in the Title above -->
-
+<!--- In the *Title* field above, please provide the JIRA ticket number and a general summary of your changes -->
 ## Description
 <!--- Describe your changes in detail -->
 
@@ -13,4 +12,5 @@
 - [ ] Tests have been run locally and pass.
 
 ## Screenshots (if appropriate)
+<!--- Put an `x` in the box when Screenshots are not relevant. Delete below line if adding screenshots. -->
 - [ ] None applicable

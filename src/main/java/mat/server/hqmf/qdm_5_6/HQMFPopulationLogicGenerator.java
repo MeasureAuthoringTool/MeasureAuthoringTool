@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 // TODO: Auto-generated Javadoc
 
 /**
@@ -161,7 +163,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	}
 
 	private void createScoreUnit(MeasureExport me, Node populationCriteriaSection, String scoreUnit) {
-		if (scoreUnit == null) {
+		if (StringUtils.isBlank(scoreUnit)) {
 			// No Score Unit provided in measure group
 			return;
 		}
@@ -388,8 +390,9 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					.packageClauses(childNodeList)
 					.build();
 
-			if (measureGroupings.item(i).getAttributes().getNamedItem("ucum") != null) {
-				measureGroup.setScoreUnit(measureGroupings.item(i).getAttributes().getNamedItem("ucum").getNodeValue());
+			Node ucum = measureGroupings.item(i).getAttributes().getNamedItem("ucum");
+			if (ucum != null && isNotBlank(ucum.getNodeValue().strip())) {
+				measureGroup.setScoreUnit(ucum.getNodeValue().strip());
 			}
 
 			measureGroupingMap.put(measureGroupingSequence, measureGroup);

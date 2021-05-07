@@ -15,5 +15,7 @@ public interface MeasureExportDAO extends IDAO<MeasureExport, String> {
 	 *            the measure id
 	 * @return the measure export
 	 */
-	public MeasureExport findByMeasureId(String measureId);
+	MeasureExport findByMeasureId(String measureId);
+
+	void saveAndFlush(MeasureExport me);
 }

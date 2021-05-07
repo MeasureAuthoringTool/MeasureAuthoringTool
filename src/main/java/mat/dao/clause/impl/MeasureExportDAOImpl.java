@@ -5,6 +5,7 @@ import mat.dao.search.GenericDAO;
 import mat.model.clause.MeasureExport;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -34,4 +35,11 @@ public class MeasureExportDAOImpl extends GenericDAO<MeasureExport, String> impl
 		return !results.isEmpty() ? results.get(0) : null;
 	}
 
+	public void saveAndFlush(MeasureExport me) {
+		if (isEmpty(me)) return;
+		final Session session = getSessionFactory().getCurrentSession();
+		session.saveOrUpdate(me);
+		session.flush();
+		session.clear();
+	}
 }

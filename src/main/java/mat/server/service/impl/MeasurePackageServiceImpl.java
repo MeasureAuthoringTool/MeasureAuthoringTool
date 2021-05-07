@@ -1,7 +1,5 @@
 package mat.server.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.FhirMeasurePackageResult;
@@ -249,12 +247,38 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
         if (measure.isFhirMeasure()) {
             measureExportDAO.save(export);
+
+            /*
+             Persist Measure to HAPI so it can be used in generating the Human Readable.
+
+             At this point, HAPI has a Measure Resource that is cqfm-publishable non-compliant as it is missing
+                its text element content, which comes from the Human Readable. Circular Dependency!
+            */
             PushValidationResult errorResult = fhirMeasureService.push(measureId);
             if (errorResult != null && !errorResult.isValid()) {
                 logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
                 return errorResult.getFhirValidationResults();
             }
 
+            /*
+             Generate the Human Readable, pulling the terminology info from HAPI.
+
+             Persist the generated Human Readable to the DB so micro services can find it on its 2nd run to
+             generate the Narrative Resource for the Measure Resource's text element.
+            */
+            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
+            measureExportDAO.saveAndFlush(export);
+
+            /*
+             Re-push to sync the Measure/Library Resources stored in HAPI and the packaged Human Readable.
+
+             During the 2nd push, FHIR micro services will pull the new Human Readable from the DB to
+                generate a Narrative Resource that is then set to the Measure Resource's text element
+                and persisted to HAPI.
+            */
+            fhirMeasureService.push(measureId);
+
+            // FHIR Bundle packaging is then a fairly straightforward retrieve from HAPI.
             FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
             export.setCql(pkg.getMeasureLibCql());
             export.setElmXml(pkg.getMeasureLibElmXml()); //elm xml
@@ -273,7 +297,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                 libExport.setElmXml(pkg.getMeasureLibElmXml());
                 libraryExportDao.save(libExport);
             }
-            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
         } else {
             export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
             export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));

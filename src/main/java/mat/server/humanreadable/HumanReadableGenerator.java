@@ -154,6 +154,7 @@ public class HumanReadableGenerator {
                     model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
                     model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
 
+                    // Retrieve Terminology info from microservices/HAPI.
                     updateFhirValuesetsCodesystemsDataReqs(model, measureId);
 
                     if ("decrease".equals(model.getMeasureInformation().getImprovementNotation())) {

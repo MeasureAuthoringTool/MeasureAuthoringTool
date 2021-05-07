@@ -248,35 +248,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         if (measure.isFhirMeasure()) {
             measureExportDAO.save(export);
 
-            /*
-             Persist Measure to HAPI so it can be used in generating the Human Readable.
-
-             At this point, HAPI has a Measure Resource that is cqfm-publishable non-compliant as it is missing
-                its text element content, which comes from the Human Readable. Circular Dependency!
-            */
-            PushValidationResult errorResult = fhirMeasureService.push(measureId);
+            // Persist measure in HAPI.
+            PushValidationResult errorResult = pushToHapi(export, measureId, releaseVersion);
             if (errorResult != null && !errorResult.isValid()) {
                 logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
                 return errorResult.getFhirValidationResults();
             }
-
-            /*
-             Generate the Human Readable, pulling the terminology info from HAPI.
-
-             Persist the generated Human Readable to the DB so micro services can find it on its 2nd run to
-             generate the Narrative Resource for the Measure Resource's text element.
-            */
-            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
-            measureExportDAO.saveAndFlush(export);
-
-            /*
-             Re-push to sync the Measure/Library Resources stored in HAPI and the packaged Human Readable.
-
-             During the 2nd push, FHIR micro services will pull the new Human Readable from the DB to
-                generate a Narrative Resource that is then set to the Measure Resource's text element
-                and persisted to HAPI.
-            */
-            fhirMeasureService.push(measureId);
 
             // FHIR Bundle packaging is then a fairly straightforward retrieve from HAPI.
             FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
@@ -305,6 +282,47 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         }
         measureExportDAO.save(export);
         return null;
+    }
+
+    /**
+     * Handle the circular dependency between HAPI and Human Readable generation.
+     *
+     * MAT uses the FHIR Terminology stored in HAPI (FHIR micro services) to generate the HR.
+     * FHIR micro services needs the HR to properly set the Measure Resource's text element for cqfm-publishable compliance.
+     *
+     * Run the push to HAPI twice. Once before generating the HR, then again after generation and saving the HR to the db.
+     *
+     * @param export MeasureExport - holds the generated artifacts for packaging.
+     * @param measureId - The internal ID of the Measure being packaged.
+     * @param releaseVersion - The MAT version performing the packaging.
+     * @return PushValidationResult - contains a list of validation results.
+     */
+    private PushValidationResult pushToHapi(MeasureExport export, String measureId, String releaseVersion) {
+        /*
+         Persist Measure to HAPI so it can be used in generating the Human Readable. The stored Measure Resource
+            is non-compliant with cqfm-publishable profile as it is missing its text element content,
+            which comes from the Human Readable. Circular Dependency!
+        */
+        PushValidationResult errorResult = fhirMeasureService.push(measureId);
+        if (errorResult != null && !errorResult.isValid()) {
+            logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
+            return errorResult;
+        }
+
+        // Generate the Human Readable, pulling the terminology info from HAPI.
+        export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
+        // Persist the generated Human Readable to the DB.
+        // FHIR micro services will use it to generate the Narrative Resource for the Measure Resource's text element.
+        measureExportDAO.saveAndFlush(export);
+
+        /*
+         Re-push to sync the Measure/Library Resources stored in HAPI and the packaged Human Readable.
+
+         During the 2nd push, FHIR micro services will pull the new Human Readable from the DB to
+            generate a Narrative Resource that is then set to the Measure Resource's text element
+            and persisted to HAPI.
+        */
+        return fhirMeasureService.push(measureId);
     }
 
     @Override

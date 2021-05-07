@@ -169,9 +169,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         Document originalDoc = docBuilder.parse(oldXmlstream);
         javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
-        List<String> qdmRefID = new ArrayList<String>();
-        List<String> supplRefID = new ArrayList<String>();
-        List<QualityDataSetDTO> masterRefID = new ArrayList<QualityDataSetDTO>();
+        List<String> qdmRefID = new ArrayList<>();
+        List<String> supplRefID = new ArrayList<>();
+        List<QualityDataSetDTO> masterRefID = new ArrayList<>();
 
         transform(originalDoc);
         NodeList allGroupedElementRefIDs = (NodeList) xPath.evaluate(XPATH_ALL_GROUPED_ELEMENTREF_ID,
@@ -201,8 +201,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         findAndAddDTO(allSubTreeElementRefIDs, masterRefID, qdmRefID);
         findAndAddDTO(allSubTreeAttributeIDs, masterRefID, qdmRefID);
 
-        Set<String> uniqueRefIds = new HashSet<String>(qdmRefID);
-        qdmRefID = new ArrayList<String>(uniqueRefIds);
+        Set<String> uniqueRefIds = new HashSet<>(qdmRefID);
+        qdmRefID = new ArrayList<>(uniqueRefIds);
 
         findAndAddDTO(allSupplementIDs, masterRefID, supplRefID);
         wkbk = createEMeasureXLS(measureId, qdmRefID, supplRefID, ValueSets);
@@ -480,7 +480,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
     private boolean isComposite(Node libNode) {
         return libNode.getAttributes().getNamedItem("isComponent") != null &&
-                ("true").equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
+                "true".equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
     }
 
     /**
@@ -496,7 +496,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
         ExportResult result = new ExportResult();
         result.measureName = measureExport.getMeasure().getaBBRName();
-        result.export = getHQMFForv3MeasureString(measureId, measureExport);
+        result.export = getHQMFForv3MeasureString(measureExport);
 
         return result;
     }
@@ -507,14 +507,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
         result.measureName = measureExport.getMeasure().getaBBRName();
         if (measureExport.getHqmf() == null) {
-            measureExport.setHqmf(getHQMFForv3MeasureString(measureId, measureExport));
+            measureExport.setHqmf(getHQMFForv3MeasureString(measureExport));
             measureExportDAO.save(measureExport);
         }
         result.export = measureExport.getHqmf();
         return result;
     }
 
-    private String getHQMFForv3MeasureString(final String measureId, final MeasureExport measureExport) {
+    private String getHQMFForv3MeasureString(final MeasureExport measureExport) {
         String tempXML = XMLUtility.getInstance().applyXSL(measureExport.getSimpleXML(), XMLUtility.getInstance().getXMLResource(conversionFile1));
         String eMeasureXML = XMLUtility.getInstance().applyXSL(tempXML, XMLUtility.getInstance().getXMLResource(conversionFile2));
 
@@ -530,8 +530,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     @Override
     public final ExportResult getEMeasureHTML(final String measureId) throws Exception {
         ExportResult result = getHQMFForv3Measure(measureId);
-        String html = emeasureXMLToEmeasureHTML(result.export, getMeasureExport(measureId));
-        result.export = html;
+        getMeasureExport(measureId);
+        result.export = emeasureXMLToEmeasureHTML(result.export);
         return result;
     }
 
@@ -602,7 +602,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         return measureExport.getHumanReadable();
     }
 
-    private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
+    private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr) {
         return XMLUtility.getInstance().applyXSL(emeasureXMLStr, XMLUtility.getInstance().getXMLResource(conversionFileHtml));
     }
 
@@ -935,7 +935,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         StringUtility su = new StringUtility();
 
         // 1 add finalizedDate field
-        if ((fdts != null) && !emeasureXMLStr.contains("<finalizedDate")) {
+        if (fdts != null && !emeasureXMLStr.contains("<finalizedDate")) {
             String fdstr = convertTimestampToString(fdts);
             String repee = "</measureDetails>";
             String repor = su.nl + "<finalizedDate value=\"" + fdstr + "\"/>" + su.nl + "</measureDetails>";
@@ -962,8 +962,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         String day = getTwoDigitString(ts.getDate());
         String timeZone = "-" + getTwoDigitString(ts.getTimezoneOffset() / 60) + "00";
 
-        String tsStr = (ts.getYear() + 1900) + month + day + hours + mins + timeZone;
-        return tsStr;
+        return ts.getYear() + 1900 + month + day + hours + mins + timeZone;
     }
 
     /**
@@ -1073,7 +1072,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
         ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
-        zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, (new Date()).toString(),
+        zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, new Date().toString(),
                 simpleXmlStr, filesMap, seqNum, currentReleaseVersion, cqlExportResult, elmExportResult,
                 jsonExportResult, parentPath, me);
     }
@@ -1131,7 +1130,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
         zp.createBulkExportZip(emeasureName, exportDate, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, emeasureXSLUrl,
-                (new Date()).toString(), simpleXmlStr, filesMap, seqNum, me.getMeasure().getReleaseVersion(),
+                new Date().toString(), simpleXmlStr, filesMap, seqNum, me.getMeasure().getReleaseVersion(),
                 cqlExportResult, elmExportResult, jsonExportResult);
     }
 

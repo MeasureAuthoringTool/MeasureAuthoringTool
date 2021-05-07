@@ -177,7 +177,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
     }
 
-    private String generateSimpleXML(final Measure measure, MeasureXML measureXML, final List<ValueSet> ValueSetList) throws Exception {
+    private String generateSimpleXML(final Measure measure, MeasureXML measureXML) {
         String exportedXML = "";
 
         if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
@@ -204,7 +204,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         saveMeasureXml(xmlModel);
         measureXML = measureXMLDAO.findForMeasure(measureId);
 
-        final String simpleXML = generateSimpleXML(measure, measureXML, ValueSetList);
+        final String simpleXML = generateSimpleXML(measure, measureXML);
         final ExportResult exportResult = eMeasureService.exportMeasureIntoSimpleXML(measure.getId(), simpleXML, ValueSetList);
 
         MeasureExport export = measureExportDAO.findByMeasureId(measureId);
@@ -372,13 +372,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public void save(final Measure measurePackage) {
-        if (measurePackage.getOwner() == null) {
-            if (LoggedInUserUtil.getLoggedInUser() != null) {
-                final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-                measurePackage.setOwner(currentUser);
-            }
+        if (measurePackage.getOwner() == null
+                && LoggedInUserUtil.getLoggedInUser() != null) {
+            final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+            measurePackage.setOwner(currentUser);
         }
-
         measureDAO.save(measurePackage);
     }
 
@@ -538,7 +536,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         try {
             for (int i = 0; i < model.getNumberOfRows(); i++) {
                 final MeasureShareDTO dto = model.get(i);
-                if ((dto.getShareLevel() != null) && !"".equals(dto.getShareLevel())) {
+                if (dto.getShareLevel() != null && !"".equals(dto.getShareLevel())) {
                     final User user = userDAO.find(dto.getUserId());
                     final ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
                     measureShare = null;
@@ -549,7 +547,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                         }
                     }
 
-                    if ((measureShare == null) && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+                    if (measureShare == null && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
                         recordShareEvent = true;
                         measureShare = new MeasureShare();
                         measureShare.setMeasure(measureDAO.find(model.getMeasureId()));

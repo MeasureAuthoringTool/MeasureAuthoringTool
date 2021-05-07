@@ -652,7 +652,7 @@ public class HumanReadableGenerator {
             populations = sortPopulations(populations);
 
             String displayName = "Population Criteria " + populationCriteriaNumber;
-            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue();
+            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue().strip();
             HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber, scoreUnit);
             groups.add(populationCriteria);
         }

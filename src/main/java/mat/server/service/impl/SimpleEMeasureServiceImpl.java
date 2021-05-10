@@ -394,6 +394,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
 
                 includeResult.setCqlLibraryName(libName + "-" + libVersion);
+                includeResult.setCqlLibraryModelVersion(cqlLibrary.isFhirLibrary() ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
                 result.includedCQLExports.add(includeResult);
             }
@@ -461,6 +462,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
 
                 includeResult.setCqlLibraryName(libName + "-" + libVersion);
+                includeResult.setCqlLibraryModelVersion(cqlLibrary.isFhirLibrary() ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
                 result.includedCQLExports.add(includeResult);
             }
@@ -1184,7 +1186,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         result.measureName = measureExport.getMeasure().getaBBRName();
         result.export = fileString;
         result.setCqlLibraryName(fileString == null ? result.measureName : cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
-        result.setCqlLibraryVersion(cqlModel.getVersionUsed());
         result.setCqlLibraryModelVersion(cqlModel.getUsingModelVersion());
 
         return result;

@@ -450,7 +450,7 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getHQMFExportForMeasure(id, currentReleaseVersion);
 
         if (SAVE.equals(type)) {
-            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + ".xml");
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -467,7 +467,7 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = currentReleaseVersion.equals("v3") ? getService().createOrGetEMeasureHTML(id)
                 : getService().createOrGetHumanReadable(id, currentReleaseVersion);
         if (SAVE.equals(type)) {
-            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + ".html");
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -478,7 +478,7 @@ public class ExportServlet extends HttpServlet {
         if (LoggedInUserUtil.getLoggedInUserRole().equals(SecurityRole.SUPER_USER_ROLE)) {
             ExportResult export = getService().getSimpleXML(id);
             if (SAVE.equals(type)) {
-                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
+                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + ".xml");
             }
             resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
             getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);

@@ -30,7 +30,7 @@ public class FileNameUtility {
     }
 
     public static String getExportCqlLibraryFileName(ExportResult exportResult, Measure measure) {
-        return replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + measure.getMeasureModel() + "-" +
+        return replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + "-" + measure.getMeasureModel() + "-" +
                 replacePeriods(exportResult.getCqlLibraryModelVersion());
     }
 

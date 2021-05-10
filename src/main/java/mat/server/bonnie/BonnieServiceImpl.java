@@ -20,6 +20,7 @@ import mat.server.logging.LogFactory;
 import mat.server.service.EncryptDecryptToken;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.BonnieOAuthResult;
+import mat.shared.FileNameUtility;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;
 import mat.shared.bonnie.error.BonnieBadParameterException;
 import mat.shared.bonnie.error.BonnieDoesNotExistException;
@@ -125,10 +126,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			throw new BonnieServerException();
 		}
 
-		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-
 		byte[] zipFileContents = export.zipbarr;
-		String fileName = export.measureName + "_" + currentReleaseVersion + ".zip";
+		String fileName = FileNameUtility.getExportBundleZipName(measure);
 		String calculationType = measure.getPatientBased() ? "patient" : "episode";
 		String vsacTicketGrantingTicket = vsacTicket.getTicket();
 		String vsacTicketExpiration = String.valueOf(vsacTicket.getTimeout().getTime());

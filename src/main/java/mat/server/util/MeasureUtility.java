@@ -29,12 +29,6 @@ public class MeasureUtility {
         }
     }
 
-    /**
-     * Format version text.
-     *
-     * @param version the version
-     * @return the string
-     */
     public static String formatVersionText(String version) {
         StringUtility su = new StringUtility();
         String[] versionArr = version.split("\\.");

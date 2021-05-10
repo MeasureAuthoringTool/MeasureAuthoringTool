@@ -191,7 +191,7 @@ public class ExportServlet extends HttpServlet {
             return;
         }
 
-        if (measure.getIsCompositeMeasure()) {
+        if (Boolean.TRUE.equals(measure.getIsCompositeMeasure())) {
             exportCompositeMeasureZip(resp, id, measure);
         } else {
             exportEmeasureZip(resp, id, measure, exportDate);
@@ -287,7 +287,7 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = null;
 
         if (JSON_FILENAME.equals(fileNameExtension)) {
-            export = ModelTypeHelper.isFhir(measure.getMeasureModel()) ? getService().getMeasureBundleExportResult(measureExport, JSON)
+            export = measure.isFhirMeasure() ? getService().getMeasureBundleExportResult(measureExport, JSON)
                     : getService().createOrGetJSONLibraryFile(id, measureExport);
         } else if (CQL_FILENAME.equals(fileNameExtension)) {
             export = getService().createOrGetCQLLibraryFile(id, measureExport);
@@ -301,8 +301,7 @@ public class ExportServlet extends HttpServlet {
             ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
             zp.getCQLZipBarr(measure, export, extension);
 
-            resp.setHeader(CONTENT_DISPOSITION,
-                    ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "-" + fileNameExtension));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
             resp.setContentType(APPLICATION_ZIP);
             resp.getOutputStream().write(export.zipbarr);
             export.zipbarr = null;
@@ -311,7 +310,7 @@ public class ExportServlet extends HttpServlet {
                 if (CQL_FILENAME.equals(fileNameExtension)) {
                     resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
                 }
-                resp.setHeader(CONTENT_DISPOSITION, replaceUnderscores(ATTACHMENT_FILENAME + export.getCqlLibraryName() + "." + extension));
+                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportCqlLibraryFileName(export, measure) + "." + extension);
             }
 
             if (JSON_FILENAME.equals(fileNameExtension)) {
@@ -399,9 +398,7 @@ public class ExportServlet extends HttpServlet {
         List<ComponentMeasure> componentMeasures = measure.getComponentMeasures();
         ExportResult export = getService().getCompositeExportResult(id, componentMeasures);
 
-        String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
-        resp.setHeader(CONTENT_DISPOSITION,
-                replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "-" + currentReleaseVersion)));
+        resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
         resp.setContentType(APPLICATION_ZIP);
         resp.getOutputStream().write(export.zipbarr);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -410,16 +407,8 @@ public class ExportServlet extends HttpServlet {
 
     private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
             throws Exception {
-        ExportResult export = getService().getEMeasureZIP(id, exportDate);
-        FileNameUtility fnu = new FileNameUtility();
-        String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
-        if (measure.isFhirMeasure()) {
-            resp.setHeader(CONTENT_DISPOSITION,
-                    replaceUnderscores(ATTACHMENT_FILENAME + fnu.getFhirZipName(measure)));
-        } else {
-            resp.setHeader(CONTENT_DISPOSITION,
-                    replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "-" + currentReleaseVersion)));
-        }
+        var export = getService().getEMeasureZIP(id, exportDate);
+        resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
         resp.setContentType(APPLICATION_ZIP);
         resp.getOutputStream().write(export.zipbarr);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -434,7 +423,7 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getService().getEMeasureXLS(id);
 
         String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
-        resp.setHeader(CONTENT_DISPOSITION, replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility
+        resp.setHeader(CONTENT_DISPOSITION, FileNameUtility.replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility
                 .getEmeasureXLSName(export.measureName + "-" + currentReleaseVersion, export.packageDate)));
         resp.setContentType("application/vnd.ms-excel");
         resp.getOutputStream().write(export.wkbkbarr);
@@ -457,17 +446,12 @@ public class ExportServlet extends HttpServlet {
         if (!canViewExports(measure)) {
             return;
         }
-
         String currentReleaseVersion = measure.getReleaseVersion();
-
         ExportResult export = getHQMFExportForMeasure(id, currentReleaseVersion);
 
         if (SAVE.equals(type)) {
-            currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "-");
-            resp.setHeader(CONTENT_DISPOSITION, replaceUnderscores(ATTACHMENT_FILENAME
-                    + FileNameUtility.getEmeasureXMLName(export.measureName + "-" + currentReleaseVersion)));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
         }
-
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
         resp.getOutputStream().write(export.export.getBytes());
@@ -479,15 +463,11 @@ public class ExportServlet extends HttpServlet {
         if (!canViewExports(measure)) {
             return;
         }
-
-
         String currentReleaseVersion = measure.getReleaseVersion();
         ExportResult export = currentReleaseVersion.equals("v3") ? getService().createOrGetEMeasureHTML(id)
                 : getService().createOrGetHumanReadable(id, currentReleaseVersion);
         if (SAVE.equals(type)) {
-            currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "-");
-            resp.setHeader(CONTENT_DISPOSITION, replaceUnderscores(ATTACHMENT_FILENAME
-                    + FileNameUtility.getEmeasureHumanReadableName(export.measureName + "-" + currentReleaseVersion)));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -498,9 +478,7 @@ public class ExportServlet extends HttpServlet {
         if (LoggedInUserUtil.getLoggedInUserRole().equals(SecurityRole.SUPER_USER_ROLE)) {
             ExportResult export = getService().getSimpleXML(id);
             if (SAVE.equals(type)) {
-                String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
-                resp.setHeader(CONTENT_DISPOSITION, replaceUnderscores(ATTACHMENT_FILENAME
-                        + FileNameUtility.getSimpleXMLName(export.measureName + "-" + currentReleaseVersion)));
+                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure));
             }
             resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
             getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
@@ -733,10 +711,6 @@ public class ExportServlet extends HttpServlet {
 
     public MeasureAuditService getAuditService() {
         return context.getBean(MeasureAuditService.class);
-    }
-
-    private String replaceUnderscores(String s) {
-        return s.replace('_', '-');
     }
 
 }

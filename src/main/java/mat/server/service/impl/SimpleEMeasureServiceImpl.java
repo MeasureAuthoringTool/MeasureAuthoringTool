@@ -232,23 +232,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         }
     }
 
-    /**
-     * Gets the measure name.
-     *
-     * @param measureId - String.
-     * @return Measure. *
-     */
     private mat.model.clause.Measure getMeasureName(final String measureId) {
         MeasurePackageService measureService = context.getBean(MeasurePackageService.class);
-        mat.model.clause.Measure measure = measureService.getById(measureId);
-        return measure;
+        return measureService.getById(measureId);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.SimpleEMeasureService#getSimpleXML(java.lang.String)
-     */
     @Override
     public final ExportResult getSimpleXML(final String measureId) throws Exception {
         mat.model.clause.Measure measure = measureDAO.find(measureId);
@@ -294,6 +282,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         } else {
             result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
         }
+        result.setCqlLibraryModelVersion(cqlModel.getUsingModelVersion());
 
         getIncludedCQLLibs(result, xmlProcessor);
 
@@ -338,6 +327,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
 
                 includeResult.setCqlLibraryName(libName + "-" + libVersion);
+                includeResult.setCqlLibraryModelVersion(cqlLibrary.isFhirLibrary() ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
                 result.includedCQLExports.add(includeResult);
             }
@@ -368,7 +358,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
             result.measureName = measureExport.getMeasure().getaBBRName();
             result.setCqlLibraryName(result.measureName);
         }
-
+        result.setCqlLibraryModelVersion(cqlModel.getUsingModelVersion());
         getIncludedCQLJSONs(result, xmlProcessor);
 
         return result;
@@ -435,7 +425,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
             result.measureName = measureExport.getMeasure().getaBBRName();
             result.setCqlLibraryName(result.measureName);
         }
-
+        result.setCqlLibraryModelVersion(cqlModel.getUsingModelVersion());
         getIncludedCQLELMs(result, xmlProcessor);
 
         return result;
@@ -705,10 +695,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
             workBook = vsxg.getErrorXLS();
         }
         result.wkbkbarr = vsxg.getHSSFWorkbookBytes(workBook);
-        result.valueSetName = lo.getName();
-        result.lastModifiedDate = lo.getLastModified() != null
-                ? DateUtility.convertDateToStringNoTime2(lo.getLastModified())
-                : null;
+        result.setValueSetName(lo.getName());
+        result.setLastModifiedDate(lo.getLastModified() != null ? DateUtility.convertDateToStringNoTime2(lo.getLastModified()) : null);
         return result;
     }
 
@@ -724,31 +712,18 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         return clgen.getHSSFWorkbookBytes(hssfwkbk);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * mat.server.service.SimpleEMeasureService#getEMeasureZIP(java.lang.String)
-     */
     @Override
     public final ExportResult getEMeasureZIP(final String measureId, final Date exportDate) throws Exception {
-        ExportResult result = new ExportResult();
+        var result = new ExportResult();
         result.measureName = getMeasureName(measureId).getaBBRName();
-        MeasureExport me = getMeasureExport(measureId);
-        if (me.getMeasure().getReleaseVersion().equals("v3")) {
-            result.zipbarr = getZipBarr(measureId, me, me.getMeasure().getReleaseVersion());
+        var measureExport = getMeasureExport(measureId);
+        if (measureExport.getMeasure().getReleaseVersion().equals("v3")) {
+            result.zipbarr = getZipBarr(measureId, measureExport, measureExport.getMeasure().getReleaseVersion());
         } else {
-            String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
-            FileNameUtility fnu = new FileNameUtility();
-            String parentPath = "";
-            if (me.isFhir()) {
-                parentPath =  fnu.getFhirExportFileName(me.getMeasure());
-            } else {
-                parentPath =  fnu.getParentPath(me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
-            }
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ZipOutputStream zip = new ZipOutputStream(baos);
-            getZipBarr(measureId, me, parentPath, zip);
+            var parentPath = FileNameUtility.getExportFileName(measureExport.getMeasure());
+            var baos = new ByteArrayOutputStream();
+            var zip = new ZipOutputStream(baos);
+            getZipBarr(measureId, measureExport, parentPath, zip);
             zip.close();
             result.zipbarr = baos.toByteArray();
         }
@@ -763,21 +738,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         return result;
     }
 
+    public final void getZipBarr(final String measureId, final MeasureExport measureExport, final String parentPath, ZipOutputStream zip) throws Exception {
+        String simpleXmlStr = measureExport.getSimpleXML();
 
-    /**
-     * Gets the zip barr.
-     *
-     * @param measureId the measure id
-     * @param me        the me
-     * @throws Exception the exception
-     */
-    public final void getZipBarr(final String measureId, final MeasureExport me, final String parentPath, ZipOutputStream zip) throws Exception {
-        String simpleXmlStr = me.getSimpleXML();
+        ExportResult exportResult = createOrGetHQMF(measureId);
+        String eMeasureXML = exportResult.getExport();
 
-        ExportResult emeasureExportResult = createOrGetHQMF(measureId);
-        String emeasureXML = emeasureExportResult.export;
-
-        MeasureExport measureExport = getMeasureExport(measureId);
         ExportResult cqlExportResult = createOrGetCQLLibraryFile(measureId, measureExport);
         ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
         ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
@@ -791,10 +757,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
             dataRequirementsNoValueSet = new ExportResultParser(measureJsonBundle).parseDataRequirement();
         }
 
-        String emeasureHTMLStr = createOrGetHumanReadableFile(measureId, me, simpleXmlStr, dataRequirementsNoValueSet);
+        String eMeasureHTMLStr = createOrGetHumanReadableFile(measureId, measureExport, simpleXmlStr, dataRequirementsNoValueSet);
 
-        zp.getZipBarr(me.getMeasure().getaBBRName(), zip, emeasureHTMLStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
-                me.getMeasure().getReleaseVersion(), parentPath, measureId, measureJsonBundle);
+        zp.getZipBarr(zip, eMeasureHTMLStr, eMeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
+                measureExport.getMeasure().getReleaseVersion(), parentPath, measureId, measureJsonBundle);
     }
 
     private String getFormatedReleaseVersion(String currentReleaseVersion) {
@@ -811,23 +777,19 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
      * @throws Exception the exception
      */
     public final byte[] getCompositeZipBarr(final String measureId, final MeasureExport me, List<ComponentMeasure> componentMeasures) throws Exception {
-        String currentReleaseVersion = me.getMeasure().getReleaseVersion();
-        currentReleaseVersion = getFormatedReleaseVersion(currentReleaseVersion);
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(baos);
         String parentSimpleXML = me.getSimpleXML();
 
-        FileNameUtility fnu = new FileNameUtility();
         //get composite file
-        String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
+        String parentPath = FileNameUtility.getExportFileName(me.getMeasure());
         getZipBarr(measureId, me, parentPath, zip);
         //get component files
         for (ComponentMeasure measure : componentMeasures) {
             String componentMeasureId = measure.getComponentMeasure().getId();
             if (checkIfComponentMeasureIsUsed(parentSimpleXML, componentMeasureId)) {
                 MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
-                String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
+                String componentParentPath = parentPath + File.separator + FileNameUtility.getExportFileName(componentMeasureExport.getMeasure());
                 getZipBarr(componentMeasureId, componentMeasureExport, componentParentPath, zip);
             }
         }
@@ -899,12 +861,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
      */
     public final byte[] getZipBarr(final String measureId, final MeasureExport me,
                                    String releaseVersion) throws Exception {
-        StringUtility su = new StringUtility();
         ExportResult emeasureXMLResult = createOrGetHQMFForv3Measure(measureId);
         String emeasureName = emeasureXMLResult.measureName;
         String emeasureXMLStr = emeasureXMLResult.export;
         String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + su.nl
+        String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + StringUtility.nl
                 + "<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
         emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
         if (me.getHumanReadable() == null) {
@@ -932,13 +893,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         String emeasureXMLStr = measureExport.getSimpleXML();
         mat.model.clause.Measure measure = measureDAO.find(measureId);
         Timestamp fdts = measure.getFinalizedDate();
-        StringUtility su = new StringUtility();
 
         // 1 add finalizedDate field
         if ((fdts != null) && !emeasureXMLStr.contains("<finalizedDate")) {
             String fdstr = convertTimestampToString(fdts);
             String repee = "</measureDetails>";
-            String repor = su.nl + "<finalizedDate value=\"" + fdstr + "\"/>" + su.nl + "</measureDetails>";
+            String repor = StringUtility.nl + "<finalizedDate value=\"" + fdstr + "\"/>" + StringUtility.nl + "</measureDetails>";
             int offset = emeasureXMLStr.indexOf(repee);
             emeasureXMLStr = emeasureXMLStr.substring(0, offset) + repor
                     + emeasureXMLStr.substring(offset + repee.length());
@@ -1112,12 +1072,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final void createFilesInBulkZip(final String measureId, final Date exportDate, final MeasureExport me,
                                            final Map<String, byte[]> filesMap, final String seqNum) throws Exception {
         byte[] wkbkbarr = null;
-        StringUtility su = new StringUtility();
         ExportResult emeasureXMLResult = createOrGetHQMFForv3Measure(measureId);
         String emeasureName = emeasureXMLResult.measureName;
         String emeasureXMLStr = emeasureXMLResult.export;
         String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + su.nl
+        String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + StringUtility.nl
                 + "<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
         emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
         String emeasureHTMLStr = createOrGetEmeasureXMLToEmeasureHTML(emeasureXMLStr, me);
@@ -1225,6 +1184,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         result.measureName = measureExport.getMeasure().getaBBRName();
         result.export = fileString;
         result.setCqlLibraryName(fileString == null ? result.measureName : cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
+        result.setCqlLibraryVersion(cqlModel.getVersionUsed());
+        result.setCqlLibraryModelVersion(cqlModel.getUsingModelVersion());
 
         return result;
     }

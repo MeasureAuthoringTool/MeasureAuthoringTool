@@ -420,9 +420,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries) {
+    public SaveCQLLibraryResult saveFinalizedVersion(String libraryId,
+                                                     boolean isMajor,
+                                                     String version,
+                                                     boolean ignoreUnusedLibraries,
+                                                     boolean keepAll) {
         log.debug("Inside saveFinalizedVersion: Start");
         SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+
+        CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+        result.setLibraryModelType(cqlLibrary.getLibraryModelType());
 
         boolean isVersionable = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId);
 
@@ -431,8 +438,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             result.setFailureReason(ConstantMessages.INVALID_DATA);
             return result;
         }
-
-        CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 
         if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
             result.setSuccess(false);
@@ -476,18 +481,22 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 }
             }
         } else {
-            cqlResult.getUnusedCqlElements().clearUnusedNotProcessedForStandAlone();
-
-            if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
-                result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
-                return result;
+            if( keepAll) {
+                log.debug("Keeping all unused elements");
             } else {
-                String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+                cqlResult.getUnusedCqlElements().clearUnusedNotProcessedForStandAlone();
 
-                String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(cqlLibraryXml, cqlResult.getUnusedCqlElements());
-                cqlLibrary.setCQLByteArray(updatedMeasureXml.getBytes());
-                save(cqlLibrary);
-                cqlLibraryDAO.refresh(cqlLibrary);
+                if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+                    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
+                    return result;
+                } else {
+                    String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+
+                    String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(cqlLibraryXml, cqlResult.getUnusedCqlElements());
+                    cqlLibrary.setCQLByteArray(updatedMeasureXml.getBytes());
+                    save(cqlLibrary);
+                    cqlLibraryDAO.refresh(cqlLibrary);
+                }
             }
         }
 

@@ -54,6 +54,16 @@ public class SaveMeasureResult extends GenericResult {
 
     private int eMeasureId;
 
+    private String measureModelType;
+
+    public String getMeasureModelType() {
+        return measureModelType;
+    }
+
+    public void setMeasureModelType(String measureModelType) {
+        this.measureModelType = measureModelType;
+    }
+
     public List<Author> getAuthorList() {
         return authorList;
     }

@@ -1345,7 +1345,49 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                             String measureName,
                                             boolean isMajor,
                                             String version,
-                                            final boolean shouldPackage) {
+                                            boolean shouldPackage,
+                                            String measureModel) {
+        if( ModelTypeHelper.isFhir(measureModel)) {
+            displayUnusedLibraryDialogFhir(measureId, measureName, isMajor, version, shouldPackage);
+        } else {
+            displayUnusedLibraryDialogQdm(measureId, measureName, isMajor, version, shouldPackage);
+        }
+    }
+
+    private void displayUnusedLibraryDialogQdm(String measureId,
+                                               String measureName,
+                                               boolean isMajor,
+                                               String version,
+                                               boolean shouldPackage) {
+        ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(
+                MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(measureName), CONTINUE,
+                "Cancel", null, false);
+        confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+            @Override
+            public void onYesButtonClicked() {
+                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, true, false);
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+                displaySearch();
+            }
+
+            @Override
+            public void onClose() {
+                displaySearch();
+            }
+        });
+
+        confirmationDialogBox.show();
+    }
+
+    private void displayUnusedLibraryDialogFhir(String measureId,
+                                                String measureName,
+                                                boolean isMajor,
+                                                String version,
+                                                final boolean shouldPackage) {
         String yesButtonText = MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName);
 
         ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(yesButtonText, CONTINUE);
@@ -1475,7 +1517,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         } else {
                             setSearchingBusy(false);
                             logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> success = false " + result.toString());
-                            versionFailureEvent(result.getFailureReason(), measureId, measureName, isMajor, version, shouldPackage);
+                            versionFailureEvent(result, measureId, measureName, isMajor, version, shouldPackage);
                         }
                     }
                 });
@@ -1494,10 +1536,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         }
     }
 
-    private void versionFailureEvent(final int failureReason, final String measureId, final String measureName, final boolean isMajor, final String version,
+    private void versionFailureEvent(SaveMeasureResult result,
+                                     final String measureId,
+                                     final String measureName,
+                                     final boolean isMajor,
+                                     final String version,
                                      final boolean shouldPackage) {
         isMeasureVersioned = false;
-        switch (failureReason) {
+        switch (result.getFailureReason()) {
             case SaveUpdateCQLResult.MEASURE_NAME_INVALID:
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getMeasureNameInvalid());
                 break;
@@ -1505,7 +1551,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;
             case SaveMeasureResult.UNUSED_LIBRARY_FAIL:
-                displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage);
+                displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage,
+                        result.getMeasureModelType());
                 break;
             case SaveMeasureResult.PACKAGE_FAIL:
                 MatContext.get().setPackageFailedMeasureId(measureId);

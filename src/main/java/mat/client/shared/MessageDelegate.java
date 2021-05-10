@@ -973,6 +973,13 @@ public class MessageDelegate {
                 "or Cancel to stop the version process.";
     }
 
+    public String getUnusedFhirElementsWarningStandAlone(String name) {
+        return "There are included libraries that are unused in library " + name + ". " +
+                "Select Continue to have the MAT remove these unused elements, " +
+                "Keep to retain the unused elements " +
+                "or Cancel to stop the version process.";
+    }
+
     public static String getMeasureSuccessfullyShared(String measureName) {
         return measureName + SUCCESSFULLY_SHARED;
     }

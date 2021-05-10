@@ -2002,6 +2002,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         log.debug("Measure Loaded for: " + measureId);
 
         SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+        saveMeasureResult.setMeasureModelType(m.getMeasureModel());
 
         boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId);
         if (!isMeasureVersionable) {

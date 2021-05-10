@@ -259,8 +259,6 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		getMinorRadio().setValue(false);
 	}
 
-
-
 	@Override
 	public ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer, boolean isError) {
 		confirmationDialogBox = new ConfirmationDialogBox(messageText, yesButtonText, noButtonText, observer, isError);

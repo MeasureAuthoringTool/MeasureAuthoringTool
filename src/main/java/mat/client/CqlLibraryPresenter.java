@@ -40,6 +40,8 @@ import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationKeepDialogBox;
+import mat.client.shared.ConfirmationKeepObserver;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
@@ -999,7 +1001,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                         .getMinorRadio().getValue())) {
                     saveFinalizedVersion(selectedLibrary.getId(), selectedLibrary.getCqlName(),
                             versionDisplay.getMajorRadioButton().getValue(),
-                            selectedLibrary.getVersion(), false);
+                            selectedLibrary.getVersion(), false, false);
 
                 } else {
                     versionDisplay
@@ -1029,34 +1031,46 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 });
     }
 
-    protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version, boolean ignoreUnusedLibraries) {
+    protected void saveFinalizedVersion(final String libraryId,
+                                        final String cqlLibName,
+                                        Boolean isMajor,
+                                        String version,
+                                        boolean ignoreUnusedLibraries,
+                                        boolean keepAll) {
         versionDisplay.getErrorMessages().clearAlert();
         showSearchingBusy(true);
         versionDisplay.getSaveButton().setEnabled(false);
         versionDisplay.getCancelButton().setEnabled(false);
 
-        MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries, new AsyncCallback<SaveCQLLibraryResult>() {
+        MatContext.get().getCQLLibraryService()
+                .saveFinalizedVersion(libraryId,
+                        isMajor,
+                        version,
+                        ignoreUnusedLibraries,
+                        keepAll,
+                        new AsyncCallback<SaveCQLLibraryResult>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                showSearchingBusy(false);
-                versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                versionDisplay.getSaveButton().setEnabled(true);
-                versionDisplay.getCancelButton().setEnabled(true);
-            }
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                showSearchingBusy(false);
+                                versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                versionDisplay.getSaveButton().setEnabled(true);
+                                versionDisplay.getCancelButton().setEnabled(true);
+                            }
 
-            @Override
-            public void onSuccess(SaveCQLLibraryResult result) {
-                showSearchingBusy(false);
-                versionDisplay.getSaveButton().setEnabled(true);
-                versionDisplay.getCancelButton().setEnabled(true);
-                if (result.isSuccess()) {
-                    versionSuccessfulEvent(libraryId, cqlLibName, result);
-                } else {
-                    versionFailureEvent(result.getFailureReason(), libraryId, cqlLibName, isMajor, version);
-                }
-            }
-        });
+                            @Override
+                            public void onSuccess(SaveCQLLibraryResult result) {
+                                showSearchingBusy(false);
+                                versionDisplay.getSaveButton().setEnabled(true);
+                                versionDisplay.getCancelButton().setEnabled(true);
+
+                                if (result.isSuccess()) {
+                                    versionSuccessfulEvent(libraryId, cqlLibName, result);
+                                } else {
+                                    versionFailureEvent(result, libraryId, cqlLibName, isMajor, version);
+                                }
+                            }
+                        });
     }
 
     private void versionSuccessfulEvent(final String libraryId, final String cqlLibName, SaveCQLLibraryResult result) {
@@ -1067,9 +1081,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         fireSuccessfulVersionEvent(isCqlLibraryVersioned, cqlLibName, MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
     }
 
-    private void versionFailureEvent(int failureReason, final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
+    private void versionFailureEvent(SaveCQLLibraryResult result, final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
         isCqlLibraryVersioned = false;
-        switch (failureReason) {
+        switch (result.getFailureReason()) {
             case ConstantMessages.INVALID_CQL_DATA:
                 versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;
@@ -1078,9 +1092,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 break;
             case ConstantMessages.PUBLISHER_REQUIRED:
                 versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getPublisherRequired());
-               break;
+                break;
             case ConstantMessages.INVALID_CQL_LIBRARIES:
-                displayInvalidLibraryDialog(libraryId, cqlLibName, isMajor, version);
+                displayInvalidLibraryDialog(libraryId, cqlLibName, isMajor, version, result.getLibraryModelType());
                 break;
             case SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME:
                 displayDuplicateLibraryDialog();
@@ -1114,14 +1128,27 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     }
 
-    private void displayInvalidLibraryDialog(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
+    private void displayInvalidLibraryDialog(final String libraryId,
+                                             final String cqlLibName,
+                                             Boolean isMajor,
+                                             String version,
+                                             String type) {
+
+       if (type.equals(ModelTypeHelper.FHIR)) {
+            displayInvalidLibraryDialogKeepFhir(libraryId, cqlLibName, isMajor, version);
+        } else {
+            displayInvalidLibraryDialogQdm(libraryId, cqlLibName, isMajor, version);
+        }
+    }
+
+    private void displayInvalidLibraryDialogQdm(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
         String errorMessage = MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(versionDisplay.getSelectedLibrary().getCqlName());
         ConfirmationDialogBox confirmationDialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, CONTINUE, "Cancel", null, false);
         confirmationDialogBox.setObserver(new ConfirmationObserver() {
 
             @Override
             public void onYesButtonClicked() {
-                saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);
+                saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true, false);
             }
 
             @Override
@@ -1134,6 +1161,41 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 displaySearch();
             }
         });
+        confirmationDialogBox.show();
+    }
+
+    private void displayInvalidLibraryDialogKeepFhir(final String libraryId,
+                                                     final String cqlLibName,
+                                                     Boolean isMajor,
+                                                     String version) {
+        String errorMessage = MatContext.get().getMessageDelegate()
+                .getUnusedFhirElementsWarningStandAlone(versionDisplay.getSelectedLibrary().getCqlName());
+        ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(errorMessage, CONTINUE);
+
+        confirmationDialogBox.setConfirmationKeepObserver(
+                new ConfirmationKeepObserver() {
+                    @Override
+                    public void onKeepButtonClicked() {
+                        saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true, true);
+                    }
+
+                    @Override
+                    public void onYesButtonClicked() {
+                        saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true, false);
+                    }
+
+                    @Override
+                    public void onNoButtonClicked() {
+                        displaySearch();
+                    }
+
+                    @Override
+                    public void onClose() {
+                        displaySearch();
+                    }
+                }
+        );
+
         confirmationDialogBox.show();
     }
 
@@ -1171,9 +1233,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
                 return false;
             }
-            logger.log(Level.INFO,"isLibraryNameValid isFhir" + isFhir + " " + cqlName);
+            logger.log(Level.INFO, "isLibraryNameValid isFhir" + isFhir + " " + cqlName);
             if (isFhir && !validator.isValidFhirCqlName(cqlName)) {
-                logger.log(Level.INFO,"isLibraryNameValid invalid name");
+                logger.log(Level.INFO, "isLibraryNameValid invalid name");
                 detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
                 return false;
             }

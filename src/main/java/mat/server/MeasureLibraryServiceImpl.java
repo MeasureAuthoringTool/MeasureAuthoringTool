@@ -2034,12 +2034,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
         String measureXml = measureXmlModel.getXml();
 
+
         if (shouldPackage) {
-            SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
+            SaveMeasureResult validatePackageResult = validate(getMeasure(measureId));
+
             if (!validatePackageResult.isSuccess()) {
                 saveMeasureResult.setValidateResult(validatePackageResult.getValidateResult());
                 log.error("Validate Package Result" + validatePackageResult);
-                log.error("Measure Package and Version Failed for measure with id " + measureId + " -> PACKAGE_FAIL");
                 return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
             }
         }
@@ -2049,7 +2050,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         } else if (!m.isFhirMeasure() &&
                 !ignoreUnusedLibraries &&
                 CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
-            saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+            saveMeasureResult.setFailureReason( SaveMeasureResult.UNUSED_LIBRARY_FAIL);
             log.debug("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
             return saveMeasureResult;
         } else {
@@ -2065,6 +2066,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             } else {
                 removeUnusedQDMLibraries(measureXmlModel, cqlResult);
                 removeUnusedQDMComponents(measureXmlModel, m);
+            }
+        }
+
+        if (shouldPackage) {
+            SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
+
+            if (!validatePackageResult.isSuccess()) {
+                saveMeasureResult.setValidateResult(validatePackageResult.getValidateResult());
+                log.error("Measure Package and Version Failed for measure with id " + measureId + " -> PACKAGE_FAIL");
+                return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
             }
         }
 
@@ -5528,12 +5539,56 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         log.debug("End VSACAPIServiceImpl updateAllInMeasureXml :");
     }
 
+
     @Override
     public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
-        SaveMeasureResult result = new SaveMeasureResult();
+        SaveMeasureResult result = null;
         String measureId = model.getId();
+
         try {
+            result = validate(model);
+
+            if (!result.isSuccess()) {
+                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Validate: " + result.getFailureReason());
+                return result;
+            }
+
+            result = saveMeasureAtPackage(model);
+
+            if (!result.isSuccess()) {
+                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Package: " + result.getFailureReason());
+                return result;
+            }
+
+            ValidateMeasureResult measureExportValidation = createExports(measureId, null, shouldCreateArtifacts);
+
+            if (!measureExportValidation.isValid()) {
+                result.setSuccess(false);
+                result.setValidateResult(measureExportValidation);
+                result.setFailureReason(SaveMeasureResult.INVALID_CREATE_EXPORT);
+                log.warn("MeasureLibraryService::validateAndPackage - Invalid Create Exports: " + measureExportValidation.getValidationMessages());
+                return result;
+            }
+
+            auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
+            return result;
+        } catch (Exception e) {
+            if (result == null) {
+                result = new SaveMeasureResult();
+            }
+            log.error("MeasureLibraryService::validateAndPackage -> Error: " + e.getMessage(), e);
+            result.setSuccess(false);
+            return result;
+        }
+    }
+
+    private SaveMeasureResult validate(ManageMeasureDetailModel model) {
+        SaveMeasureResult result = new SaveMeasureResult();
+
+        try {
+            String measureId = model.getId();
             ValidateMeasureResult validateGroupResult = validateForGroup(model);
+
             if (!validateGroupResult.isValid()) {
                 result.setSuccess(false);
                 result.setValidateResult(validateGroupResult);
@@ -5559,29 +5614,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 log.error("MeasureLibraryService::validateAndPackage - Invalid Exports: " + validateExports.getValidationMessages());
                 return result;
             }
-
-            result = saveMeasureAtPackage(model);
-            if (!result.isSuccess()) {
-                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Package: " + result.getFailureReason());
-                return result;
-            }
-
-            ValidateMeasureResult measureExportValidation = createExports(measureId, null, shouldCreateArtifacts);
-            if (!measureExportValidation.isValid()) {
-                result.setSuccess(false);
-                result.setValidateResult(measureExportValidation);
-                result.setFailureReason(SaveMeasureResult.INVALID_CREATE_EXPORT);
-                log.warn("MeasureLibraryService::validateAndPackage - Invalid Create Exports: " + measureExportValidation.getValidationMessages());
-                return result;
-            }
-
-            auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
-            return result;
         } catch (Exception e) {
             log.error("MeasureLibraryService::validateAndPackage -> Error: " + e.getMessage(), e);
             result.setSuccess(false);
             return result;
         }
+
+
+        result.setSuccess(true);
+        return result;
     }
 
     @Override

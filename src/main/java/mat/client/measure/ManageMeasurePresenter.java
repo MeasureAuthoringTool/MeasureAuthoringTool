@@ -1388,9 +1388,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                                 boolean isMajor,
                                                 String version,
                                                 final boolean shouldPackage) {
-        String yesButtonText = MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName);
+        String messageText = MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName);
 
-        ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(yesButtonText, CONTINUE);
+        ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(messageText, CONTINUE);
 
         confirmationDialogBox.setConfirmationKeepObserver(new ConfirmationKeepObserver() {
             @Override

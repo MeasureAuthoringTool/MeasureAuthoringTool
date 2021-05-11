@@ -967,14 +967,16 @@ public class MessageDelegate {
     }
 
     public String getUnusedFhirElementsWarning(String name) {
-        return "There are included libraries, codes or value sets that are unused in measure " + name + ". " +
+        return "There are included libraries, codes or value sets that are unused in measure " + name + "." +
+                "<br/><br/>" +
                 "Select Continue to have the MAT remove these unused elements, " +
                 "Keep to retain the unused elements " +
                 "or Cancel to stop the version process.";
     }
 
     public String getUnusedFhirElementsWarningStandAlone(String name) {
-        return "There are included libraries that are unused in library " + name + ". " +
+        return "There are included libraries that are unused in library " + name + "." +
+                "<br/><br/>" +
                 "Select Continue to have the MAT remove these unused elements, " +
                 "Keep to retain the unused elements " +
                 "or Cancel to stop the version process.";

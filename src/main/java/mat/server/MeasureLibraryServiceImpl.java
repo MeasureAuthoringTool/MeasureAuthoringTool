@@ -2034,7 +2034,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
         String measureXml = measureXmlModel.getXml();
 
-
         if (shouldPackage) {
             SaveMeasureResult validatePackageResult = validate(getMeasure(measureId));
 

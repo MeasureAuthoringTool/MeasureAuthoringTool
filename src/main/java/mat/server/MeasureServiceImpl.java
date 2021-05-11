@@ -42,8 +42,8 @@ import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import mat.vsacmodel.ValueSet;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -144,8 +144,18 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
-        return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries);
+    public SaveMeasureResult saveFinalizedVersion(String measureId,
+                                                  boolean isMajor,
+                                                  String version,
+                                                  boolean shouldPackage,
+                                                  boolean ignoreUnusedLibraries,
+                                                  boolean keepAll) {
+        return this.getMeasureLibraryService().saveFinalizedVersion(measureId,
+                isMajor,
+                version,
+                shouldPackage,
+                ignoreUnusedLibraries,
+                keepAll);
     }
 
     @Override

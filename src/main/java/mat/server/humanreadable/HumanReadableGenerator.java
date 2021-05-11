@@ -154,6 +154,7 @@ public class HumanReadableGenerator {
                     model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
                     model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
 
+                    // Retrieve Terminology info from microservices/HAPI.
                     updateFhirValuesetsCodesystemsDataReqs(model, measureId);
 
                     if ("decrease".equals(model.getMeasureInformation().getImprovementNotation())) {
@@ -652,7 +653,7 @@ public class HumanReadableGenerator {
             populations = sortPopulations(populations);
 
             String displayName = "Population Criteria " + populationCriteriaNumber;
-            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue();
+            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue().strip();
             HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber, scoreUnit);
             groups.add(populationCriteria);
         }

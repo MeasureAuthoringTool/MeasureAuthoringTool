@@ -1,7 +1,5 @@
 package mat.server.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.FhirMeasurePackageResult;
@@ -179,7 +177,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
     }
 
-    private String generateSimpleXML(final Measure measure, MeasureXML measureXML, final List<ValueSet> ValueSetList) throws Exception {
+    private String generateSimpleXML(final Measure measure, MeasureXML measureXML) {
         String exportedXML = "";
 
         if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
@@ -206,7 +204,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         saveMeasureXml(xmlModel);
         measureXML = measureXMLDAO.findForMeasure(measureId);
 
-        final String simpleXML = generateSimpleXML(measure, measureXML, ValueSetList);
+        final String simpleXML = generateSimpleXML(measure, measureXML);
         final ExportResult exportResult = eMeasureService.exportMeasureIntoSimpleXML(measure.getId(), simpleXML, ValueSetList);
 
         MeasureExport export = measureExportDAO.findByMeasureId(measureId);
@@ -249,12 +247,15 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
         if (measure.isFhirMeasure()) {
             measureExportDAO.save(export);
-            PushValidationResult errorResult = fhirMeasureService.push(measureId);
+
+            // Persist measure in HAPI.
+            PushValidationResult errorResult = pushToHapi(export, measureId, releaseVersion);
             if (errorResult != null && !errorResult.isValid()) {
                 logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
                 return errorResult.getFhirValidationResults();
             }
 
+            // FHIR Bundle packaging is then a fairly straightforward retrieve from HAPI.
             FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
             export.setCql(pkg.getMeasureLibCql());
             export.setElmXml(pkg.getMeasureLibElmXml()); //elm xml
@@ -273,7 +274,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                 libExport.setElmXml(pkg.getMeasureLibElmXml());
                 libraryExportDao.save(libExport);
             }
-            export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
         } else {
             export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
             export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
@@ -282,6 +282,47 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         }
         measureExportDAO.save(export);
         return null;
+    }
+
+    /**
+     * Handle the circular dependency between HAPI and Human Readable generation.
+     *
+     * MAT uses the FHIR Terminology stored in HAPI (FHIR micro services) to generate the HR.
+     * FHIR micro services needs the HR to properly set the Measure Resource's text element for cqfm-publishable compliance.
+     *
+     * Run the push to HAPI twice. Once before generating the HR, then again after generation and saving the HR to the db.
+     *
+     * @param export MeasureExport - holds the generated artifacts for packaging.
+     * @param measureId - The internal ID of the Measure being packaged.
+     * @param releaseVersion - The MAT version performing the packaging.
+     * @return PushValidationResult - contains a list of validation results.
+     */
+    private PushValidationResult pushToHapi(MeasureExport export, String measureId, String releaseVersion) {
+        /*
+         Persist Measure to HAPI so it can be used in generating the Human Readable. The stored Measure Resource
+            is non-compliant with cqfm-publishable profile as it is missing its text element content,
+            which comes from the Human Readable. Circular Dependency!
+        */
+        PushValidationResult errorResult = fhirMeasureService.push(measureId);
+        if (errorResult != null && !errorResult.isValid()) {
+            logger.info("MeasurePackageServiceImpl::PushValidationResult from /pushMeasure" + errorResult);
+            return errorResult;
+        }
+
+        // Generate the Human Readable, pulling the terminology info from HAPI.
+        export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
+        // Persist the generated Human Readable to the DB.
+        // FHIR micro services will use it to generate the Narrative Resource for the Measure Resource's text element.
+        measureExportDAO.saveAndFlush(export);
+
+        /*
+         Re-push to sync the Measure/Library Resources stored in HAPI and the packaged Human Readable.
+
+         During the 2nd push, FHIR micro services will pull the new Human Readable from the DB to
+            generate a Narrative Resource that is then set to the Measure Resource's text element
+            and persisted to HAPI.
+        */
+        return fhirMeasureService.push(measureId);
     }
 
     @Override
@@ -331,13 +372,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public void save(final Measure measurePackage) {
-        if (measurePackage.getOwner() == null) {
-            if (LoggedInUserUtil.getLoggedInUser() != null) {
-                final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-                measurePackage.setOwner(currentUser);
-            }
+        if (measurePackage.getOwner() == null
+                && LoggedInUserUtil.getLoggedInUser() != null) {
+            final User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+            measurePackage.setOwner(currentUser);
         }
-
         measureDAO.save(measurePackage);
     }
 
@@ -497,7 +536,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         try {
             for (int i = 0; i < model.getNumberOfRows(); i++) {
                 final MeasureShareDTO dto = model.get(i);
-                if ((dto.getShareLevel() != null) && !"".equals(dto.getShareLevel())) {
+                if (dto.getShareLevel() != null && !"".equals(dto.getShareLevel())) {
                     final User user = userDAO.find(dto.getUserId());
                     final ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
                     measureShare = null;
@@ -508,7 +547,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                         }
                     }
 
-                    if ((measureShare == null) && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+                    if (measureShare == null && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
                         recordShareEvent = true;
                         measureShare = new MeasureShare();
                         measureShare.setMeasure(measureDAO.find(model.getMeasureId()));

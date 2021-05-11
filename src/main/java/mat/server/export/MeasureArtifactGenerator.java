@@ -24,7 +24,7 @@ public class MeasureArtifactGenerator {
 			logger.error("getHQMFArtifact: " + e.getMessage());
 		}
 
-		return exportResult != null ? exportResult.export : null;
+		return exportResult != null ? exportResult.getExport() : null;
 	}
 
 
@@ -36,7 +36,7 @@ public class MeasureArtifactGenerator {
 			logger.error("getHumanReadableArtifact: " + e.getMessage());
 		}
 
-		return exportResult != null ? exportResult.export : null;
+		return exportResult != null ? exportResult.getExport() : null;
 	}
 
 	public static String getCQLArtifact(final String id) {
@@ -47,7 +47,7 @@ public class MeasureArtifactGenerator {
 			logger.error("getCQLArtifact: " + e.getMessage());
 		}
 
-		return exportResult != null ? exportResult.export : null;
+		return exportResult != null ? exportResult.getExport() : null;
 	}
 
 	public static String getELMArtifact(final String id) {
@@ -58,7 +58,7 @@ public class MeasureArtifactGenerator {
 			logger.error("getELMArtifact: " + e.getMessage());
 		}
 
-		return exportResult != null ? exportResult.export : null;
+		return exportResult != null ? exportResult.getExport() : null;
 	}
 
 	public static String getJSONArtifact(final String id) {
@@ -69,6 +69,6 @@ public class MeasureArtifactGenerator {
 			logger.error("getJSONArtifact: " + e.getMessage());
 		}
 
-		return exportResult != null ? exportResult.export : null;
+		return exportResult != null ? exportResult.getExport() : null;
 	}
 }

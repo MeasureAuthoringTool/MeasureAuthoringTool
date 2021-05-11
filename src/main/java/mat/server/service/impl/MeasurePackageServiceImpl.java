@@ -1,7 +1,5 @@
 package mat.server.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.FhirMeasurePackageResult;
@@ -216,7 +214,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         }
 
         export.setSimpleXML(simpleXML);
-        export.setCodeListBarr(exportResult.wkbkbarr);
+        export.setCodeListBarr(exportResult.getWkbkbarr());
         return export;
     }
 
@@ -620,7 +618,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         String humanReadableHTML = "";
         try {
             final ExportResult exportResult = eMeasureService.getHumanReadableForNode(measureId, populationSubXML);
-            humanReadableHTML = exportResult.export;
+            humanReadableHTML = exportResult.getExport();
         } catch (final Exception e) {
             e.printStackTrace();
         }

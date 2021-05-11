@@ -11,23 +11,23 @@ import java.util.List;
 public class ExportResult {
 	private String cqlLibraryName;
 
-	public String measureName;
+	private String measureName;
 
 	private String valueSetName;
 
-	public String packageDate;
+    private String packageDate;
 
-	public String export;
+    private String export;
 
-	public List<ExportResult> includedCQLExports = new ArrayList<>();
+    private List<ExportResult> includedCQLExports = new ArrayList<>();
 
-	public byte[] wkbkbarr;
+    private byte[] wkbkbarr;
 
-	public byte[] zipbarr;
+    private byte[] zipbarr;
 
-	private String lastModifiedDate;
+    private String lastModifiedDate;
 
-	private String cqlLibraryVersion;
+    private String cqlLibraryVersion;
 
-	private String cqlLibraryModelVersion;
+    private String cqlLibraryModelVersion;
 }

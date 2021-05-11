@@ -303,8 +303,8 @@ public class ExportServlet extends HttpServlet {
 
             resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
             resp.setContentType(APPLICATION_ZIP);
-            resp.getOutputStream().write(export.zipbarr);
-            export.zipbarr = null;
+            resp.getOutputStream().write(export.getZipbarr());
+            export.setZipbarr(null);
         } else {
             if (SAVE.equals(type)) {
                 if (CQL_FILENAME.equals(fileNameExtension)) {
@@ -321,7 +321,7 @@ public class ExportServlet extends HttpServlet {
                 resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             }
 
-            resp.getOutputStream().write(export.export.getBytes());
+            resp.getOutputStream().write(export.getExport().getBytes());
         }
     }
 
@@ -391,7 +391,7 @@ public class ExportServlet extends HttpServlet {
         logger.debug("Export servlet received node xml:" + nodeXML + " and Measure ID:" + id);
         ExportResult export = getService().getHumanReadableForNode(id, nodeXML);
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
-        resp.getOutputStream().println(export.export);
+        resp.getOutputStream().println(export.getExport());
     }
 
     private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
@@ -400,9 +400,9 @@ public class ExportServlet extends HttpServlet {
 
         resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
         resp.setContentType(APPLICATION_ZIP);
-        resp.getOutputStream().write(export.zipbarr);
+        resp.getOutputStream().write(export.getZipbarr());
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        export.zipbarr = null;
+        export.setZipbarr(null);
     }
 
     private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
@@ -410,9 +410,9 @@ public class ExportServlet extends HttpServlet {
         var export = getService().getEMeasureZIP(id, exportDate);
         resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
         resp.setContentType(APPLICATION_ZIP);
-        resp.getOutputStream().write(export.zipbarr);
+        resp.getOutputStream().write(export.getZipbarr());
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        export.zipbarr = null;
+        export.setZipbarr(null);
     }
 
     private void exportCodeListXLS(HttpServletResponse resp, String id, Measure measure) throws Exception {
@@ -424,11 +424,11 @@ public class ExportServlet extends HttpServlet {
 
         String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "-");
         resp.setHeader(CONTENT_DISPOSITION, FileNameUtility.replaceUnderscores(ATTACHMENT_FILENAME + FileNameUtility
-                .getEmeasureXLSName(export.measureName + "-" + currentReleaseVersion, export.packageDate)));
+                .getEmeasureXLSName(export.getMeasureName() + "-" + currentReleaseVersion, export.getPackageDate())));
         resp.setContentType("application/vnd.ms-excel");
-        resp.getOutputStream().write(export.wkbkbarr);
+        resp.getOutputStream().write(export.getWkbkbarr());
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        export.wkbkbarr = null;
+        export.setWkbkbarr(null);
     }
 
     private ExportResult getHQMFExportForMeasure(String measureId, String currentReleaseVersion) throws Exception {
@@ -454,7 +454,7 @@ public class ExportServlet extends HttpServlet {
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        resp.getOutputStream().write(export.export.getBytes());
+        resp.getOutputStream().write(export.getExport().getBytes());
     }
 
 
@@ -471,7 +471,7 @@ public class ExportServlet extends HttpServlet {
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        resp.getOutputStream().write(export.export.getBytes());
+        resp.getOutputStream().write(export.getExport().getBytes());
     }
 
     private void exportSimpleXML(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
@@ -482,7 +482,7 @@ public class ExportServlet extends HttpServlet {
             }
             resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
             getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-            resp.getOutputStream().write(export.export.getBytes());
+            resp.getOutputStream().write(export.getExport().getBytes());
         }
     }
 

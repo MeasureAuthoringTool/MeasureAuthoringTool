@@ -9,7 +9,6 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
-import mat.model.clause.ModelTypeHelper;
 import mat.server.export.ExportResult;
 import mat.server.logging.LogFactory;
 import mat.shared.FileNameUtility;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -84,27 +82,11 @@ public class ZipPackager {
         zip.closeEntry();
     }
 
-    /**
-     * Creates the bulk export zip.
-     *
-     * @param emeasureName    the emeasure name
-     * @param exportDate      the export date
-     * @param wkbkbarr        the wkbkbarr
-     * @param emeasureXMLStr  the emeasure xml str
-     * @param emeasureHTMLStr the emeasure html str
-     * @param emeasureXSLUrl  the emeasure xsl url
-     * @param packageDate     the package date
-     * @param simpleXmlStr    the simple xml str
-     * @param filesMap        the files map
-     * @param seqNum          the seq num
-     * @throws Exception the exception
-     */
-    public void createBulkExportZip(String emeasureName, Date exportDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-                                    String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult) throws Exception {
-
-        FileNameUtility fnu = new FileNameUtility();
+    public void createBulkExportZip(String emeasureXMLStr, String emeasureHTMLStr,
+                                    String emeasureXSLUrl, Map<String, byte[]> filesMap,
+                                    String releaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult,
+                                    ExportResult jsonExportResult, Measure measure) throws Exception {
         try {
-
             URL u = new URL(emeasureXSLUrl);
             int contentLength = u.openConnection().getContentLength();
             InputStream openStream = u.openStream();
@@ -120,17 +102,17 @@ public class ZipPackager {
                 releaseVersion = releaseVersion.replace(".", "-");
             }
             log.debug("Release version zip " + releaseVersion);
-            parentPath = replaceUnderscores(fnu.getParentPath(seqNum + "-" + emeasureName + "-" + releaseVersion));
-            emeasureXSLPath = replaceUnderscores(parentPath + File.separator + "xslt" + File.separator + "eMeasure.xsl");
-            emeasureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + releaseVersion));
-            emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion));
+            parentPath = FileNameUtility.getExportFileName(measure);
+            emeasureXSLPath = replaceUnderscores(parentPath + File.separator + "xslt" + File.separator + "eMeasure.xsl"); //Todo Rohit What the heck, why do users download xsl
+            emeasureXMLPath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".xml";
+            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".html";
 
             filesMap.put(emeasureXSLPath, emeasureXSLBarr);
             filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
             filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 
             if (MatContext.get().isCQLMeasure(releaseVersion)) {
-                addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+                addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult, measure);
             }
 
         } catch (Exception e) {
@@ -240,42 +222,20 @@ public class ZipPackager {
         return result;
     }
 
-    /**
-     * Creates the bulk export zip.
-     *
-     * @param emeasureName          the emeasure name
-     * @param wkbkbarr              the wkbkbarr
-     * @param emeasureXMLStr        the emeasure xml str
-     * @param emeasureHTMLStr       the emeasure html str
-     * @param packageDate           the package date
-     * @param simpleXmlStr          the simple xml str
-     * @param filesMap              the files map
-     * @param seqNum                the seq num
-     * @param currentReleaseVersion
-     * @param elmExportResult
-     * @param jsonExportResult
-     * @throws Exception the exception
-     */
-    public void createBulkExportZip(String emeasureName, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-                                    String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum,
+    public void createBulkExportZip(String emeasureXMLStr, String emeasureHTMLStr, Map<String, byte[]> filesMap,
                                     String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult,
                                     ExportResult jsonExportResult, String parentPath, MeasureExport measureExport) throws Exception {
         try {
-            boolean isCQLMeasure = false;
             String emeasureHumanReadablePath = "";
-            String emeasureXMLPath = "";
-            isCQLMeasure = MatContext.get().isCQLMeasure(currentReleaseVersion);
+            Measure measure = measureExport.getMeasure();
 
-            if (currentReleaseVersion.contains(".")) {
-                currentReleaseVersion = currentReleaseVersion.replace(".", "-");
-            }
-            if (!ModelTypeHelper.isFhir(measureExport.getMeasure().getMeasureModel())) {
-                emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "-" + currentReleaseVersion));
-                emeasureXMLPath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "-" + currentReleaseVersion));
+            if (measure.isQdmMeasure()) {
+                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".html";
+                String emeasureXMLPath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".xml";
                 filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 
-                if (isCQLMeasure) {
-                    addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+                if (MatContext.get().isCQLMeasure(currentReleaseVersion)) {
+                    addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult, measure);
                 }
             } else {
                 String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
@@ -294,60 +254,47 @@ public class ZipPackager {
 
     }
 
-    /**
-     * @param filesMap
-     * @param cqlExportResult
-     * @param elmExportResult
-     * @param parentPath
-     * @param jsonExportResult
-     */
     private void addVersion5Exports(Map<String, byte[]> filesMap,
                                     ExportResult cqlExportResult, ExportResult elmExportResult,
-                                    String parentPath, ExportResult jsonExportResult) {
+                                    String parentPath, ExportResult jsonExportResult, Measure measure) {
 
-        if (cqlExportResult.includedCQLExports.size() > 0) {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql");
-            filesMap.put(filePath, cqlExportResult.export.getBytes());
+        if (!cqlExportResult.getIncludedCQLExports().isEmpty()) {
+            String filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(cqlExportResult, measure) + "." + "cql";
+            filesMap.put(filePath, cqlExportResult.getExport().getBytes());
 
             for (ExportResult includedResult : cqlExportResult.getIncludedCQLExports()) {
-                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "cql");
-                filesMap.put(filePath, includedResult.export.getBytes());
+                filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(includedResult, measure) + "." + "cql";
+                filesMap.put(filePath, includedResult.getExport().getBytes());
             }
         } else {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "cql");
-            filesMap.put(filePath, cqlExportResult.export.getBytes());
+            String filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(cqlExportResult, measure) + "." + "cql";
+            filesMap.put(filePath, cqlExportResult.getExport().getBytes());
         }
 
-        if (elmExportResult.includedCQLExports.size() > 0) {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml");
-            filesMap.put(filePath, elmExportResult.export.getBytes());
+        if (!elmExportResult.getIncludedCQLExports().isEmpty()) {
+            String filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(elmExportResult, measure) + "." + "xml";
+            filesMap.put(filePath, elmExportResult.getExport().getBytes());
 
             for (ExportResult includedResult : elmExportResult.getIncludedCQLExports()) {
-                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "xml");
-                filesMap.put(filePath, includedResult.export.getBytes());
+                filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(includedResult, measure) + "." + "xml";
+                filesMap.put(filePath, includedResult.getExport().getBytes());
             }
         } else {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml");
-            filesMap.put(filePath, elmExportResult.export.getBytes());
+            String filePath = replaceUnderscores(parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(elmExportResult, measure) + "." + "xml");
+            filesMap.put(filePath, elmExportResult.getExport().getBytes());
         }
 
-        if (jsonExportResult.includedCQLExports.size() > 0) {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json");
-            filesMap.put(filePath, jsonExportResult.export.getBytes());
+        if (!jsonExportResult.getIncludedCQLExports().isEmpty()) {
+            String filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(jsonExportResult, measure) + "." + "json";
+            filesMap.put(filePath, jsonExportResult.getExport().getBytes());
 
             for (ExportResult includedResult : jsonExportResult.getIncludedCQLExports()) {
-                filePath = replaceUnderscores(parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "json");
-                filesMap.put(filePath, includedResult.export.getBytes());
+                filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(includedResult, measure) + "." + "json";
+                filesMap.put(filePath, includedResult.getExport().getBytes());
             }
         } else {
-            String filePath = "";
-            filePath = replaceUnderscores(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json");
-            filesMap.put(filePath, jsonExportResult.export.getBytes());
+            String filePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(jsonExportResult, measure) + "." + "json";
+            filesMap.put(filePath, jsonExportResult.getExport().getBytes());
         }
     }
 
@@ -366,7 +313,7 @@ public class ZipPackager {
 
             zip.close();
             ret = baos.toByteArray();
-            export.zipbarr = ret;
+            export.setZipbarr(ret);
         } catch (Exception er) {
             er.printStackTrace();
         }
@@ -385,11 +332,11 @@ public class ZipPackager {
 
         String cqlFilePath = measure.isFhirMeasure() ? replaceUnderscores (parentPath + File.separator + LIBRARY + "-" + export.getCqlLibraryName() + "." + extension)
                 : parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(export, measure) + "." + extension;
-        addBytesToZip(cqlFilePath, export.export.getBytes(), zip);
+        addBytesToZip(cqlFilePath, export.getExport().getBytes(), zip);
 
         for (ExportResult includedResult : export.getIncludedCQLExports()) {
             cqlFilePath = parentPath + File.separator + FileNameUtility.getExportCqlLibraryFileName(includedResult, measure) + "." + extension;
-            addBytesToZip(cqlFilePath, includedResult.export.getBytes(), zip);
+            addBytesToZip(cqlFilePath, includedResult.getExport().getBytes(), zip);
         }
     }
 

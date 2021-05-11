@@ -126,7 +126,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			throw new BonnieServerException();
 		}
 
-		byte[] zipFileContents = export.zipbarr;
+		byte[] zipFileContents = export.getZipbarr();
 		String fileName = FileNameUtility.getExportBundleZipName(measure);
 		String calculationType = measure.getPatientBased() ? "patient" : "episode";
 		String vsacTicketGrantingTicket = vsacTicket.getTicket();

@@ -34,9 +34,6 @@ public class FileNameUtility {
                 replacePeriods(exportResult.getCqlLibraryModelVersion());
     }
 
-    /*replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + "-v" +
-    replacePeriods(exportResult.getCqlLibraryVersion()) + "-" + measure.getMeasureModel() + "-" +
-    replacePeriods(exportResult.getCqlLibraryModelVersion());*/
     public static String replaceUnderscores(String s) {
         return s.replace('_', '-');
     }
@@ -54,14 +51,6 @@ public class FileNameUtility {
         return name.replaceAll("\\W", "") + "-" + packageDate + ".xls";
     }
 
-    public static String getZipName(String name) {
-        return name.replaceAll("\\W", "") + "-Artifacts.zip";
-    }
-
-    public static String getSimpleXMLName(String name) {
-        return name.replaceAll("\\W", "") + "-SimpleXML.xml";
-    }
-
     public String getParentPath(String name) {
         return name.replaceAll("\\W", "") + "-Artifacts";
     }
@@ -70,7 +59,7 @@ public class FileNameUtility {
         return name.replaceAll("\\W", "") + "-HumanReadable.html";
     }
 
-    public static String getBulkZipName(String name) {
+    public static String getBulkExportZipName(String name) {
         return name.replaceAll("\\W", "") + "-Artifacts.zip";
     }
 

@@ -23,6 +23,7 @@ public class FileNameUtility {
                 getMeasureVersion(measure) + "-" + measure.getMeasureModel() + "-" + getModelVersion(measure);
     }
 
+    // exportResult.getCqlLibraryName() includes cqlLibraryName+-v+libraryVersion
     public static String getExportCqlLibraryFileName(ExportResult exportResult, Measure measure) {
         return replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + "-" + measure.getMeasureModel() + "-" +
                 replacePeriods(exportResult.getCqlLibraryModelVersion());

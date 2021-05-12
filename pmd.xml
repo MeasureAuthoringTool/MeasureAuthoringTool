@@ -13,6 +13,7 @@
    <include-pattern>.*/mat/server/hqmf/qdm_5_6/.*</include-pattern>
    <include-pattern>.*/mat/server/humanreadable/.*</include-pattern>
    <include-pattern>.*/mat/server/service/impl/MeasurePackageServiceImpl.java</include-pattern>
+   <include-pattern>.*/mat/server/CQLServiceImpl.java</include-pattern>
 
    <rule ref="category/java/bestpractices.xml">
       <exclude name="AbstractClassWithoutAbstractMethod"/>

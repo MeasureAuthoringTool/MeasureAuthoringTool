@@ -45,7 +45,11 @@ public interface CQLLibraryService extends RemoteService {
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId,
+											  boolean isMajor,
+											  String version,
+											  boolean ignoreUnusedLibraries,
+											  boolean keepAll);
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException;
 

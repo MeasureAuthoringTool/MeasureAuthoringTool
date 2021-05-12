@@ -6,4 +6,6 @@ import mat.model.clause.MeasureExport;
 public interface MeasureExportDAO extends IDAO<MeasureExport, String> {
 
 	MeasureExport findByMeasureId(String measureId);
+
+    void saveAndFlush(MeasureExport me);
 }

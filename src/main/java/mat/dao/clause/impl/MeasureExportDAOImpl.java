@@ -34,4 +34,11 @@ public class MeasureExportDAOImpl extends GenericDAO<MeasureExport, String> impl
 		return !results.isEmpty() ? results.get(0) : null;
 	}
 
+	public void saveAndFlush(MeasureExport me) {
+		if (isEmpty(me)){ return;}
+		final Session session = getSessionFactory().getCurrentSession();
+		session.saveOrUpdate(me);
+		session.flush();
+		session.clear();
+	}
 }

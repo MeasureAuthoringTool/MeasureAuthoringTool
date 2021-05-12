@@ -141,13 +141,7 @@ public class ConfirmationDialogBox {
 
 
         ModalFooter modalFooter = new ModalFooter();
-        ButtonToolBar buttonToolBar = new ButtonToolBar();
-        yesButton.setSize(ButtonSize.SMALL);
-        noButton.setSize(ButtonSize.SMALL);
-        yesButton.setDataDismiss(ButtonDismiss.MODAL);
-        noButton.setDataDismiss(ButtonDismiss.MODAL);
-        buttonToolBar.add(yesButton);
-        buttonToolBar.add(noButton);
+        ButtonToolBar buttonToolBar = createButtonToolBar();
 
         modalFooter.add(buttonToolBar);
 
@@ -156,6 +150,17 @@ public class ConfirmationDialogBox {
         panel.add(modalFooter);
         panel.getElement().focus();
         panel.show();
+    }
+
+    protected ButtonToolBar createButtonToolBar() {
+        ButtonToolBar buttonToolBar = new ButtonToolBar();
+        yesButton.setSize(ButtonSize.SMALL);
+        noButton.setSize(ButtonSize.SMALL);
+        yesButton.setDataDismiss(ButtonDismiss.MODAL);
+        noButton.setDataDismiss(ButtonDismiss.MODAL);
+        buttonToolBar.add(yesButton);
+        buttonToolBar.add(noButton);
+        return buttonToolBar;
     }
 
     private void setMargins(MessageAlert messageAlert) {

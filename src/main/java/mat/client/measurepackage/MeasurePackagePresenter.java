@@ -529,7 +529,7 @@ public class MeasurePackagePresenter implements MatPresenter {
         currentDetail.setToComparePackageClauses(dbPackageClauses);
 
         if( view.getPackageGroupingWidget().getUcumTextBox() != null) {
-            currentDetail.setUcum(view.getPackageGroupingWidget().getUcumTextBox().getText());
+            currentDetail.setUcum(view.getPackageGroupingWidget().getUcumTextBox().getText().trim());
         } else {
             currentDetail.setUcum(null);
         }

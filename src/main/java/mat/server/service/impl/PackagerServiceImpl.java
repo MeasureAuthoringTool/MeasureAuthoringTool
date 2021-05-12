@@ -825,7 +825,7 @@ public class PackagerServiceImpl implements PackagerService {
         List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses(), measure.getMeasureScoring());
         MeasurePackageSaveResult result = new MeasurePackageSaveResult();
 
-        if (StringUtils.isNotBlank(detail.getUcum())) {
+        if (StringUtils.isNotEmpty(detail.getUcum())) {
             validateUcum(detail.getUcum(), messages);
         }
 

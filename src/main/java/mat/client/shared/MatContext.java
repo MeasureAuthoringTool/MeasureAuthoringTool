@@ -236,6 +236,16 @@ public class MatContext implements IsSerializable {
     private Map<String, String> harpUserInfo = new HashMap<>();
     private String matVersion;
 
+    private String packageFailedMeasureId;
+
+    public String getPackageFailedMeasureId() {
+        return packageFailedMeasureId;
+    }
+
+    public void setPackageFailedMeasureId(String packageFailedMeasureId) {
+        this.packageFailedMeasureId = packageFailedMeasureId;
+    }
+
     public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();

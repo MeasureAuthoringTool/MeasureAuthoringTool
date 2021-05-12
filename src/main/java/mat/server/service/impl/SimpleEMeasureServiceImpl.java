@@ -451,7 +451,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
     private boolean isComposite(Node libNode) {
         return libNode.getAttributes().getNamedItem("isComponent") != null &&
-                ("true").equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
+                "true".equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
     }
 
     @Override
@@ -799,7 +799,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         Timestamp fdts = measure.getFinalizedDate();
 
         // 1 add finalizedDate field
-        if ((fdts != null) && !emeasureXMLStr.contains("<finalizedDate")) {
+        if (fdts != null && !emeasureXMLStr.contains("<finalizedDate")) {
             String fdstr = convertTimestampToString(fdts);
             String repee = "</measureDetails>";
             String repor = StringUtility.nl + "<finalizedDate value=\"" + fdstr + "\"/>" + StringUtility.nl + "</measureDetails>";

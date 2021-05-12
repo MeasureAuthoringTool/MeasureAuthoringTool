@@ -14,9 +14,18 @@ public class FileNameUtility {
                 getMeasureVersion(measure) + "-" + measure.getMeasureModel() + "-" + getModelVersion(measure) + ".zip";
     }
 
+    public static String getBulkExportZipName(String name) {
+        return name.replaceAll("\\W", "") + "-Artifacts.zip";
+    }
+
     public static String getExportFileName(Measure measure) {
         return replaceUnderscores(measure.getaBBRName()) + "-v" +
                 getMeasureVersion(measure) + "-" + measure.getMeasureModel() + "-" + getModelVersion(measure);
+    }
+
+    public static String getExportCqlLibraryFileName(ExportResult exportResult, Measure measure) {
+        return replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + "-" + measure.getMeasureModel() + "-" +
+                replacePeriods(exportResult.getCqlLibraryModelVersion());
     }
 
     private static String getModelVersion(Measure measure) {
@@ -27,11 +36,6 @@ public class FileNameUtility {
         String measureVersion = MeasureUtility.formatVersionText(measure.getVersion());
         return replacePeriods(measure.isDraft() ?
                 measureVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber())) : measureVersion);
-    }
-
-    public static String getExportCqlLibraryFileName(ExportResult exportResult, Measure measure) {
-        return replacePeriods(replaceUnderscores(exportResult.getCqlLibraryName())) + "-" + measure.getMeasureModel() + "-" +
-                replacePeriods(exportResult.getCqlLibraryModelVersion());
     }
 
     public static String replaceUnderscores(String s) {
@@ -57,10 +61,6 @@ public class FileNameUtility {
 
     public static String getEmeasureHumanReadableName(String name) {
         return name.replaceAll("\\W", "") + "-HumanReadable.html";
-    }
-
-    public static String getBulkExportZipName(String name) {
-        return name.replaceAll("\\W", "") + "-Artifacts.zip";
     }
 
     public static String getCSVFileName(String name, String currentTime) {

@@ -394,10 +394,10 @@ public class ExportServlet extends HttpServlet {
         resp.getOutputStream().println(export.getExport());
     }
 
+    /*Generates a zip and adds all measure artifacts to it.*/
     private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
         List<ComponentMeasure> componentMeasures = measure.getComponentMeasures();
         ExportResult export = getService().getCompositeExportResult(id, componentMeasures);
-
         resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
         resp.setContentType(APPLICATION_ZIP);
         resp.getOutputStream().write(export.getZipbarr());
@@ -405,6 +405,7 @@ public class ExportServlet extends HttpServlet {
         export.setZipbarr(null);
     }
 
+    /*Generates a zip and adds all measure artifacts to it.*/
     private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
             throws Exception {
         var export = getService().getEMeasureZIP(id, exportDate);
@@ -450,7 +451,7 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getHQMFExportForMeasure(id, currentReleaseVersion);
 
         if (SAVE.equals(type)) {
-            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + ".xml");
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + "-eCQM.xml");
         }
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);

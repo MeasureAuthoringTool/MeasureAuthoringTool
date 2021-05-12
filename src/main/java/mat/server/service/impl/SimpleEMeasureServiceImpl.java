@@ -635,6 +635,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         result.setMeasureName(measureDAO.find(measureId).getaBBRName());
         var measureExport = getMeasureExport(measureId);
         if (measureExport.getMeasure().getReleaseVersion().equals("v3")) {
+            // Measures with release version V3 are QDM/QDM and cannot be exported in MAT
             result.setZipbarr(getZipBarr(measureId, measureExport, measureExport.getMeasure().getReleaseVersion()));
         } else {
             var parentPath = FileNameUtility.getExportFileName(measureExport.getMeasure());
@@ -650,11 +651,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     public final ExportResult getCompositeExportResult(final String compositeMeasureId, List<ComponentMeasure> componentMeasures) throws Exception {
         MeasureExport compositeMeasureExport = getMeasureExport(compositeMeasureId);
         ExportResult result = new ExportResult();
-        result.setMeasureName(measureDAO.find(compositeMeasureId).getaBBRName());
+//        result.setMeasureName(measureDAO.find(compositeMeasureId).getaBBRName());
         result.setZipbarr(getCompositeZipBarr(compositeMeasureId, compositeMeasureExport, componentMeasures));
         return result;
     }
-
+    /*
+        1. For QDM measures, getZipBarr() generates eCQM, HR, json, elm and cql. It also generates json, elm and cql files for all included libraries if available.
+        2. This method is used to generate measure bundle, Composite measure bundle and component measures inside a composite measures.
+        3. For FHIR measures json, xml and HR are generated.
+    */
     public final void getZipBarr(final String measureId, final MeasureExport measureExport, final String parentPath, ZipOutputStream zip) throws Exception {
         String simpleXmlStr = measureExport.getSimpleXML();
 
@@ -680,23 +685,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 measureExport.getMeasure().getReleaseVersion(), parentPath, measureId, measureJsonBundle);
     }
 
-    /**
-     * Gets the zip barr.
-     *
-     * @param measureId         the measure id
-     * @param me                the me
-     * @param componentMeasures a list of component measures for the composite measure
-     * @return the zip barr
-     * @throws Exception the exception
-     */
-    public final byte[] getCompositeZipBarr(final String measureId, final MeasureExport me, List<ComponentMeasure> componentMeasures) throws Exception {
+    public final byte[] getCompositeZipBarr(final String measureId, final MeasureExport compositeMeasureExport, List<ComponentMeasure> componentMeasures) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(baos);
-        String parentSimpleXML = me.getSimpleXML();
+        String parentSimpleXML = compositeMeasureExport.getSimpleXML();
 
         //get composite file
-        String parentPath = FileNameUtility.getExportFileName(me.getMeasure());
-        getZipBarr(measureId, me, parentPath, zip);
+        String parentPath = FileNameUtility.getExportFileName(compositeMeasureExport.getMeasure());
+        getZipBarr(measureId, compositeMeasureExport, parentPath, zip);
         //get component files
         for (ComponentMeasure measure : componentMeasures) {
             String componentMeasureId = measure.getComponentMeasure().getId();

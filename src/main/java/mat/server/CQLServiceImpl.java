@@ -204,6 +204,7 @@ public class CQLServiceImpl implements CQLService {
         return result;
     }
 
+    @Override
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
         List<CQLError> errors = new ArrayList<>();
@@ -321,6 +322,7 @@ public class CQLServiceImpl implements CQLService {
         }
     }
 
+    @Override
     public List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> existingLibraryHistoryList, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure) {
         CQLLibraryHistory cqlLibraryHistory = new CQLLibraryHistory();
 
@@ -357,7 +359,7 @@ public class CQLServiceImpl implements CQLService {
     }
 
     private void updateLibraryComment(XmlProcessor processor, String libraryComment) {
-        libraryComment = StringUtils.left(libraryComment, COMMENTS_MAX_LENGTH);
+        String trimmedComment = StringUtils.left(libraryComment, COMMENTS_MAX_LENGTH);
         String xPathForCQLLibraryComment = "//cqlLookUp/libraryComment";
         try {
             Node commentsNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryComment);
@@ -366,13 +368,13 @@ public class CQLServiceImpl implements CQLService {
                 Node usingModelNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLUsingModel);
 
                 Element commentsElem = processor.getOriginalDoc().createElement("libraryComment");
-                commentsElem.setTextContent(libraryComment);
+                commentsElem.setTextContent(trimmedComment);
 
                 Node cqlNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp");
                 cqlNode.insertBefore(commentsElem, usingModelNode);
 
             } else {
-                commentsNode.setTextContent(libraryComment);
+                commentsNode.setTextContent(trimmedComment);
             }
 
         } catch (XPathExpressionException e) {
@@ -934,30 +936,33 @@ public class CQLServiceImpl implements CQLService {
                 String cqlOID = codeNode.getAttributes().getNamedItem("codeOID").getNodeValue();
                 String cqlCodeName = codeNode.getAttributes().getNamedItem("codeName").getNodeValue();
                 String codeSystemOID = codeNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
-                String codeSystemVersion = codeNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+
+                String codeSystemVersion = null;
+                if (codeNode.getAttributes().getNamedItem("codeSystemVersion") != null) {
+                    codeSystemVersion = codeNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+                }
+
                 if (!isCodeSystemUsedByAnotherCode(codeSystemOID, codeSystemVersion, toBeDeletedCodeId, xmlProcessor)) {
                     deleteCodeSystem(xmlProcessor, codeSystemOID, codeSystemVersion);
                 }
 
-                CQLCode cqlCode = new CQLCode();
-                cqlCode.setName(cqlCodeName);
-                cqlCode.setCodeOID(cqlOID);
-
                 Node parentNode = codeNode.getParentNode();
                 parentNode.removeChild(codeNode);
+
                 result.setSuccess(true);
                 result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
                 result.setCqlModel(CQLUtilityClass.getCQLModelFromXML(result.getXml()));
                 result.setCqlCodeList(getCQLCodes(id, isMeasure, result.getXml()).getCqlCodeList());
-                result.setCqlCode(cqlCode);
+
+                CQLCode cqlCode = new CQLCode();
+                cqlCode.setName(cqlCodeName);
+                cqlCode.setCodeOID(cqlOID);
+                result.setCqlCode(cqlCode); // Report deleted code to user
             } else {
                 logger.debug("Unable to find the selected Code element with id in deleteCode : " + toBeDeletedCodeId);
                 result.setSuccess(false);
             }
-        } catch (XPathExpressionException e) {
-            result.setSuccess(false);
-            logger.error("Error in method deleteCode: ", e);
-        } catch (MatException e) {
+        } catch (XPathExpressionException | MatException e) {
             result.setSuccess(false);
             logger.error("Error in method deleteCode: ", e);
         }
@@ -969,8 +974,13 @@ public class CQLServiceImpl implements CQLService {
 
     private void deleteCodeSystem(XmlProcessor xmlProcessor, String codeSystemOID, String codeSystemVersion)
             throws XPathExpressionException, MatException {
-        String xpathforCodeSystemNode = "//cqlLookUp//codeSystem[@codeSystem='" + codeSystemOID
-                + "' and @codeSystemVersion='" + codeSystemVersion + "']";
+        String xpathforCodeSystemNode;
+        if (codeSystemVersion == null) {
+            xpathforCodeSystemNode = "//cqlLookUp//codeSystem[@codeSystem='" + codeSystemOID + "']";
+        } else {
+            xpathforCodeSystemNode = "//cqlLookUp//codeSystem[@codeSystem='" + codeSystemOID
+                    + "' and @codeSystemVersion='" + codeSystemVersion + "']";
+        }
         Node codeSystemNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeSystemNode);
         if (codeSystemNode != null) {
             Node codeSystemParentNode = codeSystemNode.getParentNode();
@@ -983,24 +993,25 @@ public class CQLServiceImpl implements CQLService {
 
     private boolean isCodeSystemUsedByAnotherCode(String codeSystemOID, String codeSystemVersion,
                                                   String toBeDeletedCodeId, XmlProcessor xmlProcessor) throws XPathExpressionException {
-        boolean isCodeSystemUsed = false;
         String xpathforCodeNodes = "//cqlLookUp//code[@id!='" + toBeDeletedCodeId + "']";
         NodeList nodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xpathforCodeNodes);
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node curCodeNode = nodeList.item(i);
             if (curCodeNode != null) {
                 String curCodeSystemOID = curCodeNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
-                String curCodeSystemVersion = curCodeNode.getAttributes().getNamedItem("codeSystemVersion")
-                        .getNodeValue();
+                String curCodeSystemVersion = null;
+                if (curCodeNode.getAttributes().getNamedItem("codeSystemVersion") != null) {
+                    curCodeSystemVersion = curCodeNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+                }
+
                 if (codeSystemOID.equalsIgnoreCase(curCodeSystemOID)
-                        && curCodeSystemVersion.equals(codeSystemVersion)) {
-                    isCodeSystemUsed = true;
-                    break;
+                        && (curCodeSystemVersion != null && curCodeSystemVersion.equals(codeSystemVersion)
+                            || curCodeSystemVersion == null && codeSystemVersion == null)) {
+                    return true;
                 }
             }
         }
-
-        return isCodeSystemUsed;
+        return false;
     }
 
     @Override
@@ -1030,7 +1041,6 @@ public class CQLServiceImpl implements CQLService {
         return result;
     }
 
-
     @Override
     public SaveUpdateCQLResult getCQLData(String id, boolean isMeasure, String xmlString) {
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
@@ -1055,7 +1065,6 @@ public class CQLServiceImpl implements CQLService {
         }
 
         if (result.getCqlErrors().isEmpty() && !cqlModel.isFhir()) {
-            ;
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);
@@ -1245,7 +1254,7 @@ public class CQLServiceImpl implements CQLService {
         CQLDefinitionsWrapper wrapper = null;
         if (measureXmlModel != null) {
             wrapper = convertXmltoCQLDefinitionModel(measureXmlModel);
-            if ((wrapper.getCqlDefinitions() != null) && (wrapper.getCqlDefinitions().size() > 0)) {
+            if (wrapper.getCqlDefinitions() != null && wrapper.getCqlDefinitions().size() > 0) {
                 sortDefinitionsList(wrapper.getCqlDefinitions());
             }
         }
@@ -1447,6 +1456,7 @@ public class CQLServiceImpl implements CQLService {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql);
     }
 
+    @Override
     public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql, ValidationRequest req) {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql, req);
     }
@@ -1539,7 +1549,7 @@ public class CQLServiceImpl implements CQLService {
                                                         List<CQLError> expressionErrors) {
         for (CQLError cqlError : cqlErrors) {
             int errorStartLine = cqlError.getStartErrorInLine();
-            if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
+            if (errorStartLine >= startLine && errorStartLine <= endLine) {
                 if (cqlError.getStartErrorInLine() == startLine) {
                     cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine);
                 } else {
@@ -1572,7 +1582,8 @@ public class CQLServiceImpl implements CQLService {
             case "Parameter":
                 expressionList = parsedCQL.getCqlObject().getCqlParameterObjectList();
                 break;
-
+            default:
+                throw new IllegalStateException("Unexpected Expression Type: " + expressionType);
         }
 
         Optional<CQLExpressionObject> cqlExpressionObject = findExpressionObject(expressionName, expressionList);
@@ -1718,8 +1729,8 @@ public class CQLServiceImpl implements CQLService {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
         ValueSet ValueSet = valueSetTransferObject.getValueSet();
         // replace NBSP (U+00A0) with a space in FHIR Measures/Libraries
-        if ((valueSetTransferObject.getMeasureId() != null && measureDao.find(valueSetTransferObject.getMeasureId()).isFhirMeasure())
-                || (valueSetTransferObject.getCqlLibraryId() != null && cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId()).isFhirLibrary())) {
+        if (valueSetTransferObject.getMeasureId() != null && measureDao.find(valueSetTransferObject.getMeasureId()).isFhirMeasure()
+                || valueSetTransferObject.getCqlLibraryId() != null && cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId()).isFhirLibrary()) {
             qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName().replace("\u00A0", " "));
         } else {
             // QDM is unaffected by the nbsp char.
@@ -1809,20 +1820,20 @@ public class CQLServiceImpl implements CQLService {
             // edit codesystem
             codeSystem.setId(existingCodesystem.get().getId());
             model.getCodeSystemList().remove(existingCodesystem.get());
-            model.getCodeSystemList().add(codeSystem);
         } else {
             // new code system
 
-            if (model.getCodeSystemList().stream().filter(cs -> (cs.getCodeSystemName().equals(codeSystem.getCodeSystemName())
-                    && cs.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))).count() > 0) {
+            if (model.getCodeSystemList().stream().anyMatch(cs -> cs.getCodeSystemName().equals(codeSystem.getCodeSystemName())
+                    && cs.getCodeSystemVersion() != null // User supplied code system without specifying version info
+                    && cs.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))) {
                 logger.debug("::: CodeSystem Already added :::");
                 result.setSuccess(false);
                 return result;
             }
 
             codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-            model.getCodeSystemList().add(codeSystem);
         }
+        model.getCodeSystemList().add(codeSystem);
 
         result.setCqlModel(model);
         result.setSuccess(true);
@@ -1855,7 +1866,7 @@ public class CQLServiceImpl implements CQLService {
                 break;
             }
         }
-        logger.debug("checkForDuplicates Method Call End.Check resulted in :" + (isQDSExist));
+        logger.debug("checkForDuplicates Method Call End.Check resulted in :" + isQDSExist);
         return isQDSExist;
     }
 
@@ -1876,16 +1887,16 @@ public class CQLServiceImpl implements CQLService {
                         .setNodeValue(modifyWithDTO.getOriginalCodeListName());
                 newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName());
                 newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
-                if ((newNode.getAttributes().getNamedItem("codeSystemName") == null)
-                        && (modifyWithDTO.getCodeSystemName() != null)) {
+                if (newNode.getAttributes().getNamedItem("codeSystemName") == null
+                        && modifyWithDTO.getCodeSystemName() != null) {
                     Attr attrNode = processor.getOriginalDoc().createAttribute("codeSystemName");
                     attrNode.setNodeValue(modifyWithDTO.getCodeSystemName());
                     newNode.getAttributes().setNamedItem(attrNode);
-                } else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
-                        && (modifyWithDTO.getCodeSystemName() == null)) {
+                } else if (newNode.getAttributes().getNamedItem("codeSystemName") != null
+                        && modifyWithDTO.getCodeSystemName() == null) {
                     newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(null);
-                } else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
-                        && (modifyWithDTO.getCodeSystemName() != null)) {
+                } else if (newNode.getAttributes().getNamedItem("codeSystemName") != null
+                        && modifyWithDTO.getCodeSystemName() != null) {
                     newNode.getAttributes().getNamedItem("codeSystemName")
                             .setNodeValue(modifyWithDTO.getCodeSystemName());
                 }
@@ -1902,7 +1913,7 @@ public class CQLServiceImpl implements CQLService {
                 } else {
                     newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
                 }
-                if ((newNode.getAttributes().getNamedItem("suffix") == null)) {
+                if (newNode.getAttributes().getNamedItem("suffix") == null) {
                     if (modifyDTO.getSuffix() != null && !modifyDTO.getSuffix().isEmpty()) {
                         Attr attrNode = processor.getOriginalDoc().createAttribute("suffix");
                         attrNode.setNodeValue(modifyWithDTO.getSuffix());

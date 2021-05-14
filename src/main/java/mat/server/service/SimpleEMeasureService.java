@@ -26,7 +26,7 @@ public interface SimpleEMeasureService {
 	
 	ExportResult getValueSetXLS(String valueSetId) throws Exception;
 	
-	ExportResult getBulkExportZIP(String[] measureIds, Date[] exportDates) throws Exception;
+	ExportResult getBulkExportZIP(String[] measureIds) throws Exception;
 	
 	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString, List<ValueSet> ValueSetList) throws Exception;
 

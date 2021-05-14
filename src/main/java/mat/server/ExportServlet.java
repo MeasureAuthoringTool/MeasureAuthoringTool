@@ -310,7 +310,7 @@ public class ExportServlet extends HttpServlet {
                 if (CQL_FILENAME.equals(fileNameExtension)) {
                     resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
                 }
-                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportCqlLibraryFileName(export, measure) + "." + extension);
+                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFileName(measure) + "." + extension);
             }
 
             if (JSON_FILENAME.equals(fileNameExtension)) {

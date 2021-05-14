@@ -537,13 +537,10 @@ public class Measure {
 
     @Transient
     public String getMatVersion() {
-        String version = getVersion().toString();
-        String revision = getRevisionNumber().toString();
-
-        String[] split = version.split("\\.");
+        String[] split = getVersion().split("\\.");
 
         return "" + Integer.parseInt(split[0]) + "." +
                 Integer.parseInt(split[1]) + "." +
-                StringUtils.leftPad(revision, 3, '0');
+                StringUtils.leftPad(getRevisionNumber(), 3, '0');
     }
 }

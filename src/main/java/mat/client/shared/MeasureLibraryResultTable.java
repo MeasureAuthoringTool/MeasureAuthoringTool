@@ -1,6 +1,5 @@
 package mat.client.shared;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -12,7 +11,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.MultiSelectionModel;
-import mat.client.Mat;
+import mat.client.MainLayout;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
@@ -22,7 +21,6 @@ import mat.model.clause.ModelTypeHelper;
 import mat.shared.SafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -50,9 +48,7 @@ public class MeasureLibraryResultTable {
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
-        selectionModel.addSelectionChangeHandler(event -> {
-            gridToolbar.updateOnSelectionChanged(selectionModel.getSelectedSet());
-        });
+        selectionModel.addSelectionChangeHandler(event -> gridToolbar.updateOnSelectionChanged(selectionModel.getSelectedSet()));
         addToolbarHandlers(fireEvent);
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
@@ -134,37 +130,21 @@ public class MeasureLibraryResultTable {
 
     @VisibleForTesting
     void addToolbarHandlers(HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
-        gridToolbar.getVersionButton().addClickHandler(event -> {
-            onVersionButtonClicked(selectionModel);
-        });
+        gridToolbar.getVersionButton().addClickHandler(event -> onVersionButtonClicked(selectionModel));
 
-        gridToolbar.getHistoryButton().addClickHandler(event -> {
-            onHistoryButtonClicked(selectionModel);
-        });
+        gridToolbar.getHistoryButton().addClickHandler(event -> onHistoryButtonClicked(selectionModel));
 
-        gridToolbar.getEditOrViewButton().addClickHandler(event -> {
-            onEditViewButtonClicked(selectionModel, fireEvent);
-        });
+        gridToolbar.getEditOrViewButton().addClickHandler(event -> onEditViewButtonClicked(selectionModel, fireEvent));
 
-        gridToolbar.getShareButton().addClickHandler(event -> {
-            onShareButtonClicked(selectionModel);
-        });
+        gridToolbar.getShareButton().addClickHandler(event -> onShareButtonClicked(selectionModel));
 
-        gridToolbar.getCloneButton().addClickHandler(event -> {
-            onCloneButtonClicked(selectionModel);
-        });
+        gridToolbar.getCloneButton().addClickHandler(event -> onCloneButtonClicked(selectionModel));
 
-        gridToolbar.getExportButton().addClickHandler(event -> {
-            onExportButtonClicked(selectionModel);
-        });
+        gridToolbar.getExportButton().addClickHandler(event -> onExportButtonClicked(selectionModel));
 
-        gridToolbar.getFhirValidationButton().addClickHandler(event -> {
-            onFhirValidationButtonClicked(selectionModel);
-        });
+        gridToolbar.getFhirValidationButton().addClickHandler(event -> onFhirValidationButtonClicked(selectionModel));
 
-        gridToolbar.getConvertButton().addClickHandler(event -> {
-            onConvertClicked(selectionModel);
-        });
+        gridToolbar.getConvertButton().addClickHandler(event -> onConvertClicked(selectionModel));
     }
 
     @VisibleForTesting
@@ -185,7 +165,7 @@ public class MeasureLibraryResultTable {
     void onCloneButtonClicked(MultiSelectionModel<Result> selectionModel) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
             if (object.isClonable()) {
-                Mat.showLoadingMessage();
+                MainLayout.showLoadingMessage();
                 observer.onCloneClicked(object);
             }
         });
@@ -202,16 +182,12 @@ public class MeasureLibraryResultTable {
 
     @VisibleForTesting
     void onEditViewButtonClicked(MultiSelectionModel<Result> selectionModel, HasSelectionHandlers<Result> fireEvent) {
-        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-            SelectionEvent.fire(fireEvent, object);
-        });
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> SelectionEvent.fire(fireEvent, object));
     }
 
     @VisibleForTesting
     void onHistoryButtonClicked(MultiSelectionModel<Result> selectionModel) {
-        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-            observer.onHistoryClicked(object);
-        });
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> observer.onHistoryClicked(object));
     }
 
     @VisibleForTesting
@@ -225,16 +201,15 @@ public class MeasureLibraryResultTable {
 
     @VisibleForTesting
     void onFhirValidationButtonClicked(MultiSelectionModel<Result> selectionModel) {
-        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-            observer.onFhirValidationClicked(object);
-        });
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> observer.onFhirValidationClicked(object));
     }
 
     @VisibleForTesting
     void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
-        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
-            observer.onConvertMeasureFhir(object);
-        });
+        selectionModel.getSelectedSet().stream()
+                .filter(Result::isFhirConvertible)
+                .findFirst()
+                .ifPresent(object -> observer.onConvertMeasureFhir(object));
     }
 
     /**
@@ -289,9 +264,7 @@ public class MeasureLibraryResultTable {
                     }
                 };
 
-        selectColumn.setFieldUpdater((index, object, value) -> {
-            selectionModel.setSelected(object, value);
-        });
+        selectColumn.setFieldUpdater((index, object, value) -> selectionModel.setSelected(object, value));
 
         return selectColumn;
     }

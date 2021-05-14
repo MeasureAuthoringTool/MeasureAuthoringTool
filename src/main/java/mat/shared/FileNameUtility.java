@@ -33,7 +33,7 @@ public class FileNameUtility {
         return replacePeriods(measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
     }
 
-    private static String getMeasureVersion(Measure measure) {
+    public static String getMeasureVersion(Measure measure) {
         String measureVersion = MeasureUtility.formatVersionText(measure.getVersion());
         return replacePeriods(measure.isDraft() ?
                 measureVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber())) : measureVersion);

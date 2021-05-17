@@ -230,7 +230,6 @@ public class ZipPackager {
             Measure measure = measureExport.getMeasure();
 
             if (measure.isQdmMeasure()) {
-                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".html";
                 String emeasureXMLPath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + "-eCQM.xml";
                 filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 
@@ -239,13 +238,13 @@ public class ZipPackager {
                 }
             } else {
                 String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
-                String emeasureJsonBundlePath = replaceUnderscores(parentPath + File.separator + "measure-json-bundle.json");
-                String emeasureXmlBundlePath = replaceUnderscores(parentPath + File.separator + "measure-xml-bundle.xml");
-                emeasureHumanReadablePath = replaceUnderscores(parentPath + File.separator + "human-readable.html");
+                String emeasureJsonBundlePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".json";
+                String emeasureXmlBundlePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".xml";
 
                 filesMap.put(emeasureJsonBundlePath, measureJsonBundle.getBytes());
                 filesMap.put(emeasureXmlBundlePath, convertToXmlBundle(measureJsonBundle).getBytes());
             }
+            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getExportFileName(measure) + ".html";
             filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 
         } catch (Exception e) {
@@ -307,7 +306,6 @@ public class ZipPackager {
             ZipOutputStream zip = new ZipOutputStream(baos);
 
             String parentPath = FileNameUtility.getExportFileName(measure);
-//            parentPath = export.measureName + "-" + extension;
 
             addFileToZip(measure, export, parentPath, extension, zip);
 

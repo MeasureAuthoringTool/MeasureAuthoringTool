@@ -1016,7 +1016,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     @Override
     public ExportResult getMeasureBundleExportResult(MeasureExport measureExport, String fileType) {
         ExportResult exportResult = new ExportResult();
-        exportResult.setMeasureName(measureExport.getMeasure().getaBBRName());
+        Measure measure = measureExport.getMeasure();
+        exportResult.setMeasureName(measure.getaBBRName());
 
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
         exportResult.setExport(zp.buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson()));
@@ -1024,7 +1025,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         if (fileType.equals("xml")) {
             exportResult.setExport(zp.convertToXmlBundle(exportResult.getExport()));
         }
-        exportResult.setCqlLibraryName(measureExport.getMeasure().getCqlLibraryName());
+        exportResult.setCqlLibraryName(measure.getCqlLibraryName() + "-v" + FileNameUtility.getMeasureVersion(measure));
+        exportResult.setCqlLibraryModelVersion(measure.getModelVersion());
 
         return exportResult;
     }

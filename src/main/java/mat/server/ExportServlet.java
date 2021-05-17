@@ -299,9 +299,9 @@ public class ExportServlet extends HttpServlet {
 
         if (!export.getIncludedCQLExports().isEmpty()) {
             ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            zp.getCQLZipBarr(measure, export, extension);
+            zp.getCQLZipBarr(measure, export, extension, fileNameExtension);
 
-            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportBundleZipName(measure));
+            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getExportFolderNameWithExtension(measure, fileNameExtension) + ".zip");
             resp.setContentType(APPLICATION_ZIP);
             resp.getOutputStream().write(export.getZipbarr());
             export.setZipbarr(null);

@@ -3,6 +3,7 @@ package mat.shared;
 import mat.model.clause.Measure;
 import mat.server.export.ExportResult;
 import mat.server.util.MeasureUtility;
+
 import java.text.DecimalFormat;
 
 public class FileNameUtility {
@@ -10,8 +11,7 @@ public class FileNameUtility {
     private static final DecimalFormat revisionFormat = new DecimalFormat("000");
 
     public static String getExportBundleZipName(Measure measure) {
-        return replaceUnderscores(measure.getaBBRName()) + "-v" +
-                getMeasureVersion(measure) + "-" + measure.getMeasureModel() + "-" + getModelVersion(measure) + ".zip";
+        return getExportFileName(measure) + ".zip";
     }
 
     public static String getBulkExportZipName(String name) {
@@ -37,6 +37,10 @@ public class FileNameUtility {
         String measureVersion = MeasureUtility.formatVersionText(measure.getVersion());
         return replacePeriods(measure.isDraft() ?
                 measureVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber())) : measureVersion);
+    }
+
+    public static String getExportFolderNameWithExtension(Measure measure, String fileNameExtension) {
+        return getExportFileName(measure) + "-" + fileNameExtension;
     }
 
     public static String replaceUnderscores(String s) {

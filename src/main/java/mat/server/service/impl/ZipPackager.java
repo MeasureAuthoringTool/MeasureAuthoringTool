@@ -298,14 +298,14 @@ public class ZipPackager {
     }
 
 
-    public byte[] getCQLZipBarr(Measure measure, ExportResult export, String extension) {
+    public byte[] getCQLZipBarr(Measure measure, ExportResult export, String extension, String fileNameExtension) {
         byte[] ret = null;
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ZipOutputStream zip = new ZipOutputStream(baos);
 
-            String parentPath = FileNameUtility.getExportFileName(measure);
+            String parentPath = FileNameUtility.getExportFolderNameWithExtension(measure, fileNameExtension);
 
             addFileToZip(measure, export, parentPath, extension, zip);
 

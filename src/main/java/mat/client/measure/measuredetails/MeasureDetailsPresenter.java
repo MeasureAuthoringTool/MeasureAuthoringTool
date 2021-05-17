@@ -118,7 +118,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
     }
 
     private void getDataBaseInfomation(boolean goToComposite, boolean displaySuccessMessage) {
-        MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(), getAsyncCallBackForMeasureAndLogRecentMeasure(goToComposite, displaySuccessMessage));
+        MatContext.get().getMeasureService()
+                .getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(),
+                        MatContext.get().getLoggedinUserId(),
+                        getAsyncCallBackForMeasureAndLogRecentMeasure(goToComposite, displaySuccessMessage));
     }
 
     private void setIsLoading() {

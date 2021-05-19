@@ -602,12 +602,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             if (clickEvent.getValue()) {
                 detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate a CMS ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID on Save.");
+                setPatientBasedIndicatorBasedOnScoringChoice(detailDisplay);
             }
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
                 detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate an eCQM ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID on Save.");
+                setPatientBasedIndicatorBasedOnScoringChoice(detailDisplay);
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
@@ -693,7 +695,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
-
+        resetPatientBasedInput(detailDisplay);
         if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasureScoringListBox().getItemText(detailDisplay.getMeasureScoringListBox().getSelectedIndex()))) {
             if (detailDisplay.getFhirModel().getValue()) {
                 // yes is the second element in the list, so the 1 index.
@@ -702,7 +704,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
         } else {
-            resetPatientBasedInput(detailDisplay);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
         }
         detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);

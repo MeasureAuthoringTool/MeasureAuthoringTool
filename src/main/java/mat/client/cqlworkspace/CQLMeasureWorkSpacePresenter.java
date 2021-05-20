@@ -2241,7 +2241,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
             event.stopPropagation();
         } else {
-            showSearchBusyOnDoubleClick(true);
             cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
             cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
             resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
@@ -2249,9 +2248,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
             cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
             cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
             if (getIsPageDirty()) {
-                //showSearchBusyOnDoubleClick(false);
                 showUnsavedChangesWarning();
             } else {
+                showSearchBusyOnDoubleClick(true);
                 int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex();
                 if (selectedIndex != -1) {
                     final String selectedDefinitionID = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getValue(selectedIndex);

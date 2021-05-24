@@ -154,7 +154,7 @@ public class EditIncludedLibraryDialogBox {
 		showDialogBox();
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
-		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId, new AsyncCallback<>() {
+		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId, new AsyncCallback<SaveCQLLibraryResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

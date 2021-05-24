@@ -613,7 +613,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     @Override
-    protected void addAndModifyDefintions() {
+    protected void addAndModifyDefinitions() {
         cqlWorkspaceView.resetMessageDisplay();
         final String definitionName = cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().getText();
         String definitionLogic = cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().getText();

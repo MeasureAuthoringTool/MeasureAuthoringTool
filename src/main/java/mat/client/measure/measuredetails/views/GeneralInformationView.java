@@ -406,7 +406,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     }
 
     private void setPatientbasedIndicator() {
-        patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
+        // Default to No if the option size is reduced, most likely from conversion to FHIR.
+        // Example, currently FHIR does not support patient-based CV, but QDM does.
+        if (patientBasedInput.getItemCount() == 2) {
+            patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
+        } else {
+            patientBasedInput.setSelectedIndex(0);
+        }
     }
 
     private void addEventHandlers() {

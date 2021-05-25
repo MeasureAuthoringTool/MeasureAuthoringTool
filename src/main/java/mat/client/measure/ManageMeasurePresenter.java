@@ -720,7 +720,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void convertMeasureFhir(Result object) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) {
-            logger.log(Level.WARNING, "User is not logged in UMSL");
+            logger.log(Level.WARNING, "User is not logged in UMLS");
             return;
         }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
@@ -2213,7 +2213,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             }
 
-            if (currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+            if (detailDisplay.getFhirModel().getValue() &&
+                    currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
                 detailDisplay.getPatientBasedListBox().removeItem(1);
                 detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             }

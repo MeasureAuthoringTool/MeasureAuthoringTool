@@ -66,6 +66,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     public void deleteUser(String userId) throws InCorrectUserRoleException {
         checkAdminUser();
         userService.deleteUser(userId);
+        logger.info("AdminServiceImpl::deleteUser::" + userId + " successfully deleted.");
     }
 
     /* (non-Javadoc)
@@ -76,12 +77,12 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         try {
             Organization org = getOrganizationDAO().findByOid(organization.getOid());
             getOrganizationDAO().deleteOrganization(org);
+            logger.info("AdminServiceImpl::deleteOrganization::" + org + " successfully deleted.");
         } catch (RuntimeException re) {
             log("AdminServiceImpl::deleteOrganization " + re.getMessage(), re);
             throw re;
         }
     }
-
 
     /**
      * Extract organization model.
@@ -98,7 +99,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         }
         return model;
     }
-
 
     /**
      * Extract user model.
@@ -326,15 +326,18 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
             List<String> messages = test.isValidUsersDetail(model);
             SaveUpdateUserResult result = new SaveUpdateUserResult();
             if (messages.size() != 0) {
-                for (String message : messages) {
-                    logger.debug("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
-                            + model.getLoginId() + " And failure Message is :" + message);
-                }
+                logger.error("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
+                        + model.getLoginId() + ". Failure Message(s) :" + String.join(", ", messages));
                 result.setSuccess(false);
                 result.setMessages(messages);
                 result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
             } else {
+                logRoleChange(model);
+                if(model.isBeingActivated()) {
+                    logger.info("User Activation::" + model.getUserID());
+                }
                 if (model.isBeingRevoked()) {
+                    logger.info("User Revocation::" + model.getUserID());
                     try {
                         bonnieService.revokeBonnieAccessTokenForUser(model.getKey());
                     } catch (Exception e) {
@@ -348,6 +351,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         } catch (RuntimeException re) {
             log("AdminServiceImpl::saveUpdateUser " + re.getMessage(), re);
             throw re;
+        }
+    }
+
+    private void logRoleChange(ManageUsersDetailModel model) {
+        User user = userService.getById(model.getUserID());
+        if (user != null && user.getSecurityRole() != null) {
+            String currentRoleId = user.getSecurityRole().getId();
+            if (!model.getRole().equals(currentRoleId)) {
+                logger.info("User Role Change::" + model.getUserID() + " was "+currentRoleId + " is " + model.getRole());
+            }
         }
     }
 
@@ -474,6 +487,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
                         organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
                         getOrganizationDAO().saveOrganization(organization);
                         result.setSuccess(true);
+                        logger.info("AdminServiceImpl::saveOrganization::"
+                                + organization.getOrganizationName() + "::" + organization.getOrganizationOID());
                     } catch (Exception exception) {
                         result.setSuccess(false);
                         result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);

@@ -548,51 +548,41 @@ public class ManageUsersDetailModel implements IsSerializable, BaseModel {
         String markupRegExp = "<[^>]+>";
 
         String noMarkupText = this.getFirstName().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getFirstName().trim().length() > noMarkupText.length()) {
             this.setFirstName(noMarkupText);
         }
         noMarkupText = this.getLastName().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getLastName().trim().length() > noMarkupText.length()) {
             this.setLastName(noMarkupText);
         }
         noMarkupText = this.getMiddleInitial().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getMiddleInitial().trim().length() > noMarkupText.length()) {
             this.setMiddleInitial(noMarkupText);
         }
         noMarkupText = this.getTitle().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getTitle().trim().length() > noMarkupText.length()) {
             this.setTitle(noMarkupText);
         }
         noMarkupText = this.getEmailAddress().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getEmailAddress().trim().length() > noMarkupText.length()) {
             this.setEmailAddress(noMarkupText);
         }
         noMarkupText = this.getHarpId().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getHarpId().trim().length() > noMarkupText.length()) {
             this.setHarpId(noMarkupText);
         }
         noMarkupText = this.getOid().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getOid().trim().length() > noMarkupText.length()) {
             this.setOid(noMarkupText);
         }
         noMarkupText = this.getPhoneNumber().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getPhoneNumber().trim().length() > noMarkupText.length()) {
             this.setPhoneNumber(noMarkupText);
         }
         noMarkupText = this.getAdditionalInfo().trim().replaceAll(markupRegExp, "");
-        System.out.println(noMarkupText);
         if (this.getAdditionalInfo().trim().length() > noMarkupText.length()) {
             this.setAdditionalInfo(noMarkupText);
         }
-
     }
 
     public String getLastSuccessFullLoginDateTimeMessage() {

@@ -4,6 +4,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.MainLayout;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureHeading;
@@ -127,7 +128,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
     private void setIsLoading() {
         measureDetailsView.clear();
         measureDetailsView.setReadOnly(true);
-        Mat.showLoadingMessage();
+        MainLayout.showLoadingMessage();
     }
 
     @Override
@@ -143,10 +144,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
         panel.clear();
         panel.add(measureDetailsView.getWidget());
         showCompositeEdit = false;
-        if (goToComposite) {
+        if (Boolean.TRUE.equals(goToComposite)) {
             handleMenuItemClick(MeasureDetailsItems.COMPONENT_MEASURES);
         }
-        if (displaySuccessMessage) {
+        if (Boolean.TRUE.equals(displaySuccessMessage)) {
             measureDetailsView.displaySuccessMessage("Component Measures have been successfully updated");
         }
     }
@@ -203,7 +204,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
     public boolean isDirty() {
         boolean isDirty = false;
-        if (!isReadOnly) {
+        if (!isReadOnly && !MatContext.get().isMeasureDeleted()) {
             if (showCompositeEdit) {
                 isDirty = componentMeasureDisplay.getComponentMeasureSearch().isDirty();
             } else if (measureDetailsView.getMeasureDetailsComponentModel() != null) {

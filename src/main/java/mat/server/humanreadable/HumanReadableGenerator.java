@@ -54,6 +54,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Component
 public class HumanReadableGenerator {
     private static final Log log = LogFactory.getLog(HumanReadableGenerator.class);
@@ -653,13 +655,24 @@ public class HumanReadableGenerator {
             populations = sortPopulations(populations);
 
             String displayName = "Population Criteria " + populationCriteriaNumber;
-            String scoreUnit = group.getAttributes().getNamedItem("ucum").getNodeValue().strip();
-            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber, scoreUnit);
+
+            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(
+                    displayName,
+                    populations,
+                    populationCriteriaNumber,
+                    extractScoreUnit(group.getAttributes().getNamedItem("ucum")));
             groups.add(populationCriteria);
         }
 
         groups.sort(Comparator.comparing(HumanReadablePopulationCriteriaModel::getSequence));
         return groups;
+    }
+
+    private String extractScoreUnit(Node ucum) {
+        if (ucum != null && isNotBlank(ucum.getNodeValue().strip())) {
+            return ucum.getNodeValue().strip();
+        }
+        return "";
     }
 
     private void countSimilarPopulationsInGroup(int groupNo, String popTyp, XmlProcessor processor) {

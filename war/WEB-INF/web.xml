@@ -272,10 +272,10 @@
     <session-config>
         <session-timeout>15</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
-        <!-- <cookie-config>
+        <cookie-config>
            <http-only>true</http-only>
             <secure>true</secure>
-        </cookie-config> -->
+        </cookie-config>
     </session-config>
     <error-page>
         <error-code>403</error-code>

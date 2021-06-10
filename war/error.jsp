@@ -17,7 +17,7 @@
 <div class="center">
     <div style="color: red"><%=response.getStatus() %>: Internal Server Error</div>
     <div>Please contact your system administrator.</div>
-    <div>Click here to return to the <a href="Mat.html">Measure Authoring Tool</a></div>
+    <div>Click here to return to the <a href="https://www.emeasuretool.cms.gov/">Measure Authoring Tool</a></div>
 </div>
 </body>
 </html>

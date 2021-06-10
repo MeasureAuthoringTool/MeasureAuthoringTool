@@ -164,8 +164,12 @@
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
-
-      </Host>
+        <!--
+          Do not show error report (custom error message and/or stack trace) is presented when an error occurs.
+          Do not include server information when an error occurs.
+        -->
+        <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false" />
+	</Host>
     </Engine>
   </Service>
 </Server>

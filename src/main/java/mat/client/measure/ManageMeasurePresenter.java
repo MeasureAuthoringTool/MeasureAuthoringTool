@@ -817,11 +817,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
 
         if (isValid(currentDetails, false)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             measureCloningService.cloneExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -848,12 +852,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.resetMessageDisplay();
         MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             measureCloningService.draftExistingMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     setSearchingBusy(false);
                     compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -885,12 +893,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         searchDisplay.resetMessageDisplay();
         if (isValid(currentDetails, true)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
             measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -2301,6 +2313,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.getCreateCompositeMeasureButton().setEnabled(!busy);
         searchDisplay.getCustomFilterCheckBox().setEnabled(!busy);
         searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
+        ((Button) detailDisplay.getSaveButton()).setEnabled(!busy);
+        ((Button) detailDisplay.getCancelButton()).setEnabled(!busy);
     }
 
     private void toggleLoadingMessage(boolean busy) {

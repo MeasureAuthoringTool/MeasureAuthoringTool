@@ -368,11 +368,7 @@ public class MATCQLFilter {
 
             Set<String> innerKeys = innerMap.keySet();
             for (String innerKey : innerKeys) {
-                if (flattenedMap.get(innerKey) == null) {
-                    flattenedMap.put(innerKey, new HashSet());
-                }
-
-                flattenedMap.get(innerKey).addAll(innerMap.get(innerKey));
+                flattenedMap.computeIfAbsent(innerKey, k -> new HashSet<>(innerMap.get(innerKey)));
             }
         }
 
@@ -459,27 +455,6 @@ public class MATCQLFilter {
         return expressionNameToCodeDataTypeMap;
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jmeyer\\git\\test-cql\\test-0.0.000.cql");
-        String cqlString = cqlFileToString(file);
-        // you could also create a string like String cqlString = <cql library string here>
-        Map<String, String> childLibraries = new HashMap<>();
-        childLibraries.put("test2-0.0.000", cqlFileToString(new File("C:\\Users\\jmeyer\\git\\test-cql\\test2-0.0.000.cql")));
-        String[] formats = {"XML"};
-        CQLtoELM cqLtoELM = new CQLtoELM(cqlString, childLibraries);
-        cqLtoELM.doTranslation(true, "XML");
-        List<String> parentExpressions = new ArrayList<>();
-        parentExpressions.add("test");
-        if (!cqLtoELM.getErrors().isEmpty()) {
-            System.out.println(cqLtoELM.getErrors());
-            return;
-        }
-
-        MATCQLFilter filter = new MATCQLFilter(cqlString, cqLtoELM.getCqlLibraryMapping(), parentExpressions, cqLtoELM.getTranslator(), cqLtoELM.getTranslatedLibraries());
-        filter.filter();
-        System.out.println(filter);
-    }
-
     @Override
     public String toString() {
 
@@ -510,24 +485,6 @@ public class MATCQLFilter {
         builder.append("USED FUNCTIONS " + this.getUsedFunctions());
 
         return builder.toString();
-    }
-
-
-    /**
-     * Converts a cql file to a cql string
-     *
-     * @param file the file to convert
-     * @return the cql string
-     */
-    private static String cqlFileToString(File file) {
-        byte[] bytes = new byte[0];
-        try {
-            bytes = Files.readAllBytes(file.toPath());
-            return new String(bytes, "UTF-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public Map<String, Map<String, String>> getAllNamesToReturnTypeMap() {

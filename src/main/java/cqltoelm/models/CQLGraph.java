@@ -9,16 +9,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-/**
- * Created by jmeyer on 1/9/2018.
- */
 public class CQLGraph {
 
-    private Map<String, Set<String>> graph = new HashMap<>();
-
-    public CQLGraph() {
-
-    }
+    private final Map<String, Set<String>> graph = new HashMap<>();
 
     public void addNode(String identifier) {
         Set<String> set = new HashSet<>();
@@ -50,12 +43,12 @@ public class CQLGraph {
         // if the String is in this set, it has been visited
         Set<String> visited = new HashSet<>();
 
-        Queue queue = new ArrayDeque<>();
+        Queue<String> queue = new ArrayDeque<>();
         visited.add(source); // mark source as visited.
         queue.add(source);
 
         while (!queue.isEmpty()) {
-            String currentNode = (String) queue.remove();
+            String currentNode = queue.remove();
             List<String> adjacentVerticies = new ArrayList<>(this.getAdjecencyList().get(currentNode));
 
             for (String adjacentNode : adjacentVerticies) {
@@ -74,8 +67,6 @@ public class CQLGraph {
 
         // if we never find the destination node...
         return false;
-
-
     }
 
     @Override
@@ -86,11 +77,9 @@ public class CQLGraph {
         }
 
         return builder.toString();
-
     }
 
     public Map<String, Set<String>> getAdjecencyList() {
         return graph;
     }
-
 }

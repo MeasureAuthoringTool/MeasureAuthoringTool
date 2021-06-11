@@ -131,9 +131,13 @@ public class HumanReadableGenerator {
 
                 CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 
+                // List of top level defines (Populations, SDEs, and RAVs) that will be included, with their descendants, in the human readable.
+                List<String> exprList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
+                exprList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+
                 SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ?
                         parseFhirCqlLibraryForErrors(cqlModel, cqlString) :
-                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList); // Also filters out irrelevant children defines
                 Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
@@ -151,8 +155,6 @@ public class HumanReadableGenerator {
                 model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 
                 if (cqlModel.isFhir()) {
-                    // For now we are not filtering unused for FHIR.
-                    // We are adding this in as part of QDM 5.6 and then they will be the same again.
                     model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
                     model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
 
@@ -174,7 +176,6 @@ public class HumanReadableGenerator {
                     }
 
                 } else {
-                    // For QDM unused is filtered.
                     model.setDefinitions(getDefinitionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
                     model.setFunctions(getFunctionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 
@@ -229,21 +230,6 @@ public class HumanReadableGenerator {
 
     private void sortTerminologyList(List<HumanReadableTerminologyModel> terminologyList) throws XPathExpressionException {
         terminologyList.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-    }
-
-    private List<String> getCQLIdentifiers(CQLModel cqlModel) {
-        List<String> identifiers = new ArrayList<>();
-        List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
-        for (CQLDefinition cqlDef : cqlDefinition) {
-            identifiers.add(cqlDef.getName());
-        }
-
-        List<CQLFunctions> cqlFunctions = cqlModel.getCqlFunctions();
-        for (CQLFunctions cqlFunc : cqlFunctions) {
-            identifiers.add(cqlFunc.getName());
-        }
-
-        return identifiers;
     }
 
     private HumanReadablePopulationModel getPopulationModel(String measureXML, Node populationNode) throws XPathExpressionException {

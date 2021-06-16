@@ -6,4 +6,8 @@
 			http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     <include file="classpath:/liquibase/FHIR_CONVERSION_HISTORYv4.xml"/>
     <include file="classpath:/liquibase/LegacyFhirLibConversionHistoryInsertsv4.xml"/>
+    <include file="classpath:/liquibase/QDM_5_6_Updates_v4.xml"/>
+    <include file="classpath:/liquibase/Qdm_5_6_versionUpdate_v2.xml"/>
+    <include file="classpath:/liquibase/QDM_5_6_DataType_Update_v2.xml"/>
+    <include file="classpath:/liquibase/QDM_5_6_MeasureXmlUpdate_v2.xml"/>
 </databaseChangeLog>

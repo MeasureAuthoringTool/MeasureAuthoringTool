@@ -109,31 +109,7 @@ public class ReverseEngineerListenerTest {
     }
 
     @Test
-    public void testDefinitions() throws IOException {
-        testValidDefinition();
-        testDefinitionCopy();
-    }
-
-    private void testDefinitionCopy() throws IOException {
-        File file = new File(getClass().getClassLoader().getResource("test-cql/testexistingexpressions.cql").getFile());
-
-        CQLModel existingCqlModel = new CQLModel();
-        CQLDefinition definition = new CQLDefinition();
-        definition.setName("testdefinition");
-        definition.setDefinitionLogic("false");
-        definition.setId("123456");
-        existingCqlModel.setDefinitionList(Arrays.asList(definition));
-
-        String cql = new String(Files.readAllBytes(file.toPath()));
-        ReverseEngineerListener listener = new ReverseEngineerListener(cql, existingCqlModel);
-
-        CQLDefinition definitionAfterReverseEngineer = listener.getCQLModel().getDefinitionList().get(0);
-        assertEquals("testdefinition", definitionAfterReverseEngineer.getDefinitionName());
-        assertEquals("true", definitionAfterReverseEngineer.getDefinitionLogic());
-        assertEquals("123456", definitionAfterReverseEngineer.getId());
-    }
-
-    private void testValidDefinition() throws IOException {
+    public void testValidDefinition() throws IOException {
         File file = new File(getClass().getClassLoader().getResource("test-cql/testdefinitions.cql").getFile());
         String cql = new String(Files.readAllBytes(file.toPath()));
 
@@ -164,6 +140,26 @@ public class ReverseEngineerListenerTest {
                 "\n" +
                 "/* last comment */", definition3.getLogic().replaceAll("\\r\\n", "\n"));
         assertEquals("Patient", definition3.getContext());
+    }
+
+    @Test
+    public void testDefinitionCopy() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource("test-cql/testexistingexpressions.cql").getFile());
+
+        CQLModel existingCqlModel = new CQLModel();
+        CQLDefinition definition = new CQLDefinition();
+        definition.setName("testdefinition");
+        definition.setDefinitionLogic("false");
+        definition.setId("123456");
+        existingCqlModel.setDefinitionList(Arrays.asList(definition));
+
+        String cql = new String(Files.readAllBytes(file.toPath()));
+        ReverseEngineerListener listener = new ReverseEngineerListener(cql, existingCqlModel);
+
+        CQLDefinition definitionAfterReverseEngineer = listener.getCQLModel().getDefinitionList().get(0);
+        assertEquals("testdefinition", definitionAfterReverseEngineer.getDefinitionName());
+        assertEquals("true", definitionAfterReverseEngineer.getDefinitionLogic());
+        assertEquals("123456", definitionAfterReverseEngineer.getId());
     }
 
     @Test

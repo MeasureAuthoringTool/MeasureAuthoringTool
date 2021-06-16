@@ -59,7 +59,11 @@ public interface CQLLibraryServiceInterface {
 
     String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath, boolean isFhir);
 
-    SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
+    SaveCQLLibraryResult saveFinalizedVersion(String libraryId,
+                                              boolean isMajor,
+                                              String version,
+                                              boolean ignoreUnusedLibraries,
+                                              boolean keepAll);
 
     SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 

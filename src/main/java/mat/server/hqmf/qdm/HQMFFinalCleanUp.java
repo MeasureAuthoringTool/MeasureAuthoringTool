@@ -11,9 +11,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 
-/**
- * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
- */
 public class HQMFFinalCleanUp {
 	
 	/** The Constant logger. */

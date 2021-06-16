@@ -42,6 +42,8 @@ import mat.client.measure.service.MeasureCloningRemoteService;
 import mat.client.measure.service.MeasureCloningRemoteServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationKeepDialogBox;
+import mat.client.shared.ConfirmationKeepObserver;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
@@ -529,29 +531,29 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void saveNewCompositeMeasureAndRedirect() {
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
             MatContext.get().getMeasureService().checkIfLibraryNameExists(currentCompositeMeasureDetails.getCQLLibraryName(),
-                currentCompositeMeasureDetails.getMeasureSetId(), new AsyncCallback<Boolean>() {
+                    currentCompositeMeasureDetails.getMeasureSetId(), new AsyncCallback<Boolean>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                        componentMeasureDisplay.setComponentBusy(false);
-                    }
-
-                    @Override
-                    public void onSuccess(Boolean result) {
-                        if (result) {
-                            compositeDetailDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
-                        } else {
-                            String panelHeading = "";
-                            if (StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
-                                panelHeading = "My Measures > Create New Composite Measure > Component Measures";
-                            } else {
-                                panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
-                            }
-                            displayComponentDetails(panelHeading);
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                            componentMeasureDisplay.setComponentBusy(false);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            if (result) {
+                                compositeDetailDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+                            } else {
+                                String panelHeading = "";
+                                if (StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
+                                    panelHeading = "My Measures > Create New Composite Measure > Component Measures";
+                                } else {
+                                    panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
+                                }
+                                displayComponentDetails(panelHeading);
+                            }
+                        }
+                    });
         }
     }
 
@@ -600,12 +602,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             if (clickEvent.getValue()) {
                 detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate a CMS ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Click to generate a CMS ID on Save.");
+                setPatientBasedIndicatorBasedOnScoringChoice(detailDisplay);
             }
         });
         detailDisplay.getQdmModel().addValueChangeHandler(clickEvent -> {
             if (clickEvent.getValue()) {
                 detailDisplay.getGenerateCmsIdCheckbox().setText("Automatically Generate an eCQM ID on Save.");
                 detailDisplay.getGenerateCmsIdCheckbox().setTitle("Automatically generate an eCQM ID on Save.");
+                setPatientBasedIndicatorBasedOnScoringChoice(detailDisplay);
             }
         });
         detailDisplay.getGenerateCmsIdCheckbox().addValueChangeHandler(clickEvent -> {
@@ -636,7 +640,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onSuccess(Integer integer) {
                 currentDetails.seteMeasureId(integer);
                 setCqlLibraryNameInMeasureModel(detailDisplay, currentDetails);
-                if(currentDetails instanceof ManageCompositeMeasureDetailModel) {
+                if (currentDetails instanceof ManageCompositeMeasureDetailModel) {
                     saveNewCompositeMeasureAndRedirect();
                 } else {
                     saveNewMeasureAndRedirect();
@@ -678,7 +682,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     Mat.hideLoadingMessage();
                     if (result.isSuccess()) {
                         displaySuccessAndRedirectToMeasure(result.getId());
-                    } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID ) {
+                    } else if (result.getFailureReason() == SaveUpdateCQLResult.INVALID_EMEASUREID) {
                         handleInvalidEMeasureIdGenerator(result);
                     } else {
                         detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
@@ -691,20 +695,17 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
-
+        resetPatientBasedInput(detailDisplay);
         if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasureScoringListBox().getItemText(detailDisplay.getMeasureScoringListBox().getSelectedIndex()))) {
-            if (detailDisplay.getPatientBasedListBox().getItemCount() > 1) {
+            if (detailDisplay.getFhirModel().getValue()) {
                 // yes is the second element in the list, so the 1 index.
                 detailDisplay.getPatientBasedListBox().removeItem(1);
             }
             detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
-
         } else {
-            resetPatientBasedInput(detailDisplay);
             detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
         }
-
         detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
         detailDisplay.getHelpBlock().setColor("transparent");
     }
@@ -719,7 +720,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void convertMeasureFhir(Result object) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) {
-            logger.log(Level.WARNING, "User is not logged in UMSL");
+            logger.log(Level.WARNING, "User is not logged in UMLS");
             return;
         }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
@@ -816,11 +817,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
 
         if (isValid(currentDetails, false)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             measureCloningService.cloneExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -847,12 +852,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.resetMessageDisplay();
         MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             measureCloningService.draftExistingMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     setSearchingBusy(false);
                     compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -884,12 +893,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         searchDisplay.resetMessageDisplay();
         if (isValid(currentDetails, true)) {
+            ((Button) detailDisplay.getSaveButton()).setEnabled(false);
+            ((Button) detailDisplay.getCancelButton()).setEnabled(false);
             MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
             measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                     MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    ((Button) detailDisplay.getSaveButton()).setEnabled(true);
+                    ((Button) detailDisplay.getCancelButton()).setEnabled(true);
                 }
 
                 @Override
@@ -1341,8 +1354,24 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return valid;
     }
 
+    private void displayUnusedLibraryDialog(String measureId,
+                                            String measureName,
+                                            boolean isMajor,
+                                            String version,
+                                            boolean shouldPackage,
+                                            String measureModel) {
+        if( ModelTypeHelper.isFhir(measureModel)) {
+            displayUnusedLibraryDialogFhir(measureId, measureName, isMajor, version, shouldPackage);
+        } else {
+            displayUnusedLibraryDialogQdm(measureId, measureName, isMajor, version, shouldPackage);
+        }
+    }
 
-    private void displayUnusedLibraryDialog(String measureId, String measureName, boolean isMajor, String version, boolean shouldPackage) {
+    private void displayUnusedLibraryDialogQdm(String measureId,
+                                               String measureName,
+                                               boolean isMajor,
+                                               String version,
+                                               boolean shouldPackage) {
         ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(
                 MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(measureName), CONTINUE,
                 "Cancel", null, false);
@@ -1350,7 +1379,48 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onYesButtonClicked() {
-                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, true);
+                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, true, false);
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+                displaySearch();
+            }
+
+            @Override
+            public void onClose() {
+                displaySearch();
+            }
+        });
+
+        confirmationDialogBox.show();
+    }
+
+    private void displayUnusedLibraryDialogFhir(String measureId,
+                                                String measureName,
+                                                boolean isMajor,
+                                                String version,
+                                                final boolean shouldPackage) {
+        String messageText = MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName);
+
+        ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(messageText, CONTINUE);
+
+        confirmationDialogBox.setConfirmationKeepObserver(new ConfirmationKeepObserver() {
+            @Override
+            public void onYesButtonClicked() {
+                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, true, false);
+            }
+
+            @Override
+            public void onKeepButtonClicked() {
+                boolean shouldPackageKeep = shouldPackage;
+                String packageFailedMeasureId = MatContext.get().getPackageFailedMeasureId();
+
+                if (packageFailedMeasureId != null && packageFailedMeasureId.equals(measureId)) {
+                    shouldPackageKeep = false;
+                }
+
+                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackageKeep, true, true);
             }
 
             @Override
@@ -1397,7 +1467,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onYesButtonClicked() {
-                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, true);
+                saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage, false, false);
             }
 
             @Override
@@ -1428,48 +1498,65 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 });
     }
 
-    private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
+    private void saveFinalizedVersion(final String measureId,
+                                      final String measureName,
+                                      final boolean isMajor,
+                                      final String version,
+                                      boolean shouldPackage,
+                                      boolean ignoreUnusedLibraries,
+                                      boolean keepAll) {
         setSearchingBusy(true);
-        MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries, new AsyncCallback<SaveMeasureResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> onFailure" + caught.getMessage(), caught);
-                setSearchingBusy(false);
-                versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
-            }
+        MatContext.get().getMeasureService().saveFinalizedVersion(measureId,
+                isMajor,
+                version,
+                shouldPackage,
+                ignoreUnusedLibraries,
+                keepAll,
+                new AsyncCallback<SaveMeasureResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> onFailure" + caught.getMessage(), caught);
+                        setSearchingBusy(false);
+                        versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    }
 
-            @Override
-            public void onSuccess(SaveMeasureResult result) {
-                logger.log(Level.INFO, "MeasureService::saveFinalizedVersion -> onSuccess " + result.isSuccess());
-                setSearchingBusy(false);
-                if (result.isSuccess()) {
-                    versionSuccessEvent(measureId, measureName, shouldPackage, result);
-                } else {
-                    logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> success = false " + result.toString());
-                    versionFailureEvent(result.getFailureReason(), measureId, measureName, isMajor, version, shouldPackage);
-                }
-            }
-        });
+                    @Override
+                    public void onSuccess(SaveMeasureResult result) {
+                        logger.log(Level.INFO, "MeasureService::saveFinalizedVersion -> onSuccess " + result.isSuccess());
+
+                        if (result.isSuccess()) {
+                            versionSuccessEvent(measureId, measureName, shouldPackage, result);
+                        } else {
+                            setSearchingBusy(false);
+                            logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> success = false " + result.toString());
+                            versionFailureEvent(result, measureId, measureName, isMajor, version, shouldPackage);
+                        }
+                    }
+                });
     }
 
     private void versionSuccessEvent(final String measureId, final String measureName, boolean shouldPackage, SaveMeasureResult result) {
-        displaySearch();
         String versionStr = result.getVersionStr();
         recordMeasureAuditEvent(measureId, versionStr);
-        isMeasureVersioned = true;
 
         if (shouldPackage) {
-            fireSuccessfulVersionAndPackageEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionAndPackageSuccessfulMessage(measureName, versionStr));
+            fireSuccessfulVersionAndPackageEvent(true, measureName,
+                    MatContext.get().getMessageDelegate().getVersionAndPackageSuccessfulMessage(measureName, versionStr));
         } else {
-            fireSuccessfulVersionEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
+            fireSuccessfulVersionEvent(true, measureName,
+                    MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
         }
     }
 
-    private void versionFailureEvent(final int failureReason, final String measureId, final String measureName, final boolean isMajor, final String version,
+    private void versionFailureEvent(SaveMeasureResult result,
+                                     final String measureId,
+                                     final String measureName,
+                                     final boolean isMajor,
+                                     final String version,
                                      final boolean shouldPackage) {
         isMeasureVersioned = false;
-        switch (failureReason) {
+        switch (result.getFailureReason()) {
             case SaveUpdateCQLResult.MEASURE_NAME_INVALID:
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getMeasureNameInvalid());
                 break;
@@ -1477,9 +1564,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;
             case SaveMeasureResult.UNUSED_LIBRARY_FAIL:
-                displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage);
+                displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage,
+                        result.getMeasureModelType());
                 break;
             case SaveMeasureResult.PACKAGE_FAIL:
+                MatContext.get().setPackageFailedMeasureId(measureId);
                 displayVersionWithoutPackageDialog(measureId, measureName, isMajor, version, false).show();
                 break;
             case SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME:
@@ -2136,7 +2225,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             }
 
-            if (currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+            if (detailDisplay.getFhirModel().getValue() &&
+                    currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
                 detailDisplay.getPatientBasedListBox().removeItem(1);
                 detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
             }
@@ -2223,6 +2313,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.getCreateCompositeMeasureButton().setEnabled(!busy);
         searchDisplay.getCustomFilterCheckBox().setEnabled(!busy);
         searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
+        ((Button) detailDisplay.getSaveButton()).setEnabled(!busy);
+        ((Button) detailDisplay.getCancelButton()).setEnabled(!busy);
     }
 
     private void toggleLoadingMessage(boolean busy) {
@@ -2442,6 +2534,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onVersioned(MeasureVersionEvent event) {
                 displaySearch();
+                setSearchingBusy(false);
+
                 if (event.isVersioned()) {
                     measureDeletion = false;
                     isMeasureDeleted = false;
@@ -2464,6 +2558,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void onPackageAndVersionButtonClick() {
 
         if (!isLoading) {
+            MatContext.get().setPackageFailedMeasureId(null);
             isMeasureDeleted = false;
             measureDeletion = false;
             ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
@@ -2474,7 +2569,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                 boolean shouldPackage = true;
                 boolean ignoreUnusedIncludedLibraries = false;
-                saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(), versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);
+                saveFinalizedVersion(selectedMeasure.getId(),
+                        selectedMeasure.getName(),
+                        versionDisplay.getMajorRadioButton().getValue(),
+                        selectedMeasure.getVersion(),
+                        shouldPackage,
+                        ignoreUnusedIncludedLibraries,
+                        false);
             } else {
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
             }

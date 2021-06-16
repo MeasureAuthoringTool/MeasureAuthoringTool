@@ -613,7 +613,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     @Override
-    protected void addAndModifyDefintions() {
+    protected void addAndModifyDefinitions() {
         cqlWorkspaceView.resetMessageDisplay();
         final String definitionName = cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().getText();
         String definitionLogic = cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().getText();
@@ -2360,7 +2360,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
             event.stopPropagation();
         } else {
-            showSearchBusyOnDoubleClick(true);
             cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
             cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
             resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
@@ -2368,9 +2367,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
             cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
             cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
             if (getIsPageDirty()) {
-                showSearchBusyOnDoubleClick(false);
                 showUnsavedChangesWarning();
             } else {
+                showSearchBusyOnDoubleClick(true);
                 int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex();
                 if (selectedIndex != -1) {
                     final String selectedDefinitionID = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getValue(selectedIndex);

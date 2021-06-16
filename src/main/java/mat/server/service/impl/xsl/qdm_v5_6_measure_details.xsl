@@ -37,7 +37,7 @@
       </xsl:text>
         <typeId root="2.16.840.1.113883.1.3" extension="POQM_HD000001UV02"/>
         <templateId>
-            <item root="2.16.840.1.113883.10.20.28.1.2" extension="2019-05-01"/>
+            <item root="2.16.840.1.113883.10.20.28.1.2" extension="2021-02-01"/>
         </templateId>
         <id root="{normalize-space(uuid)}"/>
         <code code="57024-2" codeSystem="2.16.840.1.113883.6.1">
@@ -679,7 +679,7 @@
             </xsl:call-template>
         </xsl:if>
         <xsl:if
-                test="(($scoring_value = 'Ratio' and $patient_based_indicator = 'false') or $scoring_value ='Continuous Variable')">
+                test="($scoring_value = 'Ratio' or $scoring_value ='Continuous Variable')">
             <!-- Measure Observations Description -->
             <xsl:call-template name="subjOfOrigText">
                 <xsl:with-param name="origText">

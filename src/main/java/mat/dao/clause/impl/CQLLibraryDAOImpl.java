@@ -163,8 +163,11 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         final CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
         final Root<CQLLibrary> root = query.from(CQLLibrary.class);
 
-        query.where(cb.and(cb.equal(root.get("qdmVersion"), MATPropertiesService.get().getQdmVersion())),
-                cb.equal(root.get(DRAFT), false), cb.equal(root.get(SET_ID), setId));
+        query.where(cb.and(
+                cb.or(cb.equal(root.get("qdmVersion"), MATPropertiesService.get().getQdmVersion()),
+                        cb.equal(root.get("fhirVersion"), MATPropertiesService.get().getFhirVersion())),
+                cb.equal(root.get(DRAFT), false), cb.equal(root.get(SET_ID), setId))
+        );
 
         query.orderBy(cb.asc(root.get(LIBRARY_NAME)), cb.desc(root.get(VERSION))).distinct(true);
 

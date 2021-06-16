@@ -222,7 +222,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
     protected abstract void addAndModifyFunction();
 
-    protected abstract void addAndModifyDefintions();
+    protected abstract void addAndModifyDefinitions();
 
     protected abstract void getAppliedValuesetAndCodeList();
 
@@ -1705,7 +1705,7 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected void definitionSaveClicked() {
         resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
         if (hasEditPermissions()) {
-            addAndModifyDefintions();
+            addAndModifyDefinitions();
             cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
             cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
             cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);

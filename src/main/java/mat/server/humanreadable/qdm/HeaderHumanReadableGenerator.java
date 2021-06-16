@@ -307,7 +307,7 @@ public class HeaderHumanReadableGenerator {
 		}
 		
 		if (measureScoring.equalsIgnoreCase("Continuous Variable")
-				|| (measureScoring.equalsIgnoreCase("Ratio") && !"true".equalsIgnoreCase(patientbasedIndicator))) {
+				|| (measureScoring.equalsIgnoreCase("Ratio") )) {
 			// Measure Observations
 			createRowAndColumns(table, "Measure Observations");
 			createDiv(getInfo(processor, "measureObservationsDescription"), column);

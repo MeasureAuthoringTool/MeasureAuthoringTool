@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated
+ */
 public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	private static final String DATA_CRITERIA_EXTENSION = "2018-05-01";

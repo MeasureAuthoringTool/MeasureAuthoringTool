@@ -35,7 +35,6 @@ import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
-import mat.client.login.LoginModel;
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.HarpService;
 import mat.client.login.service.HarpServiceAsync;
@@ -58,13 +57,13 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.client.util.FeatureFlagConstant;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.OperatorDTO;
 import mat.dto.UserPreferenceDTO;
 import mat.dto.VSACCodeSystemDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
@@ -237,6 +236,16 @@ public class MatContext implements IsSerializable {
     private Map<String, String> harpUserInfo = new HashMap<>();
     private String matVersion;
 
+    private String packageFailedMeasureId;
+
+    public String getPackageFailedMeasureId() {
+        return packageFailedMeasureId;
+    }
+
+    public void setPackageFailedMeasureId(String packageFailedMeasureId) {
+        this.packageFailedMeasureId = packageFailedMeasureId;
+    }
+
     public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
@@ -276,29 +285,12 @@ public class MatContext implements IsSerializable {
     protected MatContext() {
         eventBus = new HandlerManager(null);
 
-        eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
-            @Override
-            public void onMeasureSelected(MeasureSelectedEvent event) {
-                currentMeasureInfo = event;
-            }
-        });
+        eventBus.addHandler(MeasureSelectedEvent.TYPE, event -> currentMeasureInfo = event);
 
-        eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
-
-            @Override
-            public void onLibrarySelected(CQLLibrarySelectedEvent event) {
-                currentLibraryInfo = event;
-
-            }
-        });
+        eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, event -> currentLibraryInfo = event);
 
         // US 439. Start the timeout timer when the user clicked the forgotten password link
-        eventBus.addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
-            @Override
-            public void onForgottenPassword(ForgottenPasswordEvent event) {
-                getTimeoutManager().startActivityTimers(ConstantMessages.LOGIN_MODULE);
-            }
-        });
+        eventBus.addHandler(ForgottenPasswordEvent.TYPE, event -> getTimeoutManager().startActivityTimers(ConstantMessages.LOGIN_MODULE));
     }
 
     public HandlerManager getEventBus() {
@@ -1313,7 +1305,7 @@ public class MatContext implements IsSerializable {
     public void getCQLConstants() {
         CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 
-        cqlConstantService.getAllCQLConstants(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR), new AsyncCallback<CQLConstantContainer>() {
+        cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -1530,8 +1522,10 @@ public class MatContext implements IsSerializable {
     public List<String> getPatientBasedIndicatorOptions(String measureScoringMethod) {
         List<String> patientBasedList = new ArrayList<>();
         patientBasedList.add("No");
-        if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+        if (!ModelTypeHelper.isFhir(getCurrentMeasureModel())) {
             patientBasedList.add("Yes");
+        } else if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+                patientBasedList.add("Yes");
         }
         return patientBasedList;
     }

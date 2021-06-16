@@ -211,11 +211,11 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 
     @Override
     public void beforeClosingDisplay() {
+        MatContext.get().getMeasureLockService().releaseMeasureLock();
         if (MatContext.get().isMeasureDeleted()) {
             MatContext.get().getCurrentMeasureInfo().setMeasureId("");
             MatContext.get().setMeasureDeleted(false);
         }
-        MatContext.get().getMeasureLockService().releaseMeasureLock();
         Command waitForUnlock = new Command() {
             @Override
             public void execute() {

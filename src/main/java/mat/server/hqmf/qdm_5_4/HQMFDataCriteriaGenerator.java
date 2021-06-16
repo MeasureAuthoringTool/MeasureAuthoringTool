@@ -5,7 +5,8 @@ import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 
 /**
- * The Class HQMFDataCriteriaGenerator.
+ *
+ * @deprecated The Class HQMFDataCriteriaGenerator.
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	

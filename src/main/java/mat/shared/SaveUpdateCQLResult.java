@@ -10,16 +10,10 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.cql.model.UnusedCqlElements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-/**
- * The Class SaveUpdateCQLResult.
- */
 @ToString
 public class SaveUpdateCQLResult extends GenericResult {
 
@@ -138,6 +132,25 @@ public class SaveUpdateCQLResult extends GenericResult {
     private Set<String> includeLibrariesWithErrors;
 
     private String populationBasis;
+
+    private UnusedCqlElements unusedCqlElements;
+
+
+    public UnusedCqlElements getUnusedCqlElements() {
+        return unusedCqlElements;
+    }
+
+    public void setUnusedCqlElements(UnusedCqlElements unusedCqlElements) {
+        this.unusedCqlElements = unusedCqlElements;
+    }
+
+    public boolean haveUnusedElements() {
+        if (unusedCqlElements == null) {
+            return false;
+        } else {
+            return unusedCqlElements.haveUnused();
+        }
+    }
 
     /**
      * Gets the cql string.

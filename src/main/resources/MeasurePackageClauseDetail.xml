@@ -10,6 +10,10 @@
 			<bind-xml name="sequence" node="attribute" location="group" />
 		</field>
 
+		<field name="ucum" type="java.lang.String">
+			<bind-xml name="ucum" node="attribute" location="group" />
+		</field>
+
 		<field name="packageClauses"
 			type="mat.client.measurepackage.MeasurePackageClauseDetail"
 			collection="arraylist">

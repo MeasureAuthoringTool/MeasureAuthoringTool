@@ -59,7 +59,7 @@ public class CQLUtil {
     /**
      * The Constant xPath.
      */
-    static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+    static final javax.xml.xpath.XPath XPATH = XPathFactory.newInstance().newXPath();
 
     /**
      * The Constant logger.
@@ -82,7 +82,7 @@ public class CQLUtil {
         String xPathForFunctions = "//cqlfunction";
 
         try {
-            NodeList cqlDefinitions = (NodeList) xPath.evaluate(xPathForDefinitions, originalDoc.getDocumentElement(),
+            NodeList cqlDefinitions = (NodeList) XPATH.evaluate(xPathForDefinitions, originalDoc.getDocumentElement(),
                     XPathConstants.NODESET);
 
             for (int i = 0; i < cqlDefinitions.getLength(); i++) {
@@ -93,7 +93,7 @@ public class CQLUtil {
                 cqlArtifactHolder.addDefinitionIdentifier(name.replaceAll("\"", ""));
             }
 
-            NodeList cqlFunctions = (NodeList) xPath.evaluate(xPathForFunctions, originalDoc.getDocumentElement(),
+            NodeList cqlFunctions = (NodeList) XPATH.evaluate(xPathForFunctions, originalDoc.getDocumentElement(),
                     XPathConstants.NODESET);
 
             for (int i = 0; i < cqlFunctions.getLength(); i++) {
@@ -222,7 +222,7 @@ public class CQLUtil {
 
         String xPathForUnusedDefinitions = "//cqlLookUp//definition" + idXPathString;
 
-        NodeList unusedCQLDefNodeList = (NodeList) xPath.evaluate(xPathForUnusedDefinitions,
+        NodeList unusedCQLDefNodeList = (NodeList) XPATH.evaluate(xPathForUnusedDefinitions,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
         for (int i = 0; i < unusedCQLDefNodeList.getLength(); i++) {
@@ -252,7 +252,7 @@ public class CQLUtil {
 
         String xPathForUnusedFunctions = "//cqlLookUp//function" + idXPathString;
 
-        NodeList unusedCqlFuncNodeList = (NodeList) xPath.evaluate(xPathForUnusedFunctions,
+        NodeList unusedCqlFuncNodeList = (NodeList) XPATH.evaluate(xPathForUnusedFunctions,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < unusedCqlFuncNodeList.getLength(); i++) {
             Node current = unusedCqlFuncNodeList.item(i);
@@ -281,7 +281,7 @@ public class CQLUtil {
 
         String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
 
-        NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
+        NodeList unusedCqlValuesetNodeList = (NodeList) XPATH.evaluate(xPathForUnusedValuesets,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
         for (int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
@@ -310,7 +310,7 @@ public class CQLUtil {
 
         String xPathForUnusedCodes = "//cqlLookUp//code" + nameXPathString;
 
-        NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+        NodeList unusedCqlCodesNodeList = (NodeList) XPATH.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < unusedCqlCodesNodeList.getLength(); i++) {
             Node current = unusedCqlCodesNodeList.item(i);
             Node parent = current.getParentNode();
@@ -329,7 +329,7 @@ public class CQLUtil {
 
         // find all used codeSystemNames
         String xPathForCodesystemNames = "//cqlLookUp/codes/code";
-        NodeList codeSystemNameList = (NodeList) xPath.evaluate(xPathForCodesystemNames,
+        NodeList codeSystemNameList = (NodeList) XPATH.evaluate(xPathForCodesystemNames,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
         String nameXPathString = "";
@@ -342,7 +342,7 @@ public class CQLUtil {
         }
 
         String xPathForUnusedCodeSystems = "//cqlLookUp/codeSystems/codeSystem" + nameXPathString;
-        NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems,
+        NodeList unusedCqlCodeSystemNodeList = (NodeList) XPATH.evaluate(xPathForUnusedCodeSystems,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
         for (int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++) {
@@ -371,7 +371,7 @@ public class CQLUtil {
 
         String xPathForUnusedParameters = "//cqlLookUp//parameter" + nameXPathString;
 
-        NodeList unusedCqlParameterNodeList = (NodeList) xPath.evaluate(xPathForUnusedParameters,
+        NodeList unusedCqlParameterNodeList = (NodeList) XPATH.evaluate(xPathForUnusedParameters,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < unusedCqlParameterNodeList.getLength(); i++) {
             Node current = unusedCqlParameterNodeList.item(i);
@@ -387,7 +387,7 @@ public class CQLUtil {
         String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
 
         try {
-            Node node = (Node) xPath.evaluate(includeLibrariesXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+            Node node = (Node) XPATH.evaluate(includeLibrariesXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
             if (node != null) {
                 NodeList childNodes = node.getChildNodes();
                 for (int i = 0; i < childNodes.getLength(); i++) {
@@ -446,7 +446,7 @@ public class CQLUtil {
         }
 
         String xPathForUnusedIncludes = "//cqlLookUp//includeLibrarys/includeLibrary" + nameXPathString;
-        NodeList unusedCqlIncludeNodeList = (NodeList) xPath.evaluate(xPathForUnusedIncludes,
+        NodeList unusedCqlIncludeNodeList = (NodeList) XPATH.evaluate(xPathForUnusedIncludes,
                 originalDoc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < unusedCqlIncludeNodeList.getLength(); i++) {
             Node current = unusedCqlIncludeNodeList.item(i);
@@ -543,7 +543,9 @@ public class CQLUtil {
 
         for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
             CQLModel includeCqlModel = generateCQLIncludeModelMap(cqlIncludeLibrary, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
-            if (includeCqlModel == null) continue;
+            if (includeCqlModel == null) {
+                continue;
+            }
             getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO, cqlIncludeLibrary);
         }
     }
@@ -558,7 +560,9 @@ public class CQLUtil {
         for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
             cqlIncludeLibrary.setIsComponent(parentCQLIncludeLibrary.getIsComponent());
             CQLModel includeCqlModel = generateCQLIncludeModelMap(cqlIncludeLibrary, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
-            if (includeCqlModel == null) continue;
+            if (includeCqlModel == null) {
+                continue;
+            }
             getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO, cqlIncludeLibrary);
         }
     }
@@ -685,20 +689,12 @@ public class CQLUtil {
 
         }
 
-
         cqlError.setErrorMessage(cte.getMessage());
         cqlError.setSeverity(cte.getSeverity().toString());
 
-
-        initializeErrorsListForLibraryIfNeeded(libraryToErrorsMap, libraryName);
+        libraryToErrorsMap.computeIfAbsent(libraryName, k -> new ArrayList<>());
         libraryToErrorsMap.get(libraryName).add(cqlError);
         errors.add(cqlError);
-    }
-
-    private static void initializeErrorsListForLibraryIfNeeded(Map<String, List<CQLError>> libraryToErrorsMap, String libraryName) {
-        if (libraryToErrorsMap.get(libraryName) == null) {
-            libraryToErrorsMap.put(libraryName, new ArrayList<>());
-        }
     }
 
     /**
@@ -714,7 +710,7 @@ public class CQLUtil {
         CQLObject cqlObject = new CQLObject();
         if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
             String parentLibraryString = cqlToElm.getParentCQLLibraryString();
-
+            // expression List => population/sde/rav defines and functions
             MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, cqlToElm.getCqlLibraryMapping(), exprList, cqlToElm.getTranslator(), cqlToElm.getTranslatedLibraries());
 
             try {
@@ -750,7 +746,6 @@ public class CQLUtil {
 
                 cqlObject.getCqlFunctionObjectList().add(expression);
             }
-
 
             for (CQLParameter parameter : cqlModel.getCqlParameters()) {
                 String parameterName = parameter.getName();

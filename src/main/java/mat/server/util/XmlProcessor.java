@@ -402,13 +402,13 @@ public class XmlProcessor {
      *
      * @return the string
      */
-    public String checkForScoringType(String releaseVersion, String scoringType, boolean isPatientBased) {
+    public String checkForScoringType(String scoringType) {
         if (originalDoc == null) {
             return "";
         }
         try {
-            removeNodesBasedOnScoring(scoringType, isPatientBased);
-            createNewNodesBasedOnScoring(scoringType, releaseVersion, isPatientBased);
+            removeNodesBasedOnScoring(scoringType);
+            createNewNodesBasedOnScoring(scoringType);
         } catch (XPathExpressionException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -422,7 +422,7 @@ public class XmlProcessor {
      * @param scoringType the scoring type
      * @throws XPathExpressionException the x path expression exception
      */
-    public void removeNodesBasedOnScoring(String scoringType, boolean isPatientBased) throws XPathExpressionException {
+    public void removeNodesBasedOnScoring(String scoringType) throws XPathExpressionException {
         List<String> xPathList = new ArrayList<String>();
 
         if (RATIO.equalsIgnoreCase(scoringType)) {
@@ -430,18 +430,11 @@ public class XmlProcessor {
             xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
             xPathList.add(XPATH_MEASURE_POPULATIONS);
             xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
-
-            //Measure Observations section is not available for
-            //Patient Based Ratio Measures. Hence adding to Remove list
-            if (isPatientBased) {
-                xPathList.add(XPATH_MEASURE_OBSERVATIONS);
-            }
         } else if (PROPORTION.equalsIgnoreCase(scoringType)) {
             // Measure Population Exlusions, Measure Populations
             xPathList.add(XPATH_MEASURE_POPULATIONS);
             xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
             xPathList.add(XPATH_MEASURE_OBSERVATIONS);
-
         } else if (CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
             // Numerators,Numerator Exclusions, Denominators, Denominator
             // Exceptions, Denominator Exclusions
@@ -450,7 +443,6 @@ public class XmlProcessor {
             xPathList.add(XPATH_DENOMINATOR);
             xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
             xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
-
         } else if (COHORT.equalsIgnoreCase(scoringType)) {
             xPathList.add(XPATH_NUMERATORS);
             xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
@@ -574,10 +566,9 @@ public class XmlProcessor {
      * on the value of Scoring Type.
      *
      * @param scoringType    the scoring type
-     * @param releaseVersion
      * @throws XPathExpressionException the x path expression exception
      */
-    public void createNewNodesBasedOnScoring(String scoringType, String releaseVersion, boolean isPatientBased)
+    public void createNewNodesBasedOnScoring(String scoringType)
             throws XPathExpressionException {
         List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
         Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
@@ -592,7 +583,7 @@ public class XmlProcessor {
          * and scoring type is Continuous Variable.
          */
         Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
-        if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && !isPatientBased))
+        if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || RATIO.equalsIgnoreCase(scoringType))
                 && (measureObservationsNode == null)) {
             // Create a new measureObservations element.
             String nodeName = MEASURE_OBSERVATION;
@@ -649,11 +640,7 @@ public class XmlProcessor {
             measureElement.removeChild(measureStratificationsNode);
         }
         // Create supplementalDataElements node
-        releaseVersion = releaseVersion.replaceAll("Draft ", "").trim();
-        if (releaseVersion.startsWith("v")) {
-            releaseVersion = releaseVersion.substring(1);
-        }
-        createSupplementalDataElementNode(measureStratificationsNode, releaseVersion);
+        createSupplementalDataElementNode(measureStratificationsNode);
         /*
          * All the adding and removing can put the children of 'populations' in
          * a random order. Arrange the population nodes in correct order.*/
@@ -711,11 +698,9 @@ public class XmlProcessor {
      * Creates the Supplemental Data Element Node.
      *
      * @param measureStratificationsNode stratifications Node for the measure
-     * @param releaseVersion
      * @throws XPathExpressionException the x path expression exception
      */
-    private void createSupplementalDataElementNode(
-            Node measureStratificationsNode, String releaseVersion) throws XPathExpressionException {
+    private void createSupplementalDataElementNode(Node measureStratificationsNode) throws XPathExpressionException {
         Node supplementaDataElementsElement = findNode(originalDoc,
                 XPATH_MEASURE_SD_ELEMENTS);
         if (supplementaDataElementsElement == null) {

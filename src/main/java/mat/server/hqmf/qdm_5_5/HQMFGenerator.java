@@ -8,6 +8,7 @@ import mat.server.util.XmlProcessor;
 import org.apache.commons.logging.Log;
 
 /**
+ * @deprecated
  * The Class CQLbasedHQMFGenerator.
  *
  * @author jmeyer

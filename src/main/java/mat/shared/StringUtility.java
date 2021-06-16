@@ -10,7 +10,7 @@ import java.util.List;
 public class StringUtility {
 	
 	/** The nl. */
-	public final String nl = "\r\n";
+	public static final String nl = "\r\n";
 	
 	/**
 	 * for input "blah18", should return 18-1 naming convention starts at 1,

@@ -43,8 +43,6 @@ import mat.model.ComponentMeasureTabObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
-import mat.server.service.cql.FhirCqlParser;
-import mat.vsacmodel.ValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
@@ -101,6 +99,7 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.ManageMeasureDetailModelConversions;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
+import mat.server.util.fhirxmlclean.XmlUnusedFhirCleaner;
 import mat.server.validator.measure.CompositeMeasureValidator;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
@@ -111,10 +110,12 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.cql.model.UnusedCqlElements;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
+import mat.vsacmodel.ValueSet;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -1151,7 +1152,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() &&
                 !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-                || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
+                        || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
@@ -1937,7 +1938,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
+    private void removeUnusedQDMLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
         String measureXml = measureXmlModel.getXml();
         XmlProcessor processor = new XmlProcessor(measureXml);
         try {
@@ -1951,7 +1952,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         measurePackageService.saveMeasureXml(measureXmlModel);
     }
 
-    private void removeUnusedComponents(MeasureXmlModel measureXmlModel, Measure measure) {
+    private void removeUnusedQDMComponents(MeasureXmlModel measureXmlModel, Measure measure) {
         XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
         log.debug("Remove Unused Component Measures");
 
@@ -1990,12 +1991,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor, final String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
+    public final SaveMeasureResult saveFinalizedVersion(final String measureId,
+                                                        final boolean isMajor,
+                                                        final String version,
+                                                        boolean shouldPackage,
+                                                        boolean ignoreUnusedLibraries,
+                                                        boolean keepAllUnused) {
         log.debug("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
         Measure m = measurePackageService.getById(measureId);
         log.debug("Measure Loaded for: " + measureId);
 
         SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+        saveMeasureResult.setMeasureModelType(m.getMeasureModel());
 
         boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId);
         if (!isMeasureVersionable) {
@@ -2026,31 +2033,61 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         // return error if there are unused libraries in the measure
         MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
         String measureXml = measureXmlModel.getXml();
-        if (!m.isFhirMeasure() &&
+
+        if (shouldPackage) {
+            SaveMeasureResult validatePackageResult = validate(getMeasure(measureId));
+
+            if (!validatePackageResult.isSuccess()) {
+                saveMeasureResult.setValidateResult(validatePackageResult.getValidateResult());
+                log.error("Validate Package Result" + validatePackageResult);
+                return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
+            }
+        }
+
+        if (keepAllUnused) {
+            log.info("Keeping all un-used items for measureId: " + measureId);
+        } else if (!m.isFhirMeasure() &&
                 !ignoreUnusedLibraries &&
                 CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
-            // Currently fhir doesn't check for unused libraries or cql structures. A future enhancement will add it.
-            saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+            saveMeasureResult.setFailureReason( SaveMeasureResult.UNUSED_LIBRARY_FAIL);
             log.debug("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
             return saveMeasureResult;
+        } else {
+            if (m.isFhirMeasure() && !ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+                return returnFailureReason(saveMeasureResult, SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+            }
+        }
+
+        if (!keepAllUnused) {
+            log.info("Removing un-used items for measureId: " + measureId);
+            if (m.isFhirMeasure()) {
+                removeUnusedFhirElements(measureXmlModel, cqlResult.getUnusedCqlElements());
+            } else {
+                removeUnusedQDMLibraries(measureXmlModel, cqlResult);
+                removeUnusedQDMComponents(measureXmlModel, m);
+            }
         }
 
         if (shouldPackage) {
             SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
+
             if (!validatePackageResult.isSuccess()) {
                 saveMeasureResult.setValidateResult(validatePackageResult.getValidateResult());
-                log.error("Validate Package Result" + validatePackageResult);
                 log.error("Measure Package and Version Failed for measure with id " + measureId + " -> PACKAGE_FAIL");
                 return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
             }
         }
 
-        if (!m.isFhirMeasure()) {
-            removeUnusedLibraries(measureXmlModel, cqlResult);
-            removeUnusedComponents(measureXmlModel, m);
-        }
-
         return updateVersionAndExports(isMajor, version, m);
+    }
+
+    private void removeUnusedFhirElements(MeasureXmlModel measureXmlModel, UnusedCqlElements unusedCqlElements) {
+        String measureXml = measureXmlModel.getXml();
+
+        String updatedMeasureXml = new XmlUnusedFhirCleaner().clean(measureXml, unusedCqlElements);
+
+        measureXmlModel.setXml(updatedMeasureXml);
+        measurePackageService.saveMeasureXml(measureXmlModel);
     }
 
     private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {
@@ -2346,7 +2383,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
         XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
-        xmlProcessor.checkForScoringType(propertiesService.getQdmVersion(), model.getMeasScoring(), model.isPatientBased());
+        xmlProcessor.checkForScoringType(model.getMeasScoring());
         if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring()) || (model.getPopulationBasis() != null && !model.getPopulationBasis().equalsIgnoreCase(existingMeasurePopulationBasis))) {
             deleteExistingGroupings(xmlProcessor);
             MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
@@ -5501,12 +5538,56 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         log.debug("End VSACAPIServiceImpl updateAllInMeasureXml :");
     }
 
+
     @Override
     public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
-        SaveMeasureResult result = new SaveMeasureResult();
+        SaveMeasureResult result = null;
         String measureId = model.getId();
+
         try {
+            result = validate(model);
+
+            if (!result.isSuccess()) {
+                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Validate: " + result.getFailureReason());
+                return result;
+            }
+
+            result = saveMeasureAtPackage(model);
+
+            if (!result.isSuccess()) {
+                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Package: " + result.getFailureReason());
+                return result;
+            }
+
+            ValidateMeasureResult measureExportValidation = createExports(measureId, null, shouldCreateArtifacts);
+
+            if (!measureExportValidation.isValid()) {
+                result.setSuccess(false);
+                result.setValidateResult(measureExportValidation);
+                result.setFailureReason(SaveMeasureResult.INVALID_CREATE_EXPORT);
+                log.warn("MeasureLibraryService::validateAndPackage - Invalid Create Exports: " + measureExportValidation.getValidationMessages());
+                return result;
+            }
+
+            auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
+            return result;
+        } catch (Exception e) {
+            if (result == null) {
+                result = new SaveMeasureResult();
+            }
+            log.error("MeasureLibraryService::validateAndPackage -> Error: " + e.getMessage(), e);
+            result.setSuccess(false);
+            return result;
+        }
+    }
+
+    private SaveMeasureResult validate(ManageMeasureDetailModel model) {
+        SaveMeasureResult result = new SaveMeasureResult();
+
+        try {
+            String measureId = model.getId();
             ValidateMeasureResult validateGroupResult = validateForGroup(model);
+
             if (!validateGroupResult.isValid()) {
                 result.setSuccess(false);
                 result.setValidateResult(validateGroupResult);
@@ -5532,29 +5613,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 log.error("MeasureLibraryService::validateAndPackage - Invalid Exports: " + validateExports.getValidationMessages());
                 return result;
             }
-
-            result = saveMeasureAtPackage(model);
-            if (!result.isSuccess()) {
-                log.error("MeasureLibraryService::validateAndPackage - Save Measure At Package: " + result.getFailureReason());
-                return result;
-            }
-
-            ValidateMeasureResult measureExportValidation = createExports(measureId, null, shouldCreateArtifacts);
-            if (!measureExportValidation.isValid()) {
-                result.setSuccess(false);
-                result.setValidateResult(measureExportValidation);
-                result.setFailureReason(SaveMeasureResult.INVALID_CREATE_EXPORT);
-                log.warn("MeasureLibraryService::validateAndPackage - Invalid Create Exports: " + measureExportValidation.getValidationMessages());
-                return result;
-            }
-
-            auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
-            return result;
         } catch (Exception e) {
             log.error("MeasureLibraryService::validateAndPackage -> Error: " + e.getMessage(), e);
             result.setSuccess(false);
             return result;
         }
+
+
+        result.setSuccess(true);
+        return result;
     }
 
     @Override

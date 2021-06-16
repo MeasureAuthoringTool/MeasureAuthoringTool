@@ -1040,6 +1040,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 
 	@Override
+	public void setCurrentUcum( String ucum) {
+		packageGroupingWidget.setCurrentUcum(ucum);
+	}
+
+	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
 		Collections.sort(list);
 		packageGroupingWidget.getGroupingPopulationList().clear();

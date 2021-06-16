@@ -1,5 +1,5 @@
 import * as helper from './helpers';
-import MeasureLibPage from './domain/pageObjects/MeasureLibPage';
+import MeasureLibraryPage from './domain/pageObjects/MeasureLibraryPage';
 import MeasureComposerPage from './domain/pageObjects/MeasureComposerPage';
 import DeleteMeasureDialog from './domain/pageDialogs/DeleteMeasureDialog';
 
@@ -28,7 +28,7 @@ export function getModelTypeValue(isFhir) {
 }
 
 Cypress.Commands.add('deleteMeasure', (measureName, isFhir) => {
-  const measureLibPage = new MeasureLibPage();
+    const measureLibPage = new MeasureLibraryPage();
 
   cy.url().should('include', measureLibPage.url());
 

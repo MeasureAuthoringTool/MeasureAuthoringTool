@@ -4,6 +4,8 @@ import freemarker.template.TemplateException;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
@@ -49,9 +51,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class HumanReadableGenerator {
@@ -63,8 +66,8 @@ public class HumanReadableGenerator {
             MatConstants.MEASURE_POPULATION, MatConstants.MEASURE_POPULATION_EXCLUSIONS, MatConstants.STRATUM,
             MatConstants.MEASURE_OBSERVATION_POPULATION};
 
-    private final String CQLFUNCTION = "cqlfunction";
-    private final String CQLDEFINITION = "cqldefinition";
+    private static final String CQLFUNCTION = "cqlfunction";
+    private static final String CQLDEFINITION = "cqldefinition";
     private Map<String, Integer> populationCountMap = new HashMap<>();
     private Map<String, Integer> popCountMultipleMap = new HashMap<>();
     private Map<String, String> populationNameMap = new HashMap<>();
@@ -77,7 +80,9 @@ public class HumanReadableGenerator {
 
     @Autowired
     private FhirMeasureRemoteCall fhirMeasureRemoteCall;
-    private Consumer<HumanReadableCodeModel> humanReadableCodeModelConsumer;
+
+    @Autowired
+    private MeasureXMLDAO measureXMLDAO;
 
     public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML, CQLLibraryDAO cqlLibraryDAO) {
 
@@ -118,16 +123,21 @@ public class HumanReadableGenerator {
         log.debug("Generating human readable for ver:" + measureReleaseVersion);
         if (MatContext.get().isCQLMeasure(measureReleaseVersion)) {
             try {
+                MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
                 XmlProcessor processor = new XmlProcessor(simpleXml);
 
-                CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
+                CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
                 String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
                 CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 
+                // List of top level defines (Populations, SDEs, and RAVs) that will be included, with their descendants, in the human readable.
+                List<String> exprList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
+                exprList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+
                 SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ?
                         parseFhirCqlLibraryForErrors(cqlModel, cqlString) :
-                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList); // Also filters out irrelevant children defines
                 Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
@@ -145,11 +155,10 @@ public class HumanReadableGenerator {
                 model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 
                 if (cqlModel.isFhir()) {
-                    // For now we are not filtering unused for FHIR.
-                    // We are adding this in as part of QDM 5.6 and then they will be the same again.
-                    model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-                    model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                    model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
+                    model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
 
+                    // Retrieve Terminology info from microservices/HAPI.
                     updateFhirValuesetsCodesystemsDataReqs(model, measureId);
 
                     if ("decrease".equals(model.getMeasureInformation().getImprovementNotation())) {
@@ -167,9 +176,8 @@ public class HumanReadableGenerator {
                     }
 
                 } else {
-                    // For QDM unused is filtered.
-                    model.setDefinitions(getDefinitionsQDM(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-                    model.setFunctions(getFunctionsQDM(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                    model.setDefinitions(getDefinitionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                    model.setFunctions(getFunctionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 
                     List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminologyQDM(processor);
                     sortTerminologyList(valuesetTerminologyList);
@@ -224,21 +232,6 @@ public class HumanReadableGenerator {
         terminologyList.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
     }
 
-    private List<String> getCQLIdentifiers(CQLModel cqlModel) {
-        List<String> identifiers = new ArrayList<>();
-        List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
-        for (CQLDefinition cqlDef : cqlDefinition) {
-            identifiers.add(cqlDef.getName());
-        }
-
-        List<CQLFunctions> cqlFunctions = cqlModel.getCqlFunctions();
-        for (CQLFunctions cqlFunc : cqlFunctions) {
-            identifiers.add(cqlFunc.getName());
-        }
-
-        return identifiers;
-    }
-
     private HumanReadablePopulationModel getPopulationModel(String measureXML, Node populationNode) throws XPathExpressionException {
         XmlProcessor processor = new XmlProcessor(measureXML);
         resetPopulationMaps();
@@ -246,7 +239,7 @@ public class HumanReadableGenerator {
     }
 
     private Map<String, XmlProcessor> loadIncludedLibXMLProcessors(CQLModel cqlModel) {
-        Map<String, XmlProcessor> returnMap = new HashMap<String, XmlProcessor>();
+        Map<String, XmlProcessor> returnMap = new HashMap<>();
         Map<String, LibHolderObject> includeMap = cqlModel.getIncludedCQLLibXMLMap();
         for (String libName : includeMap.keySet()) {
             LibHolderObject lib = includeMap.get(libName);
@@ -299,14 +292,14 @@ public class HumanReadableGenerator {
         return signature;
     }
 
-    private List<HumanReadableExpressionModel> getDefinitionsQDM(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getDefinitionsQDM(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> definitions = new ArrayList<>();
         List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
-        List<String> definitionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlDefFromPopSet());
+        List<String> definitionsList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
         definitionsList.removeAll(usedDefinitions);
         definitionsList.addAll(usedDefinitions);
         definitionsList = definitionsList.stream().distinct().collect(Collectors.toList());
-        Collections.sort(definitionsList, String.CASE_INSENSITIVE_ORDER);
+        definitionsList.sort(String.CASE_INSENSITIVE_ORDER);
 
         for (String expressionName : definitionsList) {
             String statementIdentifier = expressionName;
@@ -325,7 +318,7 @@ public class HumanReadableGenerator {
         return definitions;
     }
 
-    private List<HumanReadableExpressionModel> getDefinitionsFHIR(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getDefinitionsFHIR(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors) {
         List<HumanReadableExpressionModel> definitions = new ArrayList<>();
         cqlModel.getDefinitionList().stream().
                 sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
@@ -346,14 +339,14 @@ public class HumanReadableGenerator {
         return definitions;
     }
 
-    private List<HumanReadableExpressionModel> getFunctionsQDM(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getFunctionsQDM(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> functions = new ArrayList<>();
         List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
-        List<String> functionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+        List<String> functionsList = new ArrayList<>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
         functionsList.removeAll(usedFunctions);
         functionsList.addAll(usedFunctions);
         functionsList = functionsList.stream().distinct().collect(Collectors.toList());
-        Collections.sort(functionsList, String.CASE_INSENSITIVE_ORDER);
+        functionsList.sort(String.CASE_INSENSITIVE_ORDER);
 
         for (String expressionName : functionsList) {
             String statementIdentifier = expressionName;
@@ -376,9 +369,7 @@ public class HumanReadableGenerator {
 
     private List<HumanReadableExpressionModel> getFunctionsFHIR(CQLModel cqlModel,
                                                                 XmlProcessor parentLibraryProcessor,
-                                                                Map<String, XmlProcessor> includedLibraryXmlProcessors,
-                                                                SaveUpdateCQLResult cqlResult,
-                                                                CQLArtifactHolder usedCQLArtifactHolder) {
+                                                                Map<String, XmlProcessor> includedLibraryXmlProcessors) {
         List<HumanReadableExpressionModel> functions = new ArrayList<>();
         cqlModel.getCqlFunctions().stream().
                 sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
@@ -650,13 +641,24 @@ public class HumanReadableGenerator {
             populations = sortPopulations(populations);
 
             String displayName = "Population Criteria " + populationCriteriaNumber;
-            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber);
+
+            HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(
+                    displayName,
+                    populations,
+                    populationCriteriaNumber,
+                    extractScoreUnit(group.getAttributes().getNamedItem("ucum")));
             groups.add(populationCriteria);
         }
 
-
         groups.sort(Comparator.comparing(HumanReadablePopulationCriteriaModel::getSequence));
         return groups;
+    }
+
+    private String extractScoreUnit(Node ucum) {
+        if (ucum != null && isNotBlank(ucum.getNodeValue().strip())) {
+            return ucum.getNodeValue().strip();
+        }
+        return "";
     }
 
     private void countSimilarPopulationsInGroup(int groupNo, String popTyp, XmlProcessor processor) {
@@ -734,7 +736,7 @@ public class HumanReadableGenerator {
 
     private String getPopulationNameByTypeAndNum(String type) {
         int total = populationCountMap.get(type);
-        int count = popCountMultipleMap.containsKey(type) ? popCountMultipleMap.get(type) : 0;
+        int count = popCountMultipleMap.getOrDefault(type, 0);
 
         if (total > count) {
             count++;
@@ -796,8 +798,8 @@ public class HumanReadableGenerator {
         String type = populationNode.getAttributes().getNamedItem("type").getNodeValue();
         if (populationName.contains("Measure Observation")) {
 
-            Node functionNode = null;
-            Node aggregationNode = null;
+            Node functionNode;
+            Node aggregationNode;
             if (populationNode.getFirstChild() != null) {
                 if ("cqlaggfunction".equals(populationNode.getFirstChild().getNodeName())) {
                     aggregationNode = populationNode.getFirstChild();
@@ -837,8 +839,7 @@ public class HumanReadableGenerator {
         }
 
         populationNode.getAttributes().getNamedItem("displayName").setNodeValue(populationName);
-        HumanReadablePopulationModel population = new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup, type);
-        return population;
+        return new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup, type);
     }
 
     private void resetPopulationMaps() {

@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPathExpressionException;
 
 /**
- * The Class CQLBasedHQMFDataCriteriaElementGenerator.
+ * @deprecated The Class CQLBasedHQMFDataCriteriaElementGenerator.
  */
 public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 

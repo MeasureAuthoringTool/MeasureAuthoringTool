@@ -193,16 +193,14 @@ public interface MeasureLibraryService {
 	
 	/**
 	 * Save finalized version.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param isMajor
-	 *            the is major
-	 * @param version
-	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage, boolean ignoreUnusedLibraries);
+	SaveMeasureResult saveFinalizedVersion(String measureId,
+										   boolean isMajor,
+										   String version,
+										   boolean shouldPackage,
+										   boolean ignoreUnusedLibraries,
+										   boolean keepAllUnused);
 	
 	/**
 	 * Save measure details.

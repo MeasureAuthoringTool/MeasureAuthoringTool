@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final String MEASURE_OBSERVATION_EXTENSION_VALUE = "2018-05-01";

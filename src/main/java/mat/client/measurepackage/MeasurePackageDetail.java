@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MeasurePackageDetail implements IsSerializable, Comparable<MeasurePackageDetail>{
-	
 	/** The sequence. */
 	private String sequence;
+
+	private String ucum;
 	
 	/** The measure id. */
 	private String measureId;
@@ -68,10 +69,19 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 		this.riskAdjClauses = detail.getRiskAdjClauses();
 		this.riskAdjVars = detail.getRiskAdjVars();
 		this.toCompareRiskAdjVars = detail.getToCompareRiskAdjVars();
+		this.ucum = detail.ucum;
 	}
 	
 	public MeasurePackageDetail() {
 		
+	}
+
+	public String getUcum() {
+		return ucum;
+	}
+
+	public void setUcum(String ucum) {
+		this.ucum = ucum;
 	}
 
 	/**

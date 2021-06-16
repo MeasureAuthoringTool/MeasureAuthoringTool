@@ -20,6 +20,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.logging.LogFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
+import mat.server.service.UcumValidationService;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.ConstantMessages;
@@ -43,11 +44,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PackagerServiceImpl implements PackagerService {
@@ -92,6 +89,9 @@ public class PackagerServiceImpl implements PackagerService {
 
     @Autowired
     private PatientBasedValidator patientBasedValidator;
+
+    @Autowired
+    private UcumValidationService ucumValidationService;
 
     /**
      * 1) Loads the MeasureXml from DB and converts into Xml Document Object 2)
@@ -157,8 +157,7 @@ public class PackagerServiceImpl implements PackagerService {
                         boolean isChildNodeAdded = checkIfStratificationIsValid(measureClauses.item(i));
                         if (isChildNodeAdded) {
                             clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                    displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID,
-                                    qdmSelectedList));
+                                    displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID));
                         } else {
                             continue;
                         }
@@ -167,8 +166,7 @@ public class PackagerServiceImpl implements PackagerService {
                         boolean isUserDefineFuncAdded = checkIfMeasureObeservationIsValid(measureClauses.item(i));
                         if (isUserDefineFuncAdded) {
                             clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                    displayNameNode.getNodeValue(), MEASURE_OBSERVATION, associatedClauseUUID,
-                                    qdmSelectedList));
+                                    displayNameNode.getNodeValue(), MEASURE_OBSERVATION, associatedClauseUUID));
                         }
 
                     } else if (allowedPopulationsInPackage.contains(typeNode.getNodeValue())) {// filter
@@ -177,8 +175,7 @@ public class PackagerServiceImpl implements PackagerService {
                         // in
                         // package
                         clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
-                                displayNameNode.getNodeValue(), typeNode.getNodeValue(), associatedClauseUUID,
-                                qdmSelectedList));
+                                displayNameNode.getNodeValue(), typeNode.getNodeValue(), associatedClauseUUID));
                     }
                     // adding all Clause type uuid's
                     xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
@@ -210,14 +207,23 @@ public class PackagerServiceImpl implements PackagerService {
                 for (int i = 0; i < measureGroups.getLength(); i++) {
                     NamedNodeMap groupAttrs = measureGroups.item(i).getAttributes();
                     Integer seq = Integer.parseInt(groupAttrs.getNamedItem("sequence").getNodeValue());
+
                     MeasurePackageDetail detail = seqDetailMap.get(seq);
                     if (detail == null) {
                         detail = new MeasurePackageDetail();
                         detail.setSequence(Integer.toString(seq));
                         detail.setMeasureId(measureId);
+
+                        if (groupAttrs.getNamedItem("ucum") == null) {
+                            detail.setUcum(null);
+                        } else {
+                            detail.setUcum(groupAttrs.getNamedItem("ucum").getNodeValue());
+                        }
+
                         seqDetailMap.put(seq, detail);
                         pkgs.add(detail);
                     }
+
                     NodeList pkgClauses = measureGroups.item(i).getChildNodes();
                     // Iterate through the PACKAGECLAUSE nodes and convert it
                     // into
@@ -264,7 +270,7 @@ public class PackagerServiceImpl implements PackagerService {
                                         pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue(),
                                         pkgClauseMap.getNamedItem("name").getNodeValue(),
                                         pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.TYPE).getNodeValue(),
-                                        associatedClauseNodeUuid, qdmSelectedList));
+                                        associatedClauseNodeUuid));
                     }
                 }
             }
@@ -367,8 +373,10 @@ public class PackagerServiceImpl implements PackagerService {
      * @param itemCountList            the item count list
      * @return the measure package clause detail
      */
-    private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type,
-                                                                        String associatedPopulationUUID, List<QualityDataSetDTO> itemCountList) {
+    private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id,
+                                                                        String name,
+                                                                        String type,
+                                                                        String associatedPopulationUUID) {
         MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
         detail.setId(id);
         detail.setName(name);
@@ -817,6 +825,10 @@ public class PackagerServiceImpl implements PackagerService {
         List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses(), measure.getMeasureScoring());
         MeasurePackageSaveResult result = new MeasurePackageSaveResult();
 
+        if (StringUtils.isNotEmpty(detail.getUcum())) {
+            validateUcum(detail.getUcum(), messages);
+        }
+
         if (messages.size() == 0) {
             MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
             try {
@@ -837,6 +849,7 @@ public class PackagerServiceImpl implements PackagerService {
                     // number from MeasurePackageDetail
                     groupNode = processor.findNode(processor.getOriginalDoc(),
                             XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
+
                     // fetches the MeasureGrouping node from the Measure_xml
                     measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
                             XmlProcessor.XPATH_MEASURE_GROUPING); // get the
@@ -882,6 +895,20 @@ public class PackagerServiceImpl implements PackagerService {
         long time2 = System.currentTimeMillis();
         logger.debug("Time for grouping validation:" + (time2 - time1));
         return result;
+    }
+
+    private void validateUcum(String unit, List<String> messages) {
+        try {
+            Boolean result = ucumValidationService.validate(unit);
+
+            if (result == null) {
+                messages.add("Ucum validation server did not return a result");
+            } else if (!result) {
+                messages.add(unit + " is not a valid UCUM code.");
+            }
+        } catch (Exception e) {
+            messages.add("Ucum validation threw an error message: " + e.getMessage());
+        }
     }
 
     @Override

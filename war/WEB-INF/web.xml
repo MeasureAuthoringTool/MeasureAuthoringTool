@@ -24,7 +24,7 @@
         </init-param>
         <init-param>
           <param-name>antiClickJackingOption</param-name>
-          <param-value>SAMEORIGIN</param-value>
+          <param-value>DENY</param-value>
         </init-param>
     </filter>
   <filter-mapping>

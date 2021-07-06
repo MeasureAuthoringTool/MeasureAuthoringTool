@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
@@ -172,7 +173,11 @@ public class FhirCqlParserService implements FhirCqlParser {
         } catch (HttpClientErrorException e) {
             log.error("HttpClientErrorException", e);
             throw new MatRuntimeException(e);
-        } finally {
+        } catch (HttpServerErrorException e) {
+            log.error("HttpServerErrorException", e);
+            throw new MatRuntimeException(e);
+        }
+        finally {
             if (response != null && response.getHeaders().containsKey(REFRESHED_GRANTING_TICKET)) {
                 setRefreshedTicket(response.getHeaders().getFirst(REFRESHED_GRANTING_TICKET));
             }

@@ -2136,6 +2136,12 @@ public abstract class AbstractCQLWorkspacePresenter {
                 Mat.hideUMLSActive(true);
                 MatContext.get().setUMLSLoggedIn(false);
                 break;
+            case VsacApiResult.VSAC_SERVER_ERROR:
+                message = MessageDelegate.getVsacServerError();
+                break;
+            case VsacApiResult.VSAC_NOT_FOUND_ERROR:
+                message = MessageDelegate.getVsacCodeNotFound();
+                break;
             default:
                 message = "";
         }

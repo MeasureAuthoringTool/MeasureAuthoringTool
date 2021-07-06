@@ -687,9 +687,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     } else {
                         detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
                     }
+                    // Re-enable buttons after displaying error message.
+                    setSearchingBusy(false);
                 }
             });
         } else {
+            // else clause is preventing the buttons from being re-enabled when creation was successful.
             setSearchingBusy(false);
         }
     }

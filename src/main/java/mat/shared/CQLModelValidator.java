@@ -23,7 +23,7 @@ public class CQLModelValidator {
      * The code regex expression.
      */
     private final String CODE_REGEX_EXPRESSION = "^(CODE:/CodeSystem/)([^/]*)" +
-            "(/Version/)([^/]*)(/Code/)([^/]*)(/Info)$";
+            "(/Version/)([^/]*)(/Code/)([\\S]*)(/Info)$";
 
     /**
      * The code reg exp.

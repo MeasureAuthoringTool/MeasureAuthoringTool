@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -543,6 +544,8 @@ public class VsacService {
                             .toUri(), String.class));
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
+        } catch(HttpServerErrorException e) {
+            return buildBasicResponseForHttpServerError(e);
         }
     }
 
@@ -620,6 +623,24 @@ public class VsacService {
     private BasicResponse buildBasicResponseForHttpClientError(HttpClientErrorException e) {
         log.error(e.getResponseBodyAsString(), e);
         return buildBasicResponseForFailure();
+    }
+
+    private BasicResponse buildBasicResponseForHttpServerError(HttpServerErrorException e) {
+        log.error(e.getResponseBodyAsString(), e);
+        if (e.getStatusCode().is4xxClientError()) {
+            return buildCustomResponseForFailure(BasicResponse.REQUEST_NOT_FOUND);
+        }
+        if (e.getStatusCode().is5xxServerError()) {
+            return buildCustomResponseForFailure(BasicResponse.SERVER_ERROR);
+        }
+        return buildBasicResponseForFailure();
+    }
+
+    private BasicResponse buildCustomResponseForFailure(int errorCode) {
+        BasicResponse result = new BasicResponse();
+        result.setFailReason(errorCode);
+        result.setFailResponse(true);
+        return result;
     }
 
     /**

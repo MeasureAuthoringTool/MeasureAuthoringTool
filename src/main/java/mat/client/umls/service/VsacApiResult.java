@@ -36,7 +36,11 @@ public class VsacApiResult implements IsSerializable {
 	public static final int VSAC_UNAUTHORIZED_ERROR = 6;
 
 	public static final int INVALID_OID = 0;
-	
+
+	public static final int VSAC_NOT_FOUND_ERROR = 98;
+
+	public static final int VSAC_SERVER_ERROR = 99;
+
 	/** The failure reason. */
 	private int failureReason;
 	

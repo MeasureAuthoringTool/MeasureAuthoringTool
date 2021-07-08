@@ -505,7 +505,7 @@ public class CQLUtil {
     public static SaveUpdateCQLResult parseQDMCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
                                                                   List<String> exprList, boolean generateELM) {
 
-        SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
+        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 
         Map<String, LibHolderObject> cqlLibNameMap = new HashMap<>();
 
@@ -518,9 +518,9 @@ public class CQLUtil {
 
         setIncludedCQLExpressions(cqlModel);
 
-        validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM);
+        validateCQLWithIncludes(cqlModel, cqlLibNameMap, result, exprList, generateELM);
 
-        return parsedCQL;
+        return result;
     }
 
 
@@ -590,12 +590,12 @@ public class CQLUtil {
      *
      * @param cqlModel      the cql model
      * @param cqlLibNameMap the cql lib name map
-     * @param parsedCQL     the parsed CQL
+     * @param result        the parsed CQL
      * @param exprList      the expr list
      * @param generateELM   the generate ELM
      */
     private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
-                                                SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM) {
+                                                SaveUpdateCQLResult result, List<String> exprList, boolean generateELM) {
 
         Map<String, String> libraryMap = new HashMap<>();
 
@@ -617,13 +617,13 @@ public class CQLUtil {
 
         // do the filtering
         if (exprList != null) {
-            filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList);
+            filterCQLArtifacts(cqlModel, result, cqlToELM, exprList);
         }
 
         // set the elm string
         if (generateELM) {
-            parsedCQL.setElmString(cqlToELM.getElmString());
-            parsedCQL.setJsonString(cqlToELM.getParentJsonString());
+            result.setElmString(cqlToELM.getElmString());
+            result.setJsonString(cqlToELM.getParentJsonString());
         }
 
         // add in the errors, if any
@@ -645,11 +645,11 @@ public class CQLUtil {
             setCQLErrors(parentLibraryName, warnings, libraryNameWarningsMap, cte);
         }
 
-        parsedCQL.setCqlModel(cqlModel);
-        parsedCQL.setCqlErrors(errors);
-        parsedCQL.setCqlWarnings(warnings);
-        parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
-        parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
+        result.setCqlModel(cqlModel);
+        result.setCqlErrors(errors);
+        result.setCqlWarnings(warnings);
+        result.setLibraryNameErrorsMap(libraryNameErrorsMap);
+        result.setLibraryNameWarningsMap(libraryNameWarningsMap);
     }
 
     private static void validateMeasurementPeriodReturnType(CQLtoELM cqlToELM, String libraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryNameErrorsMap) {
@@ -681,7 +681,9 @@ public class CQLUtil {
             cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
             cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
 
-            if (cte.getLocator().getLibrary() != null && !"unknown".equals(cte.getLocator().getLibrary().getId())) {
+            if (cte.getLocator().getLibrary() != null &&
+                    cte.getLocator().getLibrary().getVersion() != null &&
+                    !"unknown".equals(cte.getLocator().getLibrary().getId())) {
                 libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
             } else {
                 libraryName = parentLibraryName;
@@ -689,8 +691,10 @@ public class CQLUtil {
 
         }
 
-        cqlError.setErrorMessage(cte.getMessage());
-        cqlError.setSeverity(cte.getSeverity().toString());
+        if (cte != null) {
+            cqlError.setErrorMessage(cte.getMessage());
+            cqlError.setSeverity(cte.getSeverity().toString());
+        }
 
         libraryToErrorsMap.computeIfAbsent(libraryName, k -> new ArrayList<>());
         libraryToErrorsMap.get(libraryName).add(cqlError);

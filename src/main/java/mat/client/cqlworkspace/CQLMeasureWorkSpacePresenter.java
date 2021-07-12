@@ -93,13 +93,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     }
 
     private void addEventHandlers() {
-        ClickHandler cHandler = new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().detach();
-                cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().detach();
-                cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().detach();
-            }
+        ClickHandler cHandler = event -> {
+            cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().detach();
+            cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().detach();
+            cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().detach();
         };
         cqlWorkspaceView.getMainPanel().addDomHandler(cHandler, ClickEvent.getType());
 
@@ -302,8 +299,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                 return;
             }
             String aliasName = cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getText();
-            String searchfield = cqlWorkspaceView.getIncludeView().getSearchTextBox().getText();
-            if (!aliasName.isEmpty() && !searchfield.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
+            if (!aliasName.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
                 CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlWorkspaceView.getIncludeView().getSelectedObjectList().get(0);
                 CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
                 incLibrary.setAliasName(aliasName);

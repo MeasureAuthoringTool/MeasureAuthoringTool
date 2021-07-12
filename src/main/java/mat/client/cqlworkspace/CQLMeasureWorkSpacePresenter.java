@@ -299,7 +299,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                 return;
             }
             String aliasName = cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getText();
-            if (!aliasName.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().isEmpty()) {
+            if (!aliasName.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
                 CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlWorkspaceView.getIncludeView().getSelectedObjectList().get(0);
                 CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
                 incLibrary.setAliasName(aliasName);

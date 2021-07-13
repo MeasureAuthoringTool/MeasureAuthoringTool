@@ -715,7 +715,7 @@ public class CQLServiceImpl implements CQLService {
                     definitionWithEdits.getLogic(), definitionWithEdits.getName(), "Definition", modelType);
 
             // do some processing if the are no errors in the CQL
-            if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getCqlErrors().isEmpty()) {
+            if (result.getCqlErrors().isEmpty()) {
                 Optional<CQLExpressionObject> expressionObject = findExpressionObject(definitionWithEdits.getName(), result.getCqlObject().getCqlDefinitionObjectList());
                 if (expressionObject.isPresent()) {
                     definitionWithEdits.setReturnType(expressionObject.get().getReturnType());

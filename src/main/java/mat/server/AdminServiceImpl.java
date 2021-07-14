@@ -146,7 +146,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         if (signInDate != null) {
             SimpleDateFormat isoFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             String date = isoFormat.format(signInDate);
-            String message = "Last Successful logon : " + date + " CDT";
+            String message = "Last Successful logon : " + date + " UTC";
             return message;
         } else {
             return "";

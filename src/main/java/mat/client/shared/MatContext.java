@@ -57,6 +57,7 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.util.FeatureFlagConstant;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.OperatorDTO;
 import mat.dto.UserPreferenceDTO;
@@ -408,6 +409,11 @@ public class MatContext implements IsSerializable {
             bonnieService = (BonnieServiceAsync) GWT.create(BonnieService.class);
         }
         return bonnieService;
+    }
+
+    public static boolean isFhirAvailable() {
+        return instance.getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) &&
+                instance.getCurrentUserInfo().isFhirAccessible;
     }
 
     public static MatContext get() {
@@ -1505,7 +1511,7 @@ public class MatContext implements IsSerializable {
         }
     }
 
-    public void setPopulationBasisList(ListBox listBox, List<String> list, String defaultOption ) {
+    public void setPopulationBasisList(ListBox listBox, List<String> list, String defaultOption) {
         listBox.clear();
         listBox.addItem(defaultOption, "");
         if (list != null) {
@@ -1525,7 +1531,7 @@ public class MatContext implements IsSerializable {
         if (!ModelTypeHelper.isFhir(getCurrentMeasureModel())) {
             patientBasedList.add("Yes");
         } else if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
-                patientBasedList.add("Yes");
+            patientBasedList.add("Yes");
         }
         return patientBasedList;
     }

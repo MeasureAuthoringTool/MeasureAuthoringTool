@@ -1015,8 +1015,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> createNewMeasure());
-        if (Boolean.TRUE.equals(MatContext.get().getFeatureFlags().get(MAT_ON_FHIR)) ||
-                MatContext.get().getCurrentUserInfo().isFhirAccessible) {
+        if (MatContext.isFhirAvailable()) {
             // If fhir is on they can create FHIR or QDM.
             detailDisplay.allowAllMeasureModelTypes();
         } else {
@@ -1363,7 +1362,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                             String version,
                                             boolean shouldPackage,
                                             String measureModel) {
-        if( ModelTypeHelper.isFhir(measureModel)) {
+        if (ModelTypeHelper.isFhir(measureModel)) {
             displayUnusedLibraryDialogFhir(measureId, measureName, isMajor, version, shouldPackage);
         } else {
             displayUnusedLibraryDialogQdm(measureId, measureName, isMajor, version, shouldPackage);

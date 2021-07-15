@@ -3,26 +3,44 @@ package mat.client.measure;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
-import mat.client.shared.*;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalFlowPanel;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AbstractNewMeasureView implements DetailDisplay {
+    private static final Logger logger = Logger.getLogger(AbstractNewMeasureView.class.getSimpleName());
+
     private static final String LIBRARY_NAME_REQUIRED = "A CQL Library name is required.";
     public static final String LIBRARY_LENGTH_ERROR = "CQL Library Name cannot exceed 500 characters.";
 
@@ -297,13 +315,13 @@ public class AbstractNewMeasureView implements DetailDisplay {
      * @return measureModelPanel
      */
     protected VerticalFlowPanel buildModelTypePanel() {
-        ((Element) fhirModel.getElement().getChild(0)).setAttribute("aria-label","Model FHIR");
-        ((Element) qdmModel.getElement().getChild(0)).setAttribute("aria-label","Model QDM");
+        ((Element) fhirModel.getElement().getChild(0)).setAttribute("aria-label", "Model FHIR");
+        ((Element) qdmModel.getElement().getChild(0)).setAttribute("aria-label", "Model QDM");
 
         VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
         measureModelGroup.add(buildModelTypeLabel());
-        //new model creation defaulted to FHIR
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+
+        if (MatContext.isFhirAvailable()) {
             fhirModel.setValue(true);
         } else {
             fhirModel.setEnabled(false);
@@ -328,9 +346,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
      * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
      */
     protected void addMeasureModelType() {
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            measureModelGroup.add(buildModelTypePanel());
-        }
+        measureModelGroup.add(buildModelTypePanel());
     }
 
     protected void addCompositeMeasureModelType() {

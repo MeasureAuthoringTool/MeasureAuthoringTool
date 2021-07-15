@@ -239,7 +239,7 @@ public class ManageUserHistoryView implements
 			DateTimeFormat formatter = DateTimeFormat
 					.getFormat("MM'/'dd'/'yyyy h:mm:ss a");
 			tsStr = formatter.format(ts);
-			tsStr = tsStr + " CST";
+			tsStr = tsStr + " UTC";
 		}
 
 		return tsStr;

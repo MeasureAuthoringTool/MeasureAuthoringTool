@@ -1482,7 +1482,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     private void displayNewCQLLibraryWidget() {
         Mat.showLoadingMessage();
         setIsPageDirty(false);
-        boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
+        boolean isFhirAvailable = MatContext.isFhirAvailable();
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
         warningConfirmationMessageAlert.clearAlert();
         panel.getButtonPanel().clear();

@@ -2,20 +2,32 @@ package mat.client.cql;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import mat.client.CqlLibraryPresenter;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.AbstractNewMeasureView;
-import mat.client.shared.*;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.validator.measure.CommonMeasureValidator;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -147,9 +159,14 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     private VerticalPanel buildModelTypePanel() {
         VerticalPanel libraryModelPanel = new VerticalPanel();
         libraryModelGroup.add(buildModelTypeLabel());
-        //new model creation defaulted to FHIR
-        fhirModel.setValue(true);
-        qdmModel.setEnabled(false);
+
+        if (MatContext.isFhirAvailable()) {
+            fhirModel.setValue(true);
+        } else {
+            fhirModel.setEnabled(false);
+            qdmModel.setValue(true);
+        }
+
         libraryModelPanel.add(fhirModel);
         libraryModelPanel.add(qdmModel);
         return libraryModelPanel;
@@ -183,7 +200,7 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     @Override
     public void setLibraryModelType(String type, boolean isDraft) {
-        boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
+        boolean isFhirAvailable = MatContext.isFhirAvailable();
         logger.info("setLibraryModelType(" + type + "," + isDraft + ") isFhirAvailable=" + isFhirAvailable);
         fhirModel.setEnabled(!isDraft && isFhirAvailable);
         qdmModel.setEnabled(!isDraft);

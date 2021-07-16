@@ -739,7 +739,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                     CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
                     incLibrary.setAliasName(aliasName);
                     incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
-                    String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "." + "000";
+                    // All versioned libraries should have '000' as revision number but FHIRHelpers library has '001'.
+                    String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "."
+                            + (cqlLibraryDataSetObject.getRevisionNumber().equals("1") ? "001" : "000");
                     incLibrary.setVersion(versionValue);
                     incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
                     incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());

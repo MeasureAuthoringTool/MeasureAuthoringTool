@@ -58,7 +58,6 @@ import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -306,7 +305,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                 incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
                 // All versioned libraries should have '000' as revision number but FHIRHelpers library has '001'.
                 String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "."
-                        + (cqlLibraryDataSetObject.getRevisionNumber().equals("1") ? "001" : "000");
+                        + StringUtility.padLeftZeros(cqlLibraryDataSetObject.getRevisionNumber(), 3);
                 incLibrary.setVersion(versionValue);
                 incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
                 incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());

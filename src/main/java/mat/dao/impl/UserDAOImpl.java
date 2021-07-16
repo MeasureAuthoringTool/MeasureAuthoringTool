@@ -25,10 +25,12 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static mat.model.Status.STATUS_ACTIVE;
 import static mat.model.Status.STATUS_TERMINATED;
@@ -90,26 +92,26 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
         logger.debug("Unlocked user count: " + updatedCount);
     }
 
+    private List<Predicate> createSearchCriteria(CriteriaBuilder criteriaBuilder, Root<User> userRoot, String searchText) {
+        String[] splits = searchText.trim().split(" ");
 
-    /**
-     * Creates the search criteria.
-     *
-     * @param userRoot
-     * @param text     the text
-     * @return the criteria
-     */
-    private List<Predicate> createSearchCriteria(CriteriaBuilder criteriaBuilder, Root<User> userRoot, String text) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        Predicate predicate1 = criteriaBuilder.or(criteriaBuilder.or(
+        List<Predicate> predicates = Arrays.stream(splits)
+                .map(s -> buildUserSearchPredicate(criteriaBuilder, userRoot, s.trim()))
+                .collect(Collectors.toList());
+
+        Predicate excludeAdminPredicate = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("id"), "Admin"));
+        predicates.add(excludeAdminPredicate);
+
+        return predicates;
+    }
+
+    private Predicate buildUserSearchPredicate(CriteriaBuilder criteriaBuilder, Root<User> userRoot, String text) {
+        return criteriaBuilder.or(criteriaBuilder.or(
                 criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("firstName")), "%" + text.toLowerCase() + "%"),
                 criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("lastName")), "%" + text.toLowerCase() + "%")),
                 criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("emailAddress")), "%" + text.toLowerCase() + "%"),
-                        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("loginId")), "%" + text.toLowerCase() + "%")));
-        Predicate predicate2 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("id"), "Admin"));
-        predicates.add(predicate1);
-        predicates.add(predicate2);
-        return predicates;
+                        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("harpId")), "%" + text.toLowerCase() + "%")));
     }
 
     /**
@@ -119,13 +121,10 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
      * @return the criteria
      */
     private List<Predicate> createSearchCriteriaNonAdminUser(CriteriaBuilder criteriaBuilder, Root<User> userRoot, String text) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        Predicate predicate1 = criteriaBuilder.or(criteriaBuilder.or(
-                criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("firstName")), "%" + text.toLowerCase() + "%"),
-                criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("lastName")), "%" + text.toLowerCase() + "%")),
-                criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("emailAddress")), "%" + text.toLowerCase() + "%"),
-                        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("loginId")), "%" + text.toLowerCase() + "%")));
+        List<Predicate> predicates = new ArrayList<>();
+
+        Predicate predicate1 = buildUserSearchPredicate(criteriaBuilder, userRoot, text);
+
         Predicate predicate2 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("securityRole").get("id"), "1"));
         Predicate predicate3 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("status").get("statusId"), STATUS_TERMINATED));
         predicates.add(predicate1);
@@ -141,7 +140,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         final Root<User> userRoot = criteriaQuery.from(User.class);
         List<Predicate> predicates = createSearchCriteria(criteriaBuilder, userRoot, name);
-        criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName"))).select(userRoot).where(predicates.toArray(new Predicate[predicates.size()]));
+        criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName"))).select(userRoot).where(predicates.toArray(new Predicate[0]));
         return session.createQuery(criteriaQuery).getResultList();
     }
 

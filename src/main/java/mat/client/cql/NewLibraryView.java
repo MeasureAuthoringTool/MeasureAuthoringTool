@@ -160,12 +160,7 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         VerticalPanel libraryModelPanel = new VerticalPanel();
         libraryModelGroup.add(buildModelTypeLabel());
 
-        if (MatContext.isFhirAvailable()) {
-            fhirModel.setValue(true);
-        } else {
-            fhirModel.setEnabled(false);
-            qdmModel.setValue(true);
-        }
+        fhirModel.setValue(true);
 
         libraryModelPanel.add(fhirModel);
         libraryModelPanel.add(qdmModel);
@@ -200,9 +195,8 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     @Override
     public void setLibraryModelType(String type, boolean isDraft) {
-        boolean isFhirAvailable = MatContext.isFhirAvailable();
-        logger.info("setLibraryModelType(" + type + "," + isDraft + ") isFhirAvailable=" + isFhirAvailable);
-        fhirModel.setEnabled(!isDraft && isFhirAvailable);
+        logger.info("setLibraryModelType(" + type + "," + isDraft + ")");
+        fhirModel.setEnabled(!isDraft);
         qdmModel.setEnabled(!isDraft);
         fhirModel.setValue(ModelTypeHelper.isFhir(type));
         qdmModel.setValue(!ModelTypeHelper.isFhir(type));

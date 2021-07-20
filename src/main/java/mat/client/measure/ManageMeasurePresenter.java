@@ -1015,13 +1015,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> createNewMeasure());
-        if (MatContext.isFhirAvailable()) {
-            // If fhir is on they can create FHIR or QDM.
-            detailDisplay.allowAllMeasureModelTypes();
-        } else {
-            // If fhir is off they can only create QDM.
-            detailDisplay.setMeasureModelType(ModelTypeHelper.QDM);
-        }
+        detailDisplay.allowAllMeasureModelTypes();
         panel.setContent(detailDisplay.asWidget());
     }
 

@@ -411,11 +411,6 @@ public class MatContext implements IsSerializable {
         return bonnieService;
     }
 
-    public static boolean isFhirAvailable() {
-        return instance.getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) &&
-                instance.getCurrentUserInfo().isFhirAccessible;
-    }
-
     public static MatContext get() {
         return instance;
     }

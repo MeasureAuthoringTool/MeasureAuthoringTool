@@ -697,7 +697,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
+                logger.log(Level.INFO, "HarpService::revoke -> onSuccess:" + aBoolean);
                 harpOktaLogout(redirectTo);
             }
         });

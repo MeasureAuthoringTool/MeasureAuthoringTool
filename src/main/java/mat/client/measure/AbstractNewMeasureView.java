@@ -321,12 +321,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
         VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
         measureModelGroup.add(buildModelTypeLabel());
 
-        if (MatContext.isFhirAvailable()) {
-            fhirModel.setValue(true);
-        } else {
-            fhirModel.setEnabled(false);
-            qdmModel.setValue(true);
-        }
+        fhirModel.setValue(true);
+
         measureModelPanel.add(fhirModel);
         measureModelPanel.add(qdmModel);
         return measureModelPanel;

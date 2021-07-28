@@ -6,8 +6,6 @@ import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
@@ -135,9 +133,13 @@ public class HumanReadableGenerator {
                 List<String> exprList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
                 exprList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 
-                SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ?
-                        parseFhirCqlLibraryForErrors(cqlModel, cqlString) :
-                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList); // Also filters out irrelevant children defines
+                if(cqlModel.isFhir()) {
+                    parseFhirCqlLibraryForErrors(cqlModel, cqlString);
+                }
+
+                // Validates QDM and filters out irrelevant children defines for both FHIR and QDM.
+                SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList);
+
                 Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
@@ -154,10 +156,10 @@ public class HumanReadableGenerator {
                 model.setSupplementalDataElements(getSupplementalDataElements(processor));
                 model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 
-                if (cqlModel.isFhir()) {
-                    model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
-                    model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
+                model.setDefinitions(getDefinitionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                model.setFunctions(getFunctionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 
+                if (cqlModel.isFhir()) {
                     // Retrieve Terminology info from microservices/HAPI.
                     updateFhirValuesetsCodesystemsDataReqs(model, measureId);
 
@@ -176,9 +178,6 @@ public class HumanReadableGenerator {
                     }
 
                 } else {
-                    model.setDefinitions(getDefinitionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-                    model.setFunctions(getFunctionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-
                     List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminologyQDM(processor);
                     sortTerminologyList(valuesetTerminologyList);
                     model.setValuesetTerminologyList(valuesetTerminologyList);

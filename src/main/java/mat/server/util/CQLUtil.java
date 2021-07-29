@@ -597,19 +597,10 @@ public class CQLUtil {
     private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
                                                 SaveUpdateCQLResult result, List<String> exprList, boolean generateELM) {
 
-        Map<String, String> libraryMap = new HashMap<>();
-
         // get the strings for parsing
         String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
         String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
-        libraryMap.put(parentLibraryName, parentCQLString);
-        for (String cqlLibName : cqlLibNameMap.keySet()) {
-            CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
-
-            LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-            String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").getLeft();
-            libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
-        }
+        Map<String, String> libraryMap = buildLibraryMap(parentCQLString, parentLibraryName, cqlLibNameMap);
 
         // do the parsing
         CQLtoELM cqlToELM = new CQLtoELM(parentCQLString, libraryMap);
@@ -650,6 +641,20 @@ public class CQLUtil {
         result.setCqlWarnings(warnings);
         result.setLibraryNameErrorsMap(libraryNameErrorsMap);
         result.setLibraryNameWarningsMap(libraryNameWarningsMap);
+    }
+
+    private static Map<String, String> buildLibraryMap(String parentCQL, String parentLibraryName, Map<String, LibHolderObject> cqlLibNameMap) {
+        Map<String, String> libraryMap = new HashMap<>();
+        libraryMap.put(parentCQL, parentLibraryName);
+
+        for (String cqlLibName : cqlLibNameMap.keySet()) {
+            CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
+
+            LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
+            String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").getLeft();
+            libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
+        }
+        return libraryMap;
     }
 
     private static void validateMeasurementPeriodReturnType(CQLtoELM cqlToELM, String libraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryNameErrorsMap) {

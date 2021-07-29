@@ -726,7 +726,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
         return humanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO, dataRequirementsNoValueSet);
     }
 
-
     public ExportResult getHQMF(String measureId) {
         MeasureExport measureExport = getMeasureExport(measureId);
 

@@ -57,7 +57,6 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.client.util.FeatureFlagConstant;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.OperatorDTO;
 import mat.dto.UserPreferenceDTO;
@@ -607,12 +606,9 @@ public class MatContext implements IsSerializable {
     }
 
     public void redirectToHtmlPage(String html) {
-        UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-        String path = Window.Location.getPath();
-        path = path.substring(0, path.lastIndexOf('/'));
-        path += html;
-        urlBuilder.setPath(path);
-        Window.Location.replace(urlBuilder.buildString());
+        String currentUrl = Window.Location.getHref();
+        String redirectUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/')) + html;
+        Window.Location.replace(redirectUrl);
     }
 
     public void redirectToMatPage(String html) {
@@ -629,7 +625,6 @@ public class MatContext implements IsSerializable {
         Window.open(html, "User_Guide", "");
 
     }
-
 
     public void openNewHtmlPage(String html) {
         String windowFeatures = "toolbar=no, location=no, personalbar=no, menubar=yes, scrollbars=yes, resizable=yes";

@@ -708,7 +708,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
-                logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
+                logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure");
             }
 
             @Override

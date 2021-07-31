@@ -715,13 +715,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             public void onSuccess(String harpUrl) {
                 logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                harpLogout(harpUrl);
                 removeOktaTokens();
+                harpLogout(harpUrl);
                 if (redirectTo == null) {
                     // MAT logout operation, but don't redirect.
-                    MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+                    MatContext.get().handleSignOut("SIGN_OUT_EVENT", null);
 
-                    // Redirect to Login after 1 second wait.
+                    // Redirect to Login.html after 1 second wait.
                     redirectToLogin();
                 }
                 // MAT Logout operation with specified redirect.

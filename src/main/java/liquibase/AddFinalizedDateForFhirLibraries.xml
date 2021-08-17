@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="CQL_LIBRARY"/>
+        </preConditions>
+<!--        AdvancedIllnessandFrailtyExclusionFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-08-17 03:38:54" />
+            <where>ID = '09b6df1d5cfb4ed787d63ffd8e4e32a8'</where>
+        </update>
+
+<!--        AdultOutpatientEncountersFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-03-19 03:44:03" />
+            <where>ID = '11a37cbfc8634b00a69a56d005f10fd7'</where>
+        </update>
+
+<!--        TJCOverallFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-08-17 03:38:54" />
+            <where>ID = '195c13832b09499ca1e1ccc4fb5fd77b'</where>
+        </update>
+
+<!--        FHIRHelpers-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-08-17 03:38:54" />
+            <where>ID = '33b6e38e5e0543ada0e8942b91d42795'</where>
+        </update>
+
+<!--        HospiceFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-03-19 03:38:54" />
+            <where>ID = '35e8cdb0bb204ce1a39682093adbf5f1'</where>
+        </update>
+
+<!--        VTEICUFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-05-17 20:27:49" />
+            <where>ID = '544333b6ef7e47268672589073a33538'</where>
+        </update>
+
+<!--        SupplementalDataElementsFHIR4-->
+        <update tableName="CQL_LIBRARY">
+            <column name="FINALIZED_DATE" value="2021-08-17 03:38:54" />
+            <where>ID = '747a00aa82d340f29f257d848c125742'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

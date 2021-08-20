@@ -899,12 +899,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
             @Override
             public void onSuccess(SaveUpdateCQLResult result) {
+                handleCQLData(result);
                 if (result.isSevereError()) {
                     showSearchingBusy(false);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(false);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().disbaleBadges();
                 } else {
-                    handleCQLData(result);
                     if (MatContext.get().isCurrentModelTypeFhir()) {
                         MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
                             @Override

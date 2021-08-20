@@ -379,11 +379,6 @@
             <version>1.0.2</version>
         </dependency>
         <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.17</version>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0.1</version>

@@ -144,11 +144,22 @@ public class SaveUpdateCQLResult extends GenericResult {
         this.unusedCqlElements = unusedCqlElements;
     }
 
-    public boolean haveUnusedElements() {
+    public boolean hasUnusedElements() {
         if (unusedCqlElements == null) {
             return false;
         } else {
             return unusedCqlElements.haveUnused();
+        }
+    }
+
+    public boolean hasUnusedLibraries() {
+        if(!hasUnusedElements()) {
+            return false;
+        }
+        if (unusedCqlElements.getLibraries() == null) {
+            return false;
+        } else {
+            return !unusedCqlElements.getLibraries().isEmpty();
         }
     }
 

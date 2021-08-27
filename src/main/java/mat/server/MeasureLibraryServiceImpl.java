@@ -1995,7 +1995,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                                                         final boolean isMajor,
                                                         final String version,
                                                         boolean shouldPackage,
-                                                        boolean ignoreUnusedLibraries,
+                                                        boolean ignoreUnused,
                                                         boolean keepAllUnused) {
         log.debug("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
         Measure m = measurePackageService.getById(measureId);
@@ -2047,13 +2047,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (keepAllUnused) {
             log.info("Keeping all un-used items for measureId: " + measureId);
         } else if (!m.isFhirMeasure() &&
-                !ignoreUnusedLibraries &&
+                !ignoreUnused &&
                 CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
             saveMeasureResult.setFailureReason( SaveMeasureResult.UNUSED_LIBRARY_FAIL);
             log.debug("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
             return saveMeasureResult;
         } else {
-            if (m.isFhirMeasure() && !ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+            if (m.isFhirMeasure() && !ignoreUnused && cqlResult.hasUnusedElements()) {
                 return returnFailureReason(saveMeasureResult, SaveMeasureResult.UNUSED_LIBRARY_FAIL);
             }
         }

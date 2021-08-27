@@ -207,7 +207,7 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
-        List<CQLError> errors = new ArrayList<>();
+        List<CQLError> errors;
         MatXmlResponse fhirResponse = new MatXmlResponse();
         try {
             //Now parse it into a new CQLModel
@@ -224,7 +224,7 @@ public class CQLServiceImpl implements CQLService {
                         // This code overwrites some of the users changes in the CQL that are not allowed.
                         fhirResponse = fhirCqlParser.parse(cql, config.getPreviousCQLModel());
                         newModel = fhirResponse.getCqlModel();
-                        // Combine all cql errors in a single list
+                        // Combine all SEVERE cql errors in a single list
                         errors = Optional.ofNullable(fhirResponse.getErrors())
                                 .stream()
                                 .flatMap(Collection::stream)
@@ -247,7 +247,7 @@ public class CQLServiceImpl implements CQLService {
                     throw new IllegalArgumentException("Unexpected modelType " + modelType);
             }
 
-            // Parser errors.
+            // Parse Severe errors.
             if (!errors.isEmpty()) {
                 Map<String, List<CQLError>> errorsMap = new HashMap<>();
                 errorsMap.put(newModel.getFormattedName(), errors);

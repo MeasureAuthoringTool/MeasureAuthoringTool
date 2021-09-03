@@ -1,4 +1,4 @@
-FROM tomcat:9
+FROM tomcat:jdk8-corretto
 
 ARG STOREPASS="changeit"
 ARG WAR_PATH="MeasureAuthoringTool.war"

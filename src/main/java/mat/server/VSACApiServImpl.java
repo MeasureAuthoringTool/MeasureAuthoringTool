@@ -467,6 +467,13 @@ public class VSACApiServImpl implements VSACApiService {
                                 vsacResponseResult.getXmlPayLoad());
                         result.setDirectReferenceCode(referenceCode);
                         result.setSuccess(true);
+                    } else if(vsacResponseResult.isFailResponse()) {
+                        result.setSuccess(false);
+                        if (vsacResponseResult.getFailReason() == BasicResponse.REQUEST_NOT_FOUND) {
+                            result.setFailureReason(VsacApiResult.VSAC_NOT_FOUND_ERROR);
+                        } else if (vsacResponseResult.getFailReason() == BasicResponse.SERVER_ERROR) {
+                            result.setFailureReason(VsacApiResult.VSAC_SERVER_ERROR);
+                        }
                     }
 
                 } else {

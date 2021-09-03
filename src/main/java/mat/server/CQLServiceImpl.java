@@ -207,7 +207,7 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
-        List<CQLError> errors = new ArrayList<>();
+        List<CQLError> errors;
         MatXmlResponse fhirResponse = new MatXmlResponse();
         try {
             //Now parse it into a new CQLModel
@@ -224,7 +224,7 @@ public class CQLServiceImpl implements CQLService {
                         // This code overwrites some of the users changes in the CQL that are not allowed.
                         fhirResponse = fhirCqlParser.parse(cql, config.getPreviousCQLModel());
                         newModel = fhirResponse.getCqlModel();
-                        // Combine all cql errors in a single list
+                        // Combine all SEVERE cql errors in a single list
                         errors = Optional.ofNullable(fhirResponse.getErrors())
                                 .stream()
                                 .flatMap(Collection::stream)
@@ -247,7 +247,7 @@ public class CQLServiceImpl implements CQLService {
                     throw new IllegalArgumentException("Unexpected modelType " + modelType);
             }
 
-            // Parser errors.
+            // Parse Severe errors.
             if (!errors.isEmpty()) {
                 Map<String, List<CQLError>> errorsMap = new HashMap<>();
                 errorsMap.put(newModel.getFormattedName(), errors);
@@ -460,7 +460,7 @@ public class CQLServiceImpl implements CQLService {
                     functionWithEdits.getLogic(), functionWithEdits.getName(), "Definition", modelType);
 
             // do some processing if the are no errors in the CQL
-            if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getCqlErrors().isEmpty()) {
+            if (result.getCqlErrors().isEmpty()) {
                 Optional<CQLExpressionObject> expressionObject = findExpressionObject(functionWithEdits.getName(), result.getCqlObject().getCqlFunctionObjectList());
                 if (expressionObject.isPresent()) {
                     functionWithEdits.setReturnType(expressionObject.get().getReturnType());
@@ -715,7 +715,7 @@ public class CQLServiceImpl implements CQLService {
                     definitionWithEdits.getLogic(), definitionWithEdits.getName(), "Definition", modelType);
 
             // do some processing if the are no errors in the CQL
-            if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getCqlErrors().isEmpty()) {
+            if (result.getCqlErrors().isEmpty()) {
                 Optional<CQLExpressionObject> expressionObject = findExpressionObject(definitionWithEdits.getName(), result.getCqlObject().getCqlDefinitionObjectList());
                 if (expressionObject.isPresent()) {
                     definitionWithEdits.setReturnType(expressionObject.get().getReturnType());

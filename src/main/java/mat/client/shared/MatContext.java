@@ -606,12 +606,9 @@ public class MatContext implements IsSerializable {
     }
 
     public void redirectToHtmlPage(String html) {
-        UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-        String path = Window.Location.getPath();
-        path = path.substring(0, path.lastIndexOf('/'));
-        path += html;
-        urlBuilder.setPath(path);
-        Window.Location.replace(urlBuilder.buildString());
+        String currentUrl = Window.Location.getHref();
+        String redirectUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/')) + html;
+        Window.Location.replace(redirectUrl);
     }
 
     public void redirectToMatPage(String html) {
@@ -628,7 +625,6 @@ public class MatContext implements IsSerializable {
         Window.open(html, "User_Guide", "");
 
     }
-
 
     public void openNewHtmlPage(String html) {
         String windowFeatures = "toolbar=no, location=no, personalbar=no, menubar=yes, scrollbars=yes, resizable=yes";
@@ -1505,7 +1501,7 @@ public class MatContext implements IsSerializable {
         }
     }
 
-    public void setPopulationBasisList(ListBox listBox, List<String> list, String defaultOption ) {
+    public void setPopulationBasisList(ListBox listBox, List<String> list, String defaultOption) {
         listBox.clear();
         listBox.addItem(defaultOption, "");
         if (list != null) {
@@ -1525,7 +1521,7 @@ public class MatContext implements IsSerializable {
         if (!ModelTypeHelper.isFhir(getCurrentMeasureModel())) {
             patientBasedList.add("Yes");
         } else if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
-                patientBasedList.add("Yes");
+            patientBasedList.add("Yes");
         }
         return patientBasedList;
     }

@@ -687,9 +687,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     } else {
                         detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
                     }
+                    // Re-enable buttons after displaying error message.
+                    setSearchingBusy(false);
                 }
             });
         } else {
+            // else clause is preventing the buttons from being re-enabled when creation was successful.
             setSearchingBusy(false);
         }
     }
@@ -1012,14 +1015,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> createNewMeasure());
-        if (Boolean.TRUE.equals(MatContext.get().getFeatureFlags().get(MAT_ON_FHIR)) ||
-                MatContext.get().getCurrentUserInfo().isFhirAccessible) {
-            // If fhir is on they can create FHIR or QDM.
-            detailDisplay.allowAllMeasureModelTypes();
-        } else {
-            // If fhir is off they can only create QDM.
-            detailDisplay.setMeasureModelType(ModelTypeHelper.QDM);
-        }
+        detailDisplay.allowAllMeasureModelTypes();
         panel.setContent(detailDisplay.asWidget());
     }
 
@@ -1354,14 +1350,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return valid;
     }
 
-    private void displayUnusedLibraryDialog(String measureId,
+    private void displayUnusedWarningDialog(String measureId,
                                             String measureName,
                                             boolean isMajor,
                                             String version,
                                             boolean shouldPackage,
                                             String measureModel) {
-        if( ModelTypeHelper.isFhir(measureModel)) {
-            displayUnusedLibraryDialogFhir(measureId, measureName, isMajor, version, shouldPackage);
+        if (ModelTypeHelper.isFhir(measureModel)) {
+            displayUnusedElementsDialogFhir(measureId, measureName, isMajor, version, shouldPackage);
         } else {
             displayUnusedLibraryDialogQdm(measureId, measureName, isMajor, version, shouldPackage);
         }
@@ -1396,11 +1392,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         confirmationDialogBox.show();
     }
 
-    private void displayUnusedLibraryDialogFhir(String measureId,
-                                                String measureName,
-                                                boolean isMajor,
-                                                String version,
-                                                final boolean shouldPackage) {
+    private void displayUnusedElementsDialogFhir(String measureId,
+                                                 String measureName,
+                                                 boolean isMajor,
+                                                 String version,
+                                                 final boolean shouldPackage) {
         String messageText = MatContext.get().getMessageDelegate().getUnusedFhirElementsWarning(measureName);
 
         ConfirmationKeepDialogBox confirmationDialogBox = new ConfirmationKeepDialogBox(messageText, CONTINUE);
@@ -1564,7 +1560,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;
             case SaveMeasureResult.UNUSED_LIBRARY_FAIL:
-                displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage,
+                displayUnusedWarningDialog(measureId, measureName, isMajor, version, shouldPackage,
                         result.getMeasureModelType());
                 break;
             case SaveMeasureResult.PACKAGE_FAIL:

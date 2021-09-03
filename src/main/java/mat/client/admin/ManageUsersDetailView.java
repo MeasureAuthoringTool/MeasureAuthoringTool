@@ -850,7 +850,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
                     DateTimeFormat formatter = DateTimeFormat
                             .getFormat("MM'/'dd'/'yyyy h:mm:ss a");
                     dateString = formatter.format(activityDate);
-                    dateString += " CST";
+                    dateString += " UTC";
                 }
                 htmlContent += "<div style=\"margin-top: 3px; margin-bottom:3px; color: black;\"><b>" + dateString + "</b>";
                 htmlContent += "<br/>" + auditLog.getAdditionalInfo() + "</div>";

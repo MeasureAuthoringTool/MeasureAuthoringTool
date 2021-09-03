@@ -390,13 +390,10 @@ public abstract class MainLayout {
 
         Hidden redirect = new Hidden();
         redirect.setName("post_logout_redirect_uri");
-        String path = Window.Location.getPath();
-        String redirectUrl = Window.Location.createUrlBuilder()
-                .setPath(path.substring(0, path.lastIndexOf('/')) + ClientConstants.HTML_LOGIN)
-                .buildString();
-        if (redirectUrl.contains("#")) {
-            redirectUrl = redirectUrl.substring(0, redirectUrl.lastIndexOf('#'));
-        }
+        // logout redirect uri needs to be whitelisted in Okta App configuration,
+        // and the redirect request is ignored.
+        String currentUrl = Window.Location.getHref();
+        String redirectUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/')) + ClientConstants.HTML_LOGIN;
         redirect.setValue(redirectUrl);
 
         panel.add(token);

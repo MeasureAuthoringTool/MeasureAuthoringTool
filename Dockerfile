@@ -1,4 +1,4 @@
-FROM tomcat:9
+FROM tomcat:9.0.52-jre11-temurin-focal
 
 ARG STOREPASS="changeit"
 ARG WAR_PATH="MeasureAuthoringTool.war"

@@ -2,18 +2,18 @@
 
 ## Installation
 The Measure Authoring Tool (MAT) was designed using many open source products including, the Google Web Toolkit (GWT) 
-framework, Java JDK, MySQL, and Eclipse. GWT allows a developer to write client side code in Java and GWT converts 
-it to JavaScript. The MAT uses MySQL as its backend database server, and the IDE is Eclipse/Intellij for Java EE Developers.
+framework, Java JDK, and MySQL. GWT allows a developer to write client side code in Java and GWT converts 
+it to JavaScript. The MAT uses MySQL as its backend database server.
 
 Due to the use of these open source products, a working knowledge of Java development and some research into how 
 the products work with each other in your environment may be necessary. Research from discussions on product forums, 
 help documents, internet searches and knowledge of the local environment where the MAT will be running may all need to 
-be checked if there are errors during the install.
+be checked if there are errors during install.
 
 ### Configure Java (JDK)
-*   The application has not been tested with version above Java 1.11; (OPEN JDK is fine) please ensure this version is in the environment.
+*   The application has not been tested with version above Java 15; (OPEN JDK is fine) please ensure this version is in the environment.
 *   Verify that `JAVA_HOME` and `PATH` system variables are pointing to the proper folder(s).
-*   For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (should point to the Java SDK 1.11.x folder and `PATH` should point to the Java 1.11.x/bin).
+    *   For example, the `JAVA_HOME` should point to the Java SDK 15.0.x folder and `PATH` should point to the Java 15.0.x/bin.
 
 ### Configure Maven
 You should install the latest Maven locally.
@@ -25,20 +25,18 @@ OSX:
 *   `brew install maven` or if already installed  `brew update maven`
 
 ### Create MAT Database
-Currently in production MAT uses MySQL Community Version 5.7.
-[Here](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21) are some instructions for installing it using brew.
+MAT uses MySQL Community Version 8.0.22.
+[Here](https://gist.github.com/operatino/392614486ce44210063b9dece4dfe6c21) are some instructions for installing it using brew.
 
-I prefer using MySQL Community Version 8.0+. The app works with this but I just use it locally. It also requires
-you to change a pom.xml dependency for the new driver. You have to be careful and not check this in with commits.
-Here are the instructions for installing it:
-*   Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
+MySQL Install:
+*   Install MySQL (MAT currently has been tested with MySQL Community Version 8.0.22) available from [MySQL](https://dev.mysql.com/downloads/mysql/)
 *   Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
-*   Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
+*   Enter a password and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
 *   For Mac:
-    *   Go to System Preferences/ MY SQL after installing.
-    *   Click Initialize Database.
-    *   Start the MYSQL Db.
-*   Create a new MySQL Connection to the database. I use jetbrains [datagrip](https://www.jetbrains.com/datagrip/)
+*   Go to System Preferences/ MY SQL after installing.
+*   Click Initialize Database.
+*   Start the MYSQL Db.
+*   Create a new MySQL Connection to the database. (example tooling: IDE Built-in Tooling, [Jetbrains datagrip](https://www.jetbrains.com/datagrip/), [MySQL Workbench](https://www.mysql.com/products/workbench/))
 *   If you have access to a data dump, create a schema and load it with your dump script.
 *   If you do not you can load the dump script located in scripts. 
 *   From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
@@ -47,10 +45,9 @@ Here are the instructions for installing it:
 ### Tomcat installation
 
 [Download tomcat 9](https://tomcat.apache.org/download-90.cgi)
-*   After installing in OSX i did a `sudo chmod -R 777` on the tomcat directory.
+*   After installing, you may need to `sudo chmod -R 777` on the tomcat directory.
 
-Add the Resource to the /apache-tomcat-9.X.X/conf/context.xml file. Match the userName and password to match your mysql 
-configuration.
+Add the JDBC Resource to the Tomcat context file (`$CATALINA_HOME/conf/context.xml`). Match the username, password, and schema name to your mysql configuration.
 
 ```text
 <Resource name="jdbc/mat_app_tomcat"
@@ -76,22 +73,22 @@ configuration.
          jmxEnabled="true"
          jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
-         username="mat"
-         password="mat"
+         username="<USERNAME>"
+         password="<PASSWORD>"
          driverClassName="com.mysql.jdbc.Driver"
-         url="jdbc:mysql://localhost:3306/MAT_APP_BLANK"/>
+         url="jdbc:mysql://localhost:3306/<SCHEMA_NAME>"/>
 ```
 
 Copy mysql jdbc to tomcat lib directory.
-```bash cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar /apache-tomcat-9.X.X/lib```
+```bash cp ~/.m2/repository/mysql/mysql-connector-java/8.0.22/mysql-connector-java-8.0.22.jar $CATALINA_HOME/lib```
 
 ### Create an OKTA account to use locally. 
-You need to setup an OKTA dev account to run locally. This is a stand-in for HARP.
+You need to create an [Okta developer account](https://developer.okta.com/signup/) to run MAT locally. This is a stand-in for HARP.
 After creating one and going to settings my url looks like this: 
 ```text 
-https://dev-980994-admin.okta.com/admin/settings/account
+https://${yourOktaDomain}/admin/settings/account
 ```
-The ```dev-980994``` part is what you will use to confiugre okta below.
+The ```${yourOktaDomain}``` part is what you will use to configure okta below.
 
 If you started from a blank ID you can run this to update your user row with your okta id:
 ```sql
@@ -102,15 +99,24 @@ If you started from a db dump you will need to overwrite a HARP_ID in the user t
 ### Setup microservices needed for MAT
 Follow the instructions here: https://github.com/MeasureAuthoringTool/QDM-QICore-Conversion 
 
-### Setup local environment intellij configurations (mvn, tomcat, super dev mode) ###
+### Setup local environment IntelliJ configurations (mvn, tomcat, super dev mode)
 GWT takes a while to compile so if you setup like this locally you will save a lot of time. These instructions
-are written for intellij.
+are written for IntelliJ.
 
-- Install the GWT intellij plugin.
-- Go to Edit Configurations ![](docs/images/EditConfig.png "Title")
-- Click the + in the top left and add a tomcat server. ![](docs/images/AddTomcatServer.png "Title")
-- Here is how I have mine setup. ![](docs/images/TomcatConfig.png "Titl
-  - Paste in the following for VM options: Replace https://dev-980994.okta.com with your okta user you created above.
+*   Install the GWT intellij plugin.
+*   Go to Edit Configurations
+
+  ![](docs/images/EditConfig.png "Title")
+
+*   Click the + in the top left and add a tomcat server. 
+
+  ![](docs/images/AddTomcatServer.png "Title")
+
+*   Example Tomcat Run Configuration
+
+  ![](docs/images/TomcatConfig.png "Title")
+
+*   Paste in the following for VM options: Replace `https://${yourOtkaDomain}` with the domain from your Okta Developer Account. See [Find your Okta domain](https://developer.okta.com/docs/guides/find-your-domain/overview/).
  ```text
 -DENVIRONMENT=DEV
 -Dlog4j.ignoreTCL=true
@@ -126,46 +132,84 @@ are written for intellij.
 -DFHIR_SRVC_URL=http://localhost:9080
 -DQDM_QICORE_MAPPING_SERVICES_URL=http://localhost:9090
 -DCQL_ELM_TRANSLATION_URL=http://localhost:7070
--DHARP_BASE_URL=https://dev-980994.okta.com
--DHARP_URL=https://dev-980994.okta.com/oauth2/v1
--DHARP_CLIENT_ID=0oaaqovyrHa6XaCZS4x6
+-DHARP_BASE_URL=https://${yourOktaDomain}
+-DHARP_URL=https://${yourOktaDomain}/oauth2/v1
+-DHARP_CLIENT_ID=$OKTA_CLIENT_ID
 -DMAT_API_KEY=DISABLED
 -DVSAC_TICKET_URL_BASE=https://utslogin.nlm.nih.gov/cas/v1
 -DVSAC_URL_BASE=https://vsac.nlm.nih.gov
 -Dgwt.codeserver.port=9876
  ```
-- Go to Edit Configurations again and this time click the + and pick maven.
-  - Here is how I setup my maven build that runs tests. ![](docs/images/mvnBuildTests.png "Title")
-  - Here is how I setup my maven that skips tests. ![](docs/images/mvnBuild.png "Title")
-- Go to Edit Configurations again and click the + and pick GWT Configuration.
-  - Here is how I have mine setup. ![](docs/images/gwtConfig.png "Title")
-  ```
-  - Dev mode params: 
+*   Go to Edit Configurations again and this time click the + and pick maven.
+
+**Maven Configuration**
+  
+  ![](docs/images/mvnBuildTests.png "Title")
+
+**Maven Configuration with Test skip** 
+
+  ![](docs/images/mvnBuild.png "Title")
+
+**GWT Configuration**
+
+  ![](docs/images/gwtConfig.png "Title")
+
+* Dev mode params:
+
   ```text
   -noserver -war /Users/carson.day/git/MeasureAuthoringTool/target/MeasureAuthoringTool
   ```
-  - Start page: 
+* Start page: 
   ```text
   http://localhost:8080/MeasureAuthoringTool_war_exploded/Login.html
   ```
 
 ### How to build locally and run with super dev mode.
 To compile faster you can make these changes, but *DO NOT* check them in.
-- In the *gwt.xml files in MAT. Change user agent to this: 
+*   In the *gwt.xml files in MAT. Change user agent to this: 
 ```xml
 <set-property name="user.agent" value="safari"/>
 ```
 
-1. Select Mat Code Server and start it up. 
-3. Select Mat Tomcat and start it up.     (wait until the server starts)
-4. A browser should pop up and you are off and running in super dev mode.
-5. Go to http://localhost:9876/
-6. Drag the Dev Mode On button onto your bookmark bar.
-7. Go to the browser page that popped up. View -> Developer.
-8. Click sources.
-9. The java GWT code from super dev mode will show up here under source maps ![](docs/images/sourceMaps.png "Title")
-10. You set break points in the browser and debug from the js.
-11. To recompile code click the bookmark you dragged to the bar in step 6 while in MAT.
+1.  Select Mat Code Server and start it up. 
+2.  Select Mat Tomcat and start it up. (wait until the server starts)
+3.  A browser should pop up and you are off and running in super dev mode.
+4.  Go to http://localhost:9876/
+5.  Drag the Dev Mode On button onto your bookmark bar.
+6.  Go to the browser page that popped up. View -> Developer.
+7.  Click sources.
+8.  The java GWT code from super dev mode will show up here under source maps ![](docs/images/sourceMaps.png "Title")
+9.  You set break points in the browser and debug from the js.
+10. To recompile code click the bookmark you dragged to the bar in step 6 while in MAT.
+
+### Tomcat 10
+> Tomcat 10 is an implementation of the Servlet 5 specification (part of Jakarta EE 9) that renamed all of the packages from javax.servlet to jakarta.servlet. 
+> Neither Spring Boot nor Spring Framework supports Jakarta EE 9 at this time. ([source](https://github.com/spring-projects/spring-boot/issues/25276#issuecomment-778812324))
+
+See [Specification API](https://tomcat.apache.org/migration-10.html#Specification_APIs) section of the Tomcat 9 to 10 Migration Guide for details on the changes between Tomcat 9 and 10.
+
+#### IntelliJ: Tomcat 10 Configuration
+Run the Apache Tomcat Migration Tool for Jakarta EE against the generated WAR and place the result in the `target` directory. IntelliJ will pick up the WAR and copy it to the Tomcat 10 webapps directory.
+
+##### Prerequisite: Download the Migration tool
+Download and expand the Binary Distribution for the [Tomcat Migration Tool for Jakarta EE](https://tomcat.apache.org/download-migration.cgi).
+
+##### Prerequisite: Install Tomcat 10
+Install Tomcat 10 locally by following the Tomcat 9 installation described above using the [Tomcat 10 installer](https://tomcat.apache.org/download-10.cgi).
+
+##### Run Configuration
+1.  Repeat the IntelliJ Run Configuration described above using the Tomcat 10 installation directory.
+2.  In the IntelliJ Run Configuration for Tomcat 10 > `Before launch` section > add an entry of `Run External tool`:
+3.  Add a new Entry to the `External Tools` dialog:
+    *   Name: `<Anything memorable>`
+    *   Group: `External Tools`
+    *   Description: `<Optional>`
+    *   Program: `<Migration Tool location>/bin/migrate.sh`
+    *   Arguments `$ProjectFileDir$/target/MeasureAuthoringTool.war $ProjectFileDir$/target/MeasureAuthoringTool.war`
+    *   Working directory: `$ProjectFileDir$`
+4.  Click `OK` to close the `Edit Tool` window.
+5.  Click `OK` to close the `External Tools` window.
+6.  Click `OK` to close the Run Configuration window.
 
 #### Release build (NON-local)
  `mvn clean install`

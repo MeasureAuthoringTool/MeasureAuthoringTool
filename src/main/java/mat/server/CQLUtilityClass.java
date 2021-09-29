@@ -491,7 +491,12 @@ public final class CQLUtilityClass {
 
                         if (!codeSystemAlreadyUsed.contains(codeSysStr)) {
                             sb.append("codesystem \"").append(codeSysStr).append('"').append(": ");
-                            sb.append("'urn:oid:").append(code.getCodeSystemOID()).append("' ");
+                            if(code.getCodeSystemOID().startsWith("urn:oid:")) {
+                                sb.append('\'');
+                            } else {
+                                sb.append("'urn:oid:");
+                            }
+                            sb.append(code.getCodeSystemOID()).append("' ");
                             sb.append(codeSysVersion);
                             sb.append("\n");
 

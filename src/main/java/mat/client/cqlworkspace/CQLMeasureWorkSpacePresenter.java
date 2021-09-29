@@ -58,7 +58,6 @@ import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -93,13 +92,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     }
 
     private void addEventHandlers() {
-        ClickHandler cHandler = new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().detach();
-                cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().detach();
-                cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().detach();
-            }
+        ClickHandler cHandler = event -> {
+            cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().detach();
+            cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().detach();
+            cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().detach();
         };
         cqlWorkspaceView.getMainPanel().addDomHandler(cHandler, ClickEvent.getType());
 
@@ -302,13 +298,14 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                 return;
             }
             String aliasName = cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getText();
-            String searchfield = cqlWorkspaceView.getIncludeView().getSearchTextBox().getText();
-            if (!aliasName.isEmpty() && !searchfield.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
+            if (!aliasName.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
                 CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlWorkspaceView.getIncludeView().getSelectedObjectList().get(0);
                 CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
                 incLibrary.setAliasName(aliasName);
                 incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
-                String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "." + "000";
+                // All versioned libraries should have '000' as revision number but FHIRHelpers library has '001'.
+                String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "."
+                        + StringUtility.padLeftZeros(cqlLibraryDataSetObject.getRevisionNumber(), 3);
                 incLibrary.setVersion(versionValue);
                 incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
                 incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
@@ -902,12 +899,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
             @Override
             public void onSuccess(SaveUpdateCQLResult result) {
+                handleCQLData(result);
                 if (result.isSevereError()) {
                     showSearchingBusy(false);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().toggleLeftNavBarPanel(false);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().disbaleBadges();
                 } else {
-                    handleCQLData(result);
                     if (MatContext.get().isCurrentModelTypeFhir()) {
                         MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
                             @Override

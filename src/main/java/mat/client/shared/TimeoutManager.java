@@ -25,7 +25,7 @@ import java.util.Date;
 class TimeoutManager {
 
 	/** The Constant WARNING_TIME. */
-	private static final int WARNING_TIME = 10 * 60 * 1000;
+	private static final int WARNING_TIME = 25 * 60 * 1000;
 
 	/** The Constant WARNING_INTERVAL. */
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;

@@ -6,8 +6,6 @@ import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
@@ -135,29 +133,30 @@ public class HumanReadableGenerator {
                 List<String> exprList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
                 exprList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 
-                SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ?
-                        parseFhirCqlLibraryForErrors(cqlModel, cqlString) :
-                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList); // Also filters out irrelevant children defines
+                if(cqlModel.isFhir()) {
+                    parseFhirCqlLibraryForErrors(cqlModel, cqlString);
+                }
+
+                // Validates QDM and filters out irrelevant children defines for both FHIR and QDM.
+                SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList);
+
                 Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 
                 HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
-                List<String> measureTypes = null;
                 if (model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
-                    measureTypes = new ArrayList<>(model.getMeasureInformation().getMeasureTypes());
-                    Collections.sort(measureTypes);
+                    Collections.sort(model.getMeasureInformation().getMeasureTypes());
                 }
 
-                model.getMeasureInformation().setMeasureTypes(measureTypes);
                 model.setPopulationCriterias(getPopulationCriteriaModels(processor));
                 model.setSupplementalDataElements(getSupplementalDataElements(processor));
                 model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 
-                if (cqlModel.isFhir()) {
-                    model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
-                    model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors));
+                model.setDefinitions(getDefinitions(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                model.setFunctions(getFunctions(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 
+                if (cqlModel.isFhir()) {
                     // Retrieve Terminology info from microservices/HAPI.
                     updateFhirValuesetsCodesystemsDataReqs(model, measureId);
 
@@ -176,9 +175,6 @@ public class HumanReadableGenerator {
                     }
 
                 } else {
-                    model.setDefinitions(getDefinitionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-                    model.setFunctions(getFunctionsQDM(processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-
                     List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminologyQDM(processor);
                     sortTerminologyList(valuesetTerminologyList);
                     model.setValuesetTerminologyList(valuesetTerminologyList);
@@ -292,7 +288,7 @@ public class HumanReadableGenerator {
         return signature;
     }
 
-    private List<HumanReadableExpressionModel> getDefinitionsQDM(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getDefinitions(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> definitions = new ArrayList<>();
         List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
         List<String> definitionsList = new ArrayList<>(usedCQLArtifactHolder.getCqlDefFromPopSet());
@@ -318,28 +314,7 @@ public class HumanReadableGenerator {
         return definitions;
     }
 
-    private List<HumanReadableExpressionModel> getDefinitionsFHIR(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors) {
-        List<HumanReadableExpressionModel> definitions = new ArrayList<>();
-        cqlModel.getDefinitionList().stream().
-                sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
-                forEach(d -> {
-                    String name = d.getName();
-                    String statementIdentifier = d.getName();
-                    XmlProcessor currentProcessor = parentLibraryProcessor;
-                    String[] arr = name.split(Pattern.quote("|"));
-                    if (arr.length == 3) {
-                        name = arr[2];
-                        statementIdentifier = arr[1] + "." + arr[2];
-                        currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
-                    }
-                    HumanReadableExpressionModel expression = new HumanReadableExpressionModel(statementIdentifier,
-                            getLogicStringFromXMLByName(name, CQLDEFINITION, currentProcessor));
-                    definitions.add(expression);
-                });
-        return definitions;
-    }
-
-    private List<HumanReadableExpressionModel> getFunctionsQDM(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getFunctions(XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> functions = new ArrayList<>();
         List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
         List<String> functionsList = new ArrayList<>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
@@ -364,31 +339,6 @@ public class HumanReadableGenerator {
             functions.add(expression);
         }
 
-        return functions;
-    }
-
-    private List<HumanReadableExpressionModel> getFunctionsFHIR(CQLModel cqlModel,
-                                                                XmlProcessor parentLibraryProcessor,
-                                                                Map<String, XmlProcessor> includedLibraryXmlProcessors) {
-        List<HumanReadableExpressionModel> functions = new ArrayList<>();
-        cqlModel.getCqlFunctions().stream().
-                sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
-                forEach(f -> {
-                    String name = f.getName();
-                    String statementIdentifier = name;
-                    XmlProcessor currentProcessor = parentLibraryProcessor;
-                    String[] arr = name.split(Pattern.quote("|"));
-                    if (arr.length == 3) {
-                        name = arr[2];
-                        statementIdentifier = arr[1] + "." + arr[2];
-                        currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
-                    }
-
-                    HumanReadableExpressionModel expression = new HumanReadableExpressionModel(
-                            statementIdentifier + getCQLFunctionSignature(name, currentProcessor),
-                            getLogicStringFromXMLByName(name, CQLFUNCTION, currentProcessor));
-                    functions.add(expression);
-                });
         return functions;
     }
 

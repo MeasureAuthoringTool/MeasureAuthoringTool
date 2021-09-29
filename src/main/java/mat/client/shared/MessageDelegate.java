@@ -171,6 +171,8 @@ public class MessageDelegate {
     private static final String VALIDATION_MSG_ELEMENT_WITHOUT_VSAC = "Please enter value set name.";
     private static final String VALUE_SET_DATE_INVALID = "Value Set Package Date is not a valid date.";
     private static final String VSAC_RETRIEVE_FAILED = "Unable to retrieve from VSAC. Please check the data and try again.";
+    private static final String VSAC_CODE_NOT_FOUND = "Code Not found in VSAC.";
+    private static final String VSAC_SERVER_ERROR = "Your request to VSAC has errored out. Please attempt your retrieve again. If the problem persists, please contact the MAT Support Desk.";
     private static final String VSAC_RETRIEVE_TIMEOUT = "Your request to VSAC has timed-out. Please attempt your retrieve again. If the problem persists, please contact the MAT Support Desk.";
     private static final String COMMENT_ADDED_SUCCESSFULLY = "Comment Changes Added.";
     private static final String COMPARISON_DILOAG_BOX_ERROR_DISPLAY = "Please enter Quantity field.";
@@ -208,6 +210,14 @@ public class MessageDelegate {
     private static final String MEASURE_TYPE_REQUIRED = "Please enter the Measure Type prior to packaging.";
     private static final String MEASURE_POPULATION_BASIS = "Please select the measure's Population basis prior to packaging.";
     private static final String MEASURE_DESCRIPTION_UNDERSCORE = "Measure name must not contain '_' (underscore).";
+
+    public static String getVsacCodeNotFound() {
+        return VSAC_CODE_NOT_FOUND;
+    }
+
+    public static String getVsacServerError() {
+        return VSAC_SERVER_ERROR;
+    }
 
     public static String getUnableToVerifyHarpUser() {
         return UNABLE_TO_VERIFY_HARP_USER;

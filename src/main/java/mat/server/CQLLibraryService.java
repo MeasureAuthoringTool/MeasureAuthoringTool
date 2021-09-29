@@ -465,7 +465,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             return result;
         }
 
-
         boolean isFhir = ModelTypeHelper.isFhir(cqlResult.getCqlModel().getUsingModel());
         if (!isFhir) {
             List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
@@ -486,7 +485,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             } else {
                 cqlResult.getUnusedCqlElements().clearUnusedNotProcessedForStandAlone();
 
-                if (!ignoreUnusedLibraries && cqlResult.haveUnusedElements()) {
+                if (!ignoreUnusedLibraries && cqlResult.hasUnusedLibraries()) {
                     result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
                     return result;
                 } else {

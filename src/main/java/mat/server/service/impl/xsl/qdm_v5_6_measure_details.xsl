@@ -8,10 +8,6 @@
     <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
     <xsl:preserve-space elements="content"/>
 
-    <xsl:variable name="qdmVersionNumber">
-        <xsl:value-of select="/measure/measureReleaseVersion/@releaseVersion"></xsl:value-of>
-    </xsl:variable>
-
     <xsl:template match="/measure">
 
 		<xsl:text>

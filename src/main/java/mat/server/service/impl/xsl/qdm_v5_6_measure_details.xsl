@@ -214,24 +214,24 @@
 
         <relatedDocument typeCode="COMP">
             <expressionDocument>
-                <xsl:variable name="libraryName" select="translate(/measure/cqlLookUp/library,'_','-')" />
+                <xsl:variable name="msrAbbrName" select="translate(/measure/measureDetails/shortTitle,'_','-')" />
                 <xsl:variable name="libraryVersion" select="translate(/measure/cqlLookUp/version,'.','-')" />
                 <xsl:variable name="modelVersion" select="translate(/measure/cqlLookUp/usingModelVersion,'.','-')" />
                 <id root="{cqlUUID}"/>
                 <text mediaType="text/cql">
                     <reference
-                            value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$libraryName}-v{$libraryVersion}-QDM-{$modelVersion}.cql"/>
+                            value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.cql"/>
                     <translation mediaType="application/elm+xml">
                         <reference
-                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$libraryName}-v{$libraryVersion}-QDM-{$modelVersion}.xml"/>
+                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.xml"/>
                     </translation>
                     <translation mediaType="application/elm+json">
                         <reference
-                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$libraryName}-v{$libraryVersion}-QDM-{$modelVersion}.json"/>
+                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.json"/>
                     </translation>
                 </text>
                 <setId root="https://emeasuretool.cms.gov/libraries" extension="{../measureDetails/guid}"
-                       identifierName="{$libraryName}"/>
+                       identifierName="{translate(/measure/cqlLookUp/library,'_','-')}"/>
                 <versionNumber value="{../cqlLookUp/version}"/>
             </expressionDocument>
         </relatedDocument>

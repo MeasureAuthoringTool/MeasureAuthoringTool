@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoggedInUserUtil.class, SecurityContextHolder.class})
-//@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
 public class LoginCredentialServiceImplTest {
 
     @Rule

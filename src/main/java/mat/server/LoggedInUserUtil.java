@@ -14,7 +14,7 @@ import java.util.Iterator;
  */
 public class LoggedInUserUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggedInUserUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggedInUserUtil.class);
 
     private static String loggedInUser;
 
@@ -39,7 +39,7 @@ public class LoggedInUserUtil {
                         token = (PreAuthenticatedAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
                     }
                 } catch (Exception exc) {
-                    logger.error("getToken",exc);
+                    LOGGER.error("getToken",exc);
                 }
             }
         }

@@ -1,21 +1,20 @@
 package mat.server;
 
-import java.util.Iterator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import mat.server.model.MatUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-import mat.server.model.MatUserDetails;
+import java.util.Iterator;
 
 /**
  * The Class LoggedInUserUtil.
  */
 public class LoggedInUserUtil {
 
-    private static final Log logger = LogFactory.getLog(LoggedInUserUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggedInUserUtil.class);
 
     private static String loggedInUser;
 

@@ -4,9 +4,9 @@ import ca.uhn.fhir.context.FhirContext;
 import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirLibraryRemoteCall;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hl7.fhir.r4.model.Library;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class FhirLibraryRemoteCallImpl implements FhirLibraryRemoteCall {
 
-    private static final Log logger = LogFactory.getLog(FhirLibraryRemoteCallImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FhirLibraryRemoteCallImpl.class);
 
     private static final String ID_PARAMS = "?id={id}";
 

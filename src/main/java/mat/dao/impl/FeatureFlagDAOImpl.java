@@ -3,9 +3,9 @@ package mat.dao.impl;
 import mat.dao.FeatureFlagDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.FeatureFlag;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Repository("FeatureFlagDAO")
 public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implements FeatureFlagDAO {
 
-    private static final Log logger = LogFactory.getLog(FeatureFlagDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FeatureFlagDAOImpl.class);
 
     public FeatureFlagDAOImpl(@Autowired SessionFactory sessionFactory) {
         setSessionFactory(sessionFactory);

@@ -9,10 +9,10 @@ import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 import mat.server.MappingSpreadsheetService;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.ResourceLoader;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         implements QDSAttributesService {
 
-    private static final Log logger = LogFactory.getLog(QDSAttributesServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(QDSAttributesServiceImpl.class);
     private static final char DOT_CHAR = '.';
 
     @Override

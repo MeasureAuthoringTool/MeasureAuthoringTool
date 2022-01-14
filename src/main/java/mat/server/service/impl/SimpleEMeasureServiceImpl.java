@@ -27,7 +27,6 @@ import mat.server.export.ExportResult;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.HQMFGeneratorFactory;
 import mat.server.humanreadable.HumanReadableGenerator;
-import mat.server.logging.LogFactory;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.impl.helper.ExportResultParser;
 import mat.server.util.CQLUtil;
@@ -46,12 +45,13 @@ import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.vsacmodel.ValueSet;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -93,7 +93,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     private static final String XPATH_ALL_GROUPED_ATTRIBUTES_UUID = "/measure/measureGrouping/group/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
     private static final String XPATH_ALL_SUBTREE_ELEMENTREF_ID = "/measure/subTreeLookUp/subTree//elementRef[not(@id = preceding:: subTree//elementRef/@id)]/@id";
     private static final String XPATH_ALL_SUBTREE_ATTRIBUTES_UUID = "/measure/subTreeLookUp/subTree//attribute[not(@qdmUUID = preceding:: subTree//attribute/@qdmUUID)]/@qdmUUID";
-    private static final Log LOGGER = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleEMeasureServiceImpl.class);
     private static final String VERSION = "version";
     private static final String NAME = "name";
 
@@ -871,7 +871,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
                 throw new ZipException("Exceeded Limit :" + baos.size());
             }
         }
-        LOGGER.debug(baos.size());
+
         result.setZipbarr(baos.toByteArray());
         return result;
     }

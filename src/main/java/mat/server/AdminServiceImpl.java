@@ -13,13 +13,13 @@ import mat.model.Organization;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.bonnie.BonnieServiceImpl;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.shared.AdminManageOrganizationModelValidator;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("serial")
 public class AdminServiceImpl extends SpringRemoteServiceServlet implements AdminService {
 
-    private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
     @Autowired
     private UserService userService;

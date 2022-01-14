@@ -50,7 +50,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.FhirCqlLibraryService;
@@ -73,7 +73,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -106,7 +106,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("serial")
 @Service
 public class CQLLibraryService extends SpringRemoteServiceServlet implements CQLLibraryServiceInterface {
-    private Log log = LogFactory.getLog(CQLLibraryService.class);
+    private Logger log = LoggerFactory.getLogger(CQLLibraryService.class);
     @Autowired
     private CQLLibraryDAO cqlLibraryDAO;
 

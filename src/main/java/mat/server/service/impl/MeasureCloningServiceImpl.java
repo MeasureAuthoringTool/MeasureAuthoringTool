@@ -27,7 +27,7 @@ import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureCloningService;
 import mat.server.util.CQLValidationUtil;
@@ -41,7 +41,7 @@ import mat.shared.UUIDUtilClient;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -78,7 +78,7 @@ import java.util.stream.Collectors;
 @Service
 public class MeasureCloningServiceImpl implements MeasureCloningService {
 
-    private static final Log logger = LogFactory.getLog(MeasureCloningServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MeasureCloningServiceImpl.class);
 
     private static final String QDM_BIRTHDATE_NON_DEFAULT = "birthdate";
     private static final String MEASURE_DETAILS = "measureDetails";

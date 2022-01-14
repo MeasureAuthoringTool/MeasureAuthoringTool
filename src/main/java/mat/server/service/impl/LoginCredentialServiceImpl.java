@@ -8,12 +8,12 @@ import mat.model.SecurityRole;
 import mat.model.UserPreference;
 import mat.server.LoggedInUserUtil;
 import mat.server.hibernate.HibernateUserDetailService;
-import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.shared.HarpConstants;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,7 +32,7 @@ import java.util.Objects;
 @Service
 public class LoginCredentialServiceImpl implements LoginCredentialService {
 
-    private static final Log logger = LogFactory.getLog(LoginCredentialServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginCredentialServiceImpl.class);
 
     @Autowired
     private HibernateUserDetailService hibernateUserService;

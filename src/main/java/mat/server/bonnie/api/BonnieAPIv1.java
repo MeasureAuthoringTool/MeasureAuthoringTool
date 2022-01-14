@@ -3,7 +3,7 @@ package mat.server.bonnie.api;
 import mat.model.UserBonnieAccessInfo;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.EncryptDecryptToken;
 import mat.server.util.APIConnectionUtillity;
 import mat.shared.BonnieOAuthResult;
@@ -16,7 +16,7 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -53,7 +53,7 @@ import java.util.Map;
 @Service
 public class BonnieAPIv1 implements BonnieAPI {
 
-	private static final Log logger = LogFactory.getLog(BonnieAPIv1.class);
+	private static final Logger logger = LoggerFactory.getLogger(BonnieAPIv1.class);
 
 	private static final String UPDATE_MEASURE_URI = "/api_v1/measures";
 

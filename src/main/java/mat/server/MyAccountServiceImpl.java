@@ -10,7 +10,7 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.shared.HashUtility;
@@ -18,7 +18,7 @@ import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 import mat.shared.StringUtility;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
     /**
      * The Constant logger.
      */
-    private static final Log logger = LogFactory.getLog(MyAccountServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyAccountServiceImpl.class);
     @Autowired
     private UserSecurityQuestionDAO userSecurityQuestionDAO;
     @Autowired

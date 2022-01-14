@@ -2,9 +2,9 @@ package mat.server.service.impl;
 
 import mat.dao.TransactionAuditLogDAO;
 import mat.model.TransactionAuditLog;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.TransactionAuditService;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionAuditServiceImpl implements TransactionAuditService {
 
-    private static final Log logger = LogFactory.getLog(TransactionAuditServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransactionAuditServiceImpl.class);
 
     private TransactionAuditLogDAO transactionAuditLogDAO;
 

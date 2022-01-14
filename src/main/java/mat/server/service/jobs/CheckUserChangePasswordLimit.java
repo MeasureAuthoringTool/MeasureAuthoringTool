@@ -6,12 +6,12 @@ import mat.dao.EmailAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.EmailAuditLog;
 import mat.model.User;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ import java.util.Map;
 @Service
 public class CheckUserChangePasswordLimit {
 
-    private static final Log logger = LogFactory.getLog(CheckUserChangePasswordLimit.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckUserChangePasswordLimit.class);
 
     private static final String WARNING_EMAIL_FLAG = "WARNING";
     private static final String EXPIRY_EMAIL_FLAG = "EXPIRED";

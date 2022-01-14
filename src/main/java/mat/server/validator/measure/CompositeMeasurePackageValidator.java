@@ -8,17 +8,17 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
-import mat.server.logging.LogFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.CQLUtil;
 import mat.server.util.CompositeMeasureDetailUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.SaveUpdateCQLResult;
-import org.apache.commons.logging.Log;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
@@ -62,7 +62,7 @@ public class CompositeMeasurePackageValidator {
 	@Autowired
 	private CompositeMeasureDetailUtil compositeMeasureDetailUtil;
 	
-	private static final Log logger = LogFactory.getLog(CompositeMeasurePackageValidator.class);
+	private static final Logger logger = LoggerFactory.getLogger(CompositeMeasurePackageValidator.class);
 		
 	private CompositeMeasurePackageValidationResult result = new CompositeMeasurePackageValidationResult(); 
 
@@ -78,7 +78,7 @@ public class CompositeMeasurePackageValidator {
 		} catch (Exception e) {
 			result.getMessages().add(MessageDelegate.GENERIC_ERROR_MESSAGE);
 			e.printStackTrace();
-			logger.error(e);
+			logger.error("CompositeMeasurePackageValidationResult", e);
 		}
 				
 		return result; 

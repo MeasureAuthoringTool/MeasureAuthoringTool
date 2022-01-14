@@ -80,7 +80,7 @@ import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasureDetailsService;
@@ -121,7 +121,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -216,7 +216,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     private static final String QDM_MAPPING = "QualityDataModelMapping.xml";
 
-    private static final Log log = LogFactory.getLog(MeasureLibraryServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(MeasureLibraryServiceImpl.class);
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
     @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;

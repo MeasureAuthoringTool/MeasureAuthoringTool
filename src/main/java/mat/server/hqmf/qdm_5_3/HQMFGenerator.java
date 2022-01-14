@@ -3,16 +3,16 @@ package mat.server.hqmf.qdm_5_3;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.qdm.HQMFFinalCleanUp;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
 public class HQMFGenerator implements Generator {
 	
-	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+	private final Logger logger = LoggerFactory.getLogger(HQMFDataCriteriaGenerator.class);
 
 	
 

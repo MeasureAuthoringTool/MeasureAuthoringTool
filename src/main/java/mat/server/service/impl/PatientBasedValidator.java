@@ -8,7 +8,6 @@ import mat.model.clause.Measure;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
-import mat.server.logging.LogFactory;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.ValidationRequest;
 import mat.server.util.CQLUtil;
@@ -17,7 +16,8 @@ import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
@@ -37,7 +37,7 @@ public class PatientBasedValidator {
 	private static final String SCORING_RATIO = "Ratio";
 
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(PatientBasedValidator.class);
+	private static final Logger logger = LoggerFactory.getLogger(PatientBasedValidator.class);
 	
 	private static final String SYSTEM_QUANTITY = "System.Quantity";
 

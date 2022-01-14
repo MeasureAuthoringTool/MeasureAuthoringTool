@@ -2,12 +2,12 @@ package mat.server.hqmf.qdm;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
-import mat.server.logging.LogFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -57,8 +57,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	MeasureExport measureExport;
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory
-			.getLog(HQMFClauseLogicGenerator.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(HQMFClauseLogicGenerator.class);
 	
 	/**
 	 * MAP of Functional Ops NON Subset Type.
@@ -1183,7 +1183,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * This is to be called when you want to check If the node passed is a FunctionOp with it's child being an elementRef/QDM.
 	 * If the node passed is a SubTree/Clause node then this will "recursively" look into the child of that SubTree/Clause
 	 * node to see if that child is a FunctionOp with child being an elementRef/QDM.
-	 * @param lhsNode
+	 * @param node
 	 * @return
 	 * @throws XPathExpressionException
 	 */
@@ -3080,7 +3080,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param subTreeNodeInMOMap the subTreeNodeInMOMap to set
+	 * @param subTreeNodeInRAMap the subTreeNodeInRAMap to set
 	 */
 	public void setSubTreeNodeInRAMap(Map<String, Node> subTreeNodeInRAMap) {
 		this.subTreeNodeInRAMap = subTreeNodeInRAMap;

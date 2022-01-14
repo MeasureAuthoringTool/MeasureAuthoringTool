@@ -16,7 +16,7 @@ import mat.server.bonnie.api.BonnieAPIv1;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.export.ExportResult;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.EncryptDecryptToken;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.BonnieOAuthResult;
@@ -30,7 +30,7 @@ import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 @Service
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
-	private static final Log logger = LogFactory.getLog(EncryptDecryptToken.class);
+	private static final Logger logger = LoggerFactory.getLogger(EncryptDecryptToken.class);
 
 	@Autowired
 	private BonnieAPIv1 bonnieApi;

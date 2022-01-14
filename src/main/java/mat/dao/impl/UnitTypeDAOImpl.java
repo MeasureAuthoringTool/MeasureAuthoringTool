@@ -4,8 +4,8 @@ import mat.dao.UnitTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.UnitTypeDTO;
 import mat.model.UnitType;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 public class UnitTypeDAOImpl extends GenericDAO<UnitType, String> implements UnitTypeDAO {
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(UnitTypeDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(UnitTypeDAOImpl.class);
 	
 	public UnitTypeDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

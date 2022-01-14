@@ -4,8 +4,8 @@ import mat.dao.clause.OperatorDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.OperatorDTO;
 import mat.model.Operator;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class OperatorDAOImpl extends GenericDAO<Operator, String> implements Ope
 	
 	private static final String RELATIVE_ASSOCIATIONS_OPERATORS = "3";
 	
-	private static final Log logger = LogFactory.getLog(OperatorDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(OperatorDAOImpl.class);
 	
 	public OperatorDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

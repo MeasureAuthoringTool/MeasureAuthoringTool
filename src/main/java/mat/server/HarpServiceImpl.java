@@ -10,12 +10,12 @@ import mat.client.login.LoginModel;
 import mat.client.login.service.HarpService;
 import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.shared.HarpConstants;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ import static mat.shared.HarpConstants.HARP_PRIMARY_EMAIL_ID;
 
 @Service
 public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpService {
-    private static final Log logger = LogFactory.getLog(HarpServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(HarpServiceImpl.class);
 
     private WebClient harpOtkaClient;
 

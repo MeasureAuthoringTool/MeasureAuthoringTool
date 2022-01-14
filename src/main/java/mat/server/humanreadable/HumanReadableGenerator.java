@@ -18,7 +18,7 @@ import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.helper.DataRequirementsNoValueSetFilter;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
 import mat.server.service.impl.XMLMarshalUtil;
@@ -29,7 +29,7 @@ import mat.shared.LibHolderObject;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -56,7 +56,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class HumanReadableGenerator {
-    private static final Log log = LogFactory.getLog(HumanReadableGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(HumanReadableGenerator.class);
 
     private static final String[] POPULATION_NAME_ARRAY = {MatConstants.INITIAL_POPULATION,
             MatConstants.DENOMINATOR, MatConstants.DENOMINATOR_EXCLUSIONS, MatConstants.NUMERATOR,

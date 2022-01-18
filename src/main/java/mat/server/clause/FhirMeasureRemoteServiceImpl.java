@@ -9,11 +9,11 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.VSACApiService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
 
     private static final long serialVersionUID = 2280421300224680146L;
 
-    private static final Log logger = LogFactory.getLog(FhirMeasureRemoteServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FhirMeasureRemoteServiceImpl.class);
 
     @Autowired
     private FhirMeasureService fhirMeasureService;

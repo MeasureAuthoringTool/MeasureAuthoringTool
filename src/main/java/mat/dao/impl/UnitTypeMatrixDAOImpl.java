@@ -4,8 +4,8 @@ import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.UnitMatrixDTO;
 import mat.model.UnitMatrix;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 @Repository("unitTypeMatrixDAO")
 public class UnitTypeMatrixDAOImpl extends GenericDAO<UnitMatrix, String> implements UnitTypeMatrixDAO{
 
-	private static final Log logger = LogFactory.getLog(UnitTypeMatrixDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(UnitTypeMatrixDAOImpl.class);
 	
 	public UnitTypeMatrixDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

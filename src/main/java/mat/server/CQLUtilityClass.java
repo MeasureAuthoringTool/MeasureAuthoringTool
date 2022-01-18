@@ -10,7 +10,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
@@ -18,7 +18,7 @@ import mat.server.util.XmlProcessor;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class CQLUtilityClass {
 
-    private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(CQLUtilityClass.class);
 
     private static final String PATIENT = "Patient";
 

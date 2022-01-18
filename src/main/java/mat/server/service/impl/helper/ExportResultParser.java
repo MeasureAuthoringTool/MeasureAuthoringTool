@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,7 @@ import java.util.TreeSet;
  * value set or DRC.
  */
 public class ExportResultParser {
-    private static final Log LOGGER = LogFactory.getLog(ExportResultParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportResultParser.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final String json;

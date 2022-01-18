@@ -3,8 +3,8 @@ package mat.dao.impl;
 import mat.dao.search.GenericDAO;
 import mat.dto.CodeSystemDTO;
 import mat.model.CodeSystem;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("codeSystemDAO")
 public class CodeSystemDAOImpl extends GenericDAO<CodeSystem, String> implements mat.dao.CodeSystemDAO {
 
-	private static final Log logger = LogFactory.getLog(CodeSystemDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CodeSystemDAOImpl.class);
 	
 	public CodeSystemDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

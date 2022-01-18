@@ -3,8 +3,8 @@ package mat.dao.clause.impl;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.ComponentMeasure;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -19,7 +19,7 @@ import java.util.List;
 @Repository("componentMeasuresDAO")
 public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
 	
-	private static final Log logger = LogFactory.getLog(ComponentMeasureDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ComponentMeasureDAOImpl.class);
 
 	public ComponentMeasureDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

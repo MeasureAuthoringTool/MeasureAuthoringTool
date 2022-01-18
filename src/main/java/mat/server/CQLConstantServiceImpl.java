@@ -13,7 +13,7 @@ import mat.dao.clause.QDSAttributesDAO;
 import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.spreadsheet.MatAttribute;
@@ -21,7 +21,7 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
@@ -44,7 +44,7 @@ import java.util.Map;
 
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 
-    private static final Log logger = LogFactory.getLog(CQLConstantServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CQLConstantServiceImpl.class);
 
     private static final String TYPE = "type";
 

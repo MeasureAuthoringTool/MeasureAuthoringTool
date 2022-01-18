@@ -5,20 +5,19 @@ import liquibase.integration.spring.SpringLiquibase;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
-import mat.server.logging.LogFactory;
-import mat.server.logging.RequestResponseLoggingInterceptor;
-import mat.server.logging.RequestResponseLoggingMdcInternalInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
 import mat.vsac.RefreshTokenManagerImpl;
+import mat.vsac.VsacService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -52,7 +51,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-import mat.vsac.VsacService;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -78,7 +76,7 @@ import java.util.stream.Collectors;
 @EnableJpaRepositories
 @Service
 public class Application extends WebSecurityConfigurerAdapter {
-    private static Log log = LogFactory.getLog(Application.class);
+    private static Logger log = LoggerFactory.getLogger(Application.class);
 
     @Value("${ALGORITHM:}")
     private String algorithm;
@@ -216,16 +214,16 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean(name = "internalRestTemplate")
     @Primary
     public RestTemplate getRestTemplateInternal() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        return buildRestTemplate(new RequestResponseLoggingMdcInternalInterceptor());
+        return buildRestTemplate();
     }
 
     @Bean(name = "externalRestTemplate")
     public RestTemplate getRestTemplateExternal() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        return buildRestTemplate(new RequestResponseLoggingInterceptor());
+        return buildRestTemplate();
     }
 
 
-    private RestTemplate buildRestTemplate(RequestResponseLoggingInterceptor requestResponseLoggingInterceptor) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
+    private RestTemplate buildRestTemplate() throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
         SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
@@ -244,12 +242,7 @@ public class Application extends WebSecurityConfigurerAdapter {
 
         ClientHttpRequestFactory bufferingClientHttpRequestFactory = new BufferingClientHttpRequestFactory(httpComponentsClientHttpRequestFactory);
 
-        RestTemplate restTemplate = new RestTemplate(bufferingClientHttpRequestFactory);
-
-        restTemplate
-                .setInterceptors(List.of(requestResponseLoggingInterceptor));
-
-        return restTemplate;
+        return new RestTemplate(bufferingClientHttpRequestFactory);
     }
 
 

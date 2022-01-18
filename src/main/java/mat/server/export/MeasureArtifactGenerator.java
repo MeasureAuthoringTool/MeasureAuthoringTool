@@ -1,14 +1,14 @@
 package mat.server.export;
 
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.SimpleEMeasureService;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MeasureArtifactGenerator {
 
-	private static final Log logger = LogFactory.getLog(MeasureArtifactGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasureArtifactGenerator.class);
 
 	private static SimpleEMeasureService eMeasureService;
 

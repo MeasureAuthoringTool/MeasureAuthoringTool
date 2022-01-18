@@ -1,7 +1,7 @@
 package mat.server.hqmf;
 
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HQMFGeneratorFactory {
 
-	private static final Log logger = LogFactory.getLog(HQMFGeneratorFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(HQMFGeneratorFactory.class);
 
 	public Generator getHQMFGenerator(String matVersionNumber) {
 		matVersionNumber = matVersionNumber.replace("v", "");

@@ -7,10 +7,10 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.model.MatUserDetails;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ import static mat.model.Status.STATUS_TERMINATED;
 @Repository("userDAO")
 public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 
-    private static final Log logger = LogFactory.getLog(UserDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     private static final String SECURITY_ROLE_USER = "3";
 
@@ -267,7 +267,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
             session = getSessionFactory().getCurrentSession();
             session.saveOrUpdate(userdetails);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("",e);
         }
     }
 

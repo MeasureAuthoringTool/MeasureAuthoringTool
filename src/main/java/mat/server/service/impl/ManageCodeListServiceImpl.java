@@ -30,13 +30,13 @@ import mat.model.MatValueSetTransferObject;
 import mat.vsacmodel.ValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -64,7 +64,7 @@ import java.util.UUID;
 
 @Service
 public class ManageCodeListServiceImpl implements CodeListService {
-    private Log log = LogFactory.getLog(ManageCodeListServiceImpl.class);
+    private Logger log = LoggerFactory.getLogger(ManageCodeListServiceImpl.class);
 
     private static final String OID_TO_VSAC_CODE_SYSTEM_DTO = "oidToVSACDodeSystemDTO";
     private static final String QDM_TAG = "<qdm";

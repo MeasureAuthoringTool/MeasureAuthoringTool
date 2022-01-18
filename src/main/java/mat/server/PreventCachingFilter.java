@@ -1,7 +1,7 @@
 package mat.server;
 
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,7 +20,7 @@ import java.util.Date;
 public class PreventCachingFilter implements Filter{
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(PreventCachingFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(PreventCachingFilter.class);
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#destroy()

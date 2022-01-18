@@ -3,8 +3,8 @@ package mat.dao.impl;
 import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.RecentCQLActivityLog;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.List;
 public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog, String> implements RecentCQLActivityLogDAO {
 
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(RecentCQLActivityLogDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(RecentCQLActivityLogDAOImpl.class);
 	
 	public RecentCQLActivityLogDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

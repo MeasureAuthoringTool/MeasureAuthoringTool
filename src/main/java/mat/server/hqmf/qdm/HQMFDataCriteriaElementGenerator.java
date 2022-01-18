@@ -3,11 +3,11 @@ package mat.server.hqmf.qdm;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.QDMTemplateProcessorFactory;
-import mat.server.logging.LogFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
@@ -32,7 +32,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	protected String extensionValue = null;
 
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(HQMFDataCriteriaElementGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(HQMFDataCriteriaElementGenerator.class);
 
 	/**
 	 * Generate hqm for measure.
@@ -1875,11 +1875,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 					"/templates/AttrTemplate[text()='" + attrName + "']");
-			logger.debug("----------");
-			logger.debug(attributeQDMNode.getNodeName());
-			logger.debug(attributeQDMNode.getAttributes());
-			logger.debug(simpleXmlprocessor.transform(attributeQDMNode));
-			logger.debug("----------");
 			String attributeValueSetName = attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes().getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();

@@ -17,7 +17,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.FhirCqlLibraryService;
@@ -26,7 +26,7 @@ import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -44,7 +44,7 @@ import java.util.UUID;
 @Service
 public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
-    private static final Log logger = LogFactory.getLog(FhirCqlLibraryServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FhirCqlLibraryServiceImpl.class);
 
     private final FhirLibraryRemoteCall fhirLibRemote;
 

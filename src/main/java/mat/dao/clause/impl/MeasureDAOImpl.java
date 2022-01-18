@@ -14,7 +14,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.SearchModel;
@@ -23,7 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {
 
-    private static final Log logger = LogFactory.getLog(MeasureDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MeasureDAOImpl.class);
     private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
     private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
     private static final String OWNER = "owner";

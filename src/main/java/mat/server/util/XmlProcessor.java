@@ -1,11 +1,11 @@
 package mat.server.util;
 
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.impl.XMLUtility;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,7 +84,7 @@ public class XmlProcessor {
     private static final String PATIENT = " Patient ";
     private static Map<String, String> constantsMap = new HashMap<String, String>();
     private static Map<String, String> topNodeOperatorMap = new HashMap<String, String>();
-    private static final Log LOG = LogFactory.getLog(XmlProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XmlProcessor.class);
     private String originalXml;
     private DocumentBuilder docBuilder;
     private Document originalDoc;

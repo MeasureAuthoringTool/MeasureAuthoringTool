@@ -8,11 +8,11 @@ import mat.dao.UserDAO;
 import mat.model.EmailAuditLog;
 import mat.model.Status;
 import mat.model.User;
-import mat.server.logging.LogFactory;
 import mat.server.util.ServerConstants;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ import java.util.Map;
 @Service
 public class CheckUserLastLoginTask {
 
-    private static final Log logger = LogFactory.getLog(CheckUserLastLoginTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckUserLastLoginTask.class);
     private static final String USER_LOG_LABEL = "User:";
     private static final String LOG_DAYS_AGO = " days ago.";
     private static final String WARNING_EMAIL_FLAG = "WARNING";
@@ -158,7 +158,7 @@ public class CheckUserLastLoginTask {
                     updateUserTerminationDate(user);
                 }
             } catch (IOException | TemplateException e) {
-                logger.error(e);
+                logger.error("checkUserLoginDays", e);
             }
 
             mailSender.send(simpleMailMessage);

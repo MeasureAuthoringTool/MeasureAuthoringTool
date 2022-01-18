@@ -3,12 +3,12 @@ package mat.server.hqmf.qdm_5_4;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.qdm.HQMFAttributeGenerator;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -51,7 +51,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 	public MeasureExport measureExport;
 
-	private static final Log logger = LogFactory.getLog(HQMFClauseLogicGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(HQMFClauseLogicGenerator.class);
 
 	/**
 	 * MAP of Functional Ops NON Subset Type.

@@ -9,7 +9,7 @@ import mat.model.DataType;
 import mat.model.DirectReferenceCode;
 import mat.model.VSACExpansionProfileWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
 import mat.server.service.impl.XMLMarshalUtil;
@@ -22,7 +22,7 @@ import mat.vsacmodel.BasicResponse;
 import mat.vsacmodel.ValueSet;
 import mat.vsacmodel.ValueSetWrapper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -47,7 +47,7 @@ import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOid
 
 @Service
 public class VSACApiServImpl implements VSACApiService {
-    private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VSACAPIServiceImpl.class);
     private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
 
     @Value("${mat.qdm.default.expansion.id}")
@@ -156,7 +156,7 @@ public class VSACApiServImpl implements VSACApiService {
             details.setCodeSystemName(node.get("csName").asText());
             details.setCodeSystemOid(node.get("csOID").asText());
             details.setCodeSystemVersion(node.get("csVersion").asText());
-            LOGGER.debug(details);
+            LOGGER.debug("convertXmltoDirectCodeRef:: {}", details);
         } catch (Exception e) {
             LOGGER.debug("Exception in convertXmltoDirectCodeRef:", e);
         }

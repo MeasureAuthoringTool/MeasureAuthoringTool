@@ -40,7 +40,7 @@ import mat.model.cql.validator.CQLIncludeLibraryValidator;
 import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.ReverseEngineerListener;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.LibraryErrors;
@@ -65,7 +65,7 @@ import mat.shared.cql.error.InvalidLibraryException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -106,7 +106,7 @@ import java.util.stream.Collectors;
 @Service
 public class CQLServiceImpl implements CQLService {
 
-    private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CQLServiceImpl.class);
 
     private static final int COMMENTS_MAX_LENGTH = 2500;
 

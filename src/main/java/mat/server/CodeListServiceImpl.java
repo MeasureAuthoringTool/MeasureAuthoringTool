@@ -8,10 +8,10 @@ import mat.dto.UnitDTO;
 import mat.dto.VSACCodeSystemDTO;
 import mat.model.QualityDataSetDTO;
 import mat.model.MatValueSetTransferObject;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.CodeListService;
 import mat.shared.ConstantMessages;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class CodeListServiceImpl extends SpringRemoteServiceServlet
         implements mat.client.codelist.service.CodeListService {
 
-    private static final Log logger = LogFactory.getLog(CodeListServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CodeListServiceImpl.class);
     @Autowired
     private CodeListService codeListService;
 

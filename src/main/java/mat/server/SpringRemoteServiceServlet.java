@@ -2,8 +2,8 @@ package mat.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 
     private static final long serialVersionUID = 8359364426336388916L;
-    private static final Log log = LogFactory.getLog(SpringRemoteServiceServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SpringRemoteServiceServlet.class);
     protected ApplicationContext context;
 
     @Override

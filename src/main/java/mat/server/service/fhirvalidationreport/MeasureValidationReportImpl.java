@@ -13,7 +13,7 @@ import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.LibraryErrors;
@@ -22,7 +22,7 @@ import mat.shared.CQLError;
 import mat.shared.DateUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -40,7 +40,7 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
     private static final String NO_MEASURE_FOUND_ERROR = "The measure with that measure id does not exist.";
     private static final String REPORT_FTL = "fhirvalidationreport/fhir_validation_report.ftl";
 
-    private static final Log log = LogFactory.getLog(MeasureValidationReportImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(MeasureValidationReportImpl.class);
 
     private final Configuration freemarkerConfiguration;
     private final MeasureDAO measureDAO;

@@ -46,7 +46,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.export.ExportResult;
 import mat.server.export.MeasureArtifactGenerator;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
@@ -59,7 +59,7 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -73,7 +73,7 @@ import java.util.List;
 @Service
 public class MeasurePackageServiceImpl implements MeasurePackageService {
 
-    private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MeasurePackageServiceImpl.class);
 
     @Autowired
     private DataTypeDAO dataTypeDAO;

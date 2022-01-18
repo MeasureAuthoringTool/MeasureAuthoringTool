@@ -15,7 +15,7 @@ import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.FhirCQLLinter;
 import mat.server.cqlparser.QdmCQLLinter;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
@@ -25,7 +25,7 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.FunctionDef;
@@ -64,7 +64,7 @@ public class CQLUtil {
     /**
      * The Constant logger.
      */
-    private static final Log logger = LogFactory.getLog(CQLUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(CQLUtil.class);
 
 
     /**
@@ -411,7 +411,6 @@ public class CQLUtil {
             }
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage());
-            logger.error(e.getStackTrace());
         }
 
         return false;

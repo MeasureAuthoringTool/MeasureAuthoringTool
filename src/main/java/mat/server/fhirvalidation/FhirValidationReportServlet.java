@@ -1,13 +1,13 @@
 package mat.server.fhirvalidation;
 
 import mat.client.shared.MatException;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.VSACApiService;
 import mat.server.service.fhirvalidationreport.CqlLibraryValidationReportImpl;
 import mat.server.service.fhirvalidationreport.FhirValidationReport;
 import mat.server.service.fhirvalidationreport.MeasureValidationReportImpl;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class FhirValidationReportServlet extends HttpServlet {
 
-    private static final Log logger = LogFactory.getLog(FhirValidationReportServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(FhirValidationReportServlet.class);
     private static final String ID_PARAM = "id";
     private static final String CONVERTED_PARAM = "converted";
     private static final String TYPE_PARAM = "type";

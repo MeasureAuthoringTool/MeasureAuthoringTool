@@ -22,7 +22,6 @@ import mat.model.UserBonnieAccessInfo;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
-import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
@@ -32,8 +31,9 @@ import mat.shared.ForgottenPasswordResult;
 import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
 import org.hibernate.ObjectNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Log logger = LogFactory.getLog(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final String NUMERIC = "1234567890";
@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
             msg.setText(text);
             mailSender.send(msg);
         } catch (IOException | TemplateException exc) {
-            logger.error(exc);
+            logger.error("notifyUserUnlocked", exc);
         }
 
     }
@@ -230,12 +230,11 @@ public class UserServiceImpl implements UserService {
         logger.debug("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
         ForgottenPasswordResult result = new ForgottenPasswordResult();
         result.setEmailSent(false);
-        // logger.debug(" requestForgottenPassword   Login Id ====" + loginId);
         User user = null;
         try {
             user = userDAO.findByLoginId(loginId);
         } catch (ObjectNotFoundException exc) {
-            logger.error(exc);
+            logger.error("requestForgottenPassword", exc);
         }
 
         if (user == null) {
@@ -381,7 +380,7 @@ public class UserServiceImpl implements UserService {
             logger.debug("Sending email to " + email);
             mailSender.send(msg);
         } catch (MailException | IOException | TemplateException exc) {
-            logger.error(exc);
+            logger.error("sendResetPassword", exc);
         }
     }
 
@@ -495,7 +494,7 @@ public class UserServiceImpl implements UserService {
 
             mailSender.send(message);
         } catch (MessagingException | IOException | TemplateException e) {
-            logger.error(e);
+            logger.error("notifyUserOfNewAccount", e);
         }
 
     }
@@ -518,7 +517,7 @@ public class UserServiceImpl implements UserService {
             msg.setText(text);
             mailSender.send(msg);
         } catch (MailException | IOException | TemplateException exc) {
-            logger.error(exc);
+            logger.error("notifyUserOfForgottenLoginId", exc);
         }
     }
 
@@ -833,7 +832,7 @@ public class UserServiceImpl implements UserService {
         try {
             mailSender.send(msg);
         } catch (MailException exc) {
-            logger.error(exc);
+            logger.error("notifyUserOfAccountLocked", exc);
         }
     }
 

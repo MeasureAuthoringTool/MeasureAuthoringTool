@@ -12,14 +12,14 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.MATPropertiesService;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SearchModel.ModelType;
 import mat.shared.SearchModel.VersionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Repository("cqlLibraryDAO")
 public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
 
-    private static final Log logger = LogFactory.getLog(CQLLibraryDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CQLLibraryDAOImpl.class);
 
     private static final String DRAFT = "draft";
     private static final String SET_ID = "setId";

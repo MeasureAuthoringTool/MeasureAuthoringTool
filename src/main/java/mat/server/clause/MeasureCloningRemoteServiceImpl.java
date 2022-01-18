@@ -9,16 +9,16 @@ import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.ModelTypeHelper;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.impl.MatContextServiceUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet implements MeasureCloningRemoteService {
 
-    private static final Log logger = LogFactory.getLog(MeasureCloningRemoteServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MeasureCloningRemoteServiceImpl.class);
 
     private static final String CANNOT_ACCESS_MEASURE = "Cannot access this measure.";
 
@@ -58,7 +58,7 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
 
     private void createException(String message) throws MatException {
         Exception e = new Exception(message);
-        logger.error(e);
+        logger.error(message, e);
         log(e.getMessage(), e);
         throw new MatException(e.getMessage());
     }

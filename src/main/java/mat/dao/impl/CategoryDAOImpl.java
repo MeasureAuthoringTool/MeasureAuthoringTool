@@ -3,8 +3,8 @@ package mat.dao.impl;
 import mat.dao.search.GenericDAO;
 import mat.dto.CategoryDTO;
 import mat.model.Category;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class CategoryDAOImpl extends GenericDAO<Category, String> implements mat
 	}
 
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CategoryDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CategoryDAOImpl.class);
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.CategoryDAO#getAllCategories()

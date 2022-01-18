@@ -4,10 +4,10 @@ import mat.dao.MatFlagDAO;
 import mat.dao.UserDAO;
 import mat.model.MatFlag;
 import mat.model.User;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.UserService;
 import mat.server.service.impl.UserServiceImpl;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class OnetimeUserNotificationTask {
     /**
      * The Constant logger.
      */
-    private static final Log logger = LogFactory.getLog(OnetimeUserNotificationTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnetimeUserNotificationTask.class);
 
     private UserDAO userDAO;
     private UserService userService;

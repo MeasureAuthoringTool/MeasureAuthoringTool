@@ -3,9 +3,9 @@ package mat.server.hqmf.qdm;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class HQMFGenerator implements Generator {
 	
-	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+	private final Logger logger = LoggerFactory.getLogger(HQMFDataCriteriaGenerator.class);
 
 	
 	/**

@@ -2,16 +2,21 @@ package mat.client.export.measure;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.shared.MatContext;
 
 public class ManageMeasureExportPresenter implements MatPresenter {
 	
-	private ManageMeasureExportView view; 
-	private Result result; 
-	private ManageMeasurePresenter manageMeasurePresenter;
+	private final ManageMeasureExportView view;
+	private final Result result;
+	private final ManageMeasurePresenter manageMeasurePresenter;
+
+	private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
 	
 	public ManageMeasureExportPresenter(ManageMeasureExportView view, Result result, ManageMeasurePresenter manageMeasurePresenter) {
 		this.view = view; 
@@ -44,11 +49,19 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 	
 	
 	private void openButtonClickHandler() {
-		Window.open(buildExportURL() + "&type=open", "_blank", "");
+		if (view.isTransferToMadieRadio()) {
+			transferMeasureToMadie();
+		} else {
+			Window.open(buildExportURL() + "&type=open", "_blank", "");
+		}
 	}
 
 	private void saveButtonClickHandler() {
-		Window.open(buildExportURL() + "&type=save", "_self", "");
+		if (view.isTransferToMadieRadio()) {
+			transferMeasureToMadie();
+		} else {
+			Window.open(buildExportURL() + "&type=save", "_self", "");
+		}
 	}
 	
 	private String buildExportURL() {
@@ -60,12 +73,37 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 		return url;
 	}
 
+	private void transferMeasureToMadie() {
+		Mat.showLoadingMessage();
+		MatContext.get().getMeasureService().transferMeasureToMadie(result.geteMeasureId(), new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable throwable) {
+				Mat.hideLoadingMessage();
+				view.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + throwable.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(Boolean success) {
+				Mat.hideLoadingMessage();
+				if (success) {
+					view.displaySuccessMessage("Measure is being processed and transferred to MADIE, You will receive an email as soon as transfer is completed");
+				} else {
+					view.displayErrorMessage("Unable to transfer measure to Madie, try again !!");
+				}
+			}
+		});
+	}
+
 	@Override
 	public void beforeClosingDisplay() {
+		view.clearAlerts();
 	}
 
 	@Override
 	public void beforeDisplay() {
+		view.clearAlerts();
 	}
 
 	@Override

@@ -550,4 +550,12 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         return this.getMeasureLibraryService().libraryNameExists(libraryName, setId);
     }
 
+    @Override
+    public Boolean transferMeasureToMadie(int eMeasureId) {
+        // TODO Get Measure data and upload it to S3
+        // The radio button is displayed only for FHIR measures and when feature flag is enabled
+        // Also the button is displayed only for measure owner
+        return true;
+    }
+
 }

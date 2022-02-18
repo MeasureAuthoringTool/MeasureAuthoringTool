@@ -5,7 +5,7 @@ import mat.client.shared.MessageAlert;
 
 public interface BaseDisplay {
 
-	public Widget asWidget();
+	Widget asWidget();
 
-	public MessageAlert getErrorMessageDisplay();
+	MessageAlert getErrorMessageDisplay();
 }

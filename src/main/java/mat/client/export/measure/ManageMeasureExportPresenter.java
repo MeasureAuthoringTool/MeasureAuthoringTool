@@ -88,7 +88,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 			public void onSuccess(Boolean success) {
 				Mat.hideLoadingMessage();
 				if (success) {
-					view.displaySuccessMessage("Measure is being processed and transferred to MADiE. A message will be spent to the e-mail associated with this account once the transfer has completed.");
+					view.displaySuccessMessage("Measure is being processed and transferred to MADiE. A message will be sent to the e-mail associated with this account once the transfer has completed.");
 				} else {
 					view.displayErrorMessage("Unable to transfer measure to MADiE, Try again");
 				}

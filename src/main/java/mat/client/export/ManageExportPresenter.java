@@ -18,15 +18,17 @@ public class ManageExportPresenter implements MatPresenter {
 	private ManageExportView view;
 	private ManageMeasureExportView exportView;
 	private BonnieExportView bonnieExportView; 
-	private ManageMeasureSearchModel.Result result; 
+	private ManageMeasureSearchModel.Result result;
+	private String currentMeasureOwnerId;
 	
 	private ManageMeasurePresenter manageMeasurePresenter;
 
-	public ManageExportPresenter(ManageExportView view, ManageMeasureSearchModel.Result result, ManageMeasurePresenter manageMeasurePresenter) {
+	public ManageExportPresenter(ManageExportView view, ManageMeasureSearchModel.Result result, ManageMeasurePresenter manageMeasurePresenter, String currentMeasureOwnerId) {
 		this.view = view; 
-		this.setResult(result); 
+		this.setResult(result);
+		this.currentMeasureOwnerId = currentMeasureOwnerId;
 		this.setManageMeasurePresenter(manageMeasurePresenter);
-	
+
 		initializeExportView();
 		initializeBonnieExportView();
 		
@@ -44,13 +46,13 @@ public class ManageExportPresenter implements MatPresenter {
 		this.view.getBonnieExportPane().add(bonnieExportView.asWidget());
 		
 		double qdmVersion = 0.0; 
-		if(result.getQdmVersion() != null) {
+		if (result.getQdmVersion() != null) {
 			qdmVersion = Double.parseDouble(result.getQdmVersion().replace("v", ""));
 		}
 		
 		double currentQDMVersion = Double.parseDouble(MatContext.get().getCurrentQDMVersion().replace("v", ""));	
 		
-		if(MatContext.get().isCQLMeasure(result.getHqmfReleaseVersion()) && qdmVersion == currentQDMVersion) {
+		if (MatContext.get().isCQLMeasure(result.getHqmfReleaseVersion()) && qdmVersion == currentQDMVersion) {
 			setBonnieExportVisible(true);
 		} else {
 			setBonnieExportVisible(false);
@@ -73,7 +75,7 @@ public class ManageExportPresenter implements MatPresenter {
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView();
 		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
-		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel());
+		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), currentMeasureOwnerId);
 		this.view.getExportPane().add(exportView.asWidget());
 		exportView.showCompositeMeasure(result.getIsComposite());
 	}

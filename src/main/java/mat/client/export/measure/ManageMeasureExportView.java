@@ -11,6 +11,7 @@ import mat.client.buttons.SaveButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.SecurityRole;
@@ -35,6 +36,8 @@ public class ManageMeasureExportView implements ExportDisplay {
 
 	private RadioButton allRadio = new RadioButton("format", "All");
 
+	private final RadioButton transferToMadieRadio = new RadioButton("format", "Transfer To MADIE");
+
 	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	
 	private RadioButton humanReadableRadio = new RadioButton("format", "Human Readable");
@@ -57,10 +60,17 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	VerticalPanel vp = new VerticalPanel();
 
+	private final MessagePanel messagePanel;
+
 	public ManageMeasureExportView() {
 		
 		content.add(new SpacerWidget());
 		createMeasureInformationContent();
+		content.add(new SpacerWidget());
+
+		messagePanel = new MessagePanel();
+		messagePanel.setWidth("625px");
+		content.add(messagePanel);
 		content.add(new SpacerWidget());
 
 		FormLabel label = new FormLabel();
@@ -112,23 +122,29 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel) {
-		
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, String currentMeasureOwnerId) {
+
 		vp.clear();
-		
-		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
+
+		if (MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
 
-		if(ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+		if (ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel)
+				&& MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
 			vp.add(xmlRadio);
 			vp.add(jsonRadio);
 			vp.add(humanReadableRadio);
 			vp.add(allRadio);
+			// Transfer to Madie is displayed only for the measure owner
+			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE)
+					&& currentMeasureOwnerId.equals(MatContext.get().getCurrentUserInfo().userId)) {
+				vp.add(transferToMadieRadio);
+			}
 		} else {
 			vp.add(humanReadableRadio);
 			vp.add(hqmfRadio);
-			if(isV5OrGreater(releaseVersion)) {
+			if (isV5OrGreater(releaseVersion)) {
 				vp.add(cqlLibraryRadio);
 				vp.add(elmRadio);
 				vp.add(jsonRadio);
@@ -136,7 +152,6 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(eCQMPackageRadio);
 			vp.add(compositeMeasurePackageRadio);
 		}
-
 		resetRadioButtonValues(isCompositeMeasure);
 	}
 
@@ -173,6 +188,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		jsonRadio.setValue(false);
 		xmlRadio.setValue(false);
 		allRadio.setValue(false);
+		transferToMadieRadio.setValue(false);
 		eCQMPackageRadio.setValue(!isComposite);
 		compositeMeasurePackageRadio.setValue(isComposite);
 	}
@@ -245,5 +261,24 @@ public class ManageMeasureExportView implements ExportDisplay {
 	@Override
 	public boolean isAll() {
 		return allRadio.getValue();
+	}
+
+	@Override
+	public boolean isTransferToMadieRadio() {
+		return transferToMadieRadio.getValue();
+	}
+
+	public void displaySuccessMessage(String message) {
+		messagePanel.clearAlerts();
+		messagePanel.getSuccessMessageAlert().createAlert(message);
+	}
+
+	public void displayErrorMessage(String message) {
+		messagePanel.clearAlerts();
+		messagePanel.getErrorMessageAlert().createAlert(message);
+	}
+
+	public void clearAlerts() {
+		messagePanel.clearAlerts();
 	}
 }

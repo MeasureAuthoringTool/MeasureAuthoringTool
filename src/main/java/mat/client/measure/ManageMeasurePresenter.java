@@ -139,6 +139,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private DetailDisplay detailDisplay;
 
+    private String currentMeasureOwnerId;
+
     private DetailDisplay compositeDetailDisplay;
 
     private ComponentMeasureDisplay componentMeasureDisplay;
@@ -1234,8 +1236,24 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void export(ManageMeasureSearchModel.Result result) {
-        ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this);
+        setSearchingBusy(true);
+        MatContext.get().getMeasureService().getMeasure(result.getId(), new AsyncCallback<ManageMeasureDetailModel>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Mat.hideLoadingMessage();
+                setSearchingBusy(false);
+                detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+            }
 
+            @Override
+            public void onSuccess(ManageMeasureDetailModel result) {
+                Mat.hideLoadingMessage();
+                setSearchingBusy(false);
+                currentMeasureOwnerId = result.getMeasureOwnerId();
+            }
+        });
+        ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this, currentMeasureOwnerId);
         searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
         panel.getButtonPanel().clear();
         panel.setContent(exportPresenter.getWidget());

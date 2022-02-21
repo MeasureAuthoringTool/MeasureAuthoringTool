@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);
@@ -679,4 +678,6 @@ public interface MeasureServiceAsync {
 	void getHumanReadableForMeasureDetails(String currentMeasureId, String measureModel, AsyncCallback<String> asyncCallback);
 	
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);
+
+    void transferMeasureToMadie(int eMeasureId, AsyncCallback<Boolean> callback);
 }

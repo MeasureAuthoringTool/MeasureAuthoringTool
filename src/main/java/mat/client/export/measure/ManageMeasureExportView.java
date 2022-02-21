@@ -36,7 +36,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 
 	private RadioButton allRadio = new RadioButton("format", "All");
 
-	private final RadioButton transferToMadieRadio = new RadioButton("format", "Transfer To MADIE");
+	private final RadioButton transferToMadieRadio = new RadioButton("format", "Transfer To MADiE");
 
 	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	

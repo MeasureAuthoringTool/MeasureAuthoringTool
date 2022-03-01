@@ -52,11 +52,11 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	private RadioButton compositeMeasurePackageRadio = new RadioButton("format", "eCQM Package");
 	
-	private Button saveButton = new SaveButton("manageMeasureexportview");
+	private final Button saveButton = new SaveButton("manageMeasureexportview");
 	
-	private Button cancelButton = new CancelButton("manageMeasureexportview");
+	private final Button cancelButton = new CancelButton("manageMeasureexportview");
 	
-	private Button openButton = new Button("Open");
+	private final Button openButton = new Button("Open");
 	
 	VerticalPanel vp = new VerticalPanel();
 
@@ -78,7 +78,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		label.setTitle("Select an export option: ");
 		content.add(label);
 		content.add(new SpacerWidget());
-		
+
 		content.add(vp);
 			
 		content.add(new SpacerWidget());
@@ -94,7 +94,6 @@ public class ManageMeasureExportView implements ExportDisplay {
 		
 		content.add(buttonPanel);
 		content.add(new SpacerWidget());
-		
 	}
 	
 	public void createMeasureInformationContent() {
@@ -123,13 +122,10 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	@Override
 	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, String currentMeasureOwnerId) {
-
 		vp.clear();
-
 		if (MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
-
 		if (ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel)
 				&& MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
 			vp.add(xmlRadio);
@@ -137,7 +133,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(humanReadableRadio);
 			vp.add(allRadio);
 			// Transfer to Madie is displayed only for the measure owner
-			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE)
+			if (currentMeasureOwnerId != null && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE)
 					&& currentMeasureOwnerId.equals(MatContext.get().getCurrentUserInfo().userId)) {
 				vp.add(transferToMadieRadio);
 			}
@@ -164,8 +160,6 @@ public class ManageMeasureExportView implements ExportDisplay {
 		}
 		return result;
 	}
-
-
 
 	@Override
 	public void showCompositeMeasure(boolean isComposite) {

@@ -1299,7 +1299,7 @@ public class MatContext implements IsSerializable {
     }
 
     public void getCQLConstants() {
-        CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
+        CQLConstantServiceAsync cqlConstantService = GWT.create(CQLConstantService.class);
 
         cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
 
@@ -1372,12 +1372,13 @@ public class MatContext implements IsSerializable {
 
 
     public String getCurrentQDMVersion() {
-        if (cqlConstantContainer == null) {
-            return "";
-        } else {
+        if (cqlConstantContainer != null
+                && cqlConstantContainer.getCurrentQDMVersion() != null
+                && !cqlConstantContainer.getCurrentQDMVersion().trim().isEmpty()) {
             return cqlConstantContainer.getCurrentQDMVersion();
+        } else {
+            return "";
         }
-
     }
 
     public PopulationServiceAsync getPopulationService() {

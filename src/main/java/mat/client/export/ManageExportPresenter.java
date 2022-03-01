@@ -1,72 +1,50 @@
 package mat.client.export;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.MatPresenter;
-import mat.client.export.bonnie.BonnieExportPresenter;
 import mat.client.export.bonnie.BonnieExportView;
 import mat.client.export.measure.ManageMeasureExportPresenter;
 import mat.client.export.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatContext;
-import mat.client.util.FeatureFlagConstant;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static mat.model.clause.ModelTypeHelper.isFhir;
 
 public class ManageExportPresenter implements MatPresenter {
 	
-	private ManageExportView view;
+	private final ManageExportView view;
 	private ManageMeasureExportView exportView;
 	private BonnieExportView bonnieExportView; 
-	private ManageMeasureSearchModel.Result result;
-	private String currentMeasureOwnerId;
+	private final ManageMeasureSearchModel.Result result;
+	private final String currentMeasureOwnerId;
 	
-	private ManageMeasurePresenter manageMeasurePresenter;
+	private final ManageMeasurePresenter manageMeasurePresenter;
 
-	public ManageExportPresenter(ManageExportView view, ManageMeasureSearchModel.Result result, ManageMeasurePresenter manageMeasurePresenter, String currentMeasureOwnerId) {
+	private static final Logger logger = Logger.getLogger(ManageExportPresenter.class.getSimpleName());
+
+	public ManageExportPresenter(ManageExportView view,
+								 ManageMeasureSearchModel.Result result,
+								 ManageMeasurePresenter manageMeasurePresenter,
+								 String currentMeasureOwnerId) {
 		this.view = view; 
-		this.setResult(result);
+		this.result = result;
 		this.currentMeasureOwnerId = currentMeasureOwnerId;
-		this.setManageMeasurePresenter(manageMeasurePresenter);
+		this.manageMeasurePresenter = manageMeasurePresenter;
 
 		initializeExportView();
-		initializeBonnieExportView();
-		
+
+		// On initial load "Upload to Bonnie" is not displayed.
+		setBonnieExportVisible(false);
+		if (!isFhir(result.getMeasureModel())) {
+			initializeBonnieExportView();
+		}
 		addClickHandlers();
 		setMeasureExportHeader();
-	}
-
-	private void initializeBonnieExportView() {
-		view.getBonnieExportPane().clear();
-
-		this.view.getBonnieExportItem().setActive(false);
-		this.view.getBonnieExportPane().setActive(false);
-		bonnieExportView = new BonnieExportView();
-		BonnieExportPresenter bonnieExportPresenter = new BonnieExportPresenter(bonnieExportView, result, manageMeasurePresenter);
-		this.view.getBonnieExportPane().add(bonnieExportView.asWidget());
-		
-		double qdmVersion = 0.0; 
-		if (result.getQdmVersion() != null) {
-			qdmVersion = Double.parseDouble(result.getQdmVersion().replace("v", ""));
-		}
-		
-		double currentQDMVersion = Double.parseDouble(MatContext.get().getCurrentQDMVersion().replace("v", ""));	
-		
-		if (MatContext.get().isCQLMeasure(result.getHqmfReleaseVersion()) && qdmVersion == currentQDMVersion) {
-			setBonnieExportVisible(true);
-		} else {
-			setBonnieExportVisible(false);
-		}
-
-		if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_BONNIE) &&
-				isFhir(result.getMeasureModel())) {
-			setBonnieExportVisible(false);
-		}
-	}
-	
-	private void setBonnieExportVisible(boolean isVisible) {
-		this.view.getBonnieExportItem().setVisible(isVisible);
-		this.view.getBonnieExportPane().setVisible(isVisible);
 	}
 
 	private void initializeExportView() {
@@ -79,6 +57,36 @@ public class ManageExportPresenter implements MatPresenter {
 		this.view.getExportPane().add(exportView.asWidget());
 		exportView.showCompositeMeasure(result.getIsComposite());
 	}
+
+	private void initializeBonnieExportView() {
+		view.getBonnieExportPane().clear();
+		this.view.getBonnieExportItem().setActive(false);
+		this.view.getBonnieExportPane().setActive(false);
+
+		bonnieExportView = new BonnieExportView();
+		// unused BonnieExportPresenter
+		// BonnieExportPresenter bonnieExportPresenter = new BonnieExportPresenter(bonnieExportView, result, manageMeasurePresenter);
+
+		this.view.getBonnieExportPane().add(bonnieExportView.asWidget());
+
+		// "Upload to Bonnie" is displayed to user only if the measure is QDM, isCQLMeasure and uses latest QDM version.
+		double qdmVersion = 0.0; 
+		if (result.getQdmVersion() != null) {
+			qdmVersion = Double.parseDouble(result.getQdmVersion().replace("v", ""));
+		}
+		try {
+			double currentQDMVersion = Double.parseDouble(MatContext.get().getCurrentQDMVersion());
+			setBonnieExportVisible(MatContext.get().isCQLMeasure(result.getHqmfReleaseVersion()) && qdmVersion == currentQDMVersion);
+		} catch (NumberFormatException nfe) {
+			logger.log(Level.SEVERE, "ManageExportPresenter::initializeBonnieExportView -> Invalid MatContext.get().getCurrentQDMVersion()");
+			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		}
+	}
+	
+	private void setBonnieExportVisible(boolean isVisible) {
+		this.view.getBonnieExportItem().setVisible(isVisible);
+		this.view.getBonnieExportPane().setVisible(isVisible);
+	}
 	
 	private void addClickHandlers() {
 		this.view.getExportItem().addClickHandler(event -> exportItemClickHandler());
@@ -87,7 +95,7 @@ public class ManageExportPresenter implements MatPresenter {
 	
 	private void exportItemClickHandler() {
 		this.view.getExportItem().setActive(true);
-		this.view.getExportPane().setActive(true);;
+		this.view.getExportPane().setActive(true);
 		this.view.getBonnieExportItem().setActive(false);
 		this.view.getBonnieExportPane().setActive(false);
 		
@@ -119,25 +127,9 @@ public class ManageExportPresenter implements MatPresenter {
 	public Widget getWidget() {
 		return view.asWidget();
 	}
-
-	public ManageMeasureSearchModel.Result getResult() {
-		return result;
-	}
-
-	public void setResult(ManageMeasureSearchModel.Result result) {
-		this.result = result;
-	}
-
-	public ManageMeasurePresenter getManageMeasurePresenter() {
-		return manageMeasurePresenter;
-	}
-
-	public void setManageMeasurePresenter(ManageMeasurePresenter manageMeasurePresenter) {
-		this.manageMeasurePresenter = manageMeasurePresenter;
-	}
 	
 	private void setMeasureExportHeader() {
-		if(result.getIsComposite()) {
+		if (result.getIsComposite()) {
 			this.manageMeasurePresenter.getPanel().setHeading("My Measures > Export Composite Measure", "MeasureLibrary");
 		} else {
 			this.manageMeasurePresenter.getPanel().setHeading("My Measures > Export", "MeasureLibrary");

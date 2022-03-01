@@ -139,8 +139,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private DetailDisplay detailDisplay;
 
-    private String currentMeasureOwnerId;
-
     private DetailDisplay compositeDetailDisplay;
 
     private ComponentMeasureDisplay componentMeasureDisplay;
@@ -1247,12 +1245,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
-            public void onSuccess(ManageMeasureDetailModel result) {
+            public void onSuccess(ManageMeasureDetailModel manageMeasureDetailModel) {
                 Mat.hideLoadingMessage();
                 setSearchingBusy(false);
-                currentMeasureOwnerId = result.getMeasureOwnerId();
+                displayManageExportPresenter(manageMeasureDetailModel.getMeasureOwnerId(), result);
             }
         });
+    }
+
+    private void displayManageExportPresenter(String currentMeasureOwnerId, ManageMeasureSearchModel.Result result ) {
         ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this, currentMeasureOwnerId);
         searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
         panel.getButtonPanel().clear();

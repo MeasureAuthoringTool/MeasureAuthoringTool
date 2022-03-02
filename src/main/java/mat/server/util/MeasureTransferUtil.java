@@ -14,7 +14,8 @@ public class MeasureTransferUtil {
     public static final AmazonS3 buildAwsS3Client() {
         return AmazonS3ClientBuilder
                 .standard()
-                .withRegion(getMeasureTransferS3Region())
+                .withRegion(getSystemProperty(
+                        "MEASURE_TRANSFER_S3_AWS_REGION"))
                 .withCredentials(new InstanceProfileCredentialsProvider(true))
                 .build();
     }
@@ -22,20 +23,12 @@ public class MeasureTransferUtil {
     public static final PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO ob, String measureId)
             throws JsonProcessingException {
         String objectKeyName = "measure_" + measureId;
-        String bucketName = getMeasureTransferS3BucketName();
+        String bucketName = getSystemProperty("MEASURE_TRANSFER_S3_BUCKET_NAME");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String transferJson = objectMapper.writeValueAsString(ob);
         return buildAwsS3Client()
                 .putObject(bucketName, objectKeyName, transferJson);
-    }
-
-    public static final String getMeasureTransferS3Region() {
-        return getSystemProperty("MEASURE_TRANSFER_S3_AWS_REGION");
-    }
-
-    public static final String getMeasureTransferS3BucketName() {
-        return getSystemProperty("MEASURE_TRANSFER_S3_BUCKET_NAME");
     }
 
     public static final String getSystemProperty(String propertyName) {

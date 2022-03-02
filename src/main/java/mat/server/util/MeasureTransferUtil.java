@@ -1,7 +1,6 @@
 package mat.server.util;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -16,16 +15,12 @@ public class MeasureTransferUtil {
     public static final AmazonS3 buildAwsS3Client() {
         final String AWS_REGION = getMeasureTransferS3Region();
         final String S3_ENDPOINT = getMeasureTransferS3Endpoint();
-        final String ACCESS_KEY = getAccessKeyForMeasureTransfer();
-        final String SECRET_KEY = getSecretKeyForMeasureTransfer();
 
         return AmazonS3ClientBuilder
                 .standard()
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(S3_ENDPOINT, AWS_REGION))
-                .withPathStyleAccessEnabled(true)
-                .withCredentials(new AWSStaticCredentialsProvider(
-                        new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY)))
+                .withCredentials(new InstanceProfileCredentialsProvider(true))
                 .build();
     }
 
@@ -50,14 +45,6 @@ public class MeasureTransferUtil {
 
     public static final String getMeasureTransferS3BucketName() {
         return getSystemProperty("MEASURE_TRANSFER_S3_BUCKET_NAME");
-    }
-
-    public static final String getAccessKeyForMeasureTransfer() {
-        return getSystemProperty("MEASURE_TRANSFER_ACCESS_KEY");
-    }
-
-    public static final String getSecretKeyForMeasureTransfer() {
-        return getSystemProperty("MEASURE_TRANSFER_SECRET_KEY");
     }
 
     public static final String getSystemProperty(String propertyName) {

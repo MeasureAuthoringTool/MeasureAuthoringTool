@@ -16,6 +16,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dto.MeasureTransferDTO;
 import mat.model.CQLValueSetTransferObject;
@@ -26,6 +27,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
@@ -63,6 +65,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Autowired
     private MeasureExportDAO measureExportDAO;
+
+    @Autowired
+    private MeasureDAO measureDAO;
 
     @Override
     public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName) {
@@ -564,6 +569,10 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         MeasureTransferDTO measureTransferDTO = new MeasureTransferDTO();
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 
+        if (measureExport == null) {
+            return false;
+        }
+
         ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(
                 measureId, LoggedInUserUtil.getLoggedInUserId());
 
@@ -577,14 +586,18 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         measureTransferDTO.setLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
         measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
         measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
-        // TODO: update measure table to set this flag to true
-        boolean isTransferComplete = true;
+
+        boolean isTransferComplete = false;
         try {
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);
+            Measure measure = measureDAO.find(measureId);
+            // set measure transfer status to complete
+            measure.setTransferredToMadie(true);
+            measureDAO.saveMeasure(measure);
+            isTransferComplete = true;
         } catch (SdkClientException | JsonProcessingException exception) {
             log("MeasureServiceImpl::transferMeasureToMadie: "
                     + exception.getMessage(), exception);
-            isTransferComplete = false;
         }
 
         return isTransferComplete;

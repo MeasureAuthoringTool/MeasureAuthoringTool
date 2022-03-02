@@ -1,7 +1,6 @@
 package mat.server.util;
 
 import com.amazonaws.auth.InstanceProfileCredentialsProvider;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -14,12 +13,10 @@ public class MeasureTransferUtil {
 
     public static final AmazonS3 buildAwsS3Client() {
         final String AWS_REGION = getMeasureTransferS3Region();
-        final String S3_ENDPOINT = getMeasureTransferS3Endpoint();
 
         return AmazonS3ClientBuilder
                 .standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(S3_ENDPOINT, AWS_REGION))
+                .withRegion(AWS_REGION)
                 .withCredentials(new InstanceProfileCredentialsProvider(true))
                 .build();
     }

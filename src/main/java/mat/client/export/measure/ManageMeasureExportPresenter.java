@@ -75,7 +75,8 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 
 	private void transferMeasureToMadie() {
 		Mat.showLoadingMessage();
-		MatContext.get().getMeasureService().transferMeasureToMadie(result.geteMeasureId(), new AsyncCallback<Boolean>() {
+		MatContext.get().getMeasureService().transferMeasureToMadie(result.getId(),
+				new AsyncCallback<Boolean>() {
 
 			@Override
 			public void onFailure(Throwable throwable) {

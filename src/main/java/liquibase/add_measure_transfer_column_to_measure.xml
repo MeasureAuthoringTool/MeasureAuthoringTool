@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="mat_dev_user" id="add_transferred_to_madie_column" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MEASURE"/>
+        </preConditions>
+        <addColumn tableName="MEASURE">
+            <column name="TRANSFERRED_TO_MADIE" type="boolean" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

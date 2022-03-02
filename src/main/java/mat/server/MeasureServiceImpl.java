@@ -1,5 +1,7 @@
 package mat.server;
 
+import com.amazonaws.SdkClientException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -14,6 +16,8 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
+import mat.dao.clause.MeasureExportDAO;
+import mat.dto.MeasureTransferDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
@@ -22,6 +26,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.clause.MeasureExport;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -32,6 +37,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
+import mat.server.util.MeasureTransferUtil;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
@@ -54,6 +60,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Autowired
     private MeasureLibraryService measureLibraryService;
+
+    @Autowired
+    private MeasureExportDAO measureExportDAO;
 
     @Override
     public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName) {
@@ -551,11 +560,33 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public Boolean transferMeasureToMadie(int eMeasureId) {
-        // TODO Get Measure data and upload it to S3
-        // The radio button is displayed only for FHIR measures and when feature flag is enabled
-        // Also the button is displayed only for measure owner
-        return true;
-    }
+    public Boolean transferMeasureToMadie(String measureId) {
+        MeasureTransferDTO measureTransferDTO = new MeasureTransferDTO();
+        MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 
+        ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(
+                measureId, LoggedInUserUtil.getLoggedInUserId());
+
+        MeasureDetailResult measureDetailResult = manageMeasureDetailModel.getMeasureDetailResult();
+        measureDetailResult.setAllAuthorList(null);
+        measureDetailResult.setAllStewardList(null);
+
+        measureTransferDTO.setManageMeasureDetailModel(manageMeasureDetailModel);
+        measureTransferDTO.setMeasureResourceJson(measureExport.getMeasureJson());
+        measureTransferDTO.setLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
+        measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
+        measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
+
+        boolean isTransferComplete = true;
+        try {
+            MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);
+
+        } catch (SdkClientException | JsonProcessingException exception) {
+            log("MeasureServiceImpl::transferMeasureToMadie: "
+                    + exception.getMessage(), exception);
+            isTransferComplete = false;
+        }
+
+        return isTransferComplete;
+    }
 }

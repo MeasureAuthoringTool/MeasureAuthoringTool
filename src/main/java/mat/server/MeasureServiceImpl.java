@@ -581,7 +581,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         boolean isTransferComplete = true;
         try {
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);
-
         } catch (SdkClientException | JsonProcessingException exception) {
             log("MeasureServiceImpl::transferMeasureToMadie: "
                     + exception.getMessage(), exception);

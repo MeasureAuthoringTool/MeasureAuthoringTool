@@ -568,6 +568,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
                 measureId, LoggedInUserUtil.getLoggedInUserId());
 
         MeasureDetailResult measureDetailResult = manageMeasureDetailModel.getMeasureDetailResult();
+        // don't need all list, setting it to null
         measureDetailResult.setAllAuthorList(null);
         measureDetailResult.setAllStewardList(null);
 
@@ -576,7 +577,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         measureTransferDTO.setLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
         measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
         measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
-
+        // TODO: update measure table to set this flag to true
         boolean isTransferComplete = true;
         try {
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);

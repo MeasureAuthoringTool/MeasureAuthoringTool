@@ -9,7 +9,7 @@ public class MeasureTransferDTO implements Serializable {
     private String harpId;
     private ManageMeasureDetailModel manageMeasureDetailModel;
     private String measureResourceJson;
-    private String LibraryResourcesJson;
+    private String libraryResourcesJson;
 
     public String getEmailId() {
         return emailId;
@@ -44,10 +44,10 @@ public class MeasureTransferDTO implements Serializable {
     }
 
     public String getLibraryResourcesJson() {
-        return LibraryResourcesJson;
+        return libraryResourcesJson;
     }
 
     public void setLibraryResourcesJson(String libraryResourcesJson) {
-        LibraryResourcesJson = libraryResourcesJson;
+        this.libraryResourcesJson = libraryResourcesJson;
     }
 }

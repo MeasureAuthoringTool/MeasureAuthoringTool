@@ -12,11 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 public class MeasureTransferUtil {
 
     public static final AmazonS3 buildAwsS3Client() {
-        final String AWS_REGION = getMeasureTransferS3Region();
-
         return AmazonS3ClientBuilder
                 .standard()
-                .withRegion(AWS_REGION)
+                .withRegion(getMeasureTransferS3Region())
                 .withCredentials(new InstanceProfileCredentialsProvider(true))
                 .build();
     }
@@ -34,10 +32,6 @@ public class MeasureTransferUtil {
 
     public static final String getMeasureTransferS3Region() {
         return getSystemProperty("MEASURE_TRANSFER_S3_AWS_REGION");
-    }
-
-    public static final String getMeasureTransferS3Endpoint() {
-        return getSystemProperty("MEASURE_TRANSFER_S3_ENDPOINT");
     }
 
     public static final String getMeasureTransferS3BucketName() {

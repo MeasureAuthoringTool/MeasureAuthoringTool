@@ -91,7 +91,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 				if (success) {
 					view.displaySuccessMessage("Measure is being processed and transferred to MADiE. A message will be sent to the e-mail associated with this account once the transfer has completed.");
 				} else {
-					view.displayErrorMessage("Unable to transfer measure to MADiE, Try again");
+					view.displayErrorMessage("Unable to transfer measure to MADiE, try again. If problem continues, please contact helpdesk.");
 				}
 			}
 		});

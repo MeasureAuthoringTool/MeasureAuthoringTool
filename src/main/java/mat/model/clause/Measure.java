@@ -107,15 +107,15 @@ public class Measure {
     // if a source QDM measure is removed after conversion.
     private String sourceMeasureId;
 
-    private boolean transferredToMadie;
+    private boolean transferredToMadieBucket;
 
-    @Column(name = "TRANSFERRED_TO_MADIE")
-    public boolean isTransferredToMadie() {
-        return transferredToMadie;
+    @Column(name = "TRANSFERRED_TO_MADIE_BUCKET")
+    public boolean isTransferredToMadieBucket() {
+        return transferredToMadieBucket;
     }
 
-    public void setTransferredToMadie(boolean transferredToMadie) {
-        this.transferredToMadie = transferredToMadie;
+    public void setTransferredToMadieBucket(boolean transferredToMadieBucket) {
+        this.transferredToMadieBucket = transferredToMadieBucket;
     }
 
     @Column(name = "VALUE_SET_DATE", length = 19)

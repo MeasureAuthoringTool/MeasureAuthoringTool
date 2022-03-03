@@ -8,7 +8,7 @@
             <tableExists tableName="MEASURE"/>
         </preConditions>
         <addColumn tableName="MEASURE">
-            <column name="TRANSFERRED_TO_MADIE" type="boolean" defaultValue="false"/>
+            <column name="TRANSFERRED_TO_MADIE_BUCKET" type="boolean" defaultValue="false"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

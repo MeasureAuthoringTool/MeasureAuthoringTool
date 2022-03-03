@@ -565,19 +565,18 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public Boolean transferMeasureToMadie(String measureId) {
-        MeasureTransferDTO measureTransferDTO = new MeasureTransferDTO();
+    public boolean transferMeasureToMadie(String measureId) {
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-
         if (measureExport == null) {
             return false;
         }
 
+        MeasureTransferDTO measureTransferDTO = new MeasureTransferDTO();
         ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(
                 measureId, LoggedInUserUtil.getLoggedInUserId());
 
         MeasureDetailResult measureDetailResult = manageMeasureDetailModel.getMeasureDetailResult();
-        // don't need all list, setting it to null
+        // don't need lists of all available authors and stewards. So, setting them to null
         measureDetailResult.setAllAuthorList(null);
         measureDetailResult.setAllStewardList(null);
 
@@ -592,7 +591,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);
             Measure measure = measureDAO.find(measureId);
             // set measure transfer status to complete
-            measure.setTransferredToMadie(true);
+            measure.setTransferredToMadieBucket(true);
             measureDAO.saveMeasure(measure);
             isTransferComplete = true;
         } catch (SdkClientException | JsonProcessingException exception) {

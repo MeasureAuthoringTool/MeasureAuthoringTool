@@ -10,14 +10,18 @@ import mat.dto.MeasureTransferDTO;
 import org.apache.commons.lang3.StringUtils;
 
 public class MeasureTransferUtil {
+    private static AmazonS3 s3Client = null;
 
-    public static AmazonS3 buildAwsS3Client() {
-        return AmazonS3ClientBuilder
-                .standard()
-                .withRegion(getSystemProperty(
-                        "MEASURE_TRANSFER_S3_AWS_REGION"))
-                .withCredentials(new InstanceProfileCredentialsProvider(true))
-                .build();
+    private static AmazonS3 getAwsS3Client() {
+        if (s3Client == null) {
+            s3Client = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion(getSystemProperty(
+                            "MEASURE_TRANSFER_S3_AWS_REGION"))
+                    .withCredentials(new InstanceProfileCredentialsProvider(true)) // to avoid credential lookup chain
+                    .build();
+        }
+        return s3Client;
     }
 
     public static PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO measureTransferDTO, String measureId)
@@ -27,7 +31,7 @@ public class MeasureTransferUtil {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String transferJson = objectMapper.writeValueAsString(measureTransferDTO);
-        return buildAwsS3Client()
+        return getAwsS3Client()
                 .putObject(bucketName, objectKeyName, transferJson);
     }
 

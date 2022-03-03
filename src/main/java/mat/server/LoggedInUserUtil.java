@@ -23,6 +23,7 @@ public class LoggedInUserUtil {
     private static String loggedInLoginId;
 
     private static String loggedInUserName;
+    private static String loggedInUserHarpId;
 
     /**
      * Gets the token.
@@ -95,6 +96,19 @@ public class LoggedInUserUtil {
 
         }
         return emailAddress;
+    }
+
+    public static String getLoggedInUserHarpId() {
+        if (loggedInUserHarpId != null) {
+            return loggedInUserHarpId;
+        }
+        PreAuthenticatedAuthenticationToken token = getToken();
+        String harpId = null;
+        if (token != null) {
+            harpId = ((MatUserDetails) token.getDetails()).getHarpId();
+
+        }
+        return harpId;
     }
 
     public static String getLoggedInUserRole() {

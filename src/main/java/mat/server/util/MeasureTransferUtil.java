@@ -20,13 +20,13 @@ public class MeasureTransferUtil {
                 .build();
     }
 
-    public static PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO ob, String measureId)
+    public static PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO measureTransferDTO, String measureId)
             throws JsonProcessingException {
         String objectKeyName = "measure_" + measureId;
         String bucketName = getSystemProperty("MEASURE_TRANSFER_S3_BUCKET_NAME");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String transferJson = objectMapper.writeValueAsString(ob);
+        String transferJson = objectMapper.writeValueAsString(measureTransferDTO);
         return buildAwsS3Client()
                 .putObject(bucketName, objectKeyName, transferJson);
     }

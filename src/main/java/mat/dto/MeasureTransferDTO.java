@@ -12,6 +12,6 @@ public class MeasureTransferDTO implements Serializable {
     private String emailId;
     private String harpId;
     private ManageMeasureDetailModel manageMeasureDetailModel;
-    private String measureResourceJson;
-    private String libraryResourcesJson;
+    private String fhirMeasureResourceJson;
+    private String fhirLibraryResourcesJson;
 }

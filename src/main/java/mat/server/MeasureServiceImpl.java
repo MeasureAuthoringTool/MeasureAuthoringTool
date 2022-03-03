@@ -582,8 +582,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         measureDetailResult.setAllStewardList(null);
 
         measureTransferDTO.setManageMeasureDetailModel(manageMeasureDetailModel);
-        measureTransferDTO.setMeasureResourceJson(measureExport.getMeasureJson());
-        measureTransferDTO.setLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
+        measureTransferDTO.setFhirMeasureResourceJson(measureExport.getMeasureJson());
+        measureTransferDTO.setFhirLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
         measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
         measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
 

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MeasureTransferUtil {
 
-    public static final AmazonS3 buildAwsS3Client() {
+    public static AmazonS3 buildAwsS3Client() {
         return AmazonS3ClientBuilder
                 .standard()
                 .withRegion(getSystemProperty(
@@ -20,7 +20,7 @@ public class MeasureTransferUtil {
                 .build();
     }
 
-    public static final PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO ob, String measureId)
+    public static PutObjectResult uploadMeasureDataToS3Bucket(MeasureTransferDTO ob, String measureId)
             throws JsonProcessingException {
         String objectKeyName = "measure_" + measureId;
         String bucketName = getSystemProperty("MEASURE_TRANSFER_S3_BUCKET_NAME");
@@ -31,7 +31,7 @@ public class MeasureTransferUtil {
                 .putObject(bucketName, objectKeyName, transferJson);
     }
 
-    public static final String getSystemProperty(String propertyName) {
+    public static String getSystemProperty(String propertyName) {
         String property = System.getProperty(propertyName);
         if(!StringUtils.isBlank(property)){
             return property;

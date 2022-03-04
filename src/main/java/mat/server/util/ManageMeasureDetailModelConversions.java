@@ -251,7 +251,7 @@ public class ManageMeasureDetailModelConversions {
     private void createMeasureSteward(Measure measure, ManageMeasureDetailModel measureDetailModel, OrganizationDAO organizationDao) {
         if (measure.getMeasureStewardId() != null) {
             Organization stewardOrg = organizationDao.findById(measure.getMeasureStewardId());
-            measureDetailModel.setStewardId(stewardOrg.getId().toString());
+            measureDetailModel.setStewardId(stewardOrg.getOrganizationOID());
             measureDetailModel.setStewardValue(stewardOrg.getOrganizationName());
         }
     }

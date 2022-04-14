@@ -13,8 +13,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.server.util.MeasureTransferUtil;
 
-import java.util.stream.Collectors;
-
 public class ManageMeasureExportPresenter implements MatPresenter {
 	
 	private final ManageMeasureExportView view;

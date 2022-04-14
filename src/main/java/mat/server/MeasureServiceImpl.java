@@ -565,10 +565,13 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public boolean transferMeasureToMadie(String measureId) {
+    public GenericResult transferMeasureToMadie(String measureId) {
+        GenericResult result = new GenericResult();
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-        if (measureExport == null) {
-            return false;
+        if (measureExport == null || measureExport.getMeasureJson() == null
+          || measureExport.getFhirIncludedLibsJson() == null) {
+            result.setFailureReason(MeasureTransferUtil.MEASURE_PACKAGE_EMPTY);
+            return result;
         }
 
         MeasureTransferDTO measureTransferDTO = new MeasureTransferDTO();
@@ -586,19 +589,19 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
         measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
 
-        boolean isTransferComplete = false;
         try {
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);
             Measure measure = measureDAO.find(measureId);
             // set measure transfer status to complete
             measure.setTransferredToMadieBucket(true);
             measureDAO.saveMeasure(measure);
-            isTransferComplete = true;
+            result.setSuccess(true);
         } catch (SdkClientException | JsonProcessingException exception) {
             log("MeasureServiceImpl::transferMeasureToMadie: "
                     + exception.getMessage(), exception);
+            result.setSuccess(false);
         }
 
-        return isTransferComplete;
+        return result;
     }
 }

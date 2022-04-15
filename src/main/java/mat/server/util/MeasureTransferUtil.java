@@ -10,6 +10,7 @@ import mat.dto.MeasureTransferDTO;
 import org.apache.commons.lang3.StringUtils;
 
 public class MeasureTransferUtil {
+    public static final int MEASURE_PACKAGE_EMPTY = 1;
     private static AmazonS3 s3Client = null;
 
     private static AmazonS3 getAwsS3Client() {

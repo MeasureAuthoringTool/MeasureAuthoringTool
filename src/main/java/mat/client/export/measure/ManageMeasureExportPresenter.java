@@ -8,7 +8,10 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.shared.GenericResult;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
+import mat.server.util.MeasureTransferUtil;
 
 public class ManageMeasureExportPresenter implements MatPresenter {
 	
@@ -76,7 +79,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 	private void transferMeasureToMadie() {
 		Mat.showLoadingMessage();
 		MatContext.get().getMeasureService().transferMeasureToMadie(result.getId(),
-				new AsyncCallback<Boolean>() {
+				new AsyncCallback<GenericResult>() {
 
 			@Override
 			public void onFailure(Throwable throwable) {
@@ -86,12 +89,14 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(Boolean success) {
+			public void onSuccess(GenericResult result) {
 				Mat.hideLoadingMessage();
-				if (success) {
-					view.displaySuccessMessage("Measure is being processed and transferred to MADiE. A message will be sent to the e-mail associated with this account once the transfer has completed.");
+				if (result.isSuccess()) {
+					view.displaySuccessMessage(MessageDelegate.MEASURE_TRANSFER_SUCCESS_MESSAGE);
+				} else if (result.getFailureReason() == MeasureTransferUtil.MEASURE_PACKAGE_EMPTY){
+					view.displayErrorMessage(MessageDelegate.MEASURE_TRANSFER_EMPTY_PACKAGE);
 				} else {
-					view.displayErrorMessage("Unable to transfer measure to MADiE, try again. If problem continues, please contact helpdesk.");
+					view.displayErrorMessage(MessageDelegate.MEASURE_TRANSFER_GENERIC_ERROR_MESSAGE);
 				}
 			}
 		});

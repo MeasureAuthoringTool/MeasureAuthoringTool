@@ -15,7 +15,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -66,12 +68,12 @@ public class VsacService {
      * @return Null if a ticket granting ticket could not be obtained.
      */
     public String getTicketGrantingTicket(String apiKey) {
-        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/api-key?apikey={key}")
-                .buildAndExpand(apiKey)
-                .encode()
-                .toUri();
+        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/api-key")
+            .encode()
+            .build()
+            .toUri();
 
-        String result = postForString2xx(uri, buildEntityWithTicketHeaders());
+        String result = postForString2xx(uri, buildTgtRequest(apiKey));
         if (result != null) {
             // body returns an html file we want to grab the part after the last / in the url:
             // ... action="https://utslogin.nlm.nih.gov/cas/v1/api-key/TGT-asdasdasdas-cas" ...
@@ -499,7 +501,7 @@ public class VsacService {
     }
 
     public BasicResponse getReleasesOfProgram(String program) {
-        // https://vsac.nlm.nih.gov/vsac/program/NAME/lastest profile
+        // https://vsac.nlm.nih.gov/vsac/program/NAME
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(
                     UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{program}")
@@ -550,12 +552,12 @@ public class VsacService {
     }
 
     public BasicResponse getLatestProfileOfProgram(String programName) {
-        // https://vsac.nlm.nih.gov/vsac/program/NAME/lastest profile
+        // https://vsac.nlm.nih.gov/vsac/program/NAME/latest profile
         try {
 
             Map<String, String> params = new HashMap<>();
             params.put("programName", programName);
-            params.put("profile", "lastest profile");
+            params.put("profile", "latest profile");
             ResponseEntity<String> response = restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/program/{programName}/{profile}")
                             .buildAndExpand(params)
@@ -667,7 +669,7 @@ public class VsacService {
                 !vsacResponseResult.isFailResponse();
     }
 
-    private String postForString2xx(URI uri, HttpEntity<String> request) {
+    private <T> String postForString2xx(URI uri, HttpEntity<T> request) {
         try {
             ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
 
@@ -686,5 +688,15 @@ public class VsacService {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("content-type", "application/x-www-form-urlencoded");
         return new HttpEntity<>(headers);
+    }
+
+    private HttpEntity<MultiValueMap<String,String>> buildTgtRequest(String apiKey) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("apikey", apiKey);
+
+        return new HttpEntity<>(body, headers);
     }
 }

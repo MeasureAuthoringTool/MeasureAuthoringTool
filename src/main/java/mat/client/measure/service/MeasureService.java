@@ -605,5 +605,5 @@ public interface MeasureService extends RemoteService {
 
     boolean checkIfLibraryNameExists(String libraryName, String setId);
 
-    boolean transferMeasureToMadie(String measureId);
+    GenericResult transferMeasureToMadie(String measureId);
 }

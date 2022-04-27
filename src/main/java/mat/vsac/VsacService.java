@@ -73,7 +73,9 @@ public class VsacService {
             .build()
             .toUri();
 
-        String result = postForString2xx(uri, buildTgtRequest(apiKey));
+        MultiValueMap<String, String> bodyParams = new LinkedMultiValueMap<>();
+        bodyParams.add("apikey", apiKey);
+        String result = postForString2xx(uri, buildEntityWithUrlEncodedBody(bodyParams));
         if (result != null) {
             // body returns an html file we want to grab the part after the last / in the url:
             // ... action="https://utslogin.nlm.nih.gov/cas/v1/api-key/TGT-asdasdasdas-cas" ...
@@ -131,12 +133,14 @@ public class VsacService {
     private String fetchServiceTicket(String ticketGrantingTicket) {
         Map<String, String> params = new HashMap<>();
         params.put("tgt", ticketGrantingTicket);
-        params.put("service", "http://umlsks.nlm.nih.gov");
-        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/tickets/{tgt}?service={service}")
-                .buildAndExpand(params)
-                .encode()
-                .toUri();
-        return postForString2xx(uri, buildEntityWithTicketHeaders());
+        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/tickets/{tgt}")
+            .buildAndExpand(params)
+            .encode()
+            .toUri();
+
+        MultiValueMap<String, String> bodyParams = new LinkedMultiValueMap<>();
+        bodyParams.add("service", "http://umlsks.nlm.nih.gov");
+        return postForString2xx(uri, buildEntityWithUrlEncodedBody(bodyParams));
     }
 
     public ValueSetWrapper getVSACValueSetWrapper(String oid, String ticketGrantingTicket, String apiKey) {
@@ -690,13 +694,9 @@ public class VsacService {
         return new HttpEntity<>(headers);
     }
 
-    private HttpEntity<MultiValueMap<String,String>> buildTgtRequest(String apiKey) {
+    private HttpEntity<MultiValueMap<String,String>> buildEntityWithUrlEncodedBody(MultiValueMap<String, String> body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("apikey", apiKey);
-
         return new HttpEntity<>(body, headers);
     }
 }

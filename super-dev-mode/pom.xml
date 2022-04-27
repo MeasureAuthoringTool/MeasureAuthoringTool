@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.2</version>
+        <version>2.4.13</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>CMAT</groupId>
@@ -24,16 +24,17 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>1.5.2</cqframework.version>
-        <axis.version>1.7.9</axis.version>
+        <cqframework.version>1.5.3</cqframework.version>
+        <axis.version>1.8.0</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <jupiter.version>5.7.0</jupiter.version>
-        <mockito.version>3.6.0</mockito.version>
+        <jupiter.version>5.7.1</jupiter.version>
+        <mockito.version>3.7.7</mockito.version>
         <powermock.version>2.0.9</powermock.version>
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
+        <jackson.version>2.13.2</jackson.version>
 
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
@@ -43,7 +44,6 @@
 
         <project.local.repo.dir>${project.basedir}/lib</project.local.repo.dir>
     </properties>
-
 
     <repositories>
         <repository>
@@ -94,6 +94,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql</artifactId>
             <version>${cqframework.version}</version>
@@ -122,7 +127,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -215,6 +220,16 @@
                     <artifactId>javax.activation-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.3.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.19</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -352,7 +367,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.22</version>
+            <version>8.0.28</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -377,17 +392,12 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.13.1</version>
+            <version>1.14.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
             <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.15</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -398,7 +408,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>4.2.2</version>
+            <version>4.8.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
@@ -413,7 +423,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.8.0</version>
+            <version>2.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -586,7 +596,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.18</version>
+            <version>1.18.20</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

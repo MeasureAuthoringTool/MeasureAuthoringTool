@@ -10,11 +10,11 @@ import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
 import mat.dto.fhirconversion.PushValidationResult;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Library;
@@ -41,7 +41,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
 
-    private static final Log log = LogFactory.getLog(FhirMeasureRemoteCallImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(FhirMeasureRemoteCallImpl.class);
     @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
     private final FhirContext fhirContext;

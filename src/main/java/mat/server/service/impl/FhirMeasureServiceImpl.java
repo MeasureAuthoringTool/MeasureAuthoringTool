@@ -17,7 +17,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.MeasureAuditService;
@@ -26,7 +26,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -40,7 +40,7 @@ import java.util.Optional;
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
     public static boolean TEST_MODE = false;
-    private static final Log logger = LogFactory.getLog(FhirMeasureServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FhirMeasureServiceImpl.class);
 
     private final FhirMeasureRemoteCall fhirMeasureRemote;
 

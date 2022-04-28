@@ -3,10 +3,10 @@ package mat.server.service.cql;
 import mat.client.shared.MatRuntimeException;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLModel;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.VSACApiService;
 import mat.shared.SaveUpdateCQLResult;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -43,7 +43,7 @@ public class FhirCqlParserService implements FhirCqlParser {
     private final VSACApiService vsacApiService;
     // HttpSession instance proxy
     private final HttpSession httpSession;
-    private Log log = LogFactory.getLog(FhirCqlParserService.class);
+    private Logger log = LoggerFactory.getLogger(FhirCqlParserService.class);
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
     private String fhirServicesUrl;
 

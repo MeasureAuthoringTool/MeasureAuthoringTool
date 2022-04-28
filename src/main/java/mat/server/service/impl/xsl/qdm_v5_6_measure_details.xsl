@@ -8,10 +8,6 @@
     <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
     <xsl:preserve-space elements="content"/>
 
-    <xsl:variable name="qdmVersionNumber">
-        <xsl:value-of select="/measure/measureReleaseVersion/@releaseVersion"></xsl:value-of>
-    </xsl:variable>
-
     <xsl:template match="/measure">
 
 		<xsl:text>
@@ -215,24 +211,26 @@
 
         </xsl:for-each>
 
-
+        <xsl:variable name="modelVersion" select="translate(/measure/cqlLookUp/usingModelVersion,'.','-')" />
         <relatedDocument typeCode="COMP">
             <expressionDocument>
+                <xsl:variable name="msrAbbrName" select="translate(/measure/measureDetails/shortTitle,'_','-')" />
+                <xsl:variable name="libraryVersion" select="translate(/measure/cqlLookUp/version,'.','-')" />
                 <id root="{cqlUUID}"/>
                 <text mediaType="text/cql">
                     <reference
-                            value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{translate(../cqlLookUp/library,'_','-')}-{../cqlLookUp/version}.cql"/>
+                            value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.cql"/>
                     <translation mediaType="application/elm+xml">
                         <reference
-                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{translate(../cqlLookUp/library,'_','-')}-{../cqlLookUp/version}.xml"/>
+                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.xml"/>
                     </translation>
                     <translation mediaType="application/elm+json">
                         <reference
-                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{translate(../cqlLookUp/library,'_','-')}-{../cqlLookUp/version}.json"/>
+                                value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{$msrAbbrName}-v{$libraryVersion}-QDM-{$modelVersion}.json"/>
                     </translation>
                 </text>
                 <setId root="https://emeasuretool.cms.gov/libraries" extension="{../measureDetails/guid}"
-                       identifierName="{translate(../cqlLookUp/library,'_','-')}"/>
+                       identifierName="{translate(/measure/cqlLookUp/library,'_','-')}"/>
                 <versionNumber value="{../cqlLookUp/version}"/>
             </expressionDocument>
         </relatedDocument>
@@ -243,14 +241,14 @@
                     <id root="{@id}"/>
                     <text mediaType="text/cql">
                         <reference
-                                value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-{@version}.cql"/>
+                                value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-v{translate(@version,'.','-')}-QDM-{$modelVersion}.cql"/>
                         <translation mediaType="application/elm+xml">
                             <reference
-                                    value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-{@version}.xml"/>
+                                    value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-v{translate(@version,'.','-')}-QDM-{$modelVersion}.xml"/>
                         </translation>
                         <translation mediaType="application/elm+json">
                             <reference
-                                    value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-{@version}.json"/>
+                                    value="https://emeasuretool.cms.gov/libraries/{@setId}/{translate(@name,'_','-')}-v{translate(@version,'.','-')}-QDM-{$modelVersion}.json"/>
                         </translation>
                     </text>
                     <setId root="https://emeasuretool.cms.gov/libraries" extension="{@setId}"

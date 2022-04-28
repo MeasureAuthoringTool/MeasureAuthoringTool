@@ -17,7 +17,7 @@ import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.LoggedInUserUtil;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
 import mat.server.service.UcumValidationService;
@@ -29,7 +29,7 @@ import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -48,7 +48,7 @@ import java.util.*;
 
 @Service
 public class PackagerServiceImpl implements PackagerService {
-    private static final Log logger = LogFactory.getLog(PackagerServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PackagerServiceImpl.class);
     private static final String MEASURE = "measure";
     private static final String SUPPLEMENT_DATA_ELEMENTS = "supplementalDataElements";
     private static final String RISK_ADJUSTMENT_VARIABLES = "riskAdjustmentVariables";

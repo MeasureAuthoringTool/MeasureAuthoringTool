@@ -12,7 +12,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
@@ -21,7 +21,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
 public class ExportSimpleXML {
 
     private static final String STRATIFICATION = "stratification";
-    private static final Log logger = LogFactory.getLog(ExportSimpleXML.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportSimpleXML.class);
     private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
     private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 

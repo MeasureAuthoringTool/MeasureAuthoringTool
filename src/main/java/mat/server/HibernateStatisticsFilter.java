@@ -1,7 +1,7 @@
 package mat.server;
 
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.springframework.context.ApplicationContext;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class HibernateStatisticsFilter implements Filter {
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(HibernateStatisticsFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(HibernateStatisticsFilter.class);
 
 	/** The context. */
 	public static ApplicationContext context;

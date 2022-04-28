@@ -4,8 +4,8 @@ import mat.dao.StewardDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.StewardDTO;
 import mat.model.MeasureSteward;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 @Repository("stewardDAO")
 public class StewardDAOImpl extends GenericDAO<MeasureSteward, String> implements StewardDAO {
 	
-	private static final Log logger = LogFactory.getLog(StewardDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(StewardDAOImpl.class);
 	
 	public StewardDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

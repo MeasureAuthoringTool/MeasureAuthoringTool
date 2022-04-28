@@ -1,8 +1,8 @@
 package mat.server.util;
 
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.shared.FileInfomationObject;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
@@ -19,7 +19,7 @@ import java.util.Set;
 @Component
 public class APIConnectionUtillity {
 	
-	private static final Log logger = LogFactory.getLog(APIConnectionUtillity.class);
+	private static final Logger logger = LoggerFactory.getLogger(APIConnectionUtillity.class);
 	
 	public HttpURLConnection createGETHTTPConnection(String uri, Map<String, String> requestPropertyMap) throws IOException {
 		URL url = new URL(uri);

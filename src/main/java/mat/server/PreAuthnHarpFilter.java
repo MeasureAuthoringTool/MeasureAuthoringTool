@@ -1,15 +1,15 @@
 package mat.server;
 
-import mat.server.logging.LogFactory;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class PreAuthnHarpFilter extends AbstractPreAuthenticatedProcessingFilter {
-    private static final Log logger = LogFactory.getLog(PreAuthnHarpFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PreAuthnHarpFilter.class);
 
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
@@ -19,7 +19,7 @@ public class PreAuthnHarpFilter extends AbstractPreAuthenticatedProcessingFilter
                 return token.split("=")[1];
             }
         }catch (IOException e) {
-            logger.error(e);
+            logger.error("getPreAuthenticatedPrincipal", e);
         }
         return null;
     }

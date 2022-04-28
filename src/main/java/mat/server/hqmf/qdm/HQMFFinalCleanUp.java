@@ -1,11 +1,11 @@
 package mat.server.hqmf.qdm;
 
 import mat.model.clause.MeasureExport;
-import mat.server.logging.LogFactory;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -14,8 +14,8 @@ import javax.xml.xpath.XPathExpressionException;
 public class HQMFFinalCleanUp {
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory
-			.getLog(HQMFFinalCleanUp.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(HQMFFinalCleanUp.class);
 	
 	/** The Constant reverseEntryCheckFile. */
 	private static final String reverseEntryCheckFile = "xsl/final_hqmf_entry_deletion_check.xsl";

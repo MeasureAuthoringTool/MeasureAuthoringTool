@@ -3,9 +3,9 @@ package mat.server.hqmf.qdm_5_6;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.qdm.HQMFFinalCleanUp;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 
 /**
  * The Class CQLbasedHQMFGenerator.
@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
  */
 public class HQMFGenerator implements Generator {
 	
-	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+	private final Logger logger = LoggerFactory.getLogger(HQMFDataCriteriaGenerator.class);
 
 	/**
 	 * Generate hqmf for CQL Based measures (QDM version 5.5)

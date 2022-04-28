@@ -3,8 +3,8 @@ package mat.dao.impl;
 import mat.dao.search.GenericDAO;
 import mat.dto.MeasureScoreDTO;
 import mat.model.MeasureScore;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 @Repository("measureScoreDAO")
 public class MeasureScoreDAOImpl extends GenericDAO<MeasureScore, String> implements mat.dao.MeasureScoreDAO{
 	
-	private static final Log logger = LogFactory.getLog(MeasureScoreDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasureScoreDAOImpl.class);
 	
 	public MeasureScoreDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

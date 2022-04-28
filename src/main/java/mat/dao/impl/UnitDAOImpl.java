@@ -4,8 +4,8 @@ import mat.dao.UnitDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.UnitDTO;
 import mat.model.Unit;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 @Repository("unitDAO")
 public class UnitDAOImpl extends GenericDAO<Unit, String> implements UnitDAO {
 	
-	private static final Log logger = LogFactory.getLog(UnitDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(UnitDAOImpl.class);
 	
 	public UnitDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

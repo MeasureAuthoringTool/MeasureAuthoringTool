@@ -3,8 +3,8 @@ package mat.dao.impl;
 import mat.dao.search.GenericDAO;
 import mat.dto.AuthorDTO;
 import mat.model.Author;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 @Repository("authorDAO")
 public class AuthorDAOImpl extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
 
-	private static final Log logger = LogFactory.getLog(AuthorDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuthorDAOImpl.class);
 
 	public AuthorDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

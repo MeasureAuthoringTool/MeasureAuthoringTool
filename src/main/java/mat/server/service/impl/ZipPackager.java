@@ -10,10 +10,10 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.export.ExportResult;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.shared.FileNameUtility;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.hl7.fhir.r4.model.Bundle;
@@ -46,7 +46,7 @@ public class ZipPackager {
     private static final String ELM = "elm";
     private static final String HUMAN_READABLE = "humanReadable";
 
-    private Log log = LogFactory.getLog(ZipPackager.class);
+    private Logger log = LoggerFactory.getLogger(ZipPackager.class);
 
     @Autowired
     private MeasureDAO measureDAO;

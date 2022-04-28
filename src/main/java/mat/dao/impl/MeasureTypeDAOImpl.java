@@ -4,8 +4,8 @@ import mat.dao.search.GenericDAO;
 import mat.dto.MeasureTypeDTO;
 import mat.model.MeasureType;
 import mat.model.clause.MeasureTypeAssociation;
-import mat.server.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.List;
 @Repository("measureTypeDAO")
 public class MeasureTypeDAOImpl extends GenericDAO<MeasureType, String> implements mat.dao.MeasureTypeDAO {
 	
-	private static final Log logger = LogFactory.getLog(MeasureTypeDAOImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasureTypeDAOImpl.class);
 	
 	public MeasureTypeDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

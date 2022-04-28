@@ -6,14 +6,14 @@ import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
-import mat.server.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService {
 
-    private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
 
     @Autowired
     private UserDAO userDAO;

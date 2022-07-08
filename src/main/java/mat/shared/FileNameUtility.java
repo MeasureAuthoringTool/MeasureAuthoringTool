@@ -35,8 +35,12 @@ public class FileNameUtility {
 
     public static String getMeasureVersion(Measure measure) {
         String measureVersion = MeasureUtility.formatVersionText(measure.getVersion());
-        return replacePeriods(measure.isDraft() ?
+        if (measure.isFhirMeasure()) {
+            return replacePeriods(measure.isDraft() ?
                 measureVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber())) : measureVersion);
+        } else {
+            return replacePeriods(measureVersion + "." + revisionFormat.format(Integer.parseInt(measure.getRevisionNumber())));
+        }
     }
 
     public static String getExportFolderNameWithExtension(Measure measure, String fileNameExtension) {

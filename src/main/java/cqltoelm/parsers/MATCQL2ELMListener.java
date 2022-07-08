@@ -414,13 +414,15 @@ public class MATCQL2ELMListener extends cqlBaseListener {
         // updated again if need be.
         if (element instanceof IncludeDef) {
             IncludeDef def = (IncludeDef) element;
-            libraries.add(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
             graph.addEdge(currentContext, def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
             libraryAccessor = def;
-            try {
-                parseChildLibraries(def);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!libraries.contains(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier())) {
+                libraries.add(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
+                try {
+                    parseChildLibraries(def);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (element instanceof CodeDef) {
             codes.add(formattedIdentifier);

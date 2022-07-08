@@ -1642,13 +1642,7 @@ public class CQLServiceImpl implements CQLService {
             exprList.add(cqlParameter.getName());
         }
 
-        String cqlString  = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-        SaveUpdateCQLResult cqlResult;
-        if (cqlModel.isFhir()) {
-            cqlResult = parseFhirCQLForErrors(cqlModel, cqlString);
-        } else {
-            cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
-        }
+        SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
         return generateUsedCqlArtifactsResult(cqlModel, xml, cqlResult);
     }
 

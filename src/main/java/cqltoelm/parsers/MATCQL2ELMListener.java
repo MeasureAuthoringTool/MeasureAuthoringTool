@@ -417,9 +417,9 @@ public class MATCQL2ELMListener extends cqlBaseListener {
             graph.addEdge(currentContext, def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
             libraryAccessor = def;
             if (!libraries.contains(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier())) {
-                libraries.add(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
                 try {
                     parseChildLibraries(def);
+                    libraries.add(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

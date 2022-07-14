@@ -1,14 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cqlTemplate changeAttribute="id,uuid" changeNodeTextContent="library,version,usingModelVersion">
     # Notes on database ids when converted from human readable to guids:
-    # FHIRHelpers-4-0-001 = 33b6e38e5e0543ada0e8942b91d42795
+    # FHIRHelpers-4-1-000 = 2c928084811b55c0018187c3dabd1551
     # AdultOutpatientEncounters-FHIR4-2-0-000 = 11a37cbfc8634b00a69a56d005f10fd7
     # AdvancedIllnessandFrailtyExclusion-FHIR4-5-0-000 = 09b6df1d5cfb4ed787d63ffd8e4e32a8
     # Hospice-FHIR4-2-0-000 = 35e8cdb0bb204ce1a39682093adbf5f1
-    # MATGlobalCommonFunctions-FHIR4-6-1-000 = 2c9280827a14d92c017a44bce1ac11e9
-    # SupplementalDataElements-FHIR4-2-0-000 = 747a00aa82d340f29f257d848c125742
+    # MATGlobalCommonFunctions-FHIR4-7-0-000 = 2c928084811b55c00181881c04891599
+    # SupplementalDataElements-FHIR4-3-0-000 = 2c928084811b55c00181ab8814c12076
     # TJCOverall-FHIR4-5-0-000 = 195c13832b09499ca1e1ccc4fb5fd77b
     # VTEICU-FHIR4-4-0-000 = 544333b6ef7e47268672589073a33538
-    <measure><cqlLookUp><library>$libraryName</library><version>$version</version><usingModel>FHIR</usingModel><usingModelVersion>4.0.1</usingModelVersion><cqlContext>Patient</cqlContext><codeSystems/><valuesets/><codes/><parameters><parameter id="" name="Measurement Period" readOnly="true"><logic>Interval&lt;DateTime&gt;</logic></parameter></parameters><definitions><definition context="Patient" id="" name="SDE Ethnicity" popDefinition="false" supplDataElement="true"><logic>SDE."SDE Ethnicity"</logic></definition><definition context="Patient" id="" name="SDE Payer" popDefinition="false" supplDataElement="true"><logic>SDE."SDE Payer"</logic></definition><definition context="Patient" id="" name="SDE Race" popDefinition="false" supplDataElement="true"><logic>SDE."SDE Race"</logic></definition><definition context="Patient" id="" name="SDE Sex" popDefinition="false" supplDataElement="true"><logic>SDE."SDE Sex"</logic></definition></definitions><functions/><includeLibrarys><includeLibrary cqlLibRefId="33b6e38e5e0543ada0e8942b91d42795" cqlLibRefName="FHIRHelpers" cqlVersion="4.0.001" id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.1"/> <includeLibrary cqlLibRefId="747a00aa82d340f29f257d848c125742" cqlLibRefName="SupplementalDataElementsFHIR4" cqlVersion="2.0.000" id="c3e742a4-25c3-4e7c-a048-ef6cf12a8bcb" name="SDE" qdmVersion="4.0.1"/><includeLibrary cqlLibRefId="2c9280827a14d92c017a44bce1ac11e9" cqlLibRefName="MATGlobalCommonFunctionsFHIR4" cqlVersion="6.1.000" id="80d189d6-565d-4c8b-a55d-6d8991e674f9" name="Global" qdmVersion="4.0.1"/></includeLibrarys></cqlLookUp></measure>
-    <standAlone><cqlLookUp><library>$libraryName</library><version>$version</version><usingModel>FHIR</usingModel><usingModelVersion>4.0.1</usingModelVersion><cqlContext>Patient</cqlContext><codeSystems/><valuesets/><codes/><parameters><parameter id="" name="Measurement Period" readOnly="true"><logic>Interval&lt;DateTime&gt;</logic></parameter></parameters><definitions/><functions/><includeLibrarys><includeLibrary cqlLibRefId="33b6e38e5e0543ada0e8942b91d42795" cqlLibRefName="FHIRHelpers" cqlVersion="4.0.001" id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.1"/></includeLibrarys></cqlLookUp></standAlone>
+    <measure>
+        <cqlLookUp>
+            <library>$libraryName</library>
+            <version>$version</version>
+            <usingModel>FHIR</usingModel>
+            <usingModelVersion>4.0.1</usingModelVersion>
+            <cqlContext>Patient</cqlContext>
+            <codeSystems/>
+            <valuesets/>
+            <codes/>
+            <parameters>
+                <parameter id="" name="Measurement Period" readOnly="true">
+                    <logic>Interval&lt;DateTime&gt;</logic>
+                </parameter>
+            </parameters>
+            <definitions>
+                <definition context="Patient" id="" name="SDE Ethnicity" popDefinition="false" supplDataElement="true">
+                    <logic>SDE."SDE Ethnicity"</logic>
+                </definition>
+                <definition context="Patient" id="" name="SDE Payer" popDefinition="false" supplDataElement="true">
+                    <logic>SDE."SDE Payer"</logic>
+                </definition>
+                <definition context="Patient" id="" name="SDE Race" popDefinition="false" supplDataElement="true">
+                    <logic>SDE."SDE Race"</logic>
+                </definition>
+                <definition context="Patient" id="" name="SDE Sex" popDefinition="false" supplDataElement="true">
+                    <logic>SDE."SDE Sex"</logic>
+                </definition>
+            </definitions>
+            <functions/>
+            <includeLibrarys>
+                <includeLibrary cqlLibRefId="2c928084811b55c0018187c3dabd1551" cqlLibRefName="FHIRHelpers" cqlVersion="4.1.000" id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.1"/>
+                <includeLibrary cqlLibRefId="2c928084811b55c00181ab8814c12076" cqlLibRefName="SupplementalDataElementsFHIR4" cqlVersion="3.0.000" id="c3e742a4-25c3-4e7c-a048-ef6cf12a8bcb" name="SDE" qdmVersion="4.0.1"/>
+                <includeLibrary cqlLibRefId="2c928084811b55c00181881c04891599" cqlLibRefName="MATGlobalCommonFunctionsFHIR4" cqlVersion="7.0.000" id="80d189d6-565d-4c8b-a55d-6d8991e674f9" name="Global" qdmVersion="4.0.1"/>
+            </includeLibrarys>
+        </cqlLookUp>
+    </measure>
+    <standAlone>
+        <cqlLookUp>
+            <library>$libraryName</library>
+            <version>$version</version>
+            <usingModel>FHIR</usingModel>
+            <usingModelVersion>4.0.1</usingModelVersion>
+            <cqlContext>Patient</cqlContext>
+            <codeSystems/>
+            <valuesets/>
+            <codes/>
+            <parameters>
+                <parameter id="" name="Measurement Period" readOnly="true">
+                    <logic>Interval&lt;DateTime&gt;</logic>
+                </parameter>
+            </parameters>
+            <definitions/>
+            <functions/>
+            <includeLibrarys>
+                <includeLibrary cqlLibRefId="2c928084811b55c0018187c3dabd1551" cqlLibRefName="FHIRHelpers" cqlVersion="4.1.000" id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.1"/>
+            </includeLibrarys>
+        </cqlLookUp>
+    </standAlone>
 </cqlTemplate>

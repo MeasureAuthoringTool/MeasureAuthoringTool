@@ -132,9 +132,11 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(jsonRadio);
 			vp.add(humanReadableRadio);
 			vp.add(allRadio);
-			// Transfer to Madie is displayed only for the measure owner
-			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE) && isTransferableToMadie) {
+			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE)) {
 				vp.add(transferToMadieRadio);
+			}
+			if (!isTransferableToMadie) {
+				transferToMadieRadio.setEnabled(false);
 			}
 		} else {
 			vp.add(humanReadableRadio);

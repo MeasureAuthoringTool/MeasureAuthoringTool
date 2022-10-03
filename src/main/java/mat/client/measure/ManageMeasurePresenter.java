@@ -1235,26 +1235,28 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void export(ManageMeasureSearchModel.Result result) {
         setSearchingBusy(true);
-        MatContext.get().getMeasureService().getMeasure(result.getId(), new AsyncCallback<ManageMeasureDetailModel>() {
+
+        MatContext.get().getMeasureService().isMeasureTransferableToMadie(result.getId(),
+            result.getMeasureSetId(), MatContext.get().getCurrentUserInfo().userId, new AsyncCallback<Boolean>() {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable throwable) {
                 Mat.hideLoadingMessage();
                 setSearchingBusy(false);
                 detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + throwable.getLocalizedMessage(),0);
             }
 
             @Override
-            public void onSuccess(ManageMeasureDetailModel manageMeasureDetailModel) {
+            public void onSuccess(Boolean isTransferableToMadie) {
                 Mat.hideLoadingMessage();
                 setSearchingBusy(false);
-                displayManageExportPresenter(manageMeasureDetailModel.getMeasureOwnerId(), result);
+                displayManageExportPresenter(result, isTransferableToMadie);
             }
         });
     }
 
-    private void displayManageExportPresenter(String currentMeasureOwnerId, ManageMeasureSearchModel.Result result ) {
-        ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this, currentMeasureOwnerId);
+    private void displayManageExportPresenter(ManageMeasureSearchModel.Result result, Boolean isTransferableToMadie ) {
+        ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this, isTransferableToMadie);
         searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
         panel.getButtonPanel().clear();
         panel.setContent(exportPresenter.getWidget());

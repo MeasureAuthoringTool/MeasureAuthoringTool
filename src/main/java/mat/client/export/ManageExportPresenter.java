@@ -21,20 +21,19 @@ public class ManageExportPresenter implements MatPresenter {
 	private ManageMeasureExportView exportView;
 	private BonnieExportView bonnieExportView; 
 	private final ManageMeasureSearchModel.Result result;
-	private final String currentMeasureOwnerId;
-	
+
+	private final Boolean isTransferableToMadie;
 	private final ManageMeasurePresenter manageMeasurePresenter;
 
 	private static final Logger logger = Logger.getLogger(ManageExportPresenter.class.getSimpleName());
 
 	public ManageExportPresenter(ManageExportView view,
 								 ManageMeasureSearchModel.Result result,
-								 ManageMeasurePresenter manageMeasurePresenter,
-								 String currentMeasureOwnerId) {
+								 ManageMeasurePresenter manageMeasurePresenter, Boolean isTransferableToMadie) {
 		this.view = view; 
 		this.result = result;
-		this.currentMeasureOwnerId = currentMeasureOwnerId;
 		this.manageMeasurePresenter = manageMeasurePresenter;
+		this.isTransferableToMadie = isTransferableToMadie;
 
 		initializeExportView();
 
@@ -53,7 +52,10 @@ public class ManageExportPresenter implements MatPresenter {
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView();
 		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
-		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), currentMeasureOwnerId);
+		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), isTransferableToMadie);
+		if ("FHIR".equals(result.getMeasureModel()) && !isTransferableToMadie) {
+			exportView.displayErrorMessage("This measure cannot be transferred to MADiE because either you are not the owner or a version of this measure has already been transferred.");
+		}
 		this.view.getExportPane().add(exportView.asWidget());
 		exportView.showCompositeMeasure(result.getIsComposite());
 	}

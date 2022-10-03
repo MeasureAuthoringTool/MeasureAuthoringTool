@@ -121,7 +121,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, String currentMeasureOwnerId) {
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, Boolean isTransferableToMadie) {
 		vp.clear();
 		if (MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
@@ -133,8 +133,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(humanReadableRadio);
 			vp.add(allRadio);
 			// Transfer to Madie is displayed only for the measure owner
-			if (currentMeasureOwnerId != null && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE)
-					&& currentMeasureOwnerId.equals(MatContext.get().getCurrentUserInfo().userId)) {
+			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE) && isTransferableToMadie) {
 				vp.add(transferToMadieRadio);
 			}
 		} else {

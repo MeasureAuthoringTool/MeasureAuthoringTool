@@ -179,4 +179,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
     int deleteFhirMeasuresBySetId(String sourceId);
 
     List<Measure> getDraftMeasuresBySet(String measureSetId);
+
+    List<Measure> getAllMeasuresBySetID(String setId);
 }

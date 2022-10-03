@@ -1,5 +1,6 @@
 package mat.client.measure.service;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
@@ -606,4 +607,6 @@ public interface MeasureService extends RemoteService {
     boolean checkIfLibraryNameExists(String libraryName, String setId);
 
     GenericResult transferMeasureToMadie(String measureId);
+
+    Boolean isMeasureTransferableToMadie(String measureId, String measureSetId, String userId);
 }

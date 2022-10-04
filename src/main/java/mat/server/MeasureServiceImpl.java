@@ -56,6 +56,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
     private static final long serialVersionUID = 2280421300224680146L;
@@ -603,5 +605,17 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         }
 
         return result;
+    }
+
+    @Override
+    public Boolean isMeasureTransferableToMadie(String measureId, String measureSetId, String userId) {
+        Measure measure = measureDAO.find(measureId);
+        String measureOwner = measure.getOwner().getId();
+        List<Measure> allMeasureInTheSet = measureDAO.getAllMeasuresBySetID(measureSetId);
+        Optional<Measure> transferredMeasure = allMeasureInTheSet
+            .stream()
+            .filter(Measure::isTransferredToMadieBucket)
+            .findFirst();
+        return transferredMeasure.isEmpty() && Objects.equals(userId, measureOwner);
     }
 }

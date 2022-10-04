@@ -680,4 +680,6 @@ public interface MeasureServiceAsync {
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);
 
     void transferMeasureToMadie(String measureId, AsyncCallback<GenericResult> asyncCallback);
+
+		void isMeasureTransferableToMadie(String measureId, String measureSetId, String userId, AsyncCallback<Boolean> asyncCallback);
 }

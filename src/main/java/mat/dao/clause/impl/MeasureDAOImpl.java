@@ -1001,6 +1001,18 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         return session.createQuery(deleteCriteria.where(wherePredicate)).executeUpdate();
     }
 
+    @Override
+    public List<Measure> getAllMeasuresBySetID(String measureSetId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+        final Root<Measure> root = query.from(Measure.class);
+
+        query.select(root).where(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId));
+
+        return session.createQuery(query).getResultList();
+    }
+
     class MeasureComparator implements Comparator<Measure> {
 
         @Override

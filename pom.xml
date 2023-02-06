@@ -32,7 +32,7 @@
         <mockito.version>3.7.7</mockito.version>
         <powermock.version>2.0.9</powermock.version>
         <jacoco.version>0.8.6</jacoco.version>
-        <jaxb.version>2.3.0</jaxb.version>
+        <jaxb.version>4.0.2</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
         <jackson.version>2.13.2</jackson.version>
 

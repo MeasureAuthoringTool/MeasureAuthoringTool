@@ -1,4 +1,4 @@
-FROM tomcat:10.0-jdk11-corretto
+FROM tomcat:10.1-jdk11-corretto
 
 ARG STOREPASS="changeit"
 

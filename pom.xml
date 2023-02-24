@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>com.google.gwt.dev.DevMode</start-class>
-        <gwtVersion>2.9.0</gwtVersion>
+        <gwtVersion>2.10.0</gwtVersion>
         <googleGin>2.1.2</googleGin>
         <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
@@ -607,7 +607,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.189</version>
+            <version>1.12.414</version>
         </dependency>
     </dependencies>
 

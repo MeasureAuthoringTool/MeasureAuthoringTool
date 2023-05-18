@@ -33,7 +33,7 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
             featureFlagMap.put(FeatureFlagConstant.MADIE, madieFeatureFlag);
         }
         if (madieQdmFeatureFlag.equals(true)) {
-            logger.info("FeatureFlagServiceImpl::findFeatureFlags Successfully added MADIE QDM feature flag");
+            logger.debug("FeatureFlagServiceImpl::findFeatureFlags Successfully added MADIE QDM feature flag");
             featureFlagMap.put(FeatureFlagConstant.MADIE_QDM, madieQdmFeatureFlag);
         }
         return featureFlagMap;

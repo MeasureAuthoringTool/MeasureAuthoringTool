@@ -38,10 +38,6 @@ import static org.mockito.Mockito.*;
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
 class MeasureServiceImplTest {
 
-    public MeasureServiceImplTest() {
-
-    }
-
     @Mock
     private ApplicationContext context;
 
@@ -59,6 +55,10 @@ class MeasureServiceImplTest {
 
     @InjectMocks
     private MeasureServiceImpl measureService;
+
+    public MeasureServiceImplTest() {
+
+    }
 
     @Before
     public void setUp() {

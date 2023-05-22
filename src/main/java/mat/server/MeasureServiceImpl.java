@@ -29,6 +29,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -570,8 +571,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     public GenericResult transferMeasureToMadie(String measureId) {
         GenericResult result = new GenericResult();
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
+        final boolean isFhir = ModelTypeHelper.isFhir(measureExport.getMeasure().getMeasureModel());
         if (measureExport == null || measureExport.getMeasureJson() == null
-          || measureExport.getFhirIncludedLibsJson() == null) {
+          || measureExport.getFhirIncludedLibsJson() == null && isFhir) {
             result.setFailureReason(MeasureTransferUtil.MEASURE_PACKAGE_EMPTY);
             return result;
         }
@@ -586,10 +588,15 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         measureDetailResult.setAllStewardList(null);
 
         measureTransferDTO.setManageMeasureDetailModel(manageMeasureDetailModel);
-        measureTransferDTO.setFhirMeasureResourceJson(measureExport.getMeasureJson());
-        measureTransferDTO.setFhirLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
         measureTransferDTO.setHarpId(LoggedInUserUtil.getLoggedInUserHarpId());
         measureTransferDTO.setEmailId(LoggedInUserUtil.getLoggedInUserEmailAddress());
+        if (isFhir) {
+            measureTransferDTO.setFhirMeasureResourceJson(measureExport.getMeasureJson());
+            measureTransferDTO.setFhirLibraryResourcesJson(measureExport.getFhirIncludedLibsJson());
+        } else {
+            measureTransferDTO.setCql(measureExport.getCql());
+            measureTransferDTO.setSimpleXml(measureExport.getSimpleXML());
+        }
 
         try {
             MeasureTransferUtil.uploadMeasureDataToS3Bucket(measureTransferDTO, measureId);

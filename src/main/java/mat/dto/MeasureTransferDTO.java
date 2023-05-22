@@ -14,4 +14,6 @@ public class MeasureTransferDTO implements Serializable {
     private ManageMeasureDetailModel manageMeasureDetailModel;
     private String fhirMeasureResourceJson;
     private String fhirLibraryResourcesJson;
+    private String cql;
+    private String simpleXml;
 }

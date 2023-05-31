@@ -152,7 +152,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE_QDM)) {
 				vp.add(transferToMadieRadio);
 			}
-			if (!isTransferableToMadie) {
+			if (!isTransferableToMadie || isCompositeMeasure) {
 				transferToMadieRadio.setEnabled(false);
 			}
 		}

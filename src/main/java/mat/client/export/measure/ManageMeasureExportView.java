@@ -149,10 +149,10 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(eCQMPackageRadio);
 			vp.add(compositeMeasurePackageRadio);
 
-			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE_QDM)) {
+			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE_QDM) && !isCompositeMeasure) {
 				vp.add(transferToMadieRadio);
 			}
-			if (!isTransferableToMadie || isCompositeMeasure) {
+			if (!isTransferableToMadie) {
 				transferToMadieRadio.setEnabled(false);
 			}
 		}

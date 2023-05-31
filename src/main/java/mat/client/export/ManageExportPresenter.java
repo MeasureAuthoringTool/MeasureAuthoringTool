@@ -53,7 +53,7 @@ public class ManageExportPresenter implements MatPresenter {
 		exportView = new ManageMeasureExportView();
 		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
 		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), isTransferableToMadie);
-		if (!isTransferableToMadie || result.getIsComposite()) {
+		if (!isTransferableToMadie && !result.getIsComposite()) {
 			exportView.displayErrorMessage("This measure cannot be transferred to MADiE because either you are not the owner or a version of this measure has already been transferred.");
 		}
 		this.view.getExportPane().add(exportView.asWidget());

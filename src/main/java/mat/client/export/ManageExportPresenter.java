@@ -9,7 +9,6 @@ import mat.client.export.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatContext;
-import mat.model.clause.ModelTypeHelper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

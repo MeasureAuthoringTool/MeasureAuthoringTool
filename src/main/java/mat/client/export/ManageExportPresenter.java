@@ -53,7 +53,7 @@ public class ManageExportPresenter implements MatPresenter {
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView();
 		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
-		boolean isStaleQdm = !ModelTypeHelper.isFhir(result.getMeasureModel()) && !isLatestQdm();
+		boolean isStaleQdm = !isFhir(result.getMeasureModel()) && !isLatestQdm();
 		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), isTransferableToMadie, isStaleQdm);
 		if (!isTransferableToMadie && !result.getIsComposite()) {
 			exportView.displayErrorMessage("This measure cannot be transferred to MADiE because either you are not the owner or a version of this measure has already been transferred.");

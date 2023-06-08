@@ -34,7 +34,7 @@
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
-        <jackson.version>2.13.2</jackson.version>
+        <jackson.version>2.13.4</jackson.version>
 
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
@@ -125,6 +125,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- See https://github.com/cqframework/clinical_quality_language/blob/master/Src/java/cql-to-elm/build.gradle -->
+        <!--  Users of the CQL translator will need to supply their own implementation or add xpp3 at runtime. -->
+        <dependency>
+            <groupId>org.ogce</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>quick</artifactId>
@@ -140,6 +149,19 @@
             <artifactId>cql-formatter</artifactId>
             <version>${cqframework.version}</version>
         </dependency>
+
+        <!-- Resolves: No ElmLibraryWriterProviders found on the classpath.
+                You need to add a reference to one of the 'elm-jackson' or 'elm-jaxb' packages,
+                or provide your own implementation.-->
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>elm-jackson</artifactId>
+            <version>${cqframework.version}</version>
+        </dependency>
+
+        <!-- Resolves: No ModelInfoReaderProviders found on the classpath.
+                You need to add a reference to one of the 'model-jackson' or 'model-jaxb' packages,
+                or provide your own implementation.-->
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>model-jackson</artifactId>

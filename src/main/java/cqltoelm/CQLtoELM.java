@@ -334,7 +334,7 @@ public class CQLtoELM {
                 try {
                     this.elmStrings.add(CqlTranslator.convertToXml(library.getLibrary()));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         }
@@ -346,7 +346,7 @@ public class CQLtoELM {
                 try {
                     this.jsonStrings.add(CqlTranslator.convertToJson(library.getLibrary()));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         }

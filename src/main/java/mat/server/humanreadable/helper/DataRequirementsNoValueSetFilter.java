@@ -3,7 +3,6 @@ package mat.server.humanreadable.helper;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;

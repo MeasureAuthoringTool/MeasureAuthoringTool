@@ -13,7 +13,7 @@
             <td style="width:30%">${model.measureInformation.ecqmVersionNumber}</td>
         </tr>
         <tr>
-            <th scope="row" class="row-header"><span class="td_label">NQF Number</span></th>
+            <th scope="row" class="row-header"><span class="td_label">CBE Number</span></th>
             <#-- Default to "Not Applicable" if there is no value -->
             <td style="width:30%">${model.measureInformation.nqfNumber!"Not Applicable"}</td>
 

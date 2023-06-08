@@ -66,6 +66,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     protected CheckBox experimentalCheckbox = new CheckBox();
     private FormLabel measureNameLabel;
     private ErrorHandler errorHandler = new ErrorHandler();
+    private final String entityName = "CBE";
     private static final Logger logger = Logger.getLogger(GeneralInformationView.class.getSimpleName());
 
     public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
@@ -74,6 +75,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         this.isCompositeMeasure = isComposite;
         compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
         buildDetailView();
+//        entityName = ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel()) ? "NQF" : "CBE";
     }
 
     @Override
@@ -271,7 +273,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         VerticalPanel nqfNumberRightVP = new VerticalPanel();
 
         FormLabel nQFIDInputLabel = new FormLabel();
-        nQFIDInputLabel.setText("NQF Number");
+        nQFIDInputLabel.setText(entityName + " Number");
         nqfNumberRightVP.add(nQFIDInputLabel);
         nqfNumberRightVP.add(new SpacerWidget());
         nqfNumberRightVP.add(nQFIDInput);
@@ -284,12 +286,17 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setText(generalInformationModel.getNqfId());
             nQFIDInput.setTitle(generalInformationModel.getNqfId());
         } else {
-            nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
-            nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+            if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                nQFIDInput.setPlaceholder("Enter " + entityName + "Number");
+                nQFIDInput.setTitle("Enter " + entityName + "Number");
+            } else {
+                nQFIDInput.setPlaceholder("Enter CBE Number");
+                nQFIDInput.setTitle("Enter CBE Number");
+            }
         }
 
         FormLabel endorsedByNQFLabel = new FormLabel();
-        endorsedByNQFLabel.setText("Endorsed By NQF");
+        endorsedByNQFLabel.setText("Endorsed By " + entityName);
         nqfNumberLeftVP.add(endorsedByNQFLabel);
         endorsedByListBox.setWidth("150px");
         endorsedByListBox.setId("endorsedByNQFListBox");
@@ -311,7 +318,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     public void setNQFTitle(boolean endorsedByNQF) {
         if (!endorsedByNQF) {
-            helpBlock.setText("You have chosen no; the NQF number field has been cleared. It now reads as Not Applicable and is disabled.");
+            helpBlock.setText("You have chosen no; the " + entityName + " number field has been cleared. It now reads as Not Applicable and is disabled.");
             nQFIDInput.setPlaceholder(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setTitle(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setText("");
@@ -319,14 +326,14 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setEnabled(false);
             nQFIDInput.setTabIndex(-1);
         } else {
-            helpBlock.setText("You have chosen yes, the NQF number field is now enabled and required.");
+            helpBlock.setText("You have chosen yes, the " + entityName + " number field is now enabled and required.");
             if (!StringUtility.isEmptyOrNull(nQFIDInput.getText())) {
                 String placeHolderText = nQFIDInput.getText();
                 nQFIDInput.setPlaceholder(placeHolderText);
                 nQFIDInput.setTitle(placeHolderText);
             } else {
-                nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
-                nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+                nQFIDInput.setPlaceholder("Enter " + entityName + " Number");
+                nQFIDInput.setTitle("Enter " + entityName + " Number");
             }
             nQFIDInput.setReadOnly(false);
             nQFIDInput.setEnabled(true);
@@ -921,7 +928,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         endorsedByListBox.insertItem("No", "false", "No");
         endorsedByListBox.insertItem("Yes", "true", "Yes");
         endorsedByListBox.setSelectedIndex(0);
-        endorsedByListBox.setTitle("Endorsed By NQF List");
+        endorsedByListBox.setTitle("Endorsed By CBE List");
     }
 
     public ListBoxMVP getEndorsedByListBox() {

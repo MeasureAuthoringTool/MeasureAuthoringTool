@@ -31,7 +31,7 @@ public class ManageMeasureModelValidator {
 		List<String> message = new ArrayList<>();
 		if (Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) {
 			if (StringUtility.isEmptyOrNull(model.getNqfId())) {
-				message.add(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR);
+				message.add(MessageDelegate.CBE_NUMBER_REQUIRED_ERROR);
 			}
 		}
 		return message;

@@ -15,6 +15,7 @@ import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.FhirCQLLinter;
 import mat.server.cqlparser.QdmCQLLinter;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.slf4j.LoggerFactory;
 import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
@@ -26,7 +27,6 @@ import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
@@ -626,12 +626,12 @@ public class CQLUtil {
             validateMeasurementPeriodReturnType(cqlToELM, parentLibraryName, errors, libraryNameErrorsMap);
         }
 
-        for (CqlTranslatorException cte : cqlToELM.getErrors()) {
+        for (CqlCompilerException cte : cqlToELM.getErrors()) {
             setCQLErrors(parentLibraryName, errors, libraryNameErrorsMap, cte);
         }
 
         List<CQLError> warnings = new ArrayList<>();
-        for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
+        for (CqlCompilerException cte : cqlToELM.getWarnings()) {
             setCQLErrors(parentLibraryName, warnings, libraryNameWarningsMap, cte);
         }
 
@@ -667,14 +667,14 @@ public class CQLUtil {
                 error.setEndErrorInLine(trackback.getEndLine());
                 error.setEndErrorAtOffset(trackback.getEndChar());
                 error.setErrorMessage("A Parameter titled \"Measurement Period\" must return an Interval<DateTime>");
-                error.setSeverity(CqlTranslatorException.ErrorSeverity.Error.toString());
+                error.setSeverity(CqlCompilerException.ErrorSeverity.Error.toString());
                 libraryNameErrorsMap.put(libraryName, Arrays.asList(error));
                 errors.add(error);
             }
         }
     }
 
-    private static void setCQLErrors(String parentLibraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
+    private static void setCQLErrors(String parentLibraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlCompilerException cte) {
         CQLError cqlError = new CQLError();
 
         String libraryName = "";

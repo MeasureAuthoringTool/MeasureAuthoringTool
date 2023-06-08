@@ -6,7 +6,7 @@ import mat.dao.clause.QDSAttributesDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

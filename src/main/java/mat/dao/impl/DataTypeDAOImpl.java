@@ -4,7 +4,7 @@ import mat.dao.DataTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.dto.DataTypeDTO;
 import mat.model.DataType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

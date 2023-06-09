@@ -6,13 +6,13 @@ import cqltoelm.parsers.TrackbackListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -26,7 +26,6 @@ import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.VersionedIdentifier;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -95,17 +94,17 @@ public class CQLtoELM {
     /**
      * The messagse from cql-to-elm translation
      */
-    private List<CqlTranslatorException> messages = new ArrayList<>();
+    private List<CqlCompilerException> messages = new ArrayList<>();
 
     /**
      * The warnings from cql-to-elm translation
      */
-    private List<CqlTranslatorException> warnings = new ArrayList<>();
+    private List<CqlCompilerException> warnings = new ArrayList<>();
 
     /**
      * The errors from cql-to-elm translation
      */
-    private List<CqlTranslatorException> errors = new ArrayList<>();
+    private List<CqlCompilerException> errors = new ArrayList<>();
 
     private Map<String, TrackBack> trackBackMap = new HashMap<>();
 
@@ -113,7 +112,7 @@ public class CQLtoELM {
 
     private LibraryManager libraryManager;
 
-    private Map<String, TranslatedLibrary> translatedLibraries = new HashMap<>();
+    private Map<String, CompiledLibrary> translatedLibraries = new HashMap<>();
 
 
     /**
@@ -172,7 +171,7 @@ public class CQLtoELM {
         formats.add("JSON");
         doTranslation(false, true, true, false, false, false,
                 true, true, false, false,
-                true, true, CqlTranslatorException.ErrorSeverity.Error, validationOnly, formats);
+                true, true, CqlCompilerException.ErrorSeverity.Error, validationOnly, formats);
     }
 
     /**
@@ -187,7 +186,7 @@ public class CQLtoELM {
         formats.add(format);
         doTranslation(false, true, true, false, false, false,
                 true, true, false, false,
-                true, true, CqlTranslatorException.ErrorSeverity.Error, validationOnly, formats);
+                true, true, CqlCompilerException.ErrorSeverity.Error, validationOnly, formats);
     }
 
     /**
@@ -214,52 +213,52 @@ public class CQLtoELM {
                               boolean enableResultTypes, boolean enableDetailedErrors, boolean disableListTraversal,
                               boolean disableListDemotion, boolean disableListPromotion, boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                               boolean disableMethodInvocation, boolean validateUnits,
-                              CqlTranslatorException.ErrorSeverity errorSeverity, boolean validationOnly, List<String> formats) {
+                              CqlCompilerException.ErrorSeverity errorSeverity, boolean validationOnly, List<String> formats) {
 
         // add in all of the flags
-        List<CqlTranslator.Options> options = new ArrayList<>();
+        List<CqlTranslatorOptions.Options> options = new ArrayList<>();
         if (enableDateRangeOptimization) {
-            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
+            options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
         }
 
         if (enableAnnotations) {
-            options.add(CqlTranslator.Options.EnableAnnotations);
+            options.add(CqlTranslatorOptions.Options.EnableAnnotations);
         }
 
         if (enableLocators) {
-            options.add(CqlTranslator.Options.EnableLocators);
+            options.add(CqlTranslatorOptions.Options.EnableLocators);
         }
 
         if (enableResultTypes) {
-            options.add(CqlTranslator.Options.EnableResultTypes);
+            options.add(CqlTranslatorOptions.Options.EnableResultTypes);
         }
 
         if (enableDetailedErrors) {
-            options.add(CqlTranslator.Options.EnableDetailedErrors);
+            options.add(CqlTranslatorOptions.Options.EnableDetailedErrors);
         }
 
         if (disableListTraversal) {
-            options.add(CqlTranslator.Options.DisableListTraversal);
+            options.add(CqlTranslatorOptions.Options.DisableListTraversal);
         }
 
         if (disableListDemotion) {
-            options.add(CqlTranslator.Options.DisableListDemotion);
+            options.add(CqlTranslatorOptions.Options.DisableListDemotion);
         }
 
         if (disableListPromotion) {
-            options.add(CqlTranslator.Options.DisableListPromotion);
+            options.add(CqlTranslatorOptions.Options.DisableListPromotion);
         }
 
         if (enableIntervalDemotion) {
-            options.add(CqlTranslator.Options.EnableIntervalDemotion);
+            options.add(CqlTranslatorOptions.Options.EnableIntervalDemotion);
         }
 
         if (enableIntervalPromotion) {
-            options.add(CqlTranslator.Options.EnableIntervalPromotion);
+            options.add(CqlTranslatorOptions.Options.EnableIntervalPromotion);
         }
 
         if (disableMethodInvocation) {
-            options.add(CqlTranslator.Options.DisableMethodInvocation);
+            options.add(CqlTranslatorOptions.Options.DisableMethodInvocation);
         }
 
         // parse from string
@@ -279,14 +278,14 @@ public class CQLtoELM {
         if (parentCQLLibraryString != null && parentCQLLibraryFile == null) {
             libraryManager.getLibrarySourceLoader().registerProvider(
                     new StringLibrarySourceProvider(this.cqlLibraryMapping));
-            writeToELM(options.toArray(new CqlTranslator.Options[options.size()]), errorSeverity, formats, modelManager, libraryManager, ucumService);
+            writeToELM(options.toArray(new CqlTranslatorOptions.Options[options.size()]), errorSeverity, formats, modelManager, libraryManager, ucumService);
         }
 
         // parse from file
         else {
             libraryManager.getLibrarySourceLoader().registerProvider(
                     new DefaultLibrarySourceProvider(this.parentCQLLibraryFile.getParentFile().toPath()));
-            writeToELM(options.toArray(new CqlTranslator.Options[options.size()]), errorSeverity, formats, modelManager, libraryManager, ucumService);
+            writeToELM(options.toArray(new CqlTranslatorOptions.Options[options.size()]), errorSeverity, formats, modelManager, libraryManager, ucumService);
         }
 
     }
@@ -296,7 +295,7 @@ public class CQLtoELM {
      *
      * @param options the parser options
      */
-    private void writeToELM(CqlTranslator.Options[] options, CqlTranslatorException.ErrorSeverity errorSeverity, List<String> formats, ModelManager modelManager,
+    private void writeToELM(CqlTranslatorOptions.Options[] options, CqlCompilerException.ErrorSeverity errorSeverity, List<String> formats, ModelManager modelManager,
                             LibraryManager libraryManager, UcumService ucumService) {
 
         CqlTranslator translator = null;
@@ -331,10 +330,10 @@ public class CQLtoELM {
         // output the elm strings
         if (formats.contains("XML")) {
             this.parentElmString = translator.toXml();
-            for (TranslatedLibrary library : translatedLibraries.values()) {
+            for (CompiledLibrary library : translatedLibraries.values()) {
                 try {
-                    this.elmStrings.add(translator.convertToXml(library.getLibrary()));
-                } catch (JAXBException e) {
+                    this.elmStrings.add(CqlTranslator.convertToXml(library.getLibrary()));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -343,17 +342,17 @@ public class CQLtoELM {
         // output the json strings
         if (formats.contains("JSON")) {
             this.parentJsonString = translator.toJson();
-            for (TranslatedLibrary library : translatedLibraries.values()) {
+            for (CompiledLibrary library : translatedLibraries.values()) {
                 try {
-                    this.jsonStrings.add(translator.convertToJson(library.getLibrary()));
-                } catch (JAXBException e) {
+                    this.jsonStrings.add(CqlTranslator.convertToJson(library.getLibrary()));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    private void fetchTranslatedLibraries(TranslatedLibrary parentLibrary) throws CqlTranslatorException {
+    private void fetchTranslatedLibraries(CompiledLibrary parentLibrary) throws CqlCompilerException {
         this.translatedLibraries.put(parentLibrary.getIdentifier().getId() + "-" + parentLibrary.getIdentifier().getVersion(), parentLibrary);
 
         if (parentLibrary.getLibrary().getIncludes() != null) {
@@ -362,7 +361,7 @@ public class CQLtoELM {
                 identifier.setId(include.getPath());
                 identifier.setVersion(include.getVersion());
                 try {
-                    TranslatedLibrary childLibrary = libraryManager.resolveLibrary(identifier,
+                    CompiledLibrary childLibrary = libraryManager.resolveLibrary(identifier,
                             new CqlTranslatorOptions(),
                             new ArrayList<>());
                     fetchTranslatedLibraries(childLibrary);
@@ -428,7 +427,7 @@ public class CQLtoELM {
      *
      * @return the messages
      */
-    public List<CqlTranslatorException> getMessages() {
+    public List<CqlCompilerException> getMessages() {
         return messages;
     }
 
@@ -437,7 +436,7 @@ public class CQLtoELM {
      *
      * @return the warnings
      */
-    public List<CqlTranslatorException> getWarnings() {
+    public List<CqlCompilerException> getWarnings() {
         return warnings;
     }
 
@@ -446,7 +445,7 @@ public class CQLtoELM {
      *
      * @return the errors
      */
-    public List<CqlTranslatorException> getErrors() {
+    public List<CqlCompilerException> getErrors() {
         return errors;
     }
 
@@ -560,7 +559,7 @@ public class CQLtoELM {
         return this.translator;
     }
 
-    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
+    public Map<String, CompiledLibrary> getTranslatedLibraries() {
         return this.translatedLibraries;
     }
 
@@ -585,7 +584,7 @@ public class CQLtoELM {
 
         Map<String, List<CQLExpressionError>> expressionErrorMap = new HashMap<>();
 
-        List<CqlTranslatorException> errors = this.getErrors();
+        List<CqlCompilerException> errors = this.getErrors();
 
         // if there are no errors, nothing can be done.
         if (errors == null) {
@@ -603,7 +602,7 @@ public class CQLtoELM {
                 int expressionEndLine = currentTrackBack.getEndLine();
 
                 List<CQLExpressionError> expressionErrors = new ArrayList<>();
-                for (CqlTranslatorException error : errors) {
+                for (CqlCompilerException error : errors) {
 
                     int errorStartLine = error.getLocator().getStartLine();
                     int errorEndLine = error.getLocator().getEndLine();
@@ -614,7 +613,7 @@ public class CQLtoELM {
                         int endLine = startLine + difference;
                         int startChar = error.getLocator().getStartChar();
                         int endChar = error.getLocator().getEndChar();
-                        CqlTranslatorException.ErrorSeverity severity = error.getSeverity();
+                        CqlCompilerException.ErrorSeverity severity = error.getSeverity();
 
                         CQLExpressionError cqlExpressionError = new CQLExpressionError(error.getMessage(), startLine,
                                 endLine, startChar, endChar, severity);
@@ -660,8 +659,8 @@ public class CQLtoELM {
         }
     }
 
-    private static void outputExceptions(Iterable<CqlTranslatorException> exceptions) {
-        for (CqlTranslatorException error : exceptions) {
+    private static void outputExceptions(Iterable<CqlCompilerException> exceptions) {
+        for (CqlCompilerException error : exceptions) {
             TrackBack tb = error.getLocator();
             String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
                     tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());

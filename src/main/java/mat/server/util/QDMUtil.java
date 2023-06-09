@@ -1,8 +1,8 @@
 package mat.server.util;
 
 import mat.client.shared.QDMContainer;
-import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider;
+import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm_modelinfo.r1.ChoiceTypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
@@ -29,9 +29,10 @@ public class QDMUtil {
     public static QDMContainer getQDMContainer() {
 
         QDMContainer qdmContainer = new QDMContainer();
-        VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
-        versionedIdentifier.setId("QDM");
-        ModelInfo modelInfo = qdmModelInfoProvider.load(versionedIdentifier);
+        ModelIdentifier modelIdentifier = new ModelIdentifier();
+        modelIdentifier.setId("QDM");
+        modelIdentifier.setVersion("5.6");
+        ModelInfo modelInfo = qdmModelInfoProvider.load(modelIdentifier);
 
         Map<String, TypeInfo> nameToProfileInfoMap = new HashMap<>();
         Map<String, ClassInfo> nameToClassInfoMap = new HashMap<>();

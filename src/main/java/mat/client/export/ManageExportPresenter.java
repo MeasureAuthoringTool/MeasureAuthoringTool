@@ -52,12 +52,29 @@ public class ManageExportPresenter implements MatPresenter {
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView();
 		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
-		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), isTransferableToMadie);
-		if ("FHIR".equals(result.getMeasureModel()) && !isTransferableToMadie) {
+		boolean isStaleQdm = !isFhir(result.getMeasureModel()) && !isLatestQdm();
+		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite(), result.getMeasureModel(), isTransferableToMadie, isStaleQdm);
+		if (!isTransferableToMadie && !result.getIsComposite()) {
 			exportView.displayErrorMessage("This measure cannot be transferred to MADiE because either you are not the owner or a version of this measure has already been transferred.");
 		}
 		this.view.getExportPane().add(exportView.asWidget());
 		exportView.showCompositeMeasure(result.getIsComposite());
+	}
+
+	private boolean isLatestQdm() {
+		double qdmVersion = 0.0;
+		boolean isLatest = false;
+		if (result.getQdmVersion() != null) {
+			qdmVersion = Double.parseDouble(result.getQdmVersion().replace("v", ""));
+		}
+		try {
+			double currentQDMVersion = Double.parseDouble(MatContext.get().getCurrentQDMVersion());
+			isLatest = MatContext.get().isCQLMeasure(result.getHqmfReleaseVersion()) && qdmVersion == currentQDMVersion;
+		} catch (NumberFormatException nfe) {
+			logger.log(Level.SEVERE, "ManageExportPresenter::isLatestQdm -> Invalid MatContext.get().getCurrentQDMVersion()");
+			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		}
+		return isLatest;
 	}
 
 	private void initializeBonnieExportView() {

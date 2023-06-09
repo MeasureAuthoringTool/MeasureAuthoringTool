@@ -123,7 +123,7 @@ public class CQLServiceImpl implements CQLService {
 
                     + "<definition context=\"Patient\" name=\"SDE Payer\" "
                     + " supplDataElement=\"true\" popDefinition=\"false\" id=\"999\">  "
-                    + "<logic>[\"Patient Characteristic Payer\": \"Payer\"]</logic>" + "</definition>"
+                    + "<logic>[\"Patient Characteristic Payer\": \"Payer Type\"]</logic>" + "</definition>"
 
                     + "<definition context=\"Patient\" name=\"SDE Race\" "
                     + " supplDataElement=\"true\" popDefinition=\"false\"  id=\"999\"> "

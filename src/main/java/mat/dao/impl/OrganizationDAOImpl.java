@@ -3,7 +3,7 @@ package mat.dao.impl;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.User;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

@@ -121,7 +121,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, Boolean isTransferableToMadie) {
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel, Boolean isTransferableToMadie, boolean isStaleQdm) {
 		vp.clear();
 		if (MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
@@ -149,7 +149,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(eCQMPackageRadio);
 			vp.add(compositeMeasurePackageRadio);
 
-			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE_QDM)) {
+			if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MADIE_QDM) && !isCompositeMeasure && !isStaleQdm) {
 				vp.add(transferToMadieRadio);
 			}
 			if (!isTransferableToMadie) {

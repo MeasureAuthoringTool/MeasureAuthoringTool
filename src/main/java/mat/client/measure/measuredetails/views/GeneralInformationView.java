@@ -287,13 +287,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setText(generalInformationModel.getNqfId());
             nQFIDInput.setTitle(generalInformationModel.getNqfId());
         } else {
-            if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
-                nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + "Number");
-                nQFIDInput.setTitle("Enter " + CBE_ABBR + "Number");
-            } else {
-                nQFIDInput.setPlaceholder("Enter CBE Number");
-                nQFIDInput.setTitle("Enter CBE Number");
-            }
+            nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + "Number");
+            nQFIDInput.setTitle("Enter " + CBE_ABBR + "Number");
         }
 
         FormLabel endorsedByNQFLabel = new FormLabel();

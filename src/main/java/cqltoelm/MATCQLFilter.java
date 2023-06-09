@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -17,11 +17,9 @@ import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ParameterDef;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +31,7 @@ public class MATCQLFilter {
 
     private String parentLibraryString;
     private Map<String, String> childrenLibraries;
-    private TranslatedLibrary library;
+    private CompiledLibrary library;
     private CqlTranslator translator;
 
     /**
@@ -70,7 +68,7 @@ public class MATCQLFilter {
 
     private Map<String, String> qdmTypeInfoMap = new HashMap<>();
 
-    private Map<String, TranslatedLibrary> translatedLibraryMap;
+    private Map<String, CompiledLibrary> translatedLibraryMap;
 
     /**
      * Map in the form of <LibraryName-x.x.xxx, <ExpressionName, ReturnType>>.
@@ -94,7 +92,7 @@ public class MATCQLFilter {
             Map<String, String> childrenLibraries,
             List<String> parentExpressions,
             CqlTranslator translator,
-            Map<String, TranslatedLibrary> translatedLibraries) {
+            Map<String, CompiledLibrary> translatedLibraries) {
 
         this.parentLibraryString = parentLibraryString;
         this.translator = translator;
@@ -316,7 +314,7 @@ public class MATCQLFilter {
 
         if (null != this.library.getLibrary().getIncludes()) {
             for (IncludeDef include : this.library.getLibrary().getIncludes().getDef()) {
-                TranslatedLibrary lib = this.translatedLibraryMap.get(include.getPath() + "-" + include.getVersion());
+                CompiledLibrary lib = this.translatedLibraryMap.get(include.getPath() + "-" + include.getVersion());
 
                 Library.Statements statementsFromIncludedLibrary = lib.getLibrary().getStatements();
                 Library.Parameters parametersFromIncludedLibrary = lib.getLibrary().getParameters();

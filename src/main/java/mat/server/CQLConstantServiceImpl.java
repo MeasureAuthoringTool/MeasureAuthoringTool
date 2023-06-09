@@ -13,6 +13,8 @@ import mat.dao.clause.QDSAttributesDAO;
 import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.SystemModelInfoProvider;
 import org.slf4j.LoggerFactory;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
@@ -22,8 +24,6 @@ import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
-import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -215,10 +215,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
         SystemModelInfoProvider systemModelInfoProvider = new SystemModelInfoProvider();
 
-        VersionedIdentifier versionedIdentifier = new VersionedIdentifier();
-        versionedIdentifier.setId("System");
+        ModelIdentifier modelIdentifier = new ModelIdentifier();
+        modelIdentifier.setId("System");
 
-        ModelInfo modelInfo = systemModelInfoProvider.load(versionedIdentifier);
+        ModelInfo modelInfo = systemModelInfoProvider.load(modelIdentifier);
         Map<String, List<String>> typeToTypeAttributeMap = new HashMap<>();
 
         buildTypeToTypeAttributeMap(modelInfo, typeToTypeAttributeMap);

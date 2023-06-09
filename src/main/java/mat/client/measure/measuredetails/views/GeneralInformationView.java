@@ -6,7 +6,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.*;
 import mat.client.codelist.HasListBox;
@@ -66,7 +65,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     protected CheckBox experimentalCheckbox = new CheckBox();
     private FormLabel measureNameLabel;
     private ErrorHandler errorHandler = new ErrorHandler();
-    private final String entityName = "CBE";
+    private final String CBE_ABBR = "CBE";
+    private final String CBE_FULL = "CMS Consensus Based Entity";
     private static final Logger logger = Logger.getLogger(GeneralInformationView.class.getSimpleName());
 
     public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
@@ -268,12 +268,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     private VerticalPanel buildNQFNumberPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.getElement().addClassName("generalInformationPanel");
-        HorizontalPanel nqfNumberEndorsmentPanel = new HorizontalPanel();
+        HorizontalPanel nqfNumberEndorsementPanel = new HorizontalPanel();
         VerticalPanel nqfNumberLeftVP = new VerticalPanel();
         VerticalPanel nqfNumberRightVP = new VerticalPanel();
 
         FormLabel nQFIDInputLabel = new FormLabel();
-        nQFIDInputLabel.setText(entityName + " Number");
+        nQFIDInputLabel.setText("\n" + CBE_ABBR + " Number");
+//        nqfNumberRightVP.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         nqfNumberRightVP.add(nQFIDInputLabel);
         nqfNumberRightVP.add(new SpacerWidget());
         nqfNumberRightVP.add(nQFIDInput);
@@ -287,8 +288,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setTitle(generalInformationModel.getNqfId());
         } else {
             if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
-                nQFIDInput.setPlaceholder("Enter " + entityName + "Number");
-                nQFIDInput.setTitle("Enter " + entityName + "Number");
+                nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + "Number");
+                nQFIDInput.setTitle("Enter " + CBE_ABBR + "Number");
             } else {
                 nQFIDInput.setPlaceholder("Enter CBE Number");
                 nQFIDInput.setTitle("Enter CBE Number");
@@ -296,15 +297,16 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         }
 
         FormLabel endorsedByNQFLabel = new FormLabel();
-        endorsedByNQFLabel.setText("Endorsed By " + entityName);
+        endorsedByNQFLabel.setText("Endorsed By " + CBE_FULL);
         nqfNumberLeftVP.add(endorsedByNQFLabel);
         endorsedByListBox.setWidth("150px");
         endorsedByListBox.setId("endorsedByNQFListBox");
         nqfNumberLeftVP.add(endorsedByListBox);
         nqfNumberRightVP.getElement().setAttribute("style", "padding-left:10px;");
-        nqfNumberEndorsmentPanel.add(nqfNumberLeftVP);
-        nqfNumberEndorsmentPanel.add(nqfNumberRightVP);
-        verticalPanel.add(nqfNumberEndorsmentPanel);
+        nqfNumberEndorsementPanel.add(nqfNumberLeftVP);
+        nqfNumberEndorsementPanel.add(nqfNumberRightVP);
+        nqfNumberEndorsementPanel.setCellVerticalAlignment(nqfNumberRightVP, HasVerticalAlignment.ALIGN_BOTTOM);
+        verticalPanel.add(nqfNumberEndorsementPanel);
         resetEndorsedByListBox();
 
         boolean endorsedByNQF = generalInformationModel.getEndorseByNQF() != null ? generalInformationModel.getEndorseByNQF() : false;
@@ -318,7 +320,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     public void setNQFTitle(boolean endorsedByNQF) {
         if (!endorsedByNQF) {
-            helpBlock.setText("You have chosen no; the " + entityName + " number field has been cleared. It now reads as Not Applicable and is disabled.");
+            helpBlock.setText("You have chosen no; the " + CBE_ABBR + " Number field has been cleared. It now reads as Not Applicable and is disabled.");
             nQFIDInput.setPlaceholder(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setTitle(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setText("");
@@ -326,14 +328,14 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setEnabled(false);
             nQFIDInput.setTabIndex(-1);
         } else {
-            helpBlock.setText("You have chosen yes, the " + entityName + " number field is now enabled and required.");
+            helpBlock.setText("You have chosen yes, the " + CBE_ABBR + " Number field is now enabled and required.");
             if (!StringUtility.isEmptyOrNull(nQFIDInput.getText())) {
                 String placeHolderText = nQFIDInput.getText();
                 nQFIDInput.setPlaceholder(placeHolderText);
                 nQFIDInput.setTitle(placeHolderText);
             } else {
-                nQFIDInput.setPlaceholder("Enter " + entityName + " Number");
-                nQFIDInput.setTitle("Enter " + entityName + " Number");
+                nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + " Number");
+                nQFIDInput.setTitle("Enter " + CBE_ABBR + " Number");
             }
             nQFIDInput.setReadOnly(false);
             nQFIDInput.setEnabled(true);

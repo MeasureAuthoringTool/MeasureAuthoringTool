@@ -75,7 +75,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         this.isCompositeMeasure = isComposite;
         compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
         buildDetailView();
-//        entityName = ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel()) ? "NQF" : "CBE";
     }
 
     @Override
@@ -122,7 +121,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             panelGrid.setWidget(3, 1, buildExperimentalPanel());
         }
         panelGrid.setWidget(4, 0, buildeCQMVersionPanel());
-        panelGrid.setWidget(5, 0, buldeCQMIdentifierPanel());
+        panelGrid.setWidget(5, 0, buildECQMIdentifierPanel());
         panelGrid.setWidget(6, 0, buildNQFNumberPanel());
         panelGrid.setWidget(7, 0, buildMeasurementPeriodPanel());
         hackTheColspan(panelGrid);
@@ -274,7 +273,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
         FormLabel nQFIDInputLabel = new FormLabel();
         nQFIDInputLabel.setText("\n" + CBE_ABBR + " Number");
-//        nqfNumberRightVP.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         nqfNumberRightVP.add(nQFIDInputLabel);
         nqfNumberRightVP.add(new SpacerWidget());
         nqfNumberRightVP.add(nQFIDInput);
@@ -338,7 +336,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         }
     }
 
-    private VerticalPanel buldeCQMIdentifierPanel() {
+    private VerticalPanel buildECQMIdentifierPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.getElement().addClassName("generalInformationPanel");
         HorizontalPanel horizontalPanel = new HorizontalPanel();

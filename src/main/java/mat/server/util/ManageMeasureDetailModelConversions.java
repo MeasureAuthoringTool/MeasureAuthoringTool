@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 public class ManageMeasureDetailModelConversions {
 
     private static final String NQF_ENDORSEMENT_ID = "2.16.840.1.113883.3.560";
-    private static final String NATIONAL_QUALITY_FORUM = "National Quality Forum";
     private static final String NQF_ID_ROOT = "2.16.840.1.113883.3.560.1";
 
     public ManageMeasureDetailModelConversions() {
@@ -206,7 +205,7 @@ public class ManageMeasureDetailModelConversions {
         boolean endorseByNQF = measure.getNqfNumber() != null;
         measureDetailModel.setEndorseByNQF(endorseByNQF);
         if (endorseByNQF) {
-            measureDetailModel.setEndorsement(NATIONAL_QUALITY_FORUM);
+            measureDetailModel.setEndorsement("CMS Consensus Based Entity");
             measureDetailModel.setEndorsementId(NQF_ENDORSEMENT_ID);
         }
         MeasureDetails measureDetails = measure.getMeasureDetails();

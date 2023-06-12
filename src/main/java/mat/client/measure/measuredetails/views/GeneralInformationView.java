@@ -6,7 +6,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.*;
 import mat.client.codelist.HasListBox;
@@ -66,6 +65,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     protected CheckBox experimentalCheckbox = new CheckBox();
     private FormLabel measureNameLabel;
     private ErrorHandler errorHandler = new ErrorHandler();
+    private final String CBE_ABBR = "CBE";
+    private final String CBE_FULL = "CMS Consensus Based Entity";
     private static final Logger logger = Logger.getLogger(GeneralInformationView.class.getSimpleName());
 
     public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
@@ -120,7 +121,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             panelGrid.setWidget(3, 1, buildExperimentalPanel());
         }
         panelGrid.setWidget(4, 0, buildeCQMVersionPanel());
-        panelGrid.setWidget(5, 0, buldeCQMIdentifierPanel());
+        panelGrid.setWidget(5, 0, buildECQMIdentifierPanel());
         panelGrid.setWidget(6, 0, buildNQFNumberPanel());
         panelGrid.setWidget(7, 0, buildMeasurementPeriodPanel());
         hackTheColspan(panelGrid);
@@ -266,12 +267,12 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
     private VerticalPanel buildNQFNumberPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.getElement().addClassName("generalInformationPanel");
-        HorizontalPanel nqfNumberEndorsmentPanel = new HorizontalPanel();
+        HorizontalPanel nqfNumberEndorsementPanel = new HorizontalPanel();
         VerticalPanel nqfNumberLeftVP = new VerticalPanel();
         VerticalPanel nqfNumberRightVP = new VerticalPanel();
 
         FormLabel nQFIDInputLabel = new FormLabel();
-        nQFIDInputLabel.setText("NQF Number");
+        nQFIDInputLabel.setText("\n" + CBE_ABBR + " Number");
         nqfNumberRightVP.add(nQFIDInputLabel);
         nqfNumberRightVP.add(new SpacerWidget());
         nqfNumberRightVP.add(nQFIDInput);
@@ -284,20 +285,21 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setText(generalInformationModel.getNqfId());
             nQFIDInput.setTitle(generalInformationModel.getNqfId());
         } else {
-            nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
-            nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+            nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + "Number");
+            nQFIDInput.setTitle("Enter " + CBE_ABBR + "Number");
         }
 
         FormLabel endorsedByNQFLabel = new FormLabel();
-        endorsedByNQFLabel.setText("Endorsed By NQF");
+        endorsedByNQFLabel.setText("Endorsed By " + CBE_FULL);
         nqfNumberLeftVP.add(endorsedByNQFLabel);
         endorsedByListBox.setWidth("150px");
         endorsedByListBox.setId("endorsedByNQFListBox");
         nqfNumberLeftVP.add(endorsedByListBox);
         nqfNumberRightVP.getElement().setAttribute("style", "padding-left:10px;");
-        nqfNumberEndorsmentPanel.add(nqfNumberLeftVP);
-        nqfNumberEndorsmentPanel.add(nqfNumberRightVP);
-        verticalPanel.add(nqfNumberEndorsmentPanel);
+        nqfNumberEndorsementPanel.add(nqfNumberLeftVP);
+        nqfNumberEndorsementPanel.add(nqfNumberRightVP);
+        nqfNumberEndorsementPanel.setCellVerticalAlignment(nqfNumberRightVP, HasVerticalAlignment.ALIGN_BOTTOM);
+        verticalPanel.add(nqfNumberEndorsementPanel);
         resetEndorsedByListBox();
 
         boolean endorsedByNQF = generalInformationModel.getEndorseByNQF() != null ? generalInformationModel.getEndorseByNQF() : false;
@@ -311,7 +313,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     public void setNQFTitle(boolean endorsedByNQF) {
         if (!endorsedByNQF) {
-            helpBlock.setText("You have chosen no; the NQF number field has been cleared. It now reads as Not Applicable and is disabled.");
+            helpBlock.setText("You have chosen no; the " + CBE_ABBR + " Number field has been cleared. It now reads as Not Applicable and is disabled.");
             nQFIDInput.setPlaceholder(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setTitle(MatConstants.NOT_APPLICABLE);
             nQFIDInput.setText("");
@@ -319,14 +321,14 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
             nQFIDInput.setEnabled(false);
             nQFIDInput.setTabIndex(-1);
         } else {
-            helpBlock.setText("You have chosen yes, the NQF number field is now enabled and required.");
+            helpBlock.setText("You have chosen yes, the " + CBE_ABBR + " Number field is now enabled and required.");
             if (!StringUtility.isEmptyOrNull(nQFIDInput.getText())) {
                 String placeHolderText = nQFIDInput.getText();
                 nQFIDInput.setPlaceholder(placeHolderText);
                 nQFIDInput.setTitle(placeHolderText);
             } else {
-                nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
-                nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+                nQFIDInput.setPlaceholder("Enter " + CBE_ABBR + " Number");
+                nQFIDInput.setTitle("Enter " + CBE_ABBR + " Number");
             }
             nQFIDInput.setReadOnly(false);
             nQFIDInput.setEnabled(true);
@@ -334,7 +336,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         }
     }
 
-    private VerticalPanel buldeCQMIdentifierPanel() {
+    private VerticalPanel buildECQMIdentifierPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.getElement().addClassName("generalInformationPanel");
         HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -921,7 +923,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         endorsedByListBox.insertItem("No", "false", "No");
         endorsedByListBox.insertItem("Yes", "true", "Yes");
         endorsedByListBox.setSelectedIndex(0);
-        endorsedByListBox.setTitle("Endorsed By NQF List");
+        endorsedByListBox.setTitle("Endorsed By CBE List");
     }
 
     public ListBoxMVP getEndorsedByListBox() {

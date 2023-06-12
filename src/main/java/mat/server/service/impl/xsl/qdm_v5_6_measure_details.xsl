@@ -285,7 +285,7 @@
         <subjectOf>
             <measureAttribute>
                 <code nullFlavor="OTH">
-                    <originalText value="NQF Number"/>
+                    <originalText value="CBE Number"/>
                 </code>
                 <xsl:variable name="NQFText">
                     <xsl:call-template name="trim">

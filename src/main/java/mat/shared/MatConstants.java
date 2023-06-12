@@ -94,5 +94,4 @@ public interface MatConstants {
 	String DURING = "During";
 	String OVERLAPS =  "Overlaps";
 	String NOT_APPLICABLE = "Not Applicable";
-	String ENTER_NQF_NUMBER = "Enter NQF Number";
 }

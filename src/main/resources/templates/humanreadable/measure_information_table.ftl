@@ -53,7 +53,7 @@
             </tr>
         </#if>
         <tr>
-            <th scope="row" class="row-header"><span class="td_label">Endorsed By CMS Consensus Based Entity</span></th>
+            <th scope="row" class="row-header"><span class="td_label">Endorsed By</span></th>
             <#-- Default to "None" if no value -->
             <td style="width:80%" colspan="3">${model.measureInformation.endorsedBy!"None"}</td>
         </tr>

@@ -14,7 +14,7 @@ import java.util.List;
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";
     private static final String COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR = "A Composite Scoring Method is required. ";
-    private static final String NQF_REQUIRED_ERROR = "NQF Number is required when a measure is endorsed by NQF.";
+    private static final String CBE_REQUIRED_ERROR = "CBE Number is required when a measure is endorsed by CMS Consensus Based Entity.";
 	
 	public List<String> validateModel(GeneralInformationModel generalInformationModel, boolean isComposite) {
 
@@ -32,7 +32,7 @@ public class GeneralInformationValidator {
             errorMessages.addAll(CommonMeasureValidator.validatePatientBased(generalInformationModel.getScoringMethod(), generalInformationModel.isPatientBased()));
         }
 		if (generalInformationModel.getEndorseByNQF() && StringUtility.isEmptyOrNull(generalInformationModel.getNqfId())) {
-			errorMessages.add(NQF_REQUIRED_ERROR);
+			errorMessages.add(CBE_REQUIRED_ERROR);
 		}
 		
 		if (!generalInformationModel.isCalendarYear()) {

@@ -12,4 +12,5 @@
     <include file="classpath:/liquibase/QDM_5_6_MeasureXmlUpdate_v2.xml"/>
     <include file="classpath:/liquibase/AddFinalizedDateForFhirLibraries.xml"/>
     <include file="classpath:/liquibase/add_measure_transfer_column_to_measure.xml"/>
+    <include file="classpath:/liquibase/Payer_valueset_MeasureXmlUpdate.xml"/>
 </databaseChangeLog>

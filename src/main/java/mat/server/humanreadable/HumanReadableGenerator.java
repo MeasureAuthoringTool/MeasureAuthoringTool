@@ -28,7 +28,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;

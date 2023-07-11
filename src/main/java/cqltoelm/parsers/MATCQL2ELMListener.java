@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.apache.commons.collections4.CollectionUtils;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.apache.commons.collections.CollectionUtils;
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
@@ -61,12 +61,12 @@ public class MATCQL2ELMListener extends cqlBaseListener {
     /**
      * The current library object from the parser
      */
-    private CompiledLibrary library;
+    private TranslatedLibrary library;
 
     /**
      * The map of the other libraries in the current library
      */
-    Map<String, CompiledLibrary> translatedLibraryMap;
+    Map<String, TranslatedLibrary> translatedLibraryMap;
 
     /**
      * The current context, aka which expression are we currently in.
@@ -88,7 +88,7 @@ public class MATCQL2ELMListener extends cqlBaseListener {
 
     private CQLGraph graph;
 
-    public MATCQL2ELMListener(CQLGraph graph, CompiledLibrary library, Map<String, CompiledLibrary> translatedLibraryMap,
+    public MATCQL2ELMListener(CQLGraph graph, TranslatedLibrary library, Map<String, TranslatedLibrary> translatedLibraryMap,
                               Map<String, String> childrenLibraries) {
         this.graph = graph;
         this.library = library;
@@ -98,8 +98,8 @@ public class MATCQL2ELMListener extends cqlBaseListener {
     }
 
     public MATCQL2ELMListener(String libraryIdentifier, CQLGraph graph,
-                              CompiledLibrary library,
-                              Map<String, CompiledLibrary> translatedLibraryMap,
+                              TranslatedLibrary library,
+                              Map<String, TranslatedLibrary> translatedLibraryMap,
                               Map<String, String> childrenLibraries) {
         this.graph = graph;
         this.library = library;
@@ -108,7 +108,7 @@ public class MATCQL2ELMListener extends cqlBaseListener {
         this.childrenLibraries = childrenLibraries;
     }
 
-    private CompiledLibrary getCurrentLibraryContext() {
+    private TranslatedLibrary getCurrentLibraryContext() {
         if (libraryAccessor != null) {
             return this.translatedLibraryMap.get(libraryAccessor.getPath() + "-" + libraryAccessor.getVersion());
         }
@@ -407,7 +407,7 @@ public class MATCQL2ELMListener extends cqlBaseListener {
         return formattedIdentifier;
     }
 
-    private Element resolve(String identifier, CompiledLibrary library) {
+    private Element resolve(String identifier, TranslatedLibrary library) {
         Element element = library.resolve(identifier);
         String formattedIdentifier = formatIdentifier(identifier);
         libraryAccessor = null; // we've done all we need to do with the accessor, so set it equal to null so it can be
@@ -460,7 +460,7 @@ public class MATCQL2ELMListener extends cqlBaseListener {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
 
-        CompiledLibrary childLibrary = this.translatedLibraryMap.get(def.getPath() + "-" + def.getVersion());
+        TranslatedLibrary childLibrary = this.translatedLibraryMap.get(def.getPath() + "-" + def.getVersion());
         cqltoelm.parsers.MATCQL2ELMListener listener = new cqltoelm.parsers.MATCQL2ELMListener(def.getPath() + "-" + def.getVersion() + "|" + def.getLocalIdentifier() + "|", graph, childLibrary, translatedLibraryMap, childrenLibraries);
         ParseTree tree = parser.library();
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();

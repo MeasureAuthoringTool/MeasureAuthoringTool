@@ -1,6 +1,6 @@
 package cqltoelm.models;
 
-import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
 
 /**
  * @author Jack Meyer
@@ -34,9 +34,9 @@ public class CQLExpressionError {
      */
     private int endChar;
 
-    private CqlCompilerException.ErrorSeverity severity;
+    private CqlTranslatorException.ErrorSeverity severity;
 
-    public CQLExpressionError(String message, int startLine, int endLine, int startChar, int endChar, CqlCompilerException.ErrorSeverity severity) {
+    public CQLExpressionError(String message, int startLine, int endLine, int startChar, int endChar, CqlTranslatorException.ErrorSeverity severity) {
         this.message = message;
         this.startLine = startLine;
         this.endLine = endLine;
@@ -85,11 +85,11 @@ public class CQLExpressionError {
         this.endChar = endChar;
     }
 
-    public CqlCompilerException.ErrorSeverity getSeverity() {
+    public CqlTranslatorException.ErrorSeverity getSeverity() {
         return severity;
     }
 
-    public void setSeverity(CqlCompilerException.ErrorSeverity severity) {
+    public void setSeverity(CqlTranslatorException.ErrorSeverity severity) {
         this.severity = severity;
     }
 

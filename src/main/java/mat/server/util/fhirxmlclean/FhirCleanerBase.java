@@ -2,7 +2,7 @@ package mat.server.util.fhirxmlclean;
 
 import lombok.SneakyThrows;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

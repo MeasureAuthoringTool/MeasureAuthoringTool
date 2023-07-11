@@ -3,7 +3,7 @@ package mat.server.humanreadable.cql;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ReferenceTextAndType;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

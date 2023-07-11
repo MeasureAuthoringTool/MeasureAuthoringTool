@@ -24,7 +24,7 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>2.10.0</cqframework.version>
+        <cqframework.version>1.5.3</cqframework.version>
         <axis.version>1.8.0</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -34,7 +34,7 @@
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
 
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
@@ -98,7 +98,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
         </dependency>
-
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql</artifactId>
@@ -125,15 +124,21 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- See https://github.com/cqframework/clinical_quality_language/blob/master/Src/java/cql-to-elm/build.gradle -->
-        <!--  Users of the CQL translator will need to supply their own implementation or add xpp3 at runtime. -->
         <dependency>
-            <groupId>org.ogce</groupId>
-            <artifactId>xpp3</artifactId>
-            <version>1.1.6</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>quick</artifactId>
@@ -148,40 +153,6 @@
             <groupId>info.cqframework</groupId>
             <artifactId>cql-formatter</artifactId>
             <version>${cqframework.version}</version>
-        </dependency>
-
-        <!-- Resolves: No ElmLibraryWriterProviders found on the classpath.
-                You need to add a reference to one of the 'elm-jackson' or 'elm-jaxb' packages,
-                or provide your own implementation.-->
-        <dependency>
-            <groupId>info.cqframework</groupId>
-            <artifactId>elm-jackson</artifactId>
-            <version>${cqframework.version}</version>
-        </dependency>
-
-        <!-- Resolves: No ModelInfoReaderProviders found on the classpath.
-                You need to add a reference to one of the 'model-jackson' or 'model-jaxb' packages,
-                or provide your own implementation.-->
-        <dependency>
-            <groupId>info.cqframework</groupId>
-            <artifactId>model-jackson</artifactId>
-            <version>${cqframework.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>

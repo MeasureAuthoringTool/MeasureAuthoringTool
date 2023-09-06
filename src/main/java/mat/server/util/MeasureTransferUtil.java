@@ -1,6 +1,6 @@
 package mat.server.util;
 
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -19,7 +19,7 @@ public class MeasureTransferUtil {
                     .standard()
                     .withRegion(getSystemProperty(
                             "MEASURE_TRANSFER_S3_AWS_REGION"))
-                    .withCredentials(new InstanceProfileCredentialsProvider(true)) // to avoid credential lookup chain
+                    .withCredentials(new DefaultAWSCredentialsProviderChain()) // to avoid credential lookup chain
                     .build();
         }
         return s3Client;

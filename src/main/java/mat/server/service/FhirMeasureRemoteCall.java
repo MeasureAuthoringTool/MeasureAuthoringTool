@@ -13,7 +13,7 @@ public interface FhirMeasureRemoteCall {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    ConversionResultDto convert(String measureId, String vsacGrantingTicket, boolean isDraft);
+		ConversionResultDto convert(String measureId, String apiKey, boolean isDraft);
 
     /**
      * Call fhir validation.
@@ -22,7 +22,7 @@ public interface FhirMeasureRemoteCall {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean isDraft);
+    ConversionResultDto validate(String measureId, String apiKey, boolean isDraft);
 
     FhirMeasurePackageResult packageMeasure(String measureId);
 

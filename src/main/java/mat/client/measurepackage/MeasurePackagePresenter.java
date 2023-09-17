@@ -302,7 +302,7 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     protected void validateUMLSLogIn() {
-        MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
+    			MatContext.get().getVsacapiServiceAsync().getVsacInformation(new AsyncCallback<VsacTicketInformation>() {
 
             @Override
             public void onSuccess(VsacTicketInformation result) {
@@ -319,7 +319,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in VsacapiServiceAsync.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in VsacapiServiceAsync.getVsacInformation. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getErrorMessageDisplay().createAlert(

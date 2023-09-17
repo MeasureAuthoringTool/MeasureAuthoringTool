@@ -44,14 +44,13 @@ public class FhirMeasureRemoteServiceImplTest {
         Whitebox.setInternalState(service, "perThreadRequest", threadLocal);
         Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
-        VsacTicketInformation ticketInfo = new VsacTicketInformation();
-        ticketInfo.setTicket("vsacGrantingTicket");
-        Mockito.when(vsacApiService.getTicketGrantingTicket(eq("sessionId"))).thenReturn(ticketInfo);
+        VsacTicketInformation ticketInfo = new VsacTicketInformation("apiKey", true);
+        Mockito.when(vsacApiService.getVsacInformation(eq("sessionId"))).thenReturn(ticketInfo);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(vsacApiService, Mockito.times(1)).getTicketGrantingTicket(eq("sessionId"));
+        Mockito.verify(vsacApiService, Mockito.times(1)).getVsacInformation(eq("sessionId"));
     }
 
     @Test

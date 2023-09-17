@@ -115,7 +115,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         Exception ex = assertThrows(MatException.class, () -> {
-            service.convert(sourceMeasure, loggedinUserId, "vsacGrantingTicket", true);
+        	service.convert(sourceMeasure, loggedinUserId, "vsacApiKey", true);
         });
 
         assertEquals("Measure cannot be converted to FHIR", ex.getMessage());
@@ -183,7 +183,7 @@ public class FhirMeasureServiceImplTest {
                         new CQLObject(), new UnusedCqlElements()));
 
         service.TEST_MODE = true;
-        service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);
+        service.convert(sourceMeasureResult, "vsacApiKey", loggedinUserId, true);
 
         Mockito.verify(measureDAO, Mockito.times(1)).deleteFhirMeasuresBySetId(eq(setId));
     }
@@ -217,7 +217,7 @@ public class FhirMeasureServiceImplTest {
         sourceMeasure.setId(sourceMeasureId);
 
         assertThrows(MatException.class, () -> {
-            service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);
+        	service.convert(sourceMeasureResult, "vsacApiKey", loggedinUserId, true);
         });
 
         Mockito.verify(measureDAO, Mockito.never()).deleteFhirMeasuresBySetId(Mockito.anyString());
@@ -256,7 +256,7 @@ public class FhirMeasureServiceImplTest {
         doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(any(), any());
 
         assertThrows(MatRuntimeException.class, () -> {
-            service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);
+        	service.convert(sourceMeasureResult, "vsacApiKey", loggedinUserId, true);
         });
 
         Mockito.verify(measureDAO, Mockito.never()).delete(any(Measure.class));

@@ -48,7 +48,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
 
     @Override
-    public String generateReport(String libraryId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
+    public String generateReport(String libraryId, String apiKey, boolean converted) throws IOException, TemplateException {
         MatXmlResponse parseResponse = null;
         CQLLibrary cqlLibrary = libraryDAO.find(libraryId);
         if (cqlLibrary != null) {

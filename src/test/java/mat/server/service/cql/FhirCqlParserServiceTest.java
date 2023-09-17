@@ -55,8 +55,7 @@ public class FhirCqlParserServiceTest {
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
 
         VsacTicketInformation vsacTicketInformation = new VsacTicketInformation();
-        vsacTicketInformation.setTicket("token5min");
-        Mockito.when(vsacApiService.getTicketGrantingTicket("sessionId")).thenReturn(vsacTicketInformation);
+        Mockito.when(vsacApiService.getVsacInformation("sessionId")).thenReturn(vsacTicketInformation);
 
         CQLModel sourceModel = new CQLModel();
 

@@ -72,8 +72,7 @@ public interface BonnieAPI {
 	 * @param fileName the name of the zip file being uploaded to Bonnie
 	 * @param measureType the measure type, should be EH or EP
 	 * @param calculationType the calculation type, should be patient or episode
-	 * @param vsacTicketGrantingTicket the 8 hour VSAC ticket for a user
-	 * @param vsacTicketExpiration the expiration date of the 8 hour VSAC ticket
+	 * @param vsacApiKey
 	 *
 	 * 
 	 * @throws BonnieUnauthorizedException will throw a Bonnie Unauthorized Exception if the user's tokens are invalid 
@@ -83,7 +82,7 @@ public interface BonnieAPI {
 	 * @throws IOException 
 	 * @throws BonnieDoesNotExistException 
 	 */
-	void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException, BonnieServerException, IOException, BonnieDoesNotExistException;
+	void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName, String measureType, String calculationType, String apiKey) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException, BonnieServerException, IOException, BonnieDoesNotExistException;
 
 	/**
 	 * Updates a measure to bonnie. 
@@ -96,8 +95,7 @@ public interface BonnieAPI {
 	 * @param fileName the name of the zip file being uploaded to Bonnie
 	 * @param measureType the measure type, should be EH or EP
 	 * @param calculationType the calculation type, should be patient or episode
-	 * @param vsacTicketGrantingTicket the 8 hour VSAC ticket for a user
-	 * @param vsacTicketExpiration the expiration date of the 8 hour VSAC ticket
+	 * @param vsacApiKey
 	 * 
 	 * 
 	 * @throws BonnieUnauthorizedException will throw a Bonnie Unauthorized Exception if the user's tokens are invalid 
@@ -106,8 +104,8 @@ public interface BonnieAPI {
 	 * @throws BonnieServerException will throw  Bonnie Server Exception is the Bonnie server was not able to handle the request, likely this is not an issue with the connection with MAT
 	 * @throws IOException 
 	 */
-	void updateMeasureInBonnie(String bearerToken, String hqmfSetId, byte[] zipFileContents, String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException;
-
+	void updateMeasureInBonnie(String bearerToken, String hqmfSetId, byte[] zipFileContents, String fileName, String measureType, String calculationType, String apiKey) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException;
+	
 	/**
 	 * Gets user information from the access token
 	 * @param bearerToken the bearer authentication token for the user

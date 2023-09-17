@@ -64,13 +64,13 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     }
 
     @Override
-    public ConversionResultDto convert(String measureId, String vsacGrantingTicket, boolean draft) {
-        return convert(measureId, ConversionType.CONVERSION, vsacGrantingTicket, draft);
+    public ConversionResultDto convert(String measureId, String vsacApiKey, boolean draft) {
+    	return convert(measureId, ConversionType.CONVERSION, vsacApiKey, draft);
     }
 
     @Override
-    public ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean draft) {
-        return convert(measureId, ConversionType.VALIDATION, vsacGrantingTicket, draft);
+    public ConversionResultDto validate(String measureId, String vsacApiKey, boolean draft) {
+    	return convert(measureId, ConversionType.VALIDATION, vsacApiKey, draft);
     }
 
     @Override

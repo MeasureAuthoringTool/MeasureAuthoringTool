@@ -8,7 +8,7 @@ import mat.dto.fhirconversion.PushValidationResult;
 
 public interface FhirMeasureService {
     FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure,
-                                      String vsacGrantingTicket,
+    																	String apiKey,
                                       String loggedinUserId,
                                       boolean isUpdatingMatDB) throws MatException;
 

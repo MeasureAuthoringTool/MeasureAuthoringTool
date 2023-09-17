@@ -19,6 +19,7 @@ import mat.server.export.ExportResult;
 import org.slf4j.LoggerFactory;
 import mat.server.service.EncryptDecryptToken;
 import mat.server.service.SimpleEMeasureService;
+import mat.server.util.UMLSSessionTicket;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.FileNameUtility;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;
@@ -29,7 +30,6 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,20 +129,20 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		byte[] zipFileContents = export.getZipbarr();
 		String fileName = FileNameUtility.getExportBundleZipName(measure);
 		String calculationType = measure.getPatientBased() ? "patient" : "episode";
-		String vsacTicketGrantingTicket = vsacTicket.getTicket();
-		String vsacTicketExpiration = String.valueOf(vsacTicket.getTimeout().getTime());
+
 		String sessionId = getThreadLocalRequest().getSession().getId();
 
-		if (!getVsacService().isCASTicketGrantingTicketValid(sessionId)) {
+		if (!getVsacService().isApiKeyValid(sessionId)) {
 			getVsacService().inValidateVsacUser(sessionId);
 			throw new UMLSNotActiveException();
 		}
+		VsacTicketInformation vsacInformation = UMLSSessionTicket.getTicket(sessionId);
 
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
-			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
+			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacInformation.getApiKey());
 			isInitialBonnieUpload = false;
 		} else {
-			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
+			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacInformation.getApiKey());
 			isInitialBonnieUpload = true;
 		}
 

@@ -11,5 +11,5 @@ public interface FhirValidationReport {
             "Please try again later. If this continues please contact the MAT help desk.";
 
 
-    String generateReport(String measureId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException;
+    String generateReport(String measureId, String apiKey, boolean converted) throws IOException, TemplateException;
 }

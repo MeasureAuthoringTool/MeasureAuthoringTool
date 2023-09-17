@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +42,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class VsacService {
     private static final String PROFILE = "Most Recent Code System Versions in VSAC";
-    private static final String CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET = "Cannot obtain a single-use service ticket.";
     private static final String UTF8_BOM = "\uFEFF";
-    private static final String ACTION_TOKEN = "action=\"";
 
-    // https://utslogin.nlm.nih.gov/cas/v1
-    private final String baseTicketUrl;
     // https://vsac.nlm.nih.gov
     private final String baseVsacUrl;
     private final RestTemplate restTemplate;
@@ -54,97 +51,14 @@ public class VsacService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final JsonMapper jsonMapper = new JsonMapper();
 
-    private final  RefreshTokenManager refreshTokenManager;
-
-    public VsacService(String baseTicketUrl, String baseVsacUrl, RestTemplate restTemplate, RefreshTokenManager refreshTokenManager) {
-        this.baseTicketUrl = baseTicketUrl;
+    public VsacService(String baseVsacUrl, RestTemplate restTemplate) {
         this.baseVsacUrl = baseVsacUrl;
         this.restTemplate = restTemplate;
-        this.refreshTokenManager = refreshTokenManager;
     }
 
-    /**
-     * @param apiKey A users mat.vsac api-key.
-     * @return Null if a ticket granting ticket could not be obtained.
-     */
-    public String getTicketGrantingTicket(String apiKey) {
-        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/api-key")
-            .encode()
-            .build()
-            .toUri();
 
-        MultiValueMap<String, String> bodyParams = new LinkedMultiValueMap<>();
-        bodyParams.add("apikey", apiKey);
-        String result = postForString2xx(uri, buildEntityWithUrlEncodedBody(bodyParams));
-        if (result != null) {
-            // body returns an html file we want to grab the part after the last / in the url:
-            // ... action="https://utslogin.nlm.nih.gov/cas/v1/api-key/TGT-asdasdasdas-cas" ...
-            int actionIndex = result.indexOf(ACTION_TOKEN);
-            if (actionIndex != -1) {
-                int endIndex = result.indexOf("\"", actionIndex + ACTION_TOKEN.length());
-                if (endIndex != -1) {
-                    String url = result.substring(actionIndex + ACTION_TOKEN.length(), endIndex);
-                    int lastSlash = url.lastIndexOf('/');
-                    if (lastSlash != -1) {
-                        result = url.substring(lastSlash + 1);
-                        log.debug("Obtained TicketGrantingTicket");
-                    } else {
-                        log.error("Could not / in action url " + url);
-                    }
-                } else {
-                    log.error("Could not find closing quote in action attribute!" + result);
-                }
-            } else {
-                log.error("Could not find action attribute! " + result);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * @param ticketGrantingTicket A users ticket granting ticket.
-     * @return Null if a service ticket couldn't be obtained.
-     */
-    public String getServiceTicket(String ticketGrantingTicket, String apiKey) {
-
-        String serviceTicket = fetchServiceTicket(ticketGrantingTicket);
-
-        if (serviceTicket == null) {
-
-            if( StringUtils.isNotBlank(apiKey) ) {
-                String newTicketGrantingTicket = getTicketGrantingTicket(apiKey);
-
-                serviceTicket = fetchServiceTicket(newTicketGrantingTicket);
-
-                if (serviceTicket == null) {
-                    log.warn("Failed to recover from a failing VSAC grantingTicket");
-                } else {
-                    log.info("Recover from a failing VSAC grantingTicket");
-                    refreshTokenManager.setRefreshedToken(newTicketGrantingTicket);
-                }
-            } else {
-                log.warn("Failed to recover from a failing VSAC grantingTicket, apiKey is blank");
-            }
-        }
-
-        return serviceTicket;
-    }
-
-    private String fetchServiceTicket(String ticketGrantingTicket) {
-        Map<String, String> params = new HashMap<>();
-        params.put("tgt", ticketGrantingTicket);
-        URI uri = UriComponentsBuilder.fromUriString(baseTicketUrl + "/tickets/{tgt}")
-            .buildAndExpand(params)
-            .encode()
-            .toUri();
-
-        MultiValueMap<String, String> bodyParams = new LinkedMultiValueMap<>();
-        bodyParams.add("service", "http://umlsks.nlm.nih.gov");
-        return postForString2xx(uri, buildEntityWithUrlEncodedBody(bodyParams));
-    }
-
-    public ValueSetWrapper getVSACValueSetWrapper(String oid, String ticketGrantingTicket, String apiKey) {
-        ValueSetResult vsacResponseResult = getValueSetResult(oid, ticketGrantingTicket, apiKey);
+    public ValueSetWrapper getVSACValueSetWrapper(String oid, String apiKey) {
+    	ValueSetResult vsacResponseResult = getValueSetResult(oid,  apiKey);
 
         if (isSuccessFull(vsacResponseResult)) {
             try {
@@ -160,10 +74,10 @@ public class VsacService {
     }
 
     @Cacheable(value = "vsacCodesystemVersions")
-    public CodeSystemVersionResponse getCodeSystemVersionFromName(String codeSystemName, String ticketGrantingTicket, String apiKey) {
+    public CodeSystemVersionResponse getCodeSystemVersionFromName(String codeSystemName, String apiKey) {
         String path = "/CodeSystem/" + codeSystemName + "/Info";
 
-        VsacCode vsacResponse = getCode(path, ticketGrantingTicket, apiKey);
+        VsacCode vsacResponse = getCode(path, apiKey);
 
         if (vsacResponse.getMessage().equals("ok") && vsacResponse.getData() != null
                 && vsacResponse.getData().getResultSet().size() == 1 &&
@@ -200,26 +114,19 @@ public class VsacService {
     }
 
     // cannot cache due to all users not having the same rights
-    public VsacCode getCode(String path, String ticketGrantingTicket, String apiKey) {
+    public VsacCode getCode(String path,  String apiKey) {
         //  https://vsac.nlm.nih.gov/vsac/CodeSystem/LOINC/Version/2.66/Code/21112-8/Info?ticket=ST-281185-McNb53ZGHYtaGjHamgKg-cas&resultFormat=json&resultSet=standard
         // "/CodeSystem/LOINC22/Version/2.67/Code/21112-8/Info";
 
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            return createErrorResponse(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET);
-        }
         try {
             Map<String, String> params = new HashMap<>();
-            params.put("st", singleUseTicket);
             params.put("resultFormat", "json");
             params.put("resultSet", "standard");
-            ResponseEntity<VsacCode> response = restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac" + path +
-                            "?ticket={st}&resultFormat={resultFormat}&resultSet={resultSet}")
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), VsacCode.class);
+            
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac" + path +
+                "?resultFormat={resultFormat}&resultSet={resultSet}").buildAndExpand(params).encode().toUri();
+            ResponseEntity<VsacCode> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), VsacCode.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -244,24 +151,15 @@ public class VsacService {
     /**
      * Retrieve All profile List.
      *
-     * @param ticketGrantingTicket The service ticket.
+     * @param Vsac apiKey.
      * @return VSACResponseResult The result.
      */
-    public BasicResponse getProfileList(String ticketGrantingTicket, String apiKey) {
+    public BasicResponse getProfileList(String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/profiles
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
 
         try {
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/profiles?ticket={st}")
-                            .buildAndExpand(singleUseTicket)
-                            .encode()
-                            .toUri(), String.class));
+        	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/profiles").build().encode().toUri();
+        	return buildBasicResponseFromEntity(restTemplate.exchange(uri, HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class));
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
@@ -271,19 +169,15 @@ public class VsacService {
      * Reterival of Versions for given OID.
      *
      * @param oid           The oid
-     * @param serviceTicket The service ticket.
+     * @param VSAC apiKey
      * @return VSACResponseResult
      */
-    public BasicResponse reteriveVersionListForOid(String oid, String serviceTicket) {
+    	public BasicResponse reteriveVersionListForOid(String oid, String apiKey) {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("oid", oid);
-            params.put("st", serviceTicket);
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/oid/{oid}/versions?ticket={st}")
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), String.class));
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/oid/{oid}/versions").buildAndExpand(params).encode().toUri();
+          	return buildBasicResponseFromEntity(restTemplate.exchange(uri, HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class));
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
@@ -293,23 +187,23 @@ public class VsacService {
      * Multiple Value Set Retrieval based on oid.
      *
      * @param oid           The oid
-     * @param serviceTicket The service ticket.
+     * @param VSAC apiKey
      * @return VSACResponseResult
      */
-    public BasicResponse getMultipleValueSetsResponseByOID(String oid, String serviceTicket, String profile) {
+    public BasicResponse getMultipleValueSetsResponseByOID(String oid,  String profile, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
         try {
             Map<String, String> params = new HashMap<>();
             params.put("oid", oid);
             params.put("profile", profile);
             params.put("includeDraft", "yes");
-            params.put("st", serviceTicket);
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                            "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), String.class));
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
+            		"id={oid}&profile={profile}&includeDraft={includeDraft}")
+            		.buildAndExpand(params).encode().toUri();
+            ResponseEntity<String> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+            return buildBasicResponseFromEntity(response);
+            
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
@@ -320,23 +214,21 @@ public class VsacService {
      *
      * @param oid           THe oid.
      * @param version       The version.
-     * @param serviceTicket The service ticket.
+     * @param VSAC apiKey
      * @return VSACResponseResult
      */
-    public BasicResponse getMultipleValueSetsResponseByOIDAndVersion(String oid, String version, String serviceTicket) {
+    public BasicResponse getMultipleValueSetsResponseByOIDAndVersion(String oid, String version, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
         try {
             Map<String, String> params = new HashMap<>();
             params.put("oid", oid);
             params.put("version", version);
             params.put("includeDraft", "yes");
-            params.put("st", serviceTicket);
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                            "id={oid}&version={version}&ticket={st}&includeDraft={includeDraft}")
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), String.class));
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
+            		"id={oid}&version={version}&includeDraft={includeDraft}").buildAndExpand(params).encode().toUri();
+            ResponseEntity<String> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class); 
+            return buildBasicResponseFromEntity(response);
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
@@ -347,8 +239,9 @@ public class VsacService {
      *
      * @param oid           The oid.
      * @param effectiveDate The effective date.
-     * @param serviceTicket The service ticket.
+     * @param VSAC apiKey
      * @return VSACResponseResult
+     * NOTE: This is NOT used, so leave as is.
      */
     public BasicResponse getMultipleValueSetsResponseByOIDAndEffectiveDate(String oid, String effectiveDate, String serviceTicket) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
@@ -374,84 +267,65 @@ public class VsacService {
      * Multiple Value Set Retrieval based on oid and Profile Name.
      *
      * @param oid           THe oid.
-     * @param serviceTicket The service ticket.
+     * @param VSAC apiKey
      * @return VSACResponseResult
      */
-    public BasicResponse getMultipleValueSetsResponseByOIDAndProfile(String oid, String profile, String serviceTicket) {
-        return getMultipleValueSetsResponseByOID(oid, profile, serviceTicket);
+    public BasicResponse getMultipleValueSetsResponseByOIDAndProfile(String oid, String profile, String apiKey) {
+        return getMultipleValueSetsResponseByOID(oid, profile, apiKey);
     }
 
-    public BasicResponse getMultipleValueSetsResponseByOIDAndRelease(String oid, String release, String serviceTicket) {
+    public BasicResponse getMultipleValueSetsResponseByOIDAndRelease(String oid, String release, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
         try {
             Map<String, String> params = new HashMap<>();
             params.put("oid", oid);
             params.put("release", release);
-            params.put("st", serviceTicket);
             //includeDraft doesn't work on this one.
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                            "id={oid}&release={release}&ticket={st}")
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), String.class));
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
+            		"id={oid}&release={release}").buildAndExpand(params).encode().toUri();
+            ResponseEntity<String> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+            return buildBasicResponseFromEntity(response);
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
     }
 
-    public BasicResponse getValueSet(String oid, String ticketGrantingTicket, String apiKey) {
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            throw new RuntimeException(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET);
-        }
-
+    public BasicResponse getValueSet(String oid, String apiKey) {
         final Map<String, String> params = new HashMap<>();
         params.put("oid", oid);
         params.put("profile", PROFILE);
         params.put("includeDraft", "yes");
-        params.put("st", singleUseTicket);
         URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
-                .buildAndExpand(params)
-                .encode()
-                .toUri();
+            "id={oid}&profile={profile}&includeDraft={includeDraft}")
+            .buildAndExpand(params)
+            .encode()
+            .toUri();
 
         try {
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUri(uri)
-                            .buildAndExpand(params)
-                            .encode()
-                            .toUri(), String.class));
+          ResponseEntity<String> response = restTemplate.exchange(uri,  
+          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class); 
+          return buildBasicResponseFromEntity(response);
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
     }
 
-    public ValueSetResult getValueSetResult(String oid, String ticketGrantingTicket, String apiKey) {
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket, apiKey);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            return ValueSetResult.builder()
-                    .isFailResponse(true)
-                    .failReason(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET)
-                    .build();
-        }
-
+    public ValueSetResult getValueSetResult(String oid,  String apiKey) {
         Map<String, String> params = new HashMap<>();
         params.put("oid", oid);
         params.put("profile", PROFILE);
         params.put("includeDraft", "yes");
-        params.put("st", singleUseTicket);
         URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets?" +
-                "id={oid}&profile={profile}&ticket={st}&includeDraft={includeDraft}")
-                .buildAndExpand(params)
-                .encode()
-                .toUri();
+            "id={oid}&profile={profile}&includeDraft={includeDraft}")
+            .buildAndExpand(params)
+            .encode()
+            .toUri();
 
         try {
-            String xml = restTemplate.getForObject(uri, String.class);
+        	ResponseEntity<String> response = restTemplate.exchange(uri,  
+          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+        	String xml = response.getBody();
 
             return ValueSetResult.builder()
                     .isFailResponse(false)
@@ -472,14 +346,12 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getAllPrograms() {
+    public BasicResponse getAllPrograms(String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/programs
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs")
-                            .build()
-                            .encode()
-                            .toUri(), String.class);
+        	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs").build().encode().toUri();
+          ResponseEntity<String> response = restTemplate.exchange(uri,  
+          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -500,18 +372,18 @@ public class VsacService {
                 return buildBasicResponseForFailure();
             }
         } catch (HttpClientErrorException e) {
+        	//temp
+        	System.out.println("\n\ngetAllPrograms(): apiKey = "+apiKey+" HttpClientErrorException -> "+e.getMessage());
             return buildBasicResponseForHttpClientError(e);
         }
     }
 
-    public BasicResponse getReleasesOfProgram(String program) {
+    public BasicResponse getReleasesOfProgram(String program, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{program}")
-                            .buildAndExpand(program)
-                            .encode()
-                            .toUri(), String.class);
+        	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{program}").buildAndExpand(program).encode().toUri();
+          ResponseEntity<String> response = restTemplate.exchange(uri,  
+          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -536,18 +408,18 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getDirectReferenceCode(String codeURLString, String serviceTicket) {
+    public BasicResponse getDirectReferenceCode(String codeURLString, String apiKey) {
         //  https://vsac.nlm.nih.gov/vsac/CodeSystem/LOINC/Version/2.66/Code/21112-8/Info?ticket=ST-281185-McNb53ZGHYtaGjHamgKg-cas&resultFormat=json&resultSet=standard
         // "/CodeSystem/LOINC22/Version/2.67/Code/21112-8/Info";
         try {
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac" + codeURLString)
-                            .queryParam("ticket", serviceTicket)
-                            .queryParam("resultFormat", "json")
-                            .queryParam("resultSet", "standard")
-                            .build()
-                            .encode()
-                            .toUri(), String.class));
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac" + codeURLString)
+            		.queryParam("resultFormat", "json")
+            		.queryParam("resultSet", "standard")
+            		.build().encode().toUri();
+            ResponseEntity<String> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+            return buildBasicResponseFromEntity(response);
+            
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         } catch(HttpServerErrorException e) {
@@ -555,17 +427,16 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getLatestProfileOfProgram(String programName) {
+    public BasicResponse getLatestProfileOfProgram(String programName, String apiKey) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME/latest profile
         try {
 
             Map<String, String> params = new HashMap<>();
             params.put("programName", programName);
             params.put("profile", "latest profile");
-            ResponseEntity<String> response = restTemplate.getForEntity(
-                    UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/program/{programName}/{profile}")
-                            .buildAndExpand(params)
-                            .toUri(), String.class);
+            URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{programName}/{profile}").buildAndExpand(params).encode().toUri();
+            ResponseEntity<String> response = restTemplate.exchange(uri,  
+            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -699,4 +570,15 @@ public class VsacService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return new HttpEntity<>(body, headers);
     }
+    
+    private HttpEntity<String> getHeaderEntityWithAuthentication(String apiKey) {
+    	HttpHeaders headers = new HttpHeaders();
+      headers.add("Authorization", getBasicAuthenticationHeader("apikey", apiKey));
+      return new HttpEntity<>(headers);
+    }
+    
+    private static final String getBasicAuthenticationHeader(String username, String password) {
+      String valueToEncode = username + ":" + password;
+      return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
+  }
 }

@@ -53,9 +53,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	
 	@Override
-	public final VsacTicketInformation getTicketGrantingToken() {
+	public final VsacTicketInformation getVsacInformation() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.vsacapi.getTicketGrantingTicket(sessionId);
+		return this.vsacapi.getVsacInformation(sessionId);
 	}
 
 	@Override
@@ -84,6 +84,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 
 	@Override
 	public VsacApiResult getVSACProgramsReleasesAndProfiles() {
-		return this.vsacapi.getVSACProgramsReleasesAndProfiles();
+		String sessionId = getThreadLocalRequest().getSession().getId();
+		return this.vsacapi.getVSACProgramsReleasesAndProfiles(sessionId);
 	}
 }

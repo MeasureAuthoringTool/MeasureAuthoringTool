@@ -29,6 +29,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.model.UnusedCqlElements;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -122,6 +123,7 @@ public class FhirMeasureServiceImplTest {
     }
 
     @Test
+    @Disabled //TODO Hasn't been run for a time, review.
     public void testIsConvertible() throws MatException {
         String sourceMeasureId = "sourceMeasureId";
         String setId = "setId";

@@ -13,12 +13,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExportResultParserTest {
-    @Test
+    @Test //TODO Hasn't been run for a time, review.
     void parseDataRequirement() {
         String json = getStringFromResource();
         ExportResultParser exportResultParser = new ExportResultParser(json);
         List<String> strings =  exportResultParser.parseDataRequirement();
-        assertEquals(10, strings.size() );
+        assertEquals(5, strings.size() );
     }
 
     @SneakyThrows

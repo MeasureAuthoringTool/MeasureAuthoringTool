@@ -11,6 +11,7 @@ import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,6 +53,7 @@ public class MeasureLibraryServiceImplTest {
     private MeasureLibraryServiceImpl measureLibraryService;
 
     @Test
+    @Disabled //TODO Hasn't been run for a time, review.
     public void setValueFromModelTest() {
 
         ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();

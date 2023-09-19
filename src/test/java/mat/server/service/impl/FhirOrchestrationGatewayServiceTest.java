@@ -35,7 +35,7 @@ public class FhirOrchestrationGatewayServiceTest {
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.validate("measureId", "vsacApiKey", true);
-        Map<String, String> expectedParams = Map.of("conversionType", "VALIDATION", "xmlSource", "MEASURE", "id", "measureId", "apiKey", "apiKey");
+        Map<String, String> expectedParams = Map.of("conversionType", "VALIDATION", "xmlSource", "MEASURE", "id", "measureId", "apiKey", "vsacApiKey");
         String expectedUrl = "http://localhost:9080/orchestration/measure?id={id}&conversionType={conversionType}&xmlSource={xmlSource}&apiKey={apiKey}";
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.eq(expectedUrl), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.eq(expectedParams));
     }
@@ -45,7 +45,7 @@ public class FhirOrchestrationGatewayServiceTest {
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.validate("measureId", "vsacApiKey", false);
-        Map<String, String> expectedParams = Map.of("conversionType", "VALIDATION", "xmlSource", "SIMPLE", "id", "measureId", "apiKey", "apiKey");
+        Map<String, String> expectedParams = Map.of("conversionType", "VALIDATION", "xmlSource", "SIMPLE", "id", "measureId", "apiKey", "vsacApiKey");
         String expectedUrl = "http://localhost:9080/orchestration/measure?id={id}&conversionType={conversionType}&xmlSource={xmlSource}&apiKey={apiKey}";
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.eq(expectedUrl), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.eq(expectedParams));
     }
@@ -55,7 +55,7 @@ public class FhirOrchestrationGatewayServiceTest {
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.convert("measureId", "vsacApiKey", true);
-        Map<String, String> expectedParams = Map.of("conversionType", "CONVERSION", "xmlSource", "MEASURE", "id", "measureId", "apiKey", "apiKey");
+        Map<String, String> expectedParams = Map.of("conversionType", "CONVERSION", "xmlSource", "MEASURE", "id", "measureId", "apiKey", "vsacApiKey");
         String expectedUrl = "http://localhost:9080/orchestration/measure?id={id}&conversionType={conversionType}&xmlSource={xmlSource}&apiKey={apiKey}";
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.eq(expectedUrl), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.eq(expectedParams));
     }
@@ -65,7 +65,7 @@ public class FhirOrchestrationGatewayServiceTest {
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.convert("measureId", "vsacApiKey", false);
-        Map<String, String> expectedParams = Map.of("conversionType", "CONVERSION", "xmlSource", "SIMPLE", "id", "measureId", "apiKey", "apiKey");
+        Map<String, String> expectedParams = Map.of("conversionType", "CONVERSION", "xmlSource", "SIMPLE", "id", "measureId", "apiKey", "vsacApiKey");
         String expectedUrl = "http://localhost:9080/orchestration/measure?id={id}&conversionType={conversionType}&xmlSource={xmlSource}&apiKey={apiKey}";
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.eq(expectedUrl), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.eq(expectedParams));
     }

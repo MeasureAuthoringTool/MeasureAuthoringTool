@@ -573,7 +573,7 @@ public class VsacService {
     
     private HttpEntity<String> getHeaderEntityWithAuthentication(String apiKey) {
     	HttpHeaders headers = new HttpHeaders();
-      headers.add("Authorization", getBasicAuthenticationHeader("apikey", apiKey));
+      headers.setBasicAuth("apikey", apiKey);
       return new HttpEntity<>(headers);
     }
     

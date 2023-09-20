@@ -22,7 +22,7 @@ public interface VSACApiService {
 
     VsacApiResult getDirectReferenceCode(String oid, String sessionId);
 
-    VsacApiResult getVSACProgramsReleasesAndProfiles();
+    VsacApiResult getVSACProgramsReleasesAndProfiles(String sessionId);
 
-    VsacTicketInformation getTicketGrantingTicket(String sessionId);
+    VsacTicketInformation getVsacInformation(String sessionId);
 }

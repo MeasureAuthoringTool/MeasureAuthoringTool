@@ -84,7 +84,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     @Override
     public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure,
-                                                    String vsacGrantingTicket,
+    																								String apiKey,
                                                     String loggedinUserId,
                                                     boolean isUpdatingMatDB) throws MatException {
         if (!sourceMeasure.isFhirConvertible()) {
@@ -97,7 +97,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
 
-        ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
+        ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), apiKey, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(sourceMeasureDetails.getCQLLibraryName(),conversionResult);
 
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);

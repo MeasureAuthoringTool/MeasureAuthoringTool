@@ -38,13 +38,14 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
         logger.debug("Converting  measureId: " + sourceMeasure.getId());
 
         String sessionId = getThreadLocalRequest().getSession().getId();
-        VsacTicketInformation vsacTicketInformation = this.vsacApiService.getTicketGrantingTicket(sessionId);
+        VsacTicketInformation vsacTicketInformation = this.vsacApiService.getVsacInformation(sessionId);
         if (vsacTicketInformation == null) {
-            throw new MatException("Cannot get a granting ticket");
+            throw new MatException("No Valid UMLS Api Key Available.");
         }
         try {
+            System.out.println("Logged in user: " + LoggedInUserUtil.getLoggedInUser());
             return fhirMeasureService.convert(sourceMeasure,
-                    vsacTicketInformation.getTicket(),
+            				vsacTicketInformation.getApiKey(),
                     LoggedInUserUtil.getLoggedInUser(),
                     true);
         } catch (MatException e) {

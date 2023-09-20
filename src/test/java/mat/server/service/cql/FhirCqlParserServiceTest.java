@@ -54,9 +54,8 @@ public class FhirCqlParserServiceTest {
 
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
 
-        VsacTicketInformation vsacTicketInformation = new VsacTicketInformation();
-        vsacTicketInformation.setTicket("token5min");
-        Mockito.when(vsacApiService.getTicketGrantingTicket("sessionId")).thenReturn(vsacTicketInformation);
+        VsacTicketInformation vsacTicketInformation = new VsacTicketInformation("vsacApiKey", true);
+        Mockito.when(vsacApiService.getVsacInformation("sessionId")).thenReturn(vsacTicketInformation);
 
         CQLModel sourceModel = new CQLModel();
 
@@ -64,7 +63,7 @@ public class FhirCqlParserServiceTest {
         cqlXmlReq.setCql(testCql);
         cqlXmlReq.setSourceModel(sourceModel);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("UMLS-TOKEN", "token5min");
+        headers.add("API-KEY", "vsacApiKey");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<MatCqlXmlReq> request = new HttpEntity<>(cqlXmlReq, headers);

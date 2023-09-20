@@ -139,27 +139,16 @@ public class FhirCqlParserService implements FhirCqlParser {
         VsacTicketInformation ticketInformation = getVsacTicketInformation();
 
         if (ticketInformation != null) {
-            headers.add(UMLS_TOKEN, ticketInformation.getTicket());
-            headers.add(API_KEY, ticketInformation.getApiKey());
+          headers.add(API_KEY, ticketInformation.getApiKey());
         } else {
-            log.debug("No ticketInformation found to place in header.");
+          log.debug("No apiKey found to place in header.");
         }
 
         return headers;
     }
 
     private VsacTicketInformation getVsacTicketInformation() {
-        return vsacApiService.getTicketGrantingTicket(httpSession.getId());
-    }
-
-    private void setRefreshedTicket(String newTicket) {
-        VsacTicketInformation ticketInformation = getVsacTicketInformation();
-
-        if( ticketInformation != null) {
-            ticketInformation.setTicketIfNotBlank(newTicket);
-        } else {
-            log.debug("No ticketInformation found, new ticket not set.");
-        }
+    	return vsacApiService.getVsacInformation(httpSession.getId());
     }
 
     private <T> T rest(String url, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseType, Map<String, Object> paramMap) {
@@ -176,11 +165,6 @@ public class FhirCqlParserService implements FhirCqlParser {
         } catch (HttpServerErrorException e) {
             log.error("HttpServerErrorException", e);
             throw new MatRuntimeException(e);
-        }
-        finally {
-            if (response != null && response.getHeaders().containsKey(REFRESHED_GRANTING_TICKET)) {
-                setRefreshedTicket(response.getHeaders().getFirst(REFRESHED_GRANTING_TICKET));
-            }
         }
 
         if (response.getStatusCode().isError()) {

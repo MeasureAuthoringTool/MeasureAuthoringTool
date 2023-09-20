@@ -113,7 +113,7 @@ public class BonnieExportPresenter implements MatPresenter {
     private void uploadButtonClickHandler() {
         Mat.showLoadingMessage();
         clearMessagePanel();
-        MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
+        MatContext.get().getVsacapiServiceAsync().getVsacInformation(new AsyncCallback<VsacTicketInformation>() {
 
             @Override
             public void onSuccess(VsacTicketInformation result) {

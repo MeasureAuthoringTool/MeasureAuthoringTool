@@ -25,7 +25,7 @@ public interface VSACAPIService extends RemoteService {
 
 	VsacApiResult getVSACProgramsReleasesAndProfiles();
 
-	VsacTicketInformation getTicketGrantingToken();
+	VsacTicketInformation getVsacInformation();
 
 	String getSessionId();
 }

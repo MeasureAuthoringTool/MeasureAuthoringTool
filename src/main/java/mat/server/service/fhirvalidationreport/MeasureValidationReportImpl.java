@@ -72,7 +72,7 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
      * @return HTML string report
      */
     @Override
-    public String generateReport(String measureId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
+    public String generateReport(String measureId, String apiKey, boolean converted) throws IOException, TemplateException {
         MatXmlResponse parseResponse = null;
         Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         if (measure != null) {
@@ -85,10 +85,10 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
                 result.setFhirConvertible(true);
                 result.setId(measureId);
                 try {
-                    var fhirResult = measureService.convert(result,
-                            vsacGrantingTicket,
-                            LoggedInUserUtil.getLoggedInUser(),
-                            false);
+                  	var fhirResult = measureService.convert(result,
+                  			apiKey,
+                        LoggedInUserUtil.getLoggedInUser(),
+                        false);
                     CQLModel model = CQLUtilityClass.getCQLModelFromXML(measureXmlDAO.findForMeasure(measureId).getMeasureXMLAsString());
                     parseResponse = fhirCqlParser.parse(fhirResult.getFhirCql(),
                             model);

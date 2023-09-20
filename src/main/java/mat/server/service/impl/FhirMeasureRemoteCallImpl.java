@@ -37,7 +37,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String GET_HUMAN_READABLE_ARTIFACTS = "measure/package/humanReadableArtifacts/{measureId}";
     private static final String FHIR_PUSH_MEASURE_PARAMS = "measure/pushMeasure" + FHIR_ID_PARAMS;
     private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/package" + FHIR_ID_PARAMS;
-    private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
+    private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&apiKey={apiKey}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
 
@@ -64,13 +64,13 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     }
 
     @Override
-    public ConversionResultDto convert(String measureId, String vsacGrantingTicket, boolean draft) {
-        return convert(measureId, ConversionType.CONVERSION, vsacGrantingTicket, draft);
+    public ConversionResultDto convert(String measureId, String vsacApiKey, boolean draft) {
+    	return convert(measureId, ConversionType.CONVERSION, vsacApiKey, draft);
     }
 
     @Override
-    public ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean draft) {
-        return convert(measureId, ConversionType.VALIDATION, vsacGrantingTicket, draft);
+    public ConversionResultDto validate(String measureId, String vsacApiKey, boolean draft) {
+    	return convert(measureId, ConversionType.VALIDATION, vsacApiKey, draft);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                 uriVariables);
     }
 
-    private ConversionResultDto convert(String measureId, ConversionType conversionType, String vsacGrantingTicket, boolean draft) {
+    private ConversionResultDto convert(String measureId, ConversionType conversionType, String vsacApiKey, boolean draft) {
         if (log.isDebugEnabled()) {
             log.debug("callRemoteService " + measureId + " " + conversionType + " draft: " + draft);
         }
@@ -134,7 +134,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         uriVariables.put("id", measureId);
         uriVariables.put("conversionType", conversionType.name());
         uriVariables.put("xmlSource", draft ? MEASURE_XML_SOURCE : SIMPLE_XML_SOURCE);
-        uriVariables.put("vsacGrantingTicket", vsacGrantingTicket);  // vsac not used currently in mat fhir services
+        uriVariables.put("apiKey", vsacApiKey);  // vsac not used currently in mat fhir services
 
         return rest(fhirServicesUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS,
                 HttpMethod.PUT,

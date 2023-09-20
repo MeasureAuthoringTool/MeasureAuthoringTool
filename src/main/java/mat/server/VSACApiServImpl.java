@@ -16,10 +16,10 @@ import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
-import mat.vsac.RefreshTokenManagerImpl;
 import mat.vsac.VsacService;
 import mat.vsacmodel.BasicResponse;
 import mat.vsacmodel.ValueSet;
+import mat.vsacmodel.ValueSetResult;
 import mat.vsacmodel.ValueSetWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,7 +171,7 @@ public class VSACApiServImpl implements VSACApiService {
     }
 
     @Override
-    public final VsacTicketInformation getTicketGrantingTicket(String sessionId) {
+    public final VsacTicketInformation getVsacInformation(String sessionId) {
         return UMLSSessionTicket.getTicket(sessionId);
     }
 
@@ -184,9 +183,9 @@ public class VSACApiServImpl implements VSACApiService {
     @Override
     public final boolean isAlreadySignedIn(String sessionId) {
         LOGGER.debug("Start VSACAPIServiceImpl isAlreadySignedIn");
-        VsacTicketInformation eightHourTicketForUser = UMLSSessionTicket.getTicket(sessionId);
+        VsacTicketInformation vsacInfo = UMLSSessionTicket.getTicket(sessionId);
         LOGGER.debug("End VSACAPIServiceImpl isAlreadySignedIn: ");
-        return eightHourTicketForUser != null;
+        return vsacInfo != null;
     }
 
     /**
@@ -204,11 +203,9 @@ public class VSACApiServImpl implements VSACApiService {
             BasicResponse vsacResponseResult = null;
 
             try {
-                vsacResponseResult = vsacService.getProfileList(ticketInformation.getTicket(), ticketInformation.getApiKey());
+            		vsacResponseResult = vsacService.getProfileList(ticketInformation.getApiKey());
             } catch (Exception ex) {
                 LOGGER.debug("VSACAPIServiceImpl ExpIdentifierList failed in method :: getAllProfileList");
-            } finally {
-                ticketInformation.setTicketIfNotBlank(RefreshTokenManagerImpl.getInstance().getRefreshedToken());
             }
 
             if ((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)) {
@@ -254,7 +251,7 @@ public class VSACApiServImpl implements VSACApiService {
         LOGGER.debug("Start VSACAPIServiceImpl updateCQLVSACValueSets method :");
 
         if (isAlreadySignedIn(sessionId)) {
-            if (isCASTicketGrantingTicketValid(sessionId)) {
+        		if (isApiKeyValid(sessionId)) {
                 HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> updateInMeasureXml = new HashMap<>();
                 ArrayList<CQLQualityDataSetDTO> modifiedQDMList = new ArrayList<>();
                 if (defaultExpId == null) {
@@ -291,33 +288,27 @@ public class VSACApiServImpl implements VSACApiService {
                         VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
 
                         try {
-                            String fiveMinuteServiceTicket =
-                                    vsacService.getServiceTicket(ticketInformation.getTicket(), ticketInformation.getApiKey());
-
-
                             if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
                                 vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndRelease(
                                         getOidFromUrl(cqlQualityDataSetDTO.getOid()),
                                         cqlQualityDataSetDTO.getRelease(),
-                                        fiveMinuteServiceTicket);
+                                        ticketInformation.getApiKey());
                             } else if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getVersion())) {
                                 vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndVersion(
                                         getOidFromUrl(cqlQualityDataSetDTO.getOid()),
                                         cqlQualityDataSetDTO.getVersion(),
-                                        fiveMinuteServiceTicket);
+                                        ticketInformation.getApiKey());
                             } else {
                                 vsacResponseResult = vsacService.getMultipleValueSetsResponseByOID(
                                         getOidFromUrl(cqlQualityDataSetDTO.getOid()),
-                                        fiveMinuteServiceTicket,
-                                        defaultExpId);
+                                        defaultExpId,
+                                        ticketInformation.getApiKey());
                             }
 
                         } catch (Exception ex) {
                             LOGGER.debug("VSACAPIServiceImpl updateCQLVSACValueSets :: Value Set reterival failed at "
                                     + "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "
                                     + cqlQualityDataSetDTO.getDataType());
-                        }finally {
-                            ticketInformation.setTicketIfNotBlank(RefreshTokenManagerImpl.getInstance().getRefreshedToken());
                         }
 
 
@@ -374,7 +365,7 @@ public class VSACApiServImpl implements VSACApiService {
                 result.setSuccess(true);
                 result.setUpdatedCQLQualityDataDTOLIst(modifiedQDMList);
             } else {
-                disconnectUMLSOnServiceTicketFailure(sessionId, result);
+            	disconnectUMLSOnInvalidApiKey(sessionId, result);
             }
         } else {
             result.setSuccess(false);
@@ -385,18 +376,22 @@ public class VSACApiServImpl implements VSACApiService {
         return result;
     }
 
-    public boolean isCASTicketGrantingTicketValid(String sessionId) {
+    public boolean isApiKeyValid(String sessionId) {
         VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
         try {
-            String fiveMinuteServiceTicket = vsacService.getServiceTicket(ticketInformation.getTicket(), ticketInformation.getApiKey());
-            return StringUtils.isNotBlank(fiveMinuteServiceTicket);
-        }finally {
-            ticketInformation.setTicketIfNotBlank(RefreshTokenManagerImpl.getInstance().getRefreshedToken());
+        	ValueSetResult vsr = vsacService.getValueSetResult("2.16.840.1.113762.1.4.1", ticketInformation.getApiKey());
+        	VsacTicketInformation newTicketInformation = new VsacTicketInformation(ticketInformation.getApiKey(), !vsr.isFailResponse());
+          UMLSSessionTicket.put(sessionId, newTicketInformation);
+        	return !vsr.isFailResponse();
         }
+        catch (Exception ex) {
+        	LOGGER.error("isApiKeyValid(): for sessionId = "+sessionId+" exception -> "+ex.getMessage());
+        }
+        return false;
     }
 
     /**
-     * Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
+     * Method to authenticate user at VSAC and save apiKey and isValidApiKey into UMLSSessionMap for valid user.
      *
      * @param apiKey - String.
      * @return Boolean.
@@ -404,12 +399,14 @@ public class VSACApiServImpl implements VSACApiService {
     @Override
     public final boolean validateVsacUser(final String apiKey, String sessionId) {
         LOGGER.debug("Start VSACAPIServiceImpl validateVsacUser");
-        String eightHourTicketForUser = vsacService.getTicketGrantingTicket(apiKey);
-        VsacTicketInformation ticketInformation = new VsacTicketInformation(eightHourTicketForUser, new Date(), apiKey);
+
+        //2.16.840.1.113762.1.4.1 is for simple ONC Administrative Sex
+        ValueSetResult vsr = vsacService.getValueSetResult("2.16.840.1.113762.1.4.1", apiKey);
+        VsacTicketInformation ticketInformation = new VsacTicketInformation(apiKey, !vsr.isFailResponse());
         UMLSSessionTicket.put(sessionId, ticketInformation);
-        LOGGER.debug("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " +
-                eightHourTicketForUser);
-        return eightHourTicketForUser != null;
+        
+        LOGGER.debug("End VSACAPIServiceImpl validateVsacUser: is valid VSAC user = "+ !vsr.isFailResponse());
+        return !vsr.isFailResponse();
     }
 
     @Override
@@ -444,13 +441,10 @@ public class VSACApiServImpl implements VSACApiService {
 
         VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
 
-        if (StringUtils.isNotBlank(ticketInformation.getTicket())) {
+        if (StringUtils.isNotBlank(ticketInformation.getApiKey())) {
             if (StringUtils.isNotBlank(url)) {
 
-                String fiveMinServiceTicket = vsacService.getServiceTicket(ticketInformation.getTicket(), ticketInformation.getApiKey());
-                ticketInformation.setTicketIfNotBlank(RefreshTokenManagerImpl.getInstance().getRefreshedToken());
-
-                if (StringUtils.isNotBlank(fiveMinServiceTicket)) {
+            	if (isApiKeyValid(sessionId)) {
                     if (url.contains(":")) {
                         String[] arg = url.split(":");
                         if (arg.length > 0 && arg[1] != null) {
@@ -459,7 +453,7 @@ public class VSACApiServImpl implements VSACApiService {
                                     "URL after dropping text before : is :: " + url);
                         }
                     }
-                    BasicResponse vsacResponseResult = vsacService.getDirectReferenceCode(url, fiveMinServiceTicket);
+                    BasicResponse vsacResponseResult = vsacService.getDirectReferenceCode(url, ticketInformation.getApiKey());
 
                     if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null &&
                             !StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
@@ -477,7 +471,7 @@ public class VSACApiServImpl implements VSACApiService {
                     }
 
                 } else {
-                    disconnectUMLSOnServiceTicketFailure(sessionId, result);
+                	disconnectUMLSOnInvalidApiKey(sessionId, result);
                 }
 
             } else {
@@ -548,26 +542,23 @@ public class VSACApiServImpl implements VSACApiService {
         VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
 
 
-        if ( ticketInformation.getTicket()  != null) {
+        if ( ticketInformation.getApiKey()  != null) {
             if (StringUtils.isNotBlank(oid)) {
-                String fiveMinServiceTicket = vsacService.getServiceTicket(ticketInformation.getTicket(), ticketInformation.getApiKey());
-                ticketInformation.setTicketIfNotBlank(RefreshTokenManagerImpl.getInstance().getRefreshedToken());
-
-                if (StringUtils.isNotBlank(fiveMinServiceTicket)) {
+            	if (isApiKeyValid(sessionId)) {
                     BasicResponse vsacResponseResult = null;
 
                     if (StringUtils.isNotBlank(release)) {
                         vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(),
                                 release,
-                                fiveMinServiceTicket);
+                                ticketInformation.getApiKey());
                     } else {
                         if (StringUtils.isBlank(expansionId)) {
                             expansionId = getDefaultExpId();
                         }
 
                         vsacResponseResult = vsacService.getMultipleValueSetsResponseByOID(oid.trim(),
-                                fiveMinServiceTicket,
-                                expansionId);
+                                expansionId,
+                                ticketInformation.getApiKey());
                     }
 
                     if (vsacResponseResult != null && StringUtils.isNotBlank(vsacResponseResult.getXmlPayLoad())) {
@@ -581,7 +572,7 @@ public class VSACApiServImpl implements VSACApiService {
                     }
 
                 } else {
-                    disconnectUMLSOnServiceTicketFailure(sessionId, result);
+                	disconnectUMLSOnInvalidApiKey(sessionId, result);
                 }
 
             } else {
@@ -599,9 +590,9 @@ public class VSACApiServImpl implements VSACApiService {
         return result;
     }
 
-    private VsacApiResult disconnectUMLSOnServiceTicketFailure(String sessionId, VsacApiResult result) {
-        LOGGER.debug("VSACApiServImpl Ticket :" + UMLSSessionTicket.getTicket(sessionId).getTicket() +
-                " has expired");
+    private VsacApiResult disconnectUMLSOnInvalidApiKey(String sessionId, VsacApiResult result) {
+    		LOGGER.debug("VSACApiServImpl apiKey :" + UMLSSessionTicket.getTicket(sessionId).getApiKey() +
+          " is not valid");
         result.setSuccess(false);
         result.setFailureReason(VsacApiResult.VSAC_UNAUTHORIZED_ERROR);
         inValidateVsacUser(sessionId);
@@ -627,13 +618,15 @@ public class VSACApiServImpl implements VSACApiService {
     }
 
     @Override
-    public VsacApiResult getVSACProgramsReleasesAndProfiles() {
+    public VsacApiResult getVSACProgramsReleasesAndProfiles(String sessionId) {
 
-        LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method :");
+        LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method sessionId = :"+sessionId);
         VsacApiResult result = new VsacApiResult();
+        
+        VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
 
         try {
-            BasicResponse vsacResponseResult = vsacService.getAllPrograms();
+            BasicResponse vsacResponseResult = vsacService.getAllPrograms(ticketInformation.getApiKey());
             if (vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {
                 if (vsacResponseResult.isFailResponse() &&
                         (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
@@ -649,8 +642,8 @@ public class VSACApiServImpl implements VSACApiService {
                     Map<String, String> programToProfiles = new HashMap<>();
 
                     for (String program : vsacResponseResult.getPgmRels()) {
-                        programToReleases.put(program, getReleasesListForProgram(program));
-                        programToProfiles.put(program, getLatestProfileOfProgram(program));
+                        programToReleases.put(program, getReleasesListForProgram(program, ticketInformation.getApiKey()));
+                        programToProfiles.put(program, getLatestProfileOfProgram(program, ticketInformation.getApiKey()));
                     }
 
                     result.setProgramToReleases(programToReleases);
@@ -666,22 +659,22 @@ public class VSACApiServImpl implements VSACApiService {
         return result;
     }
 
-    private List<String> getReleasesListForProgram(String programName) {
+    private List<String> getReleasesListForProgram(String programName, String apiKey) {
         LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method :");
         BasicResponse vsacResponseResult = null;
         try {
-            vsacResponseResult = vsacService.getReleasesOfProgram(programName);
+            vsacResponseResult = vsacService.getReleasesOfProgram(programName, apiKey);
         } catch (Exception e) {
             LOGGER.error("getReleasesListForProgram: " + e.getMessage());
         }
         return vsacResponseResult != null ? vsacResponseResult.getPgmRels() : null;
     }
 
-    private String getLatestProfileOfProgram(String programName) {
+    private String getLatestProfileOfProgram(String programName, String apiKey) {
         LOGGER.debug("Start getProfilesForProgram method :");
         BasicResponse vsacResponseResult = null;
         try {
-            vsacResponseResult = vsacService.getLatestProfileOfProgram(programName);
+            vsacResponseResult = vsacService.getLatestProfileOfProgram(programName, apiKey);
         } catch (Exception e) {
             LOGGER.error("getLatestProfileOfProgram: " + e.getMessage());
         }

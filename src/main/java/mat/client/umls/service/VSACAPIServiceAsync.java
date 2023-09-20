@@ -26,5 +26,5 @@ public interface VSACAPIServiceAsync {
 	
 	void getVSACProgramsReleasesAndProfiles(AsyncCallback<VsacApiResult> callback);	
 	
-	void getTicketGrantingToken(AsyncCallback<VsacTicketInformation> callback);
+	void getVsacInformation(AsyncCallback<VsacTicketInformation> callback);
 }

@@ -32,13 +32,13 @@ public class FhirValidationReportServlet extends HttpServlet {
 
         try {
             var sessionId = request.getSession().getId();
-            var ticket = getVsacTicket(sessionId);
+            var apiKey = getVsacApiKey(sessionId);
 
             var converted = isConverted(request);
             var id = request.getParameter(ID_PARAM);
 
             var validationReportService = getFhirValidationReportService(request);
-            var validationReport = validationReportService.generateReport(id, ticket, converted);
+            var validationReport = validationReportService.generateReport(id, apiKey, converted);
 
             response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
             response.getOutputStream().write(validationReport.getBytes());
@@ -58,12 +58,12 @@ public class FhirValidationReportServlet extends HttpServlet {
      * @return mat.vsac Ticket
      * @throws MatException
      */
-    private String getVsacTicket(String sessionId) throws MatException {
-        var vsacTicketInformation = getVascApiService().getTicketGrantingTicket(sessionId);
+    private String getVsacApiKey(String sessionId) throws MatException {
+    		var vsacTicketInformation = getVascApiService().getVsacInformation(sessionId);
         if (vsacTicketInformation == null) {
-            throw new MatException("Cannot get a granting ticket");
+        	throw new MatException("Cannot get apiKey");
         }
-        return vsacTicketInformation.getTicket();
+        return vsacTicketInformation.getApiKey();
     }
 
     private String toErrorResponse(HttpServletRequest request, Exception e) {

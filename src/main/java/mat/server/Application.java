@@ -7,7 +7,6 @@ import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
-import mat.vsac.RefreshTokenManagerImpl;
 import mat.vsac.VsacService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -291,17 +290,12 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Bean
     public VsacService vsacService(@Named("externalRestTemplate") RestTemplate restTemplate) {
-        String ticketBase =  System.getProperty("VSAC_TICKET_URL_BASE");
         String urlBase = System.getProperty("VSAC_URL_BASE");
 
-        //Default for test cases.
-        if (StringUtils.isEmpty(ticketBase)) {
-            ticketBase = "https://utslogin.nlm.nih.gov/cas/v1";
-        }
         if (StringUtils.isEmpty(urlBase)) {
             urlBase = "https://vsac.nlm.nih.gov";
         }
 
-        return new VsacService(ticketBase,urlBase,restTemplate, RefreshTokenManagerImpl.getInstance());
+        return new VsacService(urlBase,restTemplate);
     }
 }

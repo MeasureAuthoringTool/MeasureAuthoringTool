@@ -770,7 +770,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void setUMLSActiveLink() {
-        MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
+    			MatContext.get().getVsacapiServiceAsync().getVsacInformation(new AsyncCallback<VsacTicketInformation>() {
 
             @Override
             public void onSuccess(VsacTicketInformation result) {
@@ -782,7 +782,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in VsacapiService.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in VsacapiService.getVsacInformation. Error message: " + caught.getMessage(), caught);
                 hideUMLSActive(true);
                 MatContext.get().setUMLSLoggedIn(false);
             }

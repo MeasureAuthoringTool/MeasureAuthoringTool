@@ -194,7 +194,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	@Override
 	public void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName,
-			String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration)
+//			String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration)
+			String measureType, String calculationType, String apiKey)
 			throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException,
 			BonnieServerException, IOException, BonnieDoesNotExistException {
 
@@ -203,7 +204,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
-			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, encryptDecryptToken.decryptKey(bearerToken), calculationType, apiKey, fileObject);
 			setRequestConfigProxy(postRequest);
 			postResponse = httpClient.execute(postRequest);
 
@@ -227,15 +228,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	@Override
 	public void updateMeasureInBonnie(String bearerToken, String hqmfSetId, byte[] zipFileContents,
-			String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket,
-			String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException,
+			String fileName, String measureType, String calculationType, String apiKey) throws BonnieUnauthorizedException, BonnieBadParameterException,
 			BonnieDoesNotExistException, BonnieServerException, IOException {
 		CloseableHttpResponse putResponse = null;
 		CloseableHttpClient httpClient = null;
 		try {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
-			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, apiKey, fileObject);
 			setRequestConfigProxy(putRequest);
 			putResponse = httpClient.execute(putRequest);
 
@@ -264,11 +264,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 		}
 	}
 
-	private HttpPut createHttpPutRequest(String uri, String token, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration, FileInfomationObject fileInfomation) {
+	private HttpPut createHttpPutRequest(String uri, String token, String calculationType, String apiKey, FileInfomationObject fileInfomation) {
 		String requestUri = getBonnieBaseURL() + uri;
 
 		Map<String, String> headerMap = createHeader(token);
-		Map<String, String> textInputMap = createTextMap(calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
+		Map<String, String> textInputMap = createTextMap(calculationType, apiKey);
 
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
@@ -276,11 +276,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 		return apiConnectionUtillity.createPutConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
 
-	private HttpPost createHttpPostRequest(String uri, String token, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration, FileInfomationObject fileInfomation) {
+	private HttpPost createHttpPostRequest(String uri, String token, String calculationType, String apiKey, FileInfomationObject fileInfomation) {	
 		String requestUri = getBonnieBaseURL() + uri;
 
 		Map<String, String> headerMap = createHeader(token);
-		Map<String, String> textInputMap = createTextMap(calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
+		Map<String, String> textInputMap = createTextMap(calculationType, apiKey);
 
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
@@ -298,11 +298,10 @@ public class BonnieAPIv1 implements BonnieAPI {
 		return headerMap;
 	}
 
-	private Map<String, String> createTextMap(String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration){
+	private Map<String, String> createTextMap(String calculationType, String apiKey){
 		Map<String, String> textInputMap = new HashMap<>();
 		textInputMap.put("calculation_type", calculationType);
-		textInputMap.put("vsac_tgt", vsacTicketGrantingTicket);
-		textInputMap.put("vsac_tgt_expires_at", vsacTicketExpiration);
+		textInputMap.put("vsac_api_key", apiKey);
 		return textInputMap;
 	}
 

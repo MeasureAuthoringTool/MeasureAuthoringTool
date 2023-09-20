@@ -576,9 +576,4 @@ public class VsacService {
       headers.setBasicAuth("apikey", apiKey);
       return new HttpEntity<>(headers);
     }
-    
-    private static final String getBasicAuthenticationHeader(String username, String password) {
-      String valueToEncode = username + ":" + password;
-      return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
-  }
 }

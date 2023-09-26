@@ -345,14 +345,14 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getAllPrograms(String apiKey) {
+    public BasicResponse getAllPrograms() {
         // https://vsac.nlm.nih.gov/vsac/programs
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs").build().encode().toUri();
         	//temp
         	log.info("getAllPrograms(): baseVsacUrl = "+baseVsacUrl);
           ResponseEntity<String> response = restTemplate.exchange(uri,  
-          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+          		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -375,17 +375,17 @@ public class VsacService {
                 return buildBasicResponseForFailure();
             }
         } catch (HttpClientErrorException e) {
-        	log.error("getAllPrograms(): apiKey is "+(apiKey!=null?"not null":"null")+" HttpClientErrorException -> "+e.getMessage());
+        	log.error("getAllPrograms(): HttpClientErrorException -> "+e.getMessage());
             return buildBasicResponseForHttpClientError(e);
         }
     }
 
-    public BasicResponse getReleasesOfProgram(String program, String apiKey) {
+    public BasicResponse getReleasesOfProgram(String program) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{program}").buildAndExpand(program).encode().toUri();
           ResponseEntity<String> response = restTemplate.exchange(uri,  
-          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+          		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -429,7 +429,7 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getLatestProfileOfProgram(String programName, String apiKey) {
+    public BasicResponse getLatestProfileOfProgram(String programName) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME/latest profile
         try {
 
@@ -438,7 +438,7 @@ public class VsacService {
             params.put("profile", "latest profile");
             URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{programName}/{profile}").buildAndExpand(params).encode().toUri();
             ResponseEntity<String> response = restTemplate.exchange(uri,  
-            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+            		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());

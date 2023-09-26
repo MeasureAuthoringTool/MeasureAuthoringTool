@@ -622,14 +622,9 @@ public class VSACApiServImpl implements VSACApiService {
 
         LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method sessionId = :"+sessionId);
         VsacApiResult result = new VsacApiResult();
-        
-        VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
-        
-        //temp
-        LOGGER.info("\n\ngetVSACProgramsReleasesAndProfiles(): ticketInformation.getApiKey() is "+(ticketInformation.getApiKey()!=null?"not null":"null"));
 
         try {
-            BasicResponse vsacResponseResult = vsacService.getAllPrograms(ticketInformation.getApiKey());
+            BasicResponse vsacResponseResult = vsacService.getAllPrograms();
             if (vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {
                 if (vsacResponseResult.isFailResponse()) {
                     LOGGER.info("Program List retrieval failed at VSAC with Failure Reason: " +
@@ -644,8 +639,8 @@ public class VSACApiServImpl implements VSACApiService {
                     Map<String, String> programToProfiles = new HashMap<>();
 
                     for (String program : vsacResponseResult.getPgmRels()) {
-                        programToReleases.put(program, getReleasesListForProgram(program, ticketInformation.getApiKey()));
-                        programToProfiles.put(program, getLatestProfileOfProgram(program, ticketInformation.getApiKey()));
+                        programToReleases.put(program, getReleasesListForProgram(program));
+                        programToProfiles.put(program, getLatestProfileOfProgram(program));
                     }
 
                     result.setProgramToReleases(programToReleases);
@@ -661,22 +656,22 @@ public class VSACApiServImpl implements VSACApiService {
         return result;
     }
 
-    private List<String> getReleasesListForProgram(String programName, String apiKey) {
+    private List<String> getReleasesListForProgram(String programName) {
         LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method :");
         BasicResponse vsacResponseResult = null;
         try {
-            vsacResponseResult = vsacService.getReleasesOfProgram(programName, apiKey);
+            vsacResponseResult = vsacService.getReleasesOfProgram(programName);
         } catch (Exception e) {
             LOGGER.error("getReleasesListForProgram: " + e.getMessage());
         }
         return vsacResponseResult != null ? vsacResponseResult.getPgmRels() : null;
     }
 
-    private String getLatestProfileOfProgram(String programName, String apiKey) {
+    private String getLatestProfileOfProgram(String programName) {
         LOGGER.debug("Start getProfilesForProgram method :");
         BasicResponse vsacResponseResult = null;
         try {
-            vsacResponseResult = vsacService.getLatestProfileOfProgram(programName, apiKey);
+            vsacResponseResult = vsacService.getLatestProfileOfProgram(programName);
         } catch (Exception e) {
             LOGGER.error("getLatestProfileOfProgram: " + e.getMessage());
         }

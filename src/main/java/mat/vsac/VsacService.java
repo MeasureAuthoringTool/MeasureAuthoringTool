@@ -17,10 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
@@ -544,33 +541,6 @@ public class VsacService {
         return vsacResponseResult != null &&
                 vsacResponseResult.getXmlPayLoad() != null &&
                 !vsacResponseResult.isFailResponse();
-    }
-
-    private <T> String postForString2xx(URI uri, HttpEntity<T> request) {
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return response.getBody();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            log.debug("Vsac Rest Error", e);
-            return null;
-        }
-    }
-
-    private HttpEntity<String> buildEntityWithTicketHeaders() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("content-type", "application/x-www-form-urlencoded");
-        return new HttpEntity<>(headers);
-    }
-
-    private HttpEntity<MultiValueMap<String,String>> buildEntityWithUrlEncodedBody(MultiValueMap<String, String> body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return new HttpEntity<>(body, headers);
     }
     
     private HttpEntity<String> getHeaderEntityWithAuthentication(String apiKey) {

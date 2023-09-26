@@ -17,10 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
@@ -345,14 +342,13 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getAllPrograms(String apiKey) {
+    public BasicResponse getAllPrograms() {
         // https://vsac.nlm.nih.gov/vsac/programs
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs").build().encode().toUri();
-        	//temp
-        	log.info("getAllPrograms(): baseVsacUrl = "+baseVsacUrl);
+
           ResponseEntity<String> response = restTemplate.exchange(uri,  
-          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+          		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -370,22 +366,20 @@ public class VsacService {
                     return buildBasicResponseForFailure();
                 }
             } else {
-            //temp
-            	log.error("getAllPrograms(): response.getStatusCode() = "+response.getStatusCode());
                 return buildBasicResponseForFailure();
             }
         } catch (HttpClientErrorException e) {
-        	log.error("getAllPrograms(): apiKey is "+(apiKey!=null?"not null":"null")+" HttpClientErrorException -> "+e.getMessage());
+        	log.error("getAllPrograms(): HttpClientErrorException -> "+e.getMessage());
             return buildBasicResponseForHttpClientError(e);
         }
     }
 
-    public BasicResponse getReleasesOfProgram(String program, String apiKey) {
+    public BasicResponse getReleasesOfProgram(String program) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{program}").buildAndExpand(program).encode().toUri();
           ResponseEntity<String> response = restTemplate.exchange(uri,  
-          		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+          		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -429,7 +423,7 @@ public class VsacService {
         }
     }
 
-    public BasicResponse getLatestProfileOfProgram(String programName, String apiKey) {
+    public BasicResponse getLatestProfileOfProgram(String programName) {
         // https://vsac.nlm.nih.gov/vsac/program/NAME/latest profile
         try {
 
@@ -438,7 +432,7 @@ public class VsacService {
             params.put("profile", "latest profile");
             URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/program/{programName}/{profile}").buildAndExpand(params).encode().toUri();
             ResponseEntity<String> response = restTemplate.exchange(uri,  
-            		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
+            		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 BasicResponse result = new BasicResponse();
                 result.setXmlPayLoad(response.getBody());
@@ -544,33 +538,6 @@ public class VsacService {
         return vsacResponseResult != null &&
                 vsacResponseResult.getXmlPayLoad() != null &&
                 !vsacResponseResult.isFailResponse();
-    }
-
-    private <T> String postForString2xx(URI uri, HttpEntity<T> request) {
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return response.getBody();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            log.debug("Vsac Rest Error", e);
-            return null;
-        }
-    }
-
-    private HttpEntity<String> buildEntityWithTicketHeaders() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("content-type", "application/x-www-form-urlencoded");
-        return new HttpEntity<>(headers);
-    }
-
-    private HttpEntity<MultiValueMap<String,String>> buildEntityWithUrlEncodedBody(MultiValueMap<String, String> body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return new HttpEntity<>(body, headers);
     }
     
     private HttpEntity<String> getHeaderEntityWithAuthentication(String apiKey) {

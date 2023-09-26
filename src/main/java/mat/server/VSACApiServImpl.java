@@ -624,13 +624,15 @@ public class VSACApiServImpl implements VSACApiService {
         VsacApiResult result = new VsacApiResult();
         
         VsacTicketInformation ticketInformation = UMLSSessionTicket.getTicket(sessionId);
+        
+        //temp
+        LOGGER.info("\n\ngetVSACProgramsReleasesAndProfiles(): ticketInformation.getApiKey() is "+(ticketInformation.getApiKey()!=null?"not null":"null"));
 
         try {
             BasicResponse vsacResponseResult = vsacService.getAllPrograms(ticketInformation.getApiKey());
             if (vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {
-                if (vsacResponseResult.isFailResponse() &&
-                        (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-                    LOGGER.debug("Program List retrieval failed at VSAC with Failure Reason: " +
+                if (vsacResponseResult.isFailResponse()) {
+                    LOGGER.info("Program List retrieval failed at VSAC with Failure Reason: " +
                             vsacResponseResult.getFailReason());
                     result.setSuccess(false);
                     result.setFailureReason(vsacResponseResult.getFailReason());

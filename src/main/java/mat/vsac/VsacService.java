@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -350,6 +349,8 @@ public class VsacService {
         // https://vsac.nlm.nih.gov/vsac/programs
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs").build().encode().toUri();
+        	//temp
+        	log.info("getAllPrograms(): baseVsacUrl = "+baseVsacUrl);
           ResponseEntity<String> response = restTemplate.exchange(uri,  
           		HttpMethod.GET, getHeaderEntityWithAuthentication(apiKey), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -369,11 +370,12 @@ public class VsacService {
                     return buildBasicResponseForFailure();
                 }
             } else {
+            //temp
+            	log.error("getAllPrograms(): response.getStatusCode() = "+response.getStatusCode());
                 return buildBasicResponseForFailure();
             }
         } catch (HttpClientErrorException e) {
-        	//temp
-        	System.out.println("\n\ngetAllPrograms(): apiKey = "+apiKey+" HttpClientErrorException -> "+e.getMessage());
+        	log.error("getAllPrograms(): apiKey is "+(apiKey!=null?"not null":"null")+" HttpClientErrorException -> "+e.getMessage());
             return buildBasicResponseForHttpClientError(e);
         }
     }

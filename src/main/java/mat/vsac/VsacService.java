@@ -346,8 +346,7 @@ public class VsacService {
         // https://vsac.nlm.nih.gov/vsac/programs
         try {
         	URI uri = UriComponentsBuilder.fromUriString(baseVsacUrl + "/vsac/programs").build().encode().toUri();
-        	//temp
-        	log.info("getAllPrograms(): baseVsacUrl = "+baseVsacUrl);
+
           ResponseEntity<String> response = restTemplate.exchange(uri,  
           		HttpMethod.GET, null, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -367,8 +366,6 @@ public class VsacService {
                     return buildBasicResponseForFailure();
                 }
             } else {
-            //temp
-            	log.error("getAllPrograms(): response.getStatusCode() = "+response.getStatusCode());
                 return buildBasicResponseForFailure();
             }
         } catch (HttpClientErrorException e) {

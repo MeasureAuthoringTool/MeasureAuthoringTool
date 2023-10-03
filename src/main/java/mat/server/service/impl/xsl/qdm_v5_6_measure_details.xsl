@@ -131,38 +131,7 @@
                 </representedResponsibleOrganization>
             </responsibleParty>
         </custodian>
-        <!-- Endorsement -->
-        <xsl:if test="endorsement">
-            <verifier>
-                <responsibleParty classCode="ASSIGNED">
-                    <representedResponsibleOrganization
-                            classCode="ORG" determinerCode="INSTANCE">
-                        <id>
-                            <xsl:if test="endorsement/@id">
-                                <item root="{endorsement/@id}"/>
-                            </xsl:if>
-                        </id>
-                        <name>
-                            <item>
-                                <xsl:variable name="endorsemnt">
-                                    <xsl:choose>
-                                        <xsl:when test="string-length(.)>0">
-                                            <xsl:call-template name="trim">
-                                                <xsl:with-param name="textString" select="endorsement"/>
-                                            </xsl:call-template>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            None
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:variable>
-                                <part value="{$endorsemnt}"/>
-                            </item>
-                        </name>
-                    </representedResponsibleOrganization>
-                </responsibleParty>
-            </verifier>
-        </xsl:if>
+        
 
         <xsl:for-each select="//elementLookUp/qdm[@code !='true']">
 

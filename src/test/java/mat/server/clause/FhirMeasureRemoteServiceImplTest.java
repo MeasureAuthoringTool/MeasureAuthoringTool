@@ -4,6 +4,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacTicketInformation;
+import mat.server.LoggedInUserUtil;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.VSACApiService;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureRemoteServiceImplTest {
@@ -47,6 +47,7 @@ public class FhirMeasureRemoteServiceImplTest {
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
         VsacTicketInformation ticketInfo = new VsacTicketInformation("apiKey", true);
         Mockito.when(vsacApiService.getVsacInformation(eq("sessionId"))).thenReturn(ticketInfo);
+        LoggedInUserUtil.setLoggedInUser("LoggedInUser");
     }
 
     @AfterEach

@@ -258,7 +258,7 @@
                 </code>
                 <xsl:variable name="NQFText">
                     <xsl:call-template name="trim">
-                        <xsl:with-param name="textString" select="nqfid/@extension"/>
+                        <xsl:with-param name="textString" select="cbeid/@extension"/>
                     </xsl:call-template>
                 </xsl:variable>
                 <xsl:choose>

@@ -43,7 +43,7 @@
             node="element"/> </field> -->
 
         <field name="NqfModel" type="mat.client.measure.NqfModel">
-            <bind-xml name="nqfid"/>
+            <bind-xml name="cbeid"/>
         </field>
 
         <!-- <field name="nqfElementTag" type="java.lang.String"> <bind-xml name="nqfid"
@@ -97,9 +97,9 @@
             <bind-xml name="endorsement" node="element"/>
         </field>
 
-        <field name="endorsementId" type="java.lang.String">
-            <bind-xml name="id" node="attribute" location="endorsement"/>
-        </field>
+<!--        <field name="endorsementId" type="java.lang.String">-->
+<!--            <bind-xml name="id" node="attribute" location="endorsement"/>-->
+<!--        </field>-->
 
 
         <field name="description" type="java.lang.String">

@@ -35,7 +35,7 @@
 		</field>
 		
 		<field name="nqfNumber" type="java.lang.String">
-			<bind-xml name="extension" node="attribute" location="nqfid"/>
+			<bind-xml name="extension" node="attribute" location="cbeid"/>
 		</field>
 		
 		<field name="guid" type="java.lang.String">

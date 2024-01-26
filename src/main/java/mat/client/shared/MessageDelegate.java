@@ -211,7 +211,7 @@ public class MessageDelegate {
     private static final String MEASURE_POPULATION_BASIS = "Please select the measure's Population basis prior to packaging.";
     private static final String MEASURE_DESCRIPTION_UNDERSCORE = "Measure name must not contain '_' (underscore).";
     public static final String MEASURE_TRANSFER_EMPTY_PACKAGE = "Unable to transfer selected measure. Issues were encountered with its package. Please re-package the measure before requesting a transfer to MADiE. If problem continues, please contact the help desk.";
-    public static final String MEASURE_TRANSFER_SUCCESS_MESSAGE = "Measure is being processed and transferred to MADiE.";
+    public static final String MEASURE_TRANSFER_SUCCESS_MESSAGE = "Measure is being processed and transferred to MADiE. You will receive an email with the transfer status.";
     public static final String MEASURE_TRANSFER_GENERIC_ERROR_MESSAGE = "Unable to transfer selected measure to MADiE, try again. If problem continues, please contact help desk.";
 
     public static String getVsacCodeNotFound() {

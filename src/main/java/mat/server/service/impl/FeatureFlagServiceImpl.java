@@ -22,6 +22,9 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     @Value("${MADIE_QDM_FEATURE_FLAG:false}")
     private Boolean madieQdmFeatureFlag;
 
+    @Value("${ENABLE_QDM_REPEAT_TRANSFER:false}")
+    private Boolean enableQdmRepeatTransfer;
+
     @Autowired
     private FeatureFlagDAO featureFlagDAO;
 
@@ -35,6 +38,9 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
         if (madieQdmFeatureFlag.equals(true)) {
             logger.debug("FeatureFlagServiceImpl::findFeatureFlags Successfully added MADIE QDM feature flag");
             featureFlagMap.put(FeatureFlagConstant.MADIE_QDM, madieQdmFeatureFlag);
+        }
+        if (enableQdmRepeatTransfer.equals(true)) {
+            featureFlagMap.put(FeatureFlagConstant.MADIE_QDM_RE_TRANSFER, enableQdmRepeatTransfer);
         }
         return featureFlagMap;
     }

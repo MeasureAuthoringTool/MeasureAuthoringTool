@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.shared.GenericResult;
+import mat.client.util.FeatureFlagConstant;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dto.MeasureTransferDTO;
@@ -12,6 +13,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.ModelTypeHelper;
+import mat.server.service.FeatureFlagService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.MeasureTransferUtil;
 import org.junit.Before;
@@ -26,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 
 
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -43,6 +46,9 @@ class MeasureServiceImplTest {
 
     @Mock
     private MeasureLibraryService measureLibraryService;
+
+    @Mock
+    private FeatureFlagService featureFlagService;
 
     @Mock
     private MeasureExportDAO measureExportDAO;
@@ -224,5 +230,67 @@ class MeasureServiceImplTest {
 
         // then
         assertThat(output, is(false));
+    }
+
+    @Test
+    public void testIsAlreadyTransferredMQDMMeasureReTransferableToMADiEIfFlagIsOff() {
+        // given
+        User owner = new User();
+        owner.setId("User1");
+        MeasureSet measureSet = new MeasureSet();
+        measureSet.setName("MS999");
+        measureSet.setId("measureSet999");
+        Measure measure = new Measure();
+        measure.setId("measure123");
+        //QDM Measure
+        measure.setMeasureModel(ModelTypeHelper.QDM);
+        measure.setOwner(owner);
+        measure.setMeasureSet(measureSet);
+        // already transferred measure
+        measure.setTransferredToMadieBucket(true);
+        when(measureDAO.find(anyString())).thenReturn(measure);
+
+        when(measureDAO.getAllMeasuresBySetID(anyString()))
+          .thenReturn(List.of(measure));
+        when(featureFlagService.findFeatureFlags())
+          .thenReturn(Map.of(FeatureFlagConstant.MADIE_QDM_RE_TRANSFER, false));
+        when(ModelTypeHelper.isQdm(Mockito.anyString()))
+          .thenReturn(false);
+        // when
+        Boolean output = measureService.isMeasureTransferableToMadie("measure123", "measureSet999", "User1");
+
+        // then
+        assertThat(output, is(false));
+    }
+
+    @Test
+    public void testIsAlreadyTransferredMQDMMeasureReTransferableToMADiEIfFlagIsOn() {
+        // given
+        User owner = new User();
+        owner.setId("User1");
+        MeasureSet measureSet = new MeasureSet();
+        measureSet.setName("MS999");
+        measureSet.setId("measureSet999");
+        Measure measure = new Measure();
+        measure.setId("measure123");
+        //QDM Measure
+        measure.setMeasureModel(ModelTypeHelper.QDM);
+        measure.setOwner(owner);
+        measure.setMeasureSet(measureSet);
+        // already transferred measure
+        measure.setTransferredToMadieBucket(true);
+        when(measureDAO.find(anyString())).thenReturn(measure);
+
+        when(measureDAO.getAllMeasuresBySetID(anyString()))
+          .thenReturn(List.of(measure));
+        when(featureFlagService.findFeatureFlags())
+          .thenReturn(Map.of(FeatureFlagConstant.MADIE_QDM_RE_TRANSFER, true));
+        when(ModelTypeHelper.isQdm(Mockito.anyString()))
+          .thenReturn(true);
+        // when
+        Boolean output = measureService.isMeasureTransferableToMadie("measure123", "measureSet999", "User1");
+
+        // then
+        assertThat(output, is(true));
     }
 }

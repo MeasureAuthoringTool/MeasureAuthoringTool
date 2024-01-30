@@ -16,6 +16,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.util.FeatureFlagConstant;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dto.MeasureTransferDTO;
@@ -39,6 +40,7 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.service.FeatureFlagService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.MeasureTransferUtil;
 import mat.shared.CompositeMeasureValidationResult;
@@ -65,6 +67,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Autowired
     private MeasureLibraryService measureLibraryService;
+
+    @Autowired
+    private FeatureFlagService featureFlagService;
 
     @Autowired
     private MeasureExportDAO measureExportDAO;
@@ -618,6 +623,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     public Boolean isMeasureTransferableToMadie(String measureId, String measureSetId, String userId) {
         Measure measure = measureDAO.find(measureId);
         String measureOwner = measure.getOwner().getId();
+        boolean isQdmReTransferOn = featureFlagService.findFeatureFlags()
+          .getOrDefault(FeatureFlagConstant.MADIE_QDM_RE_TRANSFER, false);
+        if (isQdmReTransferOn && ModelTypeHelper.isQdm(measure.getMeasureModel())) {
+            return Objects.equals(userId, measureOwner);
+        }
         List<Measure> allMeasureInTheSet = measureDAO.getAllMeasuresBySetID(measureSetId);
         Optional<Measure> transferredMeasure = allMeasureInTheSet
             .stream()

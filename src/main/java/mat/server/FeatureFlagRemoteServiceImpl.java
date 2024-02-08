@@ -18,5 +18,4 @@ public class FeatureFlagRemoteServiceImpl extends SpringRemoteServiceServlet imp
     public Map<String, Boolean> findFeatureFlags() {
         return flagService.findFeatureFlags();
     }
-
 }

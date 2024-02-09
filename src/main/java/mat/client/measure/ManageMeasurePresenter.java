@@ -58,6 +58,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.SearchHistoryDTO;
@@ -1010,7 +1011,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
         currentDetails = new ManageMeasureDetailModel();
         detailDisplay.showCautionMsg(false);
-        showOptionCheckboxes(detailDisplay);
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.CMS_ID_GENERATION)) {
+            showCmsIdOptionCheckboxes(detailDisplay);
+        } else {
+            hideCmsIdOptionCheckboxes(detailDisplay);
+        }
         displayCommonDetailForAdd(detailDisplay);
         panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
         setDetailsToView();
@@ -1027,7 +1032,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showMeasureName(true);
         detailDisplay.showCautionMsg(true);
-        hideOptionCheckboxes(detailDisplay);
+        hideCmsIdOptionCheckboxes(detailDisplay);
         setDetailsToView();
 
         detailDisplay.getMeasureNameTextBox().setValue("");
@@ -1045,18 +1050,18 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Mat.focusSkipLists(MEASURE_LIBRARY);
         detailDisplay.showCautionMsg(true);
         detailDisplay.showMeasureName(true);
-        hideOptionCheckboxes(detailDisplay);
+        hideCmsIdOptionCheckboxes(detailDisplay);
         setDetailsToView();
         updateSaveButtonClickHandler(event -> draftMeasure());
         panel.setContent(detailDisplay.asWidget());
     }
 
-    private void hideOptionCheckboxes(DetailDisplay detailDisplay) {
+    private void hideCmsIdOptionCheckboxes(DetailDisplay detailDisplay) {
         MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), false);
         MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), false);
     }
 
-    private void showOptionCheckboxes(DetailDisplay detailDisplay) {
+    private void showCmsIdOptionCheckboxes(DetailDisplay detailDisplay) {
         MatContext.get().setVisible(detailDisplay.getGenerateCmsIdCheckbox(), true);
         MatContext.get().setVisible(detailDisplay.getMatchLibraryNameToCmsIdCheckbox(), true);
     }
@@ -1065,7 +1070,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         clearErrorMessageAlerts();
         warningConfirmationMessageAlert = compositeDetailDisplay.getWarningConfirmationMessageAlert();
         displayCommonDetailForAdd(compositeDetailDisplay);
-        showOptionCheckboxes(compositeDetailDisplay);
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.CMS_ID_GENERATION)) {
+            showCmsIdOptionCheckboxes(compositeDetailDisplay);
+        } else {
+            hideCmsIdOptionCheckboxes(compositeDetailDisplay);
+        }
         panel.setHeading("My Measures > Create New Composite Measure", COMPOSITE_MEASURE);
         setCompositeDetailsToView();
         Mat.focusSkipLists(COMPOSITE_MEASURE);
@@ -1081,7 +1090,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         compositeDetailDisplay.setMeasureModelType(currentCompositeMeasureDetails.getMeasureModel());
         compositeDetailDisplay.showCautionMsg(true);
         compositeDetailDisplay.showMeasureName(true);
-        hideOptionCheckboxes(compositeDetailDisplay);
+        hideCmsIdOptionCheckboxes(compositeDetailDisplay);
         setCompositeDetailsToView();
         Mat.focusSkipLists(COMPOSITE_MEASURE);
         updateCompositeSaveButtonClickHandler(event -> draftCompositeMeasure());

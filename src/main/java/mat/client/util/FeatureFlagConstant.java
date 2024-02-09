@@ -7,4 +7,5 @@ public interface FeatureFlagConstant {
     String MADIE = "MADIE";
     String MADIE_QDM = "MADIE_QDM";
     String MADIE_QDM_RE_TRANSFER = "MADIE_QDM_RE_TRANSFER";
+    String CMS_ID_GENERATION = "CMS_ID_GENERATION";
 }

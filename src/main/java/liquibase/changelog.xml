@@ -13,4 +13,5 @@
     <include file="classpath:/liquibase/AddFinalizedDateForFhirLibraries.xml"/>
     <include file="classpath:/liquibase/add_measure_transfer_column_to_measure.xml"/>
     <include file="classpath:/liquibase/Payer_valueset_MeasureXmlUpdate.xml"/>
+    <include file="classpath:/liquibase/CmsIdGenerationFlag.xml"/>
 </databaseChangeLog>

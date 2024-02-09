@@ -35,6 +35,7 @@ import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.client.shared.MessagePanel;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsTextAbstractModel;
@@ -130,6 +131,8 @@ public class MeasureDetailsViewFactory {
 
 	private GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
 		final GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
+    MatContext.get().setVisible(generalInformationView.getGenerateEMeasureIDButton(),
+				MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.CMS_ID_GENERATION));
 		final GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;

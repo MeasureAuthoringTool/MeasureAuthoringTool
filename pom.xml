@@ -51,10 +51,15 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
+             <id>icm</id>
+             <url>https://maven.ceon.pl/artifactory/repo/</url>
+        </repository>
+        <repository>
             <id>project.local.repo.dir</id>
             <url>file://${project.local.repo.dir}</url>
         </repository>
     </repositories>
+         
 
     <dependencyManagement>
         <dependencies>

@@ -74,6 +74,11 @@
 
     <dependencies>
         <dependency>
+             <groupId>io.netty</groupId>
+             <artifactId>netty-codec-http2</artifactId>
+             <version>4.1.100.Final</version>
+         </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtVersion}</version>

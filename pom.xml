@@ -472,7 +472,7 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd</artifactId>
-            <version>6.31.0</version>
+            <version>7.0.0</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>

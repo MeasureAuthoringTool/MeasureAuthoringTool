@@ -76,7 +76,7 @@
         <dependency>
              <groupId>io.netty</groupId>
              <artifactId>netty-codec-http2</artifactId>
-             <version>4.1.100.Final</version>
+             <version>4.1.108.Final</version>
          </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -628,7 +628,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.483</version>
+            <version>1.12.688</version>
         </dependency>
     </dependencies>
 
